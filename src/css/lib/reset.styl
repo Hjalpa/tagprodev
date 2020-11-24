@@ -1,0 +1,36 @@
+html,body,div,span,nav,h1,h2,h3,h4,h5,h6,p,blockquote,a,em,img,strong,ol,ul,li,form,label,button,input,textarea,ins
+	margin 0
+	padding 0
+	vertical-align baseline
+	border 0
+	outline 0
+	background transparent
+	text-decoration none
+	-webkit-tap-highlight-color transparent
+
+*
+	font-family slab
+	box-sizing border-box
+
+ol
+ul
+	list-style none
+	font-size 0
+
+textarea
+	resize none
+
+::placeholder
+	color #eee
+
+// remove selection border and outlines and clickable elements
+a:focus
+input:focus
+textarea:focus
+button:focus
+	outline 0
+	border 0
+
+button:active
+button::-moz-focus-inner
+	padding 0

@@ -16,6 +16,19 @@
     "url": "https://gitlab.com/anom/tagpro/issues"
   },
   "homepage": "https://gitlab.com/anom/tagpro#readme",
+  "devDependencies": {
+    "browser-sync": "^2.26.10",
+    "gulp-autoprefixer": "^6.1.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-size": "^3.0.0",
+    "gulp-strip-debug": "^3.0.0",
+    "gulp-stylus": "^2.7.0",
+    "gulp-uglify-es": "^1.0.4",
+    "gulp-watch": "^5.0.1",
+    "rsyncwrapper": "^3.0.1",
+    "run-sequence": "^2.2.1"
+  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
@@ -23,6 +36,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "fs": "0.0.1-security",
+    "gulp": "^4.0.2",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.5.1",

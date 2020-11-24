@@ -1,0 +1,42 @@
+@import 'lib/global'
+@import 'lib/font'
+@import 'lib/reset'
+
+//  root
+// --------------------------------------------------------------------------
+
+:root
+	font-size 17px
+	--blue  #0f71e2
+	--green #04ba5f
+	--red   #ff2b63
+
+html
+	touch-action manipulation
+
+body
+	background #0b0a0f
+	height 100%
+	width 100%
+	display block
+	scroll-behavior smooth
+	overscroll-behavior none
+
+	.pane-wrap
+		display grid
+		grid-template-columns 80% 20%
+
+		.pane
+
+			&.content
+				background #121116
+
+				.item
+					padding 10%
+					// border-bottom 1px solid #121116
+					border-bottom 1px solid #1a191e
+
+					h3
+						color white
+						font-size 1.4rem
+						line-height 2rem
