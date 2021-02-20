@@ -13,7 +13,7 @@ const server = https.createServer({
 	ca: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/chain.pem')
 }, app).listen(443)
 
-app.listen(80)
+// app.listen(80)
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')

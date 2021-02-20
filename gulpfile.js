@@ -37,9 +37,6 @@ gulp.task('browser-sync', gulp.series(function(done) {
 // --------------------------------------------------------------------------
 gulp.task('js', gulp.series(function(done) {
 	gulp.src([
-			'./src/js/vendors/*.js',
-			'./src/js/util.js',
-			'./src/js/init.js',
 			'./src/js/*.js'
 		])
 		.pipe(concat('init.js'))

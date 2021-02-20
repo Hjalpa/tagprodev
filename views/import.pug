@@ -1,0 +1,71 @@
+doctype html
+html
+	head
+		title Import Data
+		meta(charset='utf-8')
+		meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0')
+		link(rel='stylesheet', href='/init.css')
+		script(src='/init.js', async)
+
+body.import
+
+	form
+
+		.contain
+
+			.group
+				label.season
+					h5 Season
+					input(value="18")
+
+				label.week
+					h5 Week
+					input(value="1")
+
+				label.game
+					h5 Game
+					input(value="1")
+
+			.half1
+				label
+					h5 Half 1
+
+				label
+					.euids
+						h5 euid
+						input(value="2800329")
+
+				label
+					.red
+						h5 red
+						select.team
+							option Laghetti
+
+				label
+					.blue
+						h5 blue
+						select.team
+							option Preventus
+
+			.half2
+				label
+					h5 Half 2
+
+				label
+					.euids
+						h5 euid
+						input(value="2800329")
+
+				label
+					.red
+						h5 red
+						select.team
+							option Laghetti
+
+				label
+					.blue
+						h5 blue
+						select.team
+							option Preventus
+
+		button import
