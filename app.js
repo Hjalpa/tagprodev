@@ -8,12 +8,12 @@ const https = require('https')
 const app = express()
 
 const server = https.createServer({
-	key: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/privkey.pem'),
-	cert: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/cert.pem'),
-	ca: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/chain.pem')
+ 	key: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/privkey.pem'),
+ 	cert: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/cert.pem'),
+ 	ca: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/chain.pem')
 }, app).listen(443)
 
-// app.listen(80)
+//app.listen(80)
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')

@@ -43,13 +43,18 @@ async function makeGame(tmp) {
             res.status(400).send(error)
 
 		let data = JSON.parse(raw)
+		console.log(data.game)
 
 		try {
 			let gameID = await saveGame(data.game, tmp)
-			console.log(data)
-
+			console.log(gameID)
 		}
 		catch(error) {
+			await db.insert('errorlog', {
+				error: error,
+				raw: data,
+				euid: tmp.euid
+			})
 			console.log(error)
 		}
 		finally {}
