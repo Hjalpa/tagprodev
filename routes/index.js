@@ -13,6 +13,5 @@ const exec = require('child_process').exec
 
 router.get('/', async (req, res) => res.render('home'))
 router.use('/api',  require('./api'))
-router.get('/import', async (req, res) => res.render('import'))
 
 module.exports = router

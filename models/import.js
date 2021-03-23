@@ -4,65 +4,58 @@ const util = require ('../lib/util')
 
 module.exports.game = async (req, res) => await game(req, res)
 let game = async (req, res) => {
-
-	// first half
-	let euid1 = req.body.data.half1.euids.split(',')
-	if(euid1)
-		for (const key in euid1)
-			await makeGame({
-				euid: euid1[key],
-				half: 1,
-				season: req.body.data.season,
-				week: req.body.data.week,
-				game: req.body.data.game,
-				red: req.body.data.half1.red,
-				blue: req.body.data.half1.blue,
-			})
-
-	// second half
-	let euid2 = req.body.data.half2.euids.split(',')
-	if(euid2)
-		for (const key in euid2)
-			await makeGame({
-				euid: euid2[key],
-				half: 2,
-				season: req.body.data.season,
-				week: req.body.data.week,
-				game: req.body.data.game,
-				red: req.body.data.half1.red,
-				blue: req.body.data.half1.blue,
-			})
-
-	res.json({finished: true})
+	if(req.params.euid)
+		await makeGame(req.params.euid, res)
 }
 
-async function makeGame(tmp) {
-    exec(`php ../tagpro-stats/index.php ${tmp.euid}`, async (error, raw) => {
+async function makeGame(euid, res) {
+
+    exec(`php ../tagpro-stats/index.php ${euid}`, async (error, raw) => {
 
         if(error)
             res.status(400).send(error)
 
 		let data = JSON.parse(raw)
-		console.log(data.game)
+		// console.log(data)
 
 		try {
-			let gameID = await saveGame(data.game, tmp)
-			console.log(gameID)
+			let gameID = await saveGame(data.game)
+			await savePlayers(data.players, gameID)
 		}
 		catch(error) {
 			await db.insert('errorlog', {
 				error: error,
 				raw: data,
-				euid: tmp.euid
+				euid: euid
 			})
+
 			console.log(error)
+			// res.json({
+			// 	added: false,
+			// 	message: error,
+			// })
+		} finally {
+			res.json(data)
 		}
-		finally {}
 
     })
 }
 
-async function saveGame(raw, tmp) {
+async function savePlayers(raw, gameID) {
+	for await (const player of raw) {
+		let data = player
+
+		data.playerid = await getPlayerID(player.name.toLowerCase())
+		data.gameid = gameID
+
+		// clean up
+		delete data.name
+
+		await db.insert('playergame', data)
+	}
+}
+
+async function saveGame(raw) {
 
 	let data = {
 		euid: raw.euid,
@@ -70,14 +63,10 @@ async function saveGame(raw, tmp) {
 		mapid: await getMapID(raw.map),
 		serverid: await getServerID(raw.server),
 		duration: raw.duration,
-		seasonid: await getSeasonID(tmp.season),
-		week: tmp.week,
-		half: tmp.half,
 		winner: await getResult(raw),
-		redteamid: await getTeamID(tmp.red),
-		blueteamid: await getTeamID(tmp.blue),
 		redcaps: raw.redscore,
 		bluecaps: raw.bluescore,
+		seasonid: 1,
 	}
 
 	let gameID = await db.insert('game', data)
@@ -120,37 +109,21 @@ async function getServerID(serverName) {
 	return serverID
 }
 
-async function getSeasonID(seasonName) {
-	let seasonID = await db.select('SELECT id FROM season WHERE name = $1', [seasonName], 'id')
+// async function getSeasonID(seasonName) {
+// 	let seasonID = await db.select('SELECT id FROM season WHERE name = $1', [seasonName], 'id')
 
-	if(!seasonID) {
-		let data = {
-			name: seasonName
-		}
-		seasonID = await db.insert('season', data)
-	}
+// 	if(!seasonID) {
+// 		let data = {
+// 			name: seasonName
+// 		}
+// 		seasonID = await db.insert('season', data)
+// 	}
 
-	if(!seasonID)
-		throw 'season not found and could not create: ' + seasonName
+// 	if(!seasonID)
+// 		throw 'season not found and could not create: ' + seasonName
 
-	return seasonID
-}
-
-async function getTeamID(teamName) {
-	let teamID = await db.select('SELECT id FROM team WHERE name = $1', [teamName], 'id')
-
-	if(!teamID) {
-		let data = {
-			name: teamName
-		}
-		teamID = await db.insert('team', data)
-	}
-
-	if(!teamID)
-		throw 'team not found and could not create: ' + teamName
-
-	return teamID
-}
+// 	return seasonID
+// }
 
 async function getResult(raw) {
 	if(raw.redscore === raw.bluescore)
@@ -159,4 +132,21 @@ async function getResult(raw) {
 		return 'r'
 	else
 		return 'b'
+}
+
+
+async function getPlayerID(playerName) {
+	let playerID = await db.select('SELECT id FROM player WHERE name = $1', [playerName], 'id')
+
+	if(!playerID) {
+		let data = {
+			name: playerName
+		}
+		playerID = await db.insert('player', data)
+	}
+
+	if(!playerID)
+		throw 'player not found and could not create: ' + playerName
+
+	return playerID
 }
