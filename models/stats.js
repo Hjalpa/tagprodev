@@ -1,0 +1,84 @@
+const exec = require('child_process').exec
+const db = require ('../lib/db')
+const util = require ('../lib/util')
+
+module.exports.leaders = async (req, res) => await leaders(req, res)
+let leaders = async (req, res) => {
+
+	let data = {
+		scoring: await getScoring(),
+		capdiff: await getCapDiff(),
+		pupcontrol: await getPupControl()
+	}
+
+	console.log(data)
+
+	res.render('stats', data);
+}
+
+async function getScoring() {
+	let raw = await db.select(`
+		SELECT
+			DENSE_RANK() OVER (
+				ORDER BY (sum(playergame.cap) + sum(playergame.assist)) / count(*) DESC
+			) rank,
+
+			player.name as player,
+			sum(playergame.assist) as assist,
+			sum(playergame.cap) as cap,
+			sum(playergame.cap) + sum(playergame.assist) as combined,
+			(sum(playergame.cap) + sum(playergame.assist)) / count(*) as per_game
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		GROUP BY player.name
+		ORDER BY per_game DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getCapDiff() {
+	let raw = await db.select(`
+		SELECT
+			DENSE_RANK() OVER (
+				ORDER BY (sum(playergame.cap_team_for) - sum(playergame.cap_team_against)) / count(*) DESC
+			) rank,
+
+			player.name as player,
+			sum(playergame.cap_team_for) as cap_for,
+			sum(playergame.cap_team_against) as cap_against,
+			sum(playergame.cap_team_for) - sum(playergame.cap_team_against) as cap_diff,
+			ROUND((sum(cap_team_for) - sum(cap_team_against)) / count(*)::numeric, 2) as per_game
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		GROUP BY player.name
+		ORDER BY per_game DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getPupControl() {
+	let raw = await db.select(`
+		SELECT
+			DENSE_RANK() OVER (
+				ORDER BY ROUND((sum(pup_tp) + sum(pup_rb) + sum(pup_jj)) / count(*)::numeric, 2) DESC
+			) rank,
+
+			player.name as player,
+			sum(pup_tp) + sum(pup_rb) + sum(pup_jj) as pups,
+			ROUND((sum(pup_tp) + sum(pup_rb) + sum(pup_jj)) / count(*)::numeric, 2) as per_game
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		GROUP BY player.name
+		ORDER BY per_game DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}

@@ -16,7 +16,15 @@ const rsync 			= require('rsyncwrapper')
 // --------------------------------------------------------------------------
 gulp.task('browser-sync', gulp.series(function(done) {
 	browserSync({
-		proxy: "caloriemap",
+		// proxy: "http://localhost:3000",
+		port: 8000,
+		https: {
+			key: '/etc/letsencrypt/live/tagpro.dev/privkey.pem',
+			cert: '/etc/letsencrypt/live/tagpro.dev/cert.pem',
+		},
+		ui: {
+			port: 8081,
+		},
 		// move JS inserts to head
 		snippetOptions: {
 			rule: {
@@ -75,6 +83,9 @@ gulp.task('css', gulp.series(function(done) {
 gulp.task('watch', gulp.series(gulp.parallel('browser-sync'), function(done) {
 	gulp.watch('./src/css/*.styl', gulp.series('css'))
 	gulp.watch(['./src/js/*.js', './src/js/vendors/*.js'], gulp.series('js'))
+
+	gulp.watch('./views/*.pug').on('change', browserSync.reload)
+	gulp.watch('./public/*.js').on('change', browserSync.reload)
 
 	done()
 }))

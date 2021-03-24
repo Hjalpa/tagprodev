@@ -1,0 +1,109 @@
+doctype html
+html
+	head
+		title TPM Stats
+		meta(charset='utf-8')
+		meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0')
+		link(rel='stylesheet', href='/init.css')
+		// link(rel='icon', href='/favicon.svg')
+
+body
+
+	.panel-top
+		h1 TPM Top 10 Leaderboard
+
+	.pane-wrap
+		.pane.pane-left
+		.pane.pane-right
+
+
+			.item
+				h5 Cap Difference
+				table
+					thead
+						tr
+							td
+							td.name Player
+							td -
+							td +
+							td +/-
+							td Per Game
+
+					tbody
+						each n, key in capdiff
+							tr
+								td= n.rank
+								td.name= n.player
+								td= n.cap_against
+								td= n.cap_for
+								td= n.cap_diff
+								td= n.per_game
+
+			.item
+				h5 Scoring
+				table
+					thead
+						tr
+							td
+							td.name Player
+							td Assists
+							td Caps
+							td Combined
+							td Per Game
+
+					tbody
+						each n, key in scoring
+							tr
+								td= n.rank
+								td.name= n.player
+								td= n.assist
+								td= n.cap
+								td= n.combined
+								td= n.per_game
+
+
+			.item
+				h5 Pup Control
+				table
+					thead
+						tr
+							td
+							td.name Player
+							td Pups
+							td Per Game
+
+					tbody
+						each n, key in pupcontrol
+							tr
+								td= n.rank
+								td.name= n.player
+								td= n.pups
+								td= n.per_game
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	|<script id="__bs_script__">//<![CDATA[
+	|	document.write("<script async src='https://tagpro.dev:8000/browser-sync/browser-sync-client.js?v=2.26.14'><\/script>".replace("HOST", location.hostname));
+	| 	//]]></script>

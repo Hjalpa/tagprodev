@@ -11,7 +11,8 @@ const exec = require('child_process').exec
 
 // router.get('/.well-known/acme-challenge/rNyakLXFOhNqszyN3dQIc8ylfC0GkOJzXxHpMmTfyI4', async (req, res) => res.send('rNyakLXFOhNqszyN3dQIc8ylfC0GkOJzXxHpMmTfyI4.qHHteSBfKXYnAnQTAXoiP82unkcnaaMWYrV7cwF4zAk'))
 
-router.get('/', async (req, res) => res.render('home'))
+router.get('/', async (req, res) => res.send('<a href="https://www.youtube.com/playlist?list=PLseDkLomexJdJGi56ZpXYE1P3jxpAlA4m">adventure</a>'))
 router.use('/api',  require('./api'))
+router.use('/stats',  require('./stats'))
 
 module.exports = router
