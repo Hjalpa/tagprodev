@@ -8,7 +8,8 @@ let leaders = async (req, res) => {
 	let data = {
 		scoring: await getScoring(),
 		capdiff: await getCapDiff(),
-		pupcontrol: await getPupControl()
+		pupcontrol: await getPupControl(),
+		cleansheet: await getCleanSheet(),
 	}
 
 	console.log(data)
@@ -77,6 +78,23 @@ async function getPupControl() {
 		LEFT JOIN player ON player.id = playergame.playerid
 		GROUP BY player.name
 		ORDER BY per_game DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+
+async function getCleanSheet() {
+	let raw = await db.select(`
+		SELECT
+			player.name as player,
+			count(*) filter (WHERE cap_team_against = 0) as cleansheet,
+			count(*) / greatest(count(*) filter (WHERE cap_team_against = 0), 1) as game_per_cleansheet
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		GROUP BY player.name
+		ORDER BY cleansheet DESC
 		LIMIT 10
 	`, [], 'all')
 
