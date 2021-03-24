@@ -1,7 +1,7 @@
 doctype html
 html
 	head
-		title TPM Stats
+		title TPM EU Stats
 		meta(charset='utf-8')
 		meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0')
 		link(rel='stylesheet', href='/init.css')
@@ -9,11 +9,7 @@ html
 
 body
 
-	.panel-top
-		h1 TPM Top 10 Leaderboard
-
 	.pane-wrap
-		.pane.pane-left
 		.pane.pane-right
 
 
@@ -69,6 +65,8 @@ body
 						tr
 							td
 							td.name Player
+							td My Share
+							td +/-
 							td Pups
 							td Per Game
 
@@ -77,9 +75,32 @@ body
 							tr
 								td= n.rank
 								td.name= n.player
+								td= n.my_share
+								td= n.plusminus
 								td= n.pups
 								td= n.per_game
 
+			.item
+				h5 Tagpros
+				table
+					thead
+						tr
+							td
+							td.name Player
+							td My Share
+							td +/-
+							td Won
+							td Per Game
+
+					tbody
+						each n, key in tagpro
+							tr
+								td= n.rank
+								td.name= n.player
+								td= n.my_share
+								td= n.plusminus
+								td= n.pups
+								td= n.per_game
 
 
 
