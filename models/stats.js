@@ -11,6 +11,7 @@ let leaders = async (req, res) => {
 		pupcontrol: await getPupControl(),
 		tagpro: await getTagpro(),
 		cleansheet: await getCleanSheet(),
+		flaginbase: await getFlagInBase(),
 	}
 
 	console.log(data)
@@ -21,7 +22,7 @@ let leaders = async (req, res) => {
 async function getScoring() {
 	let raw = await db.select(`
 		SELECT
-			DENSE_RANK() OVER (
+			RANK() OVER (
 				ORDER BY (sum(playergame.cap) + sum(playergame.assist)) / count(*) DESC
 			) rank,
 
@@ -44,7 +45,7 @@ async function getScoring() {
 async function getCapDiff() {
 	let raw = await db.select(`
 		SELECT
-			DENSE_RANK() OVER (
+			RANK() OVER (
 				ORDER BY (sum(playergame.cap_team_for) - sum(playergame.cap_team_against)) / count(*) DESC
 			) rank,
 
@@ -67,7 +68,7 @@ async function getCapDiff() {
 async function getPupControl() {
 	let raw = await db.select(`
 		SELECT
-			DENSE_RANK() OVER (
+			RANK() OVER (
 				ORDER BY ROUND((sum(pup_tp) + sum(pup_rb) + sum(pup_jj)) / count(*)::numeric, 2) DESC
 			) rank,
 
@@ -96,11 +97,10 @@ async function getPupControl() {
 	return raw
 }
 
-
 async function getTagpro() {
 	let raw = await db.select(`
 		SELECT
-			DENSE_RANK() OVER (
+			RANK() OVER (
 				ORDER BY ROUND((sum(pup_tp)) / count(*)::numeric, 2) DESC
 			) rank,
 
@@ -129,17 +129,62 @@ async function getTagpro() {
 	return raw
 }
 
-
 async function getCleanSheet() {
 	let raw = await db.select(`
 		SELECT
+			RANK() OVER (
+				ORDER BY count(*) filter (WHERE cap_team_against = 0)  DESC
+			) rank,
+
 			player.name as player,
+			count(*) filter (WHERE cap_team_against = 0 AND (cap_team_for - cap_team_against = 5)) as mercy,
 			count(*) filter (WHERE cap_team_against = 0) as cleansheet,
 			count(*) / greatest(count(*) filter (WHERE cap_team_against = 0), 1) as game_per_cleansheet
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		GROUP BY player.name
 		ORDER BY cleansheet DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getFlagInBase() {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY (sum(play_time) - (sum(hold_team_against) - sum(hold_whilst_opponents_do))) / (sum(play_time) / 60) DESC
+			) rank,
+
+			player.name as player,
+
+			ROUND(
+				(
+					(
+						( sum(play_time) - sum(hold_team_against) )
+						+
+						sum(hold_whilst_opponents_do)
+					)
+					/
+					sum(play_time)::DECIMAL
+				) * 100
+			, 2) || '%' as possession,
+
+			TO_CHAR(
+			(sum(play_time) - (sum(hold_team_against) - sum(hold_whilst_opponents_do)))  * interval '1 sec'
+					, 'HH24:MI:SS'
+			) as total,
+
+			TO_CHAR(
+				(sum(play_time) - (sum(hold_team_against) - sum(hold_whilst_opponents_do))) / (sum(play_time) / 60) * interval '1 sec'
+				, 'MI:SS'
+			) as per_min
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		GROUP BY player.name
+		ORDER BY per_min DESC
 		LIMIT 10
 	`, [], 'all')
 

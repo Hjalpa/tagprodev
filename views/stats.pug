@@ -112,14 +112,37 @@ body
 						tr
 							td
 							td.name Player
+							td Mercies
 							td Cleansheet
 
 					tbody
 						each n, key in cleansheet
 							tr
-								td 1
+								td= n.rank
 								td.name= n.player
+								td= n.mercy
 								td= n.cleansheet
+
+
+			.item
+				h5 Flag In Base
+				table
+					thead
+						tr
+							td
+							td.name Player
+							td Possession
+							td Total
+							td Per Min
+
+					tbody
+						each n, key in flaginbase
+							tr
+								td= n.rank
+								td.name= n.player
+								td= n.possession
+								td= n.total
+								td= n.per_min
 
 
 
