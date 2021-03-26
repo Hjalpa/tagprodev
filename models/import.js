@@ -1,44 +1,49 @@
+process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
+
 const exec = require('child_process').exec
 const db = require ('../lib/db')
 const util = require ('../lib/util')
 
 module.exports.game = async (req, res) => await game(req, res)
 let game = async (req, res) => {
-	if(req.params.euid)
-		await makeGame(req.params.euid, res)
+
+	if(req.body.euid && req.body.elo && req.body.tpmid)
+		await makeGame(req.body, res)
 }
 
-async function makeGame(euid, res) {
+async function makeGame(param, res) {
+	let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [param.euid], 'id')
+	if(!gameExists)
+		exec(`php ../tagpro-stats/index.php ${param.euid}`, async (error, raw) => {
 
-    exec(`php ../tagpro-stats/index.php ${euid}`, async (error, raw) => {
+			if(error)
+				res.status(400).send(error)
 
-        if(error)
-            res.status(400).send(error)
+			let data = JSON.parse(raw)
+			data.game.elo = param.elo
+			data.game.tpmid = param.tpmid
 
-		let data = JSON.parse(raw)
-		// console.log(data)
+			try {
+				let gameID = await saveGame(data.game)
+				await savePlayers(data.players, gameID)
+			}
+			catch(error) {
+				await db.insert('errorlog', {
+					error: error,
+					raw: data,
+					euid: param.euid
+				})
 
-		try {
-			let gameID = await saveGame(data.game)
-			await savePlayers(data.players, gameID)
-		}
-		catch(error) {
-			await db.insert('errorlog', {
-				error: error,
-				raw: data,
-				euid: euid
-			})
+				console.log(error)
+				// res.json({
+				// 	added: false,
+				// 	message: error,
+				// })
+			} finally {
+				res.json(data)
+			}
 
-			console.log(error)
-			// res.json({
-			// 	added: false,
-			// 	message: error,
-			// })
-		} finally {
-			res.json(data)
-		}
-
-    })
+		})
 }
 
 async function savePlayers(raw, gameID) {
@@ -60,13 +65,14 @@ async function saveGame(raw) {
 	let data = {
 		euid: raw.euid,
 		date: raw.date,
+		duration: raw.duration,
 		mapid: await getMapID(raw.map),
 		serverid: await getServerID(raw.server),
-		duration: raw.duration,
+		seasonid: await getSeasonID(raw.tpmid),
 		winner: await getResult(raw),
 		redcaps: raw.redscore,
 		bluecaps: raw.bluescore,
-		seasonid: 1,
+		elo: raw.elo,
 	}
 
 	let gameID = await db.insert('game', data)
@@ -109,21 +115,21 @@ async function getServerID(serverName) {
 	return serverID
 }
 
-// async function getSeasonID(seasonName) {
-// 	let seasonID = await db.select('SELECT id FROM season WHERE name = $1', [seasonName], 'id')
+async function getSeasonID(tpmID) {
+	let seasonID = await db.select('SELECT id FROM season WHERE tpmid = $1', [tpmID], 'id')
 
-// 	if(!seasonID) {
-// 		let data = {
-// 			name: seasonName
-// 		}
-// 		seasonID = await db.insert('season', data)
-// 	}
+	if(!seasonID) {
+		let data = {
+			tpmid: tpmID,
+		}
+		seasonID = await db.insert('season', data)
+	}
 
-// 	if(!seasonID)
-// 		throw 'season not found and could not create: ' + seasonName
+	if(!seasonID)
+		throw 'season not found and could not create: ' + tpmID
 
-// 	return seasonID
-// }
+	return seasonID
+}
 
 async function getResult(raw) {
 	if(raw.redscore === raw.bluescore)
