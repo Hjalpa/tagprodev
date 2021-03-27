@@ -6,17 +6,19 @@ module.exports.results = async (req, res) => await results(req, res)
 let results = async (req, res) => {
 
 	let data = {
-		results: await getResults(),
+		title: 'Win Rate',
+		results: await getWinRate(),
 	}
 
-	res.render('stats-results', data);
+	res.render('stats-single', data);
 }
 
-async function getResults() {
+async function getWinRate() {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
-				ORDER BY count(*) DESC
+				ORDER BY
+				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
 			) rank,
 
 			player.name as player,
@@ -47,8 +49,8 @@ async function getResults() {
         -- WHERE gameid in (SELECT id FROM game WHERE gameid = game.id and game.mapid = 4)
 
 		GROUP BY player.name
-		-- HAVING COUNT(*) > 10
-		ORDER BY game DESC
+		HAVING COUNT(*) > 8
+		ORDER BY win_ratio DESC
 		LIMIT 100
 	`, [], 'all')
 

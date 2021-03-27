@@ -1,0 +1,14 @@
+doctype html
+html(lang='en')
+  head
+    block title
+    link(rel='preconnect' href='https://fonts.gstatic.com')
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,700;1,400&display=swap')
+    link(rel='stylesheet' href='/init.css')
+  body
+    div#page-wrapper
+      include ../includes/_header.pug
+      include ../includes/_nav.pug
+      block content
+      block demo-script
+    include ../includes/_foot.pug

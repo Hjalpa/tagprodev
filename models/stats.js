@@ -2,21 +2,84 @@ const exec = require('child_process').exec
 const db = require ('../lib/db')
 const util = require ('../lib/util')
 
-module.exports.leaders = async (req, res) => await leaders(req, res)
-let leaders = async (req, res) => {
+module.exports.home = async (req, res) => await home(req, res)
+let home = async (req, res) => {
 
 	let data = {
-		scoring: await getScoring(),
+		winratio: await getWinRatio(),
 		capdiff: await getCapDiff(),
+
+		scoring: await getScoring(),
 		pupcontrol: await getPupControl(),
 		tagpro: await getTagpro(),
 		cleansheet: await getCleanSheet(),
 		flaginbase: await getFlagInBase(),
 	}
 
-	console.log(data)
+	res.render('dash', data);
+}
 
-	res.render('stats', data);
+async function getWinRatio() {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
+			) rank,
+
+			player.name as player,
+			count(*)as game,
+			count(*) filter (WHERE result_half_lose = 1) as lose,
+			count(*) filter (WHERE result_half_win = 1) as win,
+			ROUND(
+				(
+					count(*) filter (WHERE result_half_win = 1)
+					/
+					count(*)::DECIMAL
+				) * 100
+			, 2) || '%' as win_ratio
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		GROUP BY player.name
+		HAVING COUNT(*) > 8
+		ORDER BY win_ratio DESC, game desc
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getCapDiff() {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY ROUND((sum(cap_team_for) - sum(cap_team_against)) / count(*)::numeric, 2) DESC
+			) rank,
+
+			player.name as player,
+			sum(playergame.cap_team_for) as cap_for,
+			sum(playergame.cap_team_against) as cap_against,
+			sum(playergame.cap_team_for) - sum(playergame.cap_team_against) as cap_diff,
+
+			TO_CHAR(
+				(sum(play_time) / (sum(cap_team_for) - sum(cap_team_against))) * interval '1 sec'
+			, 'MI:SS') as cap_every,
+			(sum(play_time) / (sum(cap_team_for) - sum(cap_team_against))) as cap_every_raw
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		GROUP BY player.name
+		HAVING
+			COUNT(*) > 8
+				AND
+			sum(playergame.cap_team_for) - sum(playergame.cap_team_against) > 0
+		ORDER BY cap_every_raw ASC
+		LIMIT 10
+	`, [], 'all')
+
+	console.log(raw)
+	return raw
 }
 
 async function getScoring() {
@@ -31,29 +94,6 @@ async function getScoring() {
 			sum(playergame.cap) as cap,
 			sum(playergame.cap) + sum(playergame.assist) as combined,
 			(sum(playergame.cap) + sum(playergame.assist)) / count(*) as per_game
-
-		FROM playergame
-		LEFT JOIN player ON player.id = playergame.playerid
-		GROUP BY player.name
-		ORDER BY per_game DESC
-		LIMIT 10
-	`, [], 'all')
-
-	return raw
-}
-
-async function getCapDiff() {
-	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY (sum(playergame.cap_team_for) - sum(playergame.cap_team_against)) / count(*) DESC
-			) rank,
-
-			player.name as player,
-			sum(playergame.cap_team_for) as cap_for,
-			sum(playergame.cap_team_against) as cap_against,
-			sum(playergame.cap_team_for) - sum(playergame.cap_team_against) as cap_diff,
-			ROUND((sum(cap_team_for) - sum(cap_team_against)) / count(*)::numeric, 2) as per_game
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid

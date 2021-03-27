@@ -1,0 +1,300 @@
+//============== stats cards ==============
+.stats-card-wrapper
+    display grid
+    grid-gap 1rem
+    grid-template-columns repeat(auto-fit, minmax(310px, 1fr))
+
+.stats-card
+    $stats-td-tb = .5em
+    $stats-td-highlight-tb = 1em
+    $stats-th-tb = 1em
+
+    background: #fff;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 15%)
+    border-radius: 3px;
+    clear: both;
+    font-size: .85rem;
+    overflow: auto;
+    margin-bottom: .5rem;
+
+    header
+        padding 0.8rem 1rem 0.1em
+
+        h3
+            font-weight: 700
+            position relative
+            margin-bottom: 0;
+            padding-bottom: 0.3em;
+
+            &:before
+                position absolute
+                height: 3px
+                width: 1em
+                background: rgba(255,40,130,1)
+                left 0
+                bottom 0
+                content ''
+                display: block
+
+    .top
+        background: $table-highlight;
+        color white
+        border-bottom none
+
+        td
+            padding-top $stats-td-highlight-tb
+            padding-bottom $stats-td-highlight-tb
+
+        a
+            color white
+
+        .pos
+            color white
+            height: 30px;
+            background: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7.29171 22.9167C7.29171 21.8116 7.73069 20.7518 8.5121 19.9704C9.2935 19.189 10.3533 18.75 11.4584 18.75V17.7083C10.2578 17.7082 9.09411 17.2934 8.16407 16.5342C7.23403 15.775 6.59471 14.7179 6.35421 13.5417H5.20837C4.37957 13.5417 3.58472 13.2124 2.99867 12.6264C2.41261 12.0403 2.08337 11.2455 2.08337 10.4167V5.20833H4.16671C4.96671 5.20833 5.69796 5.50938 6.25004 6.00417V3.125H17.7084V6.00417C18.2807 5.49075 19.0228 5.20727 19.7917 5.20833H21.875V10.4167C21.875 11.2455 21.5458 12.0403 20.9598 12.6264C20.3737 13.2124 19.5788 13.5417 18.75 13.5417H17.6042C17.3637 14.7179 16.7244 15.775 15.7943 16.5342C14.8643 17.2934 13.7006 17.7082 12.5 17.7083V18.75C13.6051 18.75 14.6649 19.189 15.4463 19.9704C16.2277 20.7518 16.6667 21.8116 16.6667 22.9167H7.29171ZM12.5 19.7917H11.4584C10.8119 19.7915 10.1813 19.9917 9.65332 20.3648C9.12538 20.7379 8.72609 21.2655 8.51046 21.875H15.448C15.2323 21.2655 14.833 20.7379 14.3051 20.3648C13.7772 19.9917 13.1465 19.7915 12.5 19.7917ZM16.6667 4.16667H7.29171V12.5C7.29171 13.6051 7.73069 14.6649 8.5121 15.4463C9.2935 16.2277 10.3533 16.6667 11.4584 16.6667H12.5C13.6051 16.6667 14.6649 16.2277 15.4463 15.4463C16.2277 14.6649 16.6667 13.6051 16.6667 12.5V4.16667ZM20.8334 10.4167V6.25H19.7917C19.2392 6.25 18.7093 6.46949 18.3186 6.86019C17.9279 7.2509 17.7084 7.7808 17.7084 8.33333V12.5H18.75C19.3026 12.5 19.8325 12.2805 20.2232 11.8898C20.6139 11.4991 20.8334 10.9692 20.8334 10.4167ZM3.12504 10.4167C3.12504 10.9692 3.34453 11.4991 3.73523 11.8898C4.12594 12.2805 4.65584 12.5 5.20837 12.5H6.25004V8.33333C6.25004 7.7808 6.03055 7.2509 5.63985 6.86019C5.24915 6.46949 4.71924 6.25 4.16671 6.25H3.12504V10.4167Z' fill='white'/%3E%3C/svg%3E")
+            background-position: left center
+            padding-left 30px
+            line-height: 30px;
+
+    .rank
+        font-weight 700
+
+    table
+        th
+            padding-top $stats-th-tb
+            padding-bottom $stats-th-tb
+        td
+            padding-top $stats-td-tb
+            padding-bottom $stats-td-tb
+
+    footer
+        font-size: .9rem;
+        text-align right
+        padding: 1.2rem 1.4rem 1.2rem .8rem;
+        a
+            color: #37003c;
+            font-weight: 700;
+            text-decoration: none;
+
+
+            .icon
+                background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='14' height='10' viewBox='0 0 14 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M-1.96729e-07 4.99998C-2.02525e-07 4.86737 0.0526782 4.74019 0.146446 4.64643C0.240215 4.55266 0.367392 4.49998 0.5 4.49998L12.293 4.49998L9.146 1.35398C9.05211 1.26009 8.99937 1.13275 8.99937 0.999979C8.99937 0.867203 9.05211 0.739865 9.146 0.645979C9.23989 0.552092 9.36722 0.499347 9.5 0.499347C9.63277 0.499347 9.76011 0.552092 9.854 0.645978L13.854 4.64598C13.9006 4.69242 13.9375 4.7476 13.9627 4.80835C13.9879 4.86909 14.0009 4.93421 14.0009 4.99998C14.0009 5.06575 13.9879 5.13087 13.9627 5.19161C13.9375 5.25236 13.9006 5.30753 13.854 5.35398L9.854 9.35398C9.76011 9.44787 9.63278 9.50061 9.5 9.50061C9.36722 9.50061 9.23989 9.44787 9.146 9.35398C9.05211 9.26009 8.99937 9.13275 8.99937 8.99998C8.99937 8.8672 9.05211 8.73986 9.146 8.64598L12.293 5.49998L0.5 5.49998C0.367392 5.49998 0.240215 5.4473 0.146446 5.35353C0.0526782 5.25976 -1.90932e-07 5.13259 -1.96729e-07 4.99998Z' fill='%23ff2882'/%3E%3C/svg%3E")
+                background-position: right center
+                background-repeat: no-repeat
+
+                display: inline-block;
+                margin-left: .6rem;
+                position: relative;
+                left: 0;
+                transition: left .2s;
+                content: "";
+                width: 14px;
+                height: 10px;
+
+            &:hover
+                color $tertiary-color
+
+                .icon
+                    left: .5em;
+
+//============== general tables ==============
+
+table
+    width 100%
+
+    td
+        padding: $table-cell-padding
+    th
+        font-size .9em
+        border none
+        text-align left
+        font-weight 700
+        padding: $table-th-padding
+        color $table-th-color
+        vertical-align: middle
+
+    thead
+        background-color $table-th-bg
+
+    tbody
+        tr
+            border-bottom 1px solid $table-row-color
+        td
+            vertical-align bottom
+
+    .bold
+        font-weight: 700
+    .text-r
+        text-align right
+
+    .text-c
+        text-align center
+
+    .pos
+        display block
+        color rgba(6,6,6,0.43)
+
+
+    .reorder-btn
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: .5rem;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 2px;
+        cursor: pointer;
+        transition: .2s;
+        position: relative;
+        border-radius: 5px
+
+        &.asc
+            .icon-sort
+                background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='25' height='25' viewBox='0 0 25 25' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5625 7.9375L2.66719 9.04219L5.46875 6.24062V22H7.03125V6.24062L9.83281 9.04219L10.9375 7.9375L6.25 3.25L1.5625 7.9375Z' fill='%232F2F2F'/%3E%3Cpath d='M23.4686 20.375H12.5311V21.9375H23.4686V20.375Z' fill='%232F2F2F'/%3E%3Cpath d='M20.3436 15.6875H12.5311V17.25H20.3436V15.6875Z' fill='%232F2F2F'/%3E%3Cpath d='M17.2186 11H12.5311V12.5625H17.2186V11Z' fill='%232F2F2F'/%3E%3C/svg%3E")
+
+        &.desc
+            .icon-sort
+                background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='25' height='25' viewBox='0 0 25 25' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5625 17.1875L2.66719 16.0828L5.46875 18.8844V3.125H7.03125V18.8844L9.83281 16.0828L10.9375 17.1875L6.25 21.875L1.5625 17.1875Z' fill='%232F2F2F'/%3E%3Cpath d='M23.4686 6.25H12.5311V4.6875H23.4686V6.25Z' fill='%232F2F2F'/%3E%3Cpath d='M20.3436 10.9375H12.5311V9.375H20.3436V10.9375Z' fill='%232F2F2F'/%3E%3Cpath d='M17.2186 15.625H12.5311V14.0625H17.2186V15.625Z' fill='%232F2F2F'/%3E%3C/svg%3E");
+
+        &:hover,&:focus
+            background-color: #e8e8e8
+
+    .icon-sort
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 1;
+        content: "";
+        width: 25px;
+        height: 25px;
+        background-repeat no-repeat
+        display: block
+        transform: translate(-50%, -50%);
+
+
+    // cells with icons
+    .has-icon
+        display: flex
+
+        &_icon
+            width: 30px;
+            height: 20px;
+            display: inline-block;
+        &_label
+            margin-left 1em
+
+
+//============ flags ==================//
+.flag
+    width: 30px;
+    height: 20px;
+    background: url(../public/img/flags-sprite.png) no-repeat
+.GB-ENG
+    background-position: -120px -140px;
+.DE
+    background-position: -120px -120px;
+.FR
+    background-position: -60px -140px;
+
+//============ fiters ==================//
+.page-filter
+    display: flex;
+    margin-bottom: 3rem;
+    padding: 0;
+    border: 1px solid #e8e8e8;
+    border-radius: .3rem;
+    align-items: center;
+
+.drop-down
+    position: relative;
+    cursor: pointer;
+    width: 20rem;
+    padding: 0;
+    display: inline-block;
+    vertical-align: top;
+    max-width: 17rem;
+    flex: 1;
+
+    &:before
+        background: #e8e8e8;
+        bottom: 1rem;
+        content: "";
+        display: block;
+        height: auto;
+        position: absolute;
+        right: 0;
+        top: 1rem;
+        width: 1px;
+
+    &_label
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        pointer-events: none;
+        margin-bottom: 0.3rem;
+        font-size: .9rem;
+        color: #963cff;
+        font-weight: 700;
+        font-style: italic
+        white-space: nowrap;
+
+    &_current
+        font-weight: 700
+        transition: all .2s;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        color: #2f2f2f;
+        padding: 2.5rem 1rem 1rem 1rem
+
+        &:after
+            display: block;
+            content: "";
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15.103 7.30398C15.2146 7.45619 15.2648 7.6449 15.2434 7.83246C15.222 8.02001 15.1307 8.19261 14.9877 8.31582C14.8447 8.43902 14.6605 8.50376 14.4718 8.49711C14.2832 8.49047 14.104 8.41293 13.97 8.27998L9.99997 4.30998L6.02997 8.27998L5.94597 8.35298C5.79376 8.46463 5.60504 8.51478 5.41749 8.49341C5.22993 8.47205 5.05733 8.38075 4.93413 8.23773C4.81092 8.09471 4.74618 7.91049 4.75283 7.72184C4.75947 7.53319 4.83701 7.35398 4.96997 7.21998L9.46997 2.71998L9.55397 2.64698C9.69844 2.54026 9.87641 2.48894 10.0555 2.50233C10.2346 2.51573 10.403 2.59296 10.53 2.71998L15.03 7.21998L15.103 7.30398ZM4.89697 12.696C4.78532 12.5438 4.73517 12.3551 4.75653 12.1675C4.77789 11.9799 4.86919 11.8073 5.01221 11.6841C5.15524 11.5609 5.33945 11.4962 5.52811 11.5028C5.71676 11.5095 5.89597 11.587 6.02997 11.72L9.99997 15.69L13.97 11.72L14.054 11.647C14.2062 11.5353 14.3949 11.4852 14.5824 11.5065C14.77 11.5279 14.9426 11.6192 15.0658 11.7622C15.189 11.9052 15.2537 12.0895 15.2471 12.2781C15.2405 12.4668 15.1629 12.646 15.03 12.78L10.53 17.28L10.446 17.353C10.3015 17.4597 10.1235 17.511 9.94442 17.4976C9.76531 17.4842 9.59696 17.407 9.46997 17.28L4.96997 12.78L4.89697 12.696Z' fill='%232F2F2F'/%3E%3C/svg%3E")
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            right: 1.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+
+        &:hover
+            color: $tertiary-color
+
+            &:after
+                background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='20' height='20' viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M15.103 7.30398C15.2146 7.45619 15.2648 7.6449 15.2434 7.83246C15.222 8.02001 15.1307 8.19261 14.9877 8.31582C14.8447 8.43902 14.6605 8.50376 14.4718 8.49711C14.2832 8.49047 14.104 8.41293 13.97 8.27998L9.99997 4.30998L6.02997 8.27998L5.94597 8.35298C5.79376 8.46463 5.60504 8.51478 5.41749 8.49341C5.22993 8.47205 5.05733 8.38075 4.93413 8.23773C4.81092 8.09471 4.74618 7.91049 4.75283 7.72184C4.75947 7.53319 4.83701 7.35398 4.96997 7.21998L9.46997 2.71998L9.55397 2.64698C9.69844 2.54026 9.87641 2.48894 10.0555 2.50233C10.2346 2.51573 10.403 2.59296 10.53 2.71998L15.03 7.21998L15.103 7.30398ZM4.89697 12.696C4.78532 12.5438 4.73517 12.3551 4.75653 12.1675C4.77789 11.9799 4.86919 11.8073 5.01221 11.6841C5.15524 11.5609 5.33945 11.4962 5.52811 11.5028C5.71676 11.5095 5.89597 11.587 6.02997 11.72L9.99997 15.69L13.97 11.72L14.054 11.647C14.2062 11.5353 14.3949 11.4852 14.5824 11.5065C14.77 11.5279 14.9426 11.6192 15.0658 11.7622C15.189 11.9052 15.2537 12.0895 15.2471 12.2781C15.2405 12.4668 15.1629 12.646 15.03 12.78L10.53 17.28L10.446 17.353C10.3015 17.4597 10.1235 17.511 9.94442 17.4976C9.76531 17.4842 9.59696 17.407 9.46997 17.28L4.96997 12.78L4.89697 12.696Z' fill='%23ff2882'/%3E%3C/svg%3E")
+
+    &_list
+        @extend .ul-reset
+
+        transform-origin: top center;
+        position: absolute;
+        top: 5rem;
+        left: 0;
+        z-index: 70;
+        background: #fff;
+        min-width: 100%;
+        transition: .1s;
+        box-shadow: 0 1px 12px 0 rgba(0, 0, 0, .15);
+        border-radius: 0 0 2px 2px;
+        max-height: 40rem;
+        overflow-y: auto;
+        padding: 1rem 0;
+
+        &:before
+            background: linear-gradient(270deg,#ff2882,#963cff);
+            content: "";
+            display: block;
+            height: 3px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+
+        li
+            color: #333;
+            padding: .5rem 1rem;
+            cursor: pointer;
+            transition: all .2s;
+
+            &:hover
+                font-weight: 700

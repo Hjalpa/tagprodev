@@ -1,0 +1,73 @@
+// _helpers.scss
+/* helpers - shouldn't ever need to edit per project */
+//fix for responsive lazy images in chrome
+img
+  display: block
+  min-height: 1px
+  min-width: 1px
+//lazy load fixes
+img:not([src])
+  visibility: hidden
+.desktop-show
+  display: none
+.center
+  text-align: center
+img.center
+  margin-left: auto
+  margin-right: auto
+.text-right
+  text-align: right
+.align-center
+  margin: 0 auto
+.noscroll
+  overflow: hidden
+a,
+a:hover,
+a:focus,
+.a:active
+  text-decoration: none
+  outline: none !important
+nav ul,
+.ul-reset,
+.check-list,
+nav li,
+form .optionset,
+form .optionset li
+  margin: 0
+  padding: 0
+  list-style: none
+.ul-inline
+  overflow: hidden
+  li
+    display: inline-block
+.d-flex
+  display: flex
+  flex-flow: wrap
+  align-items: flex-start
+  > *
+    flex: auto
+.j-sb
+  justify-content space-between
+.embed-container
+  position: relative
+  padding-bottom: 56.25%
+  height: 0
+  overflow: hidden
+  max-width: 100%
+.embed-container iframe,
+.embed-container object,
+.embed-container embed
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+$after-element
+  content: ''
+  display: block
+  position: absolute
+  bottom: 0
+  left: 0
+  width: 100%
+  height: 100%
+//basic table

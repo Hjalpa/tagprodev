@@ -1,0 +1,90 @@
+body
+  min-height: 100vh
+  background $page-bg
+
+#page-wrapper
+  display grid
+  grid-template-columns 250px auto
+  grid-template-rows auto 1fr
+  grid-template-areas: "header header" "sidebar main"
+  height 100vh
+
+#header
+  grid-area header
+
+  .header_bar
+    background $primary-color
+    padding: .5rem 2rem
+    color white
+    text-align right
+    font-size: .9rem;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+  .header_title
+    background $secondary-color
+    padding 2.9rem 1rem 2.5rem
+
+    h1
+      padding-left 1.7em
+      background url(../public/img/logo.png) no-repeat left center
+      background-size contain
+
+
+#main
+  grid-area main
+  padding-top $main-pad-top
+  padding-left $main-pad-side
+  padding-right $main-pad-side
+  position: relative
+  max-width 1350px
+
+  & > header
+    margin-bottom 2rem
+
+#sidebar
+  grid-area sidebar
+  background $sidebar-bg url(../public/img/watermark-logo.png) no-repeat left bottom
+
+#main, #sidebar
+  h1
+    line-height 3.6rem;
+
+#nav-main
+  margin-top 3rem
+  font-size .9rem
+
+  li
+    margin-bottom: .3rem;
+  a
+    color $nav-link-color
+    display flex
+    align-items center
+    padding .8rem 1rem
+    background-color $nav-link-bg
+    background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='13' height='13' viewBox='0 0 13 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.33337 2.16675L8.66671 6.50008L4.33337 10.8334' stroke='%23FFFFFF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    background-position 95% center
+    background-repeat no-repeat
+    border-left 5px solid transparent
+
+
+    &.active
+      margin-right -.5rem
+      padding-left 1.4rem
+      background-color $secondary-color
+      color $sidebar-bg
+      box-shadow 0 0 10px rgba(0, 0, 0, 20%)
+      font-weight 700
+      background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='13' height='13' viewBox='0 0 13 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.33337 2.16675L8.66671 6.50008L4.33337 10.8334' stroke='%2337003C' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+
+    &:hover
+      border-left-color $secondary-color
+
+    svg
+      display inline-block
+      width: 25px;
+      height: 25px;
+      fill: $nav-link-color;
+      margin-right: 1.2em;
