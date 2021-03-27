@@ -1,15 +1,17 @@
 aside#sidebar
 
-    nav#nav-main
-      ul
-        li
-          a(href="/" class="active") Dashboard
+	nav#nav-main
+		ul
+			li
+				a(href="/" class=(tab === 'leaderboards' ? 'active' : '')) Leaderboards
 
-        li
-          a(href="/player-stats") Player Stats
+			li
+				a(href="/stats/wins" class=(tab === 'player stats' ? 'active' : '')) Player Stats
 
-        li
-          a(href="/player-compare") Player Comparison
+			li
+				a(href="/player-compare") Player Comparison
 
-        li
-          a(href="/records") Records
+			li
+				a(href="/records") Records
+
+	a(href="/log").lastupdate Last Update: <strong>5 hours ago</strong>

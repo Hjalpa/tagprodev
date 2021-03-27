@@ -14,12 +14,10 @@ router.get('/', (req, res) => stats.home(req, res))
 const results = require('../models/stats-results')
 router.get('/results', (req, res) => results.results(req, res))
 
+const log = require('../models/log')
+router.get('/log', (req, res) => log.init(req, res))
+
 router.use('/api',  require('./api'))
 router.use('/stats',  require('./stats'))
-
-
-
-
-
 
 module.exports = router

@@ -28,16 +28,23 @@ block content
 					li(role="option") 1900+
 					li(role="option") 1800+
 
+			.filter-button_reset
+				span.filter-button_reset-text
+					i
+					| Reset Filters
+
 		section
-			table
+			table.table-sticky
 				thead
 					tr
 						th(style="width:70px")
 						th Player
 						th.text-r Games
 						th.text-r Won
-						th.text-r Lost
-						th.text-r Win Ratio
+						th.text-r
+							a(href="#") Lost
+						th.text-r.sort.sort-asc
+							a(href="#") Win Ratio
 
 				tbody
 					each n, key in results
@@ -47,4 +54,4 @@ block content
 							td.text-r= n.game
 							td.text-r= n.win
 							td.text-r= n.lose
-							td.text-r= n.win_ratio
+							td.text-r.sort= n.win_ratio

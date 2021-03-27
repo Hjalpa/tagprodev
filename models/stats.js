@@ -6,6 +6,8 @@ module.exports.home = async (req, res) => await home(req, res)
 let home = async (req, res) => {
 
 	let data = {
+		tab: 'leaderboards',
+
 		winratio: await getWinRatio(),
 		capdiff: await getCapDiff(),
 
