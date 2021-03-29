@@ -1,13 +1,10 @@
 const express = require('express')
 const router = express.Router()
 
-const wins = require('../models/stats-wins')
-router.get('/wins', (req, res) => wins.init(req, res))
-
-const mercies = require('../models/stats-mercies')
-router.get('/mercies', (req, res) => mercies.init(req, res))
-
-const general = require('../models/stats-general')
-router.get('/general', (req, res) => general.init(req, res))
+router.get('/wins', (req, res) => require('../models/stats-wins').init(req, res))
+router.get('/returns', (req, res) => require('../models/stats-returns').init(req, res))
+router.get('/tags', (req, res) => require('../models/stats-tags').init(req, res))
+router.get('/caps', (req, res) => require('../models/stats-caps').init(req, res))
+router.get('/pups', (req, res) => require('../models/stats-pups').init(req, res))
 
 module.exports = router

@@ -28,10 +28,19 @@ block content
 					li(role="option") 1800+
 
 			.drop-down
-				.drop-down_label Filter by Min Games
+				.drop-down_label Filter by Map
+				.drop-down_current(role="button") All
+				ul.drop-down_list(style="display: none")
+					li(role="option") all
+					li(role="option") 2000+
+					li(role="option") 1900+
+					li(role="option") 1800+
+
+			.drop-down
+				.drop-down_label Filter by Games Played
 				.drop-down_current(role="button") 50
 				ul.drop-down_list(style="display: none")
-					li(role="option") All
+					li(role="option") all
 					li(role="option") 2000+
 					li(role="option") 1900+
 					li(role="option") 1800+

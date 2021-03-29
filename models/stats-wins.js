@@ -1,4 +1,3 @@
-const exec = require('child_process').exec
 const db = require ('../lib/db')
 const util = require ('../lib/util')
 
@@ -7,13 +6,13 @@ let init = async (req, res) => {
 	let data = {
 		title: 'Wins',
 		tab: 'player stats',
-		results: await getWinRate(req.query)
+		results: await getData(req.query)
 	}
-	res.render('stats-single', data);
+	res.render('stats', data);
 }
 
-async function getWinRate(filters) {
-	let f = await getFilters(filters)
+async function getData(filters) {
+	let f = util.getFilters(filters)
 	let sql = `
 		SELECT
 			RANK() OVER (
@@ -22,17 +21,13 @@ async function getWinRate(filters) {
 			) rank,
 
 			player.name as player,
-			count(*)as game,
+			count(*)as games,
 
-			(SELECT euid FROM game where min(gameid) = game.id limit 1) as last_seen_euid,
-			(SELECT euid FROM game where max(gameid) = game.id limit 1) as first_seen_euid,
-
-			TO_CHAR( MIN(play_time) * interval '1 sec', 'MI:SS') as min_game_length,
-			TO_CHAR( MAX(play_time) * interval '1 sec', 'MI:SS') as max_game_length,
-			TO_CHAR((sum(play_time) / count(*)) * interval '1 sec', 'MI:SS') as average_game_length,
-
-			count(*) filter (WHERE result_half_lose = 1) as lose,
-			count(*) filter (WHERE result_half_win = 1) as win,
+			-- TO_CHAR( MIN(play_time) * interval '1 sec', 'MI:SS') as min_game_length,
+			-- TO_CHAR( MAX(play_time) * interval '1 sec', 'MI:SS') as max_game_length,
+			-- TO_CHAR((sum(play_time) / count(*)) * interval '1 sec', 'MI:SS') as average_game_length,
+			count(*) filter (WHERE result_half_win = 1) as won,
+			count(*) filter (WHERE result_half_lose = 1) as lost,
 
 			ROUND(
 				(
@@ -40,38 +35,14 @@ async function getWinRate(filters) {
 					/
 					count(*)::DECIMAL
 				) * 100
-			, 2) || '%' as win_ratio
+			, 2) || '%' as win_rate
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		${f.where}
 		GROUP BY player.name
 		${f.having}
-		ORDER BY win_ratio DESC
+		ORDER BY win_rate DESC
 	`
 	return await db.select(sql, [], 'all')
-}
-
-async function getFilters(filters) {
-	let raw_where = []
-	let raw_having = []
-
-	if(filters['season'])
-		raw_where.push('seasonid = ' + filters['season'])
-
-	if(filters['map'])
-		raw_where.push('mapid = ' + filters['map'])
-
-	if(filters['elo'])
-		raw_where.push('elo >= ' + filters['elo'])
-
-	if(filters['games'])
-		raw_having.push('COUNT(*) > ' + filters['games'])
-
-	let where = 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND ' + raw_where.join(' AND ') + ')'
-	let having = 'HAVING ' + raw_having.join(' AND ')
-
-	return {
-		where, having
-	}
 }

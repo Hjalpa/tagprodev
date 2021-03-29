@@ -4,11 +4,11 @@ const util = require ('../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
-		title: 'Mercies',
+		title: 'Tags',
 		tab: 'player stats',
 		results: await getData(req.query)
 	}
-	res.render('stats-test', data);
+	res.render('stats', data);
 }
 
 async function getData(filters) {
@@ -16,23 +16,28 @@ async function getData(filters) {
 	let sql = `
 		SELECT
 			RANK() OVER (
-				ORDER BY count(*) filter (WHERE cap_team_against = 0)  DESC
+
+				ORDER BY
+					TO_CHAR(
+						(sum(play_time) / sum(tag)) * interval '1 sec'
+					, 'MI:SS') ASC
 			) rank,
 
 			player.name as player,
 
-			count(*) as games,
-			count(*) filter (WHERE cap_team_against = 0 AND (cap_team_for - cap_team_against = 5)) as mercy,
-			count(*) filter (WHERE cap_team_for = 0) as cleansheet_against,
-			count(*) filter (WHERE cap_team_against = 0) as cleansheet,
-			count(*) / greatest(count(*) filter (WHERE cap_team_against = 0), 1) as game_per_cleansheet
+			SUM(tag) as tags,
+			round( (sum(tag)::FLOAT / count(*))::numeric , 2) as per_game,
+			TO_CHAR(
+				(sum(play_time) / sum(tag)) * interval '1 sec'
+			, 'MI:SS') as every
+
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		${f.where}
 		GROUP BY player.name
 		${f.having}
-		ORDER BY mercy DESC
-		LIMIT 10
+		ORDER BY every ASC
+		LIMIT 100
 	`
 	return await db.select(sql, [], 'all')
 }

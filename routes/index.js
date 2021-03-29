@@ -11,9 +11,6 @@ const exec = require('child_process').exec
 const stats = require('../models/stats')
 router.get('/', (req, res) => stats.home(req, res))
 
-const results = require('../models/stats-results')
-router.get('/results', (req, res) => results.results(req, res))
-
 const log = require('../models/log')
 router.get('/log', (req, res) => log.init(req, res))
 

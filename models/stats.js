@@ -1,4 +1,3 @@
-const exec = require('child_process').exec
 const db = require ('../lib/db')
 const util = require ('../lib/util')
 
