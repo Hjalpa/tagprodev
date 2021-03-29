@@ -3,7 +3,6 @@ extends layouts/_layout.pug
 block title
 	title #{title} - Tagpro.dev
 
-
 block content
 	main#main
 		header
@@ -45,22 +44,32 @@ block content
 		section
 			table.table-sticky
 				thead
-					tr
-						th(style="width:70px")
-						th Player
-						th.text-c Games
-						th.text-c Won
-						th.text-c
-							span Lost
-						th.text-c.sort.sort-asc
-							span Win Rate
+					each raw in results
+						- function th(string){ return string.replace(/(?:_| |\b)(\w)/g, function($1){return $1.toUpperCase().replace('_',' ');});}
+
+						tr
+							- let n = 0
+							- let last = Object.keys(raw).length
+							each v, k in raw
+								-- ++n
+								if(k === 'rank')
+									th(style="width:70px")
+								else if(k === 'player')
+									th Player
+								else
+									if(last === n)
+										th.text-c.sort.sort-asc
+											span= th(k)
+									else
+										th.text-c
+											span= th(k)
+							- break
 
 				tbody
-					each n, key in results
+					each raw in results
 						tr
-							td.bold #{n.rank}.
-							td.bold= n.player
-							td.text-c= n.game
-							td.text-c= n.win
-							td.text-c= n.lose
-							td.text-c= n.win_ratio
+							each v, k in raw
+								if(k === 'rank' || k === 'player')
+									td.bold= v
+								else
+									td.text-c= v

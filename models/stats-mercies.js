@@ -5,49 +5,35 @@ const util = require ('../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
-		title: 'Wins',
+		title: 'Mercies',
 		tab: 'player stats',
-		results: await getWinRate(req.query)
+		results: await getMercies(req.query)
 	}
-	res.render('stats-single', data);
+	res.render('stats-test', data);
 }
 
-async function getWinRate(filters) {
+async function getMercies(filters) {
 	let f = await getFilters(filters)
 	let sql = `
 		SELECT
 			RANK() OVER (
-				ORDER BY
-				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
+				ORDER BY count(*) filter (WHERE cap_team_against = 0)  DESC
 			) rank,
 
 			player.name as player,
-			count(*)as game,
 
-			(SELECT euid FROM game where min(gameid) = game.id limit 1) as last_seen_euid,
-			(SELECT euid FROM game where max(gameid) = game.id limit 1) as first_seen_euid,
-
-			TO_CHAR( MIN(play_time) * interval '1 sec', 'MI:SS') as min_game_length,
-			TO_CHAR( MAX(play_time) * interval '1 sec', 'MI:SS') as max_game_length,
-			TO_CHAR((sum(play_time) / count(*)) * interval '1 sec', 'MI:SS') as average_game_length,
-
-			count(*) filter (WHERE result_half_lose = 1) as lose,
-			count(*) filter (WHERE result_half_win = 1) as win,
-
-			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) || '%' as win_ratio
-
+			count(*) as games,
+			count(*) filter (WHERE cap_team_against = 0 AND (cap_team_for - cap_team_against = 5)) as mercy,
+			count(*) filter (WHERE cap_team_for = 0) as cleansheet_against,
+			count(*) filter (WHERE cap_team_against = 0) as cleansheet,
+			count(*) / greatest(count(*) filter (WHERE cap_team_against = 0), 1) as game_per_cleansheet
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		${f.where}
 		GROUP BY player.name
 		${f.having}
-		ORDER BY win_ratio DESC
+		ORDER BY mercy DESC
+		LIMIT 10
 	`
 	return await db.select(sql, [], 'all')
 }

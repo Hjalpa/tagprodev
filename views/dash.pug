@@ -15,10 +15,6 @@ block content
 					h3 Win Rate
 
 				table
-					thead
-						tr
-							th
-							th.text-r Win Rate
 					tbody
 						each n, key in winratio
 							tr(class=(key === 0 ? 'top' : ''))
@@ -34,26 +30,16 @@ block content
 
 			.stats-card
 				header
-					h3 Cap Difference
+					h3 Best Cap Difference
 
 				table
-					thead
-						tr
-							th
-							th.text-c -
-							th.text-c +
-							th.text-c -/+
-							th.text-c Every
 					tbody
 						each n, key in capdiff
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
 									| #{n.player}
-								td.text-c= n.cap_against
-								td.text-c= n.cap_for
-								td.text-c= n.cap_diff
-								td.text-c= n.cap_every
+								td.text-r= n.cap_every
 
 				footer
 					a(href="table.html") View full list
@@ -61,26 +47,33 @@ block content
 
 			.stats-card
 				header
+					h3 Caps
+
+				table
+					tbody
+						each n, key in cap
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.cap_every
+
+				footer
+					a(href="/stats/general?games=50&elo=1500") View full list
+						span.icon
+
+			.stats-card
+				header
 					h3 Pup Control
 
 				table
-					thead
-						tr
-							th
-							th.text-c My Share
-							th.text-c +/-
-							th.text-c Pups
-							th.text-c Per Game
 					tbody
 						each n, key in pupcontrol
 							tr(class=(n.rank === '1' ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
 									| #{n.player}
-								td.text-c= n.my_share
-								td.text-c= n.plusminus
-								td.text-c= n.pups
-								td.text-c= n.per_game
+								td.text-r= n.per_game
 
 				footer
 					a(href="table.html") View full list

@@ -67,7 +67,7 @@ gulp.task('css', gulp.series(function(done) {
 		.pipe(stylus())
 		.pipe(concat('init.css'))
 		.pipe(autoprefix('last 2 versions'))
-	    .pipe(cleanCSS())
+	    //.pipe(cleanCSS())
 		.pipe(size(
 			{'title':'init.css'}
 		))

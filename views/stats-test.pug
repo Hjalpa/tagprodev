@@ -49,18 +49,17 @@ block content
 						th(style="width:70px")
 						th Player
 						th.text-c Games
-						th.text-c Won
-						th.text-c
-							span Lost
+						th.text-c Clean Sheet Against
+						th.text-c Clean Sheet
 						th.text-c.sort.sort-asc
-							span Win Rate
+							span Mercy
 
 				tbody
 					each n, key in results
 						tr
 							td.bold #{n.rank}.
 							td.bold= n.player
-							td.text-c= n.game
-							td.text-c= n.win
-							td.text-c= n.lose
-							td.text-c= n.win_ratio
+							td.text-c= n.games
+							td.text-c= n.cleansheet_against
+							td.text-c= n.cleansheet
+							td.text-c= n.mercy

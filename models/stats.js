@@ -8,6 +8,7 @@ let home = async (req, res) => {
 	let data = {
 		tab: 'leaderboards',
 
+		cap: await getCaps(),
 		winratio: await getWinRatio(),
 		capdiff: await getCapDiff(),
 
@@ -21,6 +22,33 @@ let home = async (req, res) => {
 	res.render('dash', data);
 }
 
+async function getCaps() {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					TO_CHAR(
+						(sum(play_time) / sum(cap)) * interval '1 sec'
+					, 'MI:SS') ASC
+			) rank,
+
+			player.name as player,
+			TO_CHAR(
+				(sum(play_time) / sum(cap)) * interval '1 sec'
+			, 'MI:SS') as cap_every
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
+		GROUP BY player.name
+		HAVING COUNT(*) > 50
+		ORDER BY cap_every ASC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
 async function getWinRatio() {
 	let raw = await db.select(`
 		SELECT
@@ -30,9 +58,6 @@ async function getWinRatio() {
 			) rank,
 
 			player.name as player,
-			count(*)as game,
-			count(*) filter (WHERE result_half_lose = 1) as lose,
-			count(*) filter (WHERE result_half_win = 1) as win,
 			ROUND(
 				(
 					count(*) filter (WHERE result_half_win = 1)
@@ -43,9 +68,10 @@ async function getWinRatio() {
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
+        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
 		GROUP BY player.name
-		HAVING COUNT(*) > 8
-		ORDER BY win_ratio DESC, game desc
+		HAVING COUNT(*) > 50
+		ORDER BY win_ratio DESC
 		LIMIT 10
 	`, [], 'all')
 
@@ -71,9 +97,10 @@ async function getCapDiff() {
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
+        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
 		GROUP BY player.name
 		HAVING
-			COUNT(*) > 8
+			COUNT(*) > 50
 				AND
 			sum(playergame.cap_team_for) - sum(playergame.cap_team_against) > 0
 		ORDER BY cap_every_raw ASC

@@ -5,49 +5,47 @@ const util = require ('../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
-		title: 'Wins',
+		title: 'Caps',
 		tab: 'player stats',
-		results: await getWinRate(req.query)
+		results: await getMercies(req.query)
 	}
-	res.render('stats-single', data);
+	res.render('stats-general', data);
 }
 
-async function getWinRate(filters) {
+async function getMercies(filters) {
 	let f = await getFilters(filters)
 	let sql = `
 		SELECT
 			RANK() OVER (
+
 				ORDER BY
-				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
+					TO_CHAR(
+						(sum(play_time) / sum(cap)) * interval '1 sec'
+					, 'MI:SS') ASC
 			) rank,
 
 			player.name as player,
-			count(*)as game,
 
-			(SELECT euid FROM game where min(gameid) = game.id limit 1) as last_seen_euid,
-			(SELECT euid FROM game where max(gameid) = game.id limit 1) as first_seen_euid,
+			-- TO_CHAR( sum(prevent_team_for) * interval '1 sec', 'hh:mi:ss') as team_prevent,
+			-- TO_CHAR( sum(prevent) * interval '1 sec', 'mi:ss') as prevent,
+			-- sum(prevent) / (sum(prevent_team_for) / 60) as team_prevent_per_min,
+			-- sum(prevent) / (sum(play_time) / 60) as prevent_per_min
 
-			TO_CHAR( MIN(play_time) * interval '1 sec', 'MI:SS') as min_game_length,
-			TO_CHAR( MAX(play_time) * interval '1 sec', 'MI:SS') as max_game_length,
-			TO_CHAR((sum(play_time) / count(*)) * interval '1 sec', 'MI:SS') as average_game_length,
+			SUM(cap) as caps,
+			round( (sum(cap)::FLOAT / count(*))::numeric , 2) as per_game,
+			TO_CHAR(
+				(sum(play_time) / sum(cap)) * interval '1 sec'
+			, 'MI:SS') as every
 
-			count(*) filter (WHERE result_half_lose = 1) as lose,
-			count(*) filter (WHERE result_half_win = 1) as win,
 
-			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) || '%' as win_ratio
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		${f.where}
 		GROUP BY player.name
 		${f.having}
-		ORDER BY win_ratio DESC
+		ORDER BY every ASC
+		LIMIT 100
 	`
 	return await db.select(sql, [], 'all')
 }
