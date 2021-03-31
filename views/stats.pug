@@ -9,43 +9,42 @@ block content
 			h2 #{title}
 
 		.page-filter
-			.drop-down
+			.drop-down.season
 				.drop-down_label Filter by Season
-				.drop-down_current(role="button") CTF EU S1
-				ul.drop-down_list(style="display: none")
-					li(role="option") All Seasons
-					li(role="option") 2020/21
-					li(role="option") 2019/20
-					li(role="option") 2018/19
+				.drop-down_current(role="button") All
+				ul.drop-down_list
+					li(role="option") All
+					li(role="option") CTF EU S2
+					li(role="option") CTF EU S1
 
-			.drop-down
+			.drop-down.elo
 				.drop-down_label Filter by ELO Bracket
 				.drop-down_current(role="button") 2000+
-				ul.drop-down_list(style="display: none")
+				ul.drop-down_list
 					li(role="option") All
 					li(role="option") 2000+
 					li(role="option") 1900+
 					li(role="option") 1800+
 
-			.drop-down
+			.drop-down.map
 				.drop-down_label Filter by Map
 				.drop-down_current(role="button") All
-				ul.drop-down_list(style="display: none")
+				ul.drop-down_list
 					li(role="option") all
 					li(role="option") 2000+
 					li(role="option") 1900+
 					li(role="option") 1800+
 
-			.drop-down
+			.drop-down.played
 				.drop-down_label Filter by Games Played
 				.drop-down_current(role="button") 50
-				ul.drop-down_list(style="display: none")
+				ul.drop-down_list
 					li(role="option") all
 					li(role="option") 2000+
 					li(role="option") 1900+
 					li(role="option") 1800+
 
-			.filter-button_reset
+			.filter-button_reset.reset
 				span.filter-button_reset-text
 					i
 					| Reset Filters
@@ -67,10 +66,10 @@ block content
 									th Player
 								else
 									if(last === n)
-										th.text-c.sort.sort-asc
+										th.text-c.sort.sort-desc
 											span= th(k)
 									else
-										th.text-c
+										th.text-c.sort
 											span= th(k)
 							- break
 

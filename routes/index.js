@@ -8,11 +8,8 @@ const exec = require('child_process').exec
 
 // router.get('/.well-known/acme-challenge/rNyakLXFOhNqszyN3dQIc8ylfC0GkOJzXxHpMmTfyI4', async (req, res) => res.send('rNyakLXFOhNqszyN3dQIc8ylfC0GkOJzXxHpMmTfyI4.qHHteSBfKXYnAnQTAXoiP82unkcnaaMWYrV7cwF4zAk'))
 
-const stats = require('../models/stats')
-router.get('/', (req, res) => stats.home(req, res))
-
-const log = require('../models/log')
-router.get('/log', (req, res) => log.init(req, res))
+router.get('/', (req, res) => require('../models/leaderboards').init(req, res))
+router.get('/log', (req, res) => require('../models/log').init(req, res))
 
 router.use('/api',  require('./api'))
 router.use('/stats',  require('./stats'))

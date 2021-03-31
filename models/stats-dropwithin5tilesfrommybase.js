@@ -4,7 +4,7 @@ const util = require ('../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
-		title: 'Pups',
+		title: 'Drop Within 5 Tiles From My Base',
 		tab: 'player stats',
 		results: await getData(req.query)
 	}
@@ -18,17 +18,17 @@ async function getData(filters) {
 			RANK() OVER (
 				ORDER BY
 					TO_CHAR(
-						(sum(play_time) / (sum(pup_jj)+sum(pup_rb)+sum(pup_tp))) * interval '1 sec'
+						(sum(play_time) / sum(drop_within_5_tiles_from_my_base)) * interval '1 sec'
 					, 'MI:SS') ASC
 			) rank,
 
 			player.name as player,
 
-			sum(pup_tp) + sum(pup_rb) + sum(pup_jj) as pups,
-			round( ((sum(pup_tp)+sum(pup_rb)+sum(pup_jj))::FLOAT / count(*))::numeric , 2) as per_game,
+			SUM(drop_within_5_tiles_from_my_base) as drops,
+			round( (sum(drop_within_5_tiles_from_my_base)::FLOAT / count(*))::numeric , 2) as per_game,
 			TO_CHAR(
-				(sum(play_time) / (sum(pup_tp)+sum(pup_rb)+sum(pup_jj))) * interval '1 sec'
-			, 'MI:SS') as every
+				(sum(play_time) / sum(drop_within_5_tiles_from_my_base)) * interval '1 sec'
+			, 'HH24:MI:SS') as every
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid

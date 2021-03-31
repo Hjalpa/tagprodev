@@ -1,0 +1,172 @@
+extends layouts/_layout.pug
+
+block title
+	title Tagpro TPM Stats
+
+block content
+	main#main
+		header
+			h2 CTF S2 Leaderboards
+
+		section.stats-card-wrapper
+
+			.stats-card
+				header
+					h3 Win Rate
+
+				table
+					tbody
+						each n, key in winratio
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.win_ratio
+
+				footer
+					a(href="/stats/wins") View full list
+						span.icon
+
+			.stats-card
+				header
+					h3 Pup Every
+
+				table
+					tbody
+						each n, key in pup
+							tr(class=(n.rank === '1' ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.pup_every
+
+				footer
+					a(href="/stats/pups") View full list
+						span.icon
+
+			.stats-card
+				header
+					h3 Cap Every
+
+				table
+					tbody
+						each n, key in cap
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.cap_every
+
+				footer
+					a(href="/stats/caps?games=50&elo=1500&season=1") View full list
+						span.icon
+
+
+
+
+
+
+
+
+
+
+
+
+			.stats-card
+				header
+					h3 Prevent Per Min
+
+				table
+					tbody
+						each n, key in prevent
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.per_min
+
+				footer
+					a(href="/stats/prevent?games=50&elo=1500&season=1") View full list
+						span.icon
+
+
+
+			.stats-card
+				header
+					h3 Flag In Base Per Min
+
+				table
+					tbody
+						each n, key in flaginbase
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.per_min
+
+				footer
+					a(href="/stats/prevent?games=50&elo=1500&season=1") View full list
+						span.icon
+
+
+
+
+
+
+
+
+
+
+
+
+
+			.stats-card
+				header
+					h3 Cap Difference Per Min
+
+				table
+					tbody
+						each n, key in capdiff
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.cap_every
+
+				footer
+					a(href="table.html") View full list
+						span.icon
+
+			.stats-card
+				header
+					h3 Cleansheets
+
+				table
+					tbody
+						each n, key in cleansheet
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.cleansheet
+
+				footer
+					a(href="table.html") View full list
+						span.icon
+
+			.stats-card
+				header
+					h3 Mercies
+
+				table
+					tbody
+						each n, key in mercy
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.mercy
+
+				footer
+					a(href="table.html") View full list
+						span.icon

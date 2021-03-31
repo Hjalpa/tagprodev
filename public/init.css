@@ -463,11 +463,12 @@ table th span {
   color: #6c6c6c;
   display: block;
 }
+table th.sort-asc span,
+table th.sort-desc span {
+  color: #242424;
+}
 table th.sort {
   cursor: pointer;
-}
-table th.sort span {
-  color: #242424;
 }
 table th.sort span:after {
   display: inline-block;
@@ -822,15 +823,39 @@ body {
   text-decoration: none;
 }
 /******************/
-.lastupdate {
-  font-size: 0.8rem;
-  color: #fff;
-  display: block;
-  position: fixed;
-  bottom: 1rem;
-  left: 1rem;
-  width: 100%;
+.page-filter .drop-down_list {
+  display: none;
+  -webkit-animation: slideUp 0.2s ease-in-out;
+          animation: slideUp 0.2s ease-in-out;
 }
-.lastupdate:hover strong {
-  text-decoration: underline;
+.page-filter .drop-down_list.active {
+  display: block;
+}
+@-webkit-keyframes slideUp {
+  0% {
+    -webkit-transform: translateY(5%);
+            transform: translateY(5%);
+    opacity: 0;
+  }
+  80% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes slideUp {
+  0% {
+    -webkit-transform: translateY(5%);
+            transform: translateY(5%);
+    opacity: 0;
+  }
+  80% {
+    -webkit-transform: translateX(0);
+            transform: translateX(0);
+  }
+  100% {
+    opacity: 1;
+  }
 }

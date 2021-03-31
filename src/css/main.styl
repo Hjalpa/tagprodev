@@ -9,3 +9,22 @@
 @import 'custom/layout.styl'
 
 /******************/
+
+@keyframes slideUp
+    0%
+        transform translateY(5%)
+        opacity 0
+
+    80%
+        transform translateX(0)
+
+    100%
+        opacity 1
+
+.page-filter
+    .drop-down_list
+        display none
+        animation slideUp .2s ease-in-out
+
+        &.active
+	        display block

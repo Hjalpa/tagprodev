@@ -8,13 +8,13 @@ let init = async (req, res) => {
 		title: 'Last Updates',
 		tab: false,
 
-		games: await log(),
+		games: await getData(),
 	}
 
 	res.render('log', data);
 }
 
-async function log() {
+async function getData() {
 	let raw = await db.select(`
 		SELECT
 			euid,
