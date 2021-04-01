@@ -821,9 +821,13 @@ body {
       -ms-flex-align: center;
           align-items: center;
 }
+#nav-main > ul > li .active + .sub-nav {
+  display: block;
+}
 #nav-main > ul > li > .sub-nav {
   max-height: 400px;
   overflow-y: scroll;
+  display: none;
 /* width */
 /* Track */
 /* Handle */

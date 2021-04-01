@@ -69,9 +69,13 @@ body
 
 	// primary nav
 	& > ul > li
+		.active + .sub-nav
+			display block
+
 		& > .sub-nav
 			max-height 400px
 			overflow-y: scroll
+			display none
 
 			/* width */
 			&::-webkit-scrollbar
