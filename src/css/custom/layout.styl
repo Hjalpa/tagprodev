@@ -1,87 +1,143 @@
 body
-  min-height: 100vh
-  background $page-bg
+	min-height: 100vh
+	background $page-bg
 
 #page-wrapper
-  display grid
-  grid-template-columns 250px auto
-  grid-template-rows auto 1fr
-  grid-template-areas: "header header" "sidebar main"
-  height 100vh
+	display grid
+	grid-template-columns 250px auto
+	grid-template-rows auto 1fr
+	grid-template-areas: "header header" "sidebar main"
+	height 100vh
 
 #header
-  grid-area header
+	grid-area header
 
-  .header_bar
-    background $primary-color
-    padding: .5rem 2rem
-    color white
-    text-align right
-    font-size: .9rem;
-    font-style: italic;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+	.header_bar
+		background $primary-color
+		padding: .5rem 2rem
+		color white
+		text-align right
+		font-size: .9rem;
+		font-style: italic;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
 
-  .header_title
-    background $secondary-color
-    padding 2.9rem 1rem 2.5rem
+	.header_title
+		background $secondary-color
+		padding 2.9rem 1rem 2.5rem
 
-    h1
-      padding-left 1.7em
-      background url(img/logo.png) no-repeat left center
-      background-size contain
+		h1
+			padding-left 1.7em
+			background url(img/logo.png) no-repeat left center
+			background-size contain
 
 
 #main
-  grid-area main
-  padding-top $main-pad-top
-  padding-left $main-pad-side
-  padding-right $main-pad-side
-  position: relative
-  max-width 1350px
+	grid-area main
+	padding-top $main-pad-top
+	padding-left $main-pad-side
+	padding-right $main-pad-side
+	position: relative
+	max-width 1350px
 
-  & > header
-    margin-bottom 2rem
+	& > header
+		margin-bottom 2rem
 
 #sidebar
-  grid-area sidebar
-  background $sidebar-bg url(img/watermark-logo.png) fixed no-repeat left bottom
+	grid-area sidebar
+	background $sidebar-bg url(img/watermark-logo.png) fixed no-repeat left bottom
 
 #main, #sidebar
-  h1
-    line-height 3.6rem;
+	h1
+		line-height 3.6rem;
 
 #nav-main
-  margin-top 3rem
-  font-size .9rem
+	margin-top 3rem
+	font-size .9rem
 
-  li
-    margin-bottom: .3rem;
-  a
-    color $nav-link-color
-    display flex
-    align-items center
-    padding .8rem 1rem
-    background-color $nav-link-bg
-    background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='13' height='13' viewBox='0 0 13 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.33337 2.16675L8.66671 6.50008L4.33337 10.8334' stroke='%23754279' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-    background-position 95% center
-    background-repeat no-repeat
-    border-left 5px solid transparent
+	// all li
+	li
+		margin-bottom: .3rem;
+		background $nav-sub-bg
 
-    &:hover
-      background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='13' height='13' viewBox='0 0 13 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.33337 2.16675L8.66671 6.50008L4.33337 10.8334' stroke='%23BAA0BC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+		// all a
+		a
+			color $nav-link-color
+			display flex
+			align-items center
+
+	// primary nav
+	& > ul > li
+		& > .sub-nav
+			max-height 400px
+			overflow-y: scroll
+
+			/* width */
+			&::-webkit-scrollbar
+				width: 10px;
+
+			/* Track */
+			&::-webkit-scrollbar-track
+				background: #4C0C52;
 
 
-    &.active
-      margin-right -.5rem
-      padding-left 1.4rem
-      background-color $secondary-color
-      color $sidebar-bg
-      box-shadow 0 0 10px rgba(0, 0, 0, 20%)
-      font-weight 700
-      background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='13' height='13' viewBox='0 0 13 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.33337 2.16675L8.66671 6.50008L4.33337 10.8334' stroke='%23744B76' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+			/* Handle */
+			&::-webkit-scrollbar-thumb
+				background: #BF96CD;
+				border-radius 27px
 
-    &:hover
-      border-left-color $secondary-color
-      text-decoration: none
+
+			/* Handle on hover */
+			&::-webkit-scrollbar-thumb:hover
+				background: #555;
+
+		& > a
+			padding .8rem 1rem
+			background-color $nav-link-bg
+			background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='13' height='13' viewBox='0 0 13 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.33337 2.16675L8.66671 6.50008L4.33337 10.8334' stroke='%23754279' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+			background-position 95% center
+			background-repeat no-repeat
+			border-left 5px solid transparent
+
+			&:hover
+				background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='13' height='13' viewBox='0 0 13 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.33337 2.16675L8.66671 6.50008L4.33337 10.8334' stroke='%23BAA0BC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+
+
+			&.active
+				margin-right -.5rem
+				padding-left 1.4rem
+				background-color $secondary-color
+				color $sidebar-bg
+				box-shadow 0 0 10px rgba(0, 0, 0, 20%)
+				font-weight 700
+				background-image url("data:image/svg+xml;charset=utf8,%3Csvg width='13' height='13' viewBox='0 0 13 13' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.33337 2.16675L8.66671 6.50008L4.33337 10.8334' stroke='%23744B76' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+
+			&:hover
+				border-left-color $secondary-color
+				text-decoration: none
+
+	//secondary nav
+	nav
+		padding .5rem 0
+		border-bottom 1px solid rgba(255, 255, 255, 0.33)
+
+		&:last-child
+			border-bottom none
+		a, .title
+			color white
+
+
+
+		.title
+			font-size: .7rem
+			text-transform uppercase
+			font-weight 400
+			margin .5rem 0
+			padding-left calc(1rem + 5px)
+
+		li > a
+			padding .5rem calc(1rem + 5px + .5rem)
+
+			&:hover, &.active
+				background $nav-sub-link-hover-bg

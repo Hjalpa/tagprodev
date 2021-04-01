@@ -11,6 +11,9 @@ $primary-color = #37003C //dark purple
 $secondary-color = #EAFF04 // bright yellow
 $tertiary-color = #ff2882 // bright pink
 
+$nav-sub-bg = #5A0F61
+$nav-sub-link-hover-bg = #743279
+
 $selection-color = $tertiary-color
 
 $main-pad-top = 3.4rem
@@ -25,12 +28,16 @@ $table-highlight = linear-gradient(180deg, #8A34E6 0%, #501070 100%), rgba(220, 
 $table-row-color = #e8e8e8
 $table-tr-hover-bg = #fef7ff
 
+
+$field-checkbox-width = 1.7em
+
+
+
+// not surrently used
 $button-bg = $primary-color
 $button-bg-hover = $secondary-color
 $button-delete-bg = #E05B52
 $button-delete-color = #E05B52
-
-// not surrently used
 $form-element-padding-top-bottom = 0.8em
 $form-element-padding-left-right = 0.8em
 $field-border = #ccd4dd
@@ -51,6 +58,22 @@ $valid-bg = #6aec6a
 $disabled-color = #c2c5c4
 
 $labelstyle
-  font-weight: 700
+	font-weight: 600
 
+fieldoutline($outline-color = $field-outline)
+ box-shadow: inset 0 0 1px 2px $outline-color
+
+$formgroup-label
+	display: block
+	margin-bottom: 0.5rem
+
+$field-group
+	margin-bottom: $field-margin-bottom
+	position: relative
+	label
+		@extend $formgroup-label
+	&:not(.form-group-checkbox):not(.form-group-radio) > label
+		width: 100%
+	.button
+		margin-bottom: 0
 // end not curently used

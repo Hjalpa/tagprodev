@@ -8,8 +8,45 @@ aside#sidebar
 			li
 				a(href="/stats/wins" class=(tab === 'player stats' ? 'active' : '')) Player Stats
 
+				.sub-nav
+					nav
+						header
+							h2.title General
+							ul
+								li
+									a(href="table.html") Summary
+
+								li
+									a(href="table.html") Total
+
+					nav
+						header
+							h2.title Attacking
+							ul
+								li
+									a(href="table.html") Tackling
+
+								li
+									a(href="table.html" class="active") Caps
+
+								li
+									a(href="table.html") Holds
+
+					nav
+						header
+							h2.title Defence
+							ul
+								li
+									a(href="table.html") Tackling
+
+								li
+									a(href="table.html") Caps
+
+								li
+									a(href="table.html") Holds
+
 			li
 				a(href="/player-compare") Player Comparison
 
 			li
-				a(href="/records") Records
+				a(href="/records" class=(tab === 'records' ? 'active' : '')) Records

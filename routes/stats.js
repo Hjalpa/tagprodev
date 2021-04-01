@@ -22,4 +22,6 @@ router.get('/drop-within-2-tiles-from-my-base', (req, res) => require('../models
 router.get('/quick-returns', (req, res) => require('../models/stats-quickreturns').init(req, res))
 router.get('/key-returns', (req, res) => require('../models/stats-keyreturns').init(req, res))
 
+router.get('/general', (req, res) => require('../models/stats-general').init(req, res))
+
 module.exports = router

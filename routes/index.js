@@ -13,5 +13,6 @@ router.get('/log', (req, res) => require('../models/log').init(req, res))
 
 router.use('/api',  require('./api'))
 router.use('/stats',  require('./stats'))
+router.use('/records',  require('./records'))
 
 module.exports = router
