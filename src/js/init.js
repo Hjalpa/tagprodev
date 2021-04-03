@@ -53,6 +53,24 @@ if(document.querySelector('.page-filter'))
 
 
 
+var slider = document.getElementById('slider');
+
+var snapValues = [
+	document.getElementById('s-value_lower'),
+	document.getElementById('s-value_upper')
+];
+
+noUiSlider.create(slider, {
+	start: [20, 80],
+	connect: true,
+	tooltips: true,
+	range: {
+		'min': 0,
+		'max': 100
+	}
+});
+
+
 
 // document.querySelector('.stat-nav').addEventListener('click', (e) => {
 // 	console.log('test')

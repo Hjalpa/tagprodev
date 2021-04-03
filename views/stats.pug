@@ -55,50 +55,60 @@ block content
 
 			h2.stat-nav #{title}
 
-
-
-
-
 		.page-filter
-			.drop-down.season
+			.drop-down
 				.drop-down_label Filter by Season
-				.drop-down_current(role="button") All
-				ul.drop-down_list
-					li(role="option") All
-					li(role="option") CTF EU S2
-					li(role="option") CTF EU S1
+				.drop-down_current(role="button") 2020/21
+					.drop-down_list(style="display: block")
+						ul
+							li(role="option" class="filter-all")
+								.form_checkbox-wrapper
+									input(type="checkbox", name="checka", id="checka" checked)
+									label(for="checka") All Seasons
+							li(role="option")
+								.form_checkbox-wrapper
+									input(type="checkbox", name="checkb", id="checkb" )
+									label(for="checkb") 2020/21
+							li(role="option")
+								.form_checkbox-wrapper
+									input(type="checkbox", name="checkc", id="checkc")
+									label(for="checkc") 2019/20
+							li(role="option")
+								.form_checkbox-wrapper
+									input(type="checkbox", name="checkd", id="checkd" checked)
+									label(for="checkd") 2018/19
 
-			.drop-down.elo
-				.drop-down_label Filter by ELO Bracket
-				.drop-down_current(role="button") 2000+
-				ul.drop-down_list
-					li(role="option") All
-					li(role="option") 2000+
-					li(role="option") 1900+
-					li(role="option") 1800+
+							li
+								a link
+							li
+								a link
+							li
+								a link
 
-			.drop-down.map
-				.drop-down_label Filter by Map
-				.drop-down_current(role="button") All
-				ul.drop-down_list
-					li(role="option") all
-					li(role="option") 2000+
-					li(role="option") 1900+
-					li(role="option") 1800+
+			.drop-down
+				.drop-down_label Filter by Team
+				.drop-down_current(role="button") All Teams
+					.drop-down_list(style="display: none")
+						ul
+							li(role="option") All Teams
+							li(role="option") Team A
+							li(role="option") Team B
+							li(role="option") 2018/19
+			.drop-down
+				.drop-down_label Filter by Range
+				.drop-down_current(role="button") Select
+					.drop-down_list(style="display: block; width:130%" class="pad")
+						#slider.slider
 
-			.drop-down.played
-				.drop-down_label Filter by Games Played
-				.drop-down_current(role="button") 50
-				ul.drop-down_list
-					li(role="option") all
-					li(role="option") 2000+
-					li(role="option") 1900+
-					li(role="option") 1800+
+						footer
+							button.button-secondary Apply
 
-			.filter-button_reset.reset
+
+			.filter-button_reset
 				span.filter-button_reset-text
 					i
 					| Reset Filters
+
 
 		section
 			table.table-sticky
