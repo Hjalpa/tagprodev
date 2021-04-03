@@ -49,3 +49,12 @@ app.filters = (async() => {
 
 if(document.querySelector('.page-filter'))
 	app.filters()
+
+
+
+
+
+// document.querySelector('.stat-nav').addEventListener('click', (e) => {
+// 	console.log('test')
+// 	document.querySelector('.stat-nav-overlay').classList.add('active')
+// })

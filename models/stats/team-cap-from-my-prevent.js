@@ -1,10 +1,10 @@
-const db = require ('../lib/db')
-const util = require ('../lib/util')
+const db = require ('../../lib/db')
+const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
-		title: 'Pups',
+		title: 'Team Caps From My Prevent',
 		tab: 'player stats',
 		results: await getData(req.query)
 	}
@@ -18,16 +18,16 @@ async function getData(filters) {
 			RANK() OVER (
 				ORDER BY
 					TO_CHAR(
-						(sum(play_time) / (sum(pup_jj)+sum(pup_rb)+sum(pup_tp))) * interval '1 sec'
+						(sum(play_time) / sum(cap_from_my_prevent)) * interval '1 sec'
 					, 'MI:SS') ASC
 			) rank,
 
 			player.name as player,
 
-			sum(pup_tp) + sum(pup_rb) + sum(pup_jj) as pups,
-			round( ((sum(pup_tp)+sum(pup_rb)+sum(pup_jj))::FLOAT / count(*))::numeric , 2) as per_game,
+			SUM(cap_from_my_prevent) as caps,
+			round( (sum(cap_from_my_prevent)::FLOAT / count(*))::numeric , 2) as per_game,
 			TO_CHAR(
-				(sum(play_time) / (sum(pup_tp)+sum(pup_rb)+sum(pup_jj))) * interval '1 sec'
+				(sum(play_time) / sum(cap_from_my_prevent)) * interval '1 sec'
 			, 'MI:SS') as every
 
 		FROM playergame

@@ -28,3 +28,82 @@
 
 		&.active
 			display block
+
+
+header
+	.stat-nav
+		cursor pointer
+		display inline-block
+
+		&:hover
+			color #ff2882
+
+	.sub-nav
+		// display none
+		// position absolute
+		width 95%
+		height 200px
+		// z-index 999
+		padding 1rem
+		font-size 0
+		background #ff2882
+		margin-top -1.5rem
+		margin-bottom 3rem
+
+		&.active
+			// box-shadow 0 0 0 10000px rgba(white, .7)
+			animation slideUp .2s ease-in-out
+			display block
+
+		nav
+			display inline-block
+			width 33%
+			vertical-align top
+
+			h2
+				color white
+
+			li
+				font-size 1rem
+				color white
+
+
+
+
+.compare-results
+	.set-head
+		font-size 1.4rem
+		margin 3rem 0 1rem 0
+		display block
+
+	.set
+		display block
+		border 1px solid #eee
+
+		.row
+			display block
+			font-size 0
+
+			&:not(:last-child)
+				border-bottom 1px solid #eee
+
+		.label
+		.player1
+		.player2
+			display inline-block
+			width 33.33%
+			font-size .9rem
+			padding 0.5rem
+			border-right 1px solid #eee
+
+		.player1
+		.player2
+			text-align center
+			font-weight bold
+
+		.player1.highlight
+			background linear-gradient(90deg,hsla(0,0%,93%,.75) 0,hsla(0,0%,93%,0) 50%,hsla(0,0%,100%,0))
+			color #ff2882
+		.player2.highlight
+			background linear-gradient(270deg,hsla(0,0%,93%,.75) 0,hsla(0,0%,93%,0) 50%,hsla(0,0%,100%,0))
+			color #ff2882

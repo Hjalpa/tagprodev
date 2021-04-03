@@ -1,5 +1,5 @@
-const db = require ('../lib/db')
-const util = require ('../lib/util')
+const db = require ('../../lib/db')
+const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -8,7 +8,7 @@ let init = async (req, res) => {
 		tab: 'player stats',
 		results: await getData(req.query)
 	}
-	res.render('stats-test', data);
+	res.render('stats', data);
 }
 
 async function getData(filters) {
@@ -21,7 +21,6 @@ async function getData(filters) {
 
 			player.name as player,
 
-			count(*) as games,
 			count(*) filter (WHERE cap_team_against = 0 AND (cap_team_for - cap_team_against = 5)) as mercy,
 			count(*) filter (WHERE cap_team_for = 0) as cleansheet_against,
 			count(*) filter (WHERE cap_team_against = 0) as cleansheet,

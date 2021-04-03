@@ -32,7 +32,6 @@ body
 			background url(img/logo.png) no-repeat left center
 			background-size contain
 
-
 #main
 	grid-area main
 	padding-top $main-pad-top
@@ -60,6 +59,7 @@ body
 	li
 		margin-bottom: .3rem;
 		background $nav-sub-bg
+		background #28092b
 
 		// all a
 		a
@@ -71,10 +71,11 @@ body
 	& > ul > li
 		.active + .sub-nav
 			display block
+			display none
 
 		& > .sub-nav
-			max-height 400px
-			overflow-y: scroll
+			max-height 600px
+			overflow-y: auto
 			display none
 
 			/* width */
@@ -123,22 +124,20 @@ body
 
 	//secondary nav
 	nav
-		padding .5rem 0
-		border-bottom 1px solid rgba(255, 255, 255, 0.33)
-
 		&:last-child
 			border-bottom none
 		a, .title
 			color white
 
-
-
 		.title
 			font-size: .7rem
 			text-transform uppercase
 			font-weight 400
-			margin .5rem 0
 			padding-left calc(1rem + 5px)
+			background #ff3c74
+			font-weight bold
+			padding .6rem 1.5rem
+
 
 		li > a
 			padding .5rem calc(1rem + 5px + .5rem)

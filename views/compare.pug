@@ -1,0 +1,156 @@
+extends layouts/_layout.pug
+
+block title
+	title Player Comparison
+
+block content
+	main#main
+		header
+			h2 Player Comparison
+			p Normalised to an 8 minute game
+
+		form.select_players
+
+			.player1
+				h5 Player 1
+				select
+					option(disabled, selected)
+					each v, k in players
+						option= v.name
+
+			.player2
+				h5 Player 2
+				select
+					option(disabled, selected)
+					each v, k in players
+						option= v.name
+
+			button Compare
+
+
+		.compare-results
+
+			span.set-head Overview
+			.set
+				.row.player
+					.label Player
+					.player1
+					.player2
+				.row.games
+					.label Games
+					.player1
+					.player2
+				.row.minutes
+					.label Minutes
+					.player1
+					.player2
+				.row.winrate
+					.label Win Rate
+					.player1
+					.player2
+				.row.elo
+					.label Average ELO Game
+					.player1
+					.player2
+
+			span.set-head General
+			.set
+				.row.teampossession
+					.label Team Possession
+					.player1
+					.player2
+				.row.teamcapfor
+					.label Team Cap For
+					.player1
+					.player2
+				.row.teamcapagainst
+					.label Team Cap Against
+					.player1
+					.player2
+				.row.tags
+					.label Tags
+					.player1
+					.player2
+				.row.pops
+					.label Pops
+					.player1
+					.player2
+				.row.pups
+					.label Pups
+					.player1
+					.player2
+
+
+			span.set-head Attacking
+			.set
+				.row.caps
+					.label Caps
+					.player1
+					.player2
+				.row.grabs
+					.label Grabs
+					.player1
+					.player2
+				.row.grabwhilstopponentsprevent
+					.label Grabs Whilst Opponents Prevent
+					.player1
+					.player2
+				.row.grabwhilstopponentshold
+					.label Grabs Whilst Opponents Hold
+					.player1
+					.player2
+				.row.hold
+					.label Hold
+					.player1
+					.player2
+				.row.drops
+					.label Drops
+					.player1
+					.player2
+				.row.dropwithin2tilesfrommybase
+					.label Drops Within 2 Tiles From My Base
+					.player1
+					.player2
+				.row.dropwithin5tilesfrommybase
+					.label Drops Within 5 Tiles From My Base
+					.player1
+					.player2
+
+			span.set-head Defensive
+			.set
+				.row.flaginbase
+					.label Flag In Base
+					.player1
+					.player2
+				.row.prevent
+					.label Prevent
+					.player1
+					.player2
+				.row.returns
+					.label Returns
+					.player1
+					.player2
+				.row.quickreturns
+					.label Quick Returns
+					.player1
+					.player2
+				.row.keyreturns
+					.label Key Returns
+					.player1
+					.player2
+				.row.returnwithin2tilesfromopponentsbase
+					.label Returns Within 2 Tiles From Opponents Base
+					.player1
+					.player2
+				.row.returnwithin5tilesfromopponentsbase
+					.label Returns Within 5 Tiles From Opponents Base
+					.player1
+					.player2
+
+
+			span.set-head Misc
+			.set
+				.row.flaccids
+					.label Flaccids
+					.player1
+					.player2

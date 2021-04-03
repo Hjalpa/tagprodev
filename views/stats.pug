@@ -6,7 +6,58 @@ block title
 block content
 	main#main
 		header
-			h2 #{title}
+
+			.sub-nav.stat-nav-overlay
+				nav
+					header
+						h2.title General
+						ul
+							li
+								a(href="/stats/wins") Wins
+							li
+								a(href="/stats/summary-per-minute") Summary Per Minute
+							// li
+							// 	a(href="/stats/summary-total") Totals
+							// li
+							// 	a(href="/stats/pups") Pups
+							li
+								a(href="/stats/mercies") Mercies
+
+				nav
+					header
+						h2.title Attacking
+						ul
+							li
+								a(href="/stats/caps") Caps
+							li
+								a(href="/stats/hold") Hold
+							li
+								a(href="/stats/flaccids") Flaccids
+
+
+				nav
+					header
+						h2.title Defence
+						ul
+							li
+								a(href="/stats/prevent") Prevent
+							li
+								a(href="/stats/returns") Returns
+							li
+								a(href="/stats/key-returns") Key Returns
+							li
+								a(href="/stats/quick-returns") Quick Returns
+							li
+								a(href="/stats/tags") Tags
+							li
+								a(href="/stats/team-cap-from-my-prevent") Team Cap From My Prevent
+
+
+			h2.stat-nav #{title}
+
+
+
+
 
 		.page-filter
 			.drop-down.season

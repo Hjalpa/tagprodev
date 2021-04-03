@@ -6,7 +6,7 @@ block title
 block content
 	main#main
 		header
-			h2 CTF S2 Leaderboards
+			h2 CTF All-Time Leaderboards
 
 		section.stats-card-wrapper
 
@@ -58,19 +58,25 @@ block content
 								td.text-r= n.cap_every
 
 				footer
-					a(href="/stats/caps?games=50&elo=1500&season=1") View full list
+					a(href="/stats/caps") View full list
 						span.icon
 
+			.stats-card
+				header
+					h3 Team Cap Every
 
+				table
+					tbody
+						each n, key in teamcap
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.cap_every
 
-
-
-
-
-
-
-
-
+				footer
+					a(href="/stats/prevent") View full list
+						span.icon
 
 			.stats-card
 				header
@@ -86,18 +92,33 @@ block content
 								td.text-r= n.per_min
 
 				footer
-					a(href="/stats/prevent?games=50&elo=1500&season=1") View full list
+					a(href="/stats/prevent") View full list
 						span.icon
-
-
 
 			.stats-card
 				header
-					h3 Flag In Base Per Min
+					h3 Return Every
 
 				table
 					tbody
-						each n, key in flaginbase
+						each n, key in returns
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.return_every
+
+				footer
+					a(href="/stats/returns") View full list
+						span.icon
+
+			.stats-card
+				header
+					h3 Hold Per Min
+
+				table
+					tbody
+						each n, key in hold
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
@@ -105,68 +126,22 @@ block content
 								td.text-r= n.per_min
 
 				footer
-					a(href="/stats/prevent?games=50&elo=1500&season=1") View full list
-						span.icon
-
-
-
-
-
-
-
-
-
-
-
-
-
-			.stats-card
-				header
-					h3 Cap Difference Per Min
-
-				table
-					tbody
-						each n, key in capdiff
-							tr(class=(key === 0 ? 'top' : ''))
-								td.rank
-									span.pos #{n.rank}.
-									| #{n.player}
-								td.text-r= n.cap_every
-
-				footer
-					a(href="table.html") View full list
+					a(href="/stats/hold") View full list
 						span.icon
 
 			.stats-card
 				header
-					h3 Cleansheets
+					h3 Tag Every
 
 				table
 					tbody
-						each n, key in cleansheet
+						each n, key in tag
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
 									| #{n.player}
-								td.text-r= n.cleansheet
+								td.text-r= n.tag_every
 
 				footer
-					a(href="table.html") View full list
-						span.icon
-
-			.stats-card
-				header
-					h3 Mercies
-
-				table
-					tbody
-						each n, key in mercy
-							tr(class=(key === 0 ? 'top' : ''))
-								td.rank
-									span.pos #{n.rank}.
-									| #{n.player}
-								td.text-r= n.mercy
-
-				footer
-					a(href="table.html") View full list
+					a(href="/stats/tags") View full list
 						span.icon

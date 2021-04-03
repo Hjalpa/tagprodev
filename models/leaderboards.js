@@ -3,33 +3,28 @@ const util = require ('../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
+	let filters =  {
+		// where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1 AND elo > 1800)',
+		where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo < 1050)',
+		having: 'HAVING COUNT(*) > 75'
+	}
 
 	let data = {
 		tab: 'leaderboards',
-
-		winratio: await getWinRatio(),
-		pup: await getPups(),
-		cap: await getCaps(),
-		prevent: await getPrevent(),
-
-		flaginbase: await getFlagInBase(),
-		cleansheet: await getCleansheet(),
-		mercy: await getMercy(),
-
-
-
-
-
-		capdiff: await getCapDiff(),
-
-		scoring: await getScoring(),
-		tagpro: await getTagpro(),
+		winratio: await getWinRatio(filters),
+		pup: await getPups(filters),
+		cap: await getCaps(filters),
+		teamcap: await getTeamCapsFor(filters),
+		prevent: await getPrevent(filters),
+		returns: await getReturn(filters),
+		hold: await getHold(filters),
+		tag: await getTag(filters)
 	}
 
 	res.render('leaderboards', data);
 }
 
-async function getWinRatio() {
+async function getWinRatio(filters) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -48,9 +43,9 @@ async function getWinRatio() {
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
-        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
+		${filters.where}
 		GROUP BY player.name
-		HAVING COUNT(*) > 50
+		${filters.having}
 		ORDER BY win_ratio DESC
 		LIMIT 10
 	`, [], 'all')
@@ -58,7 +53,7 @@ async function getWinRatio() {
 	return raw
 }
 
-async function getCaps() {
+async function getCaps(filters) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -75,9 +70,9 @@ async function getCaps() {
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
-        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
+		${filters.where}
 		GROUP BY player.name
-		HAVING COUNT(*) > 50
+		${filters.having}
 		ORDER BY cap_every ASC
 		LIMIT 10
 	`, [], 'all')
@@ -85,7 +80,34 @@ async function getCaps() {
 	return raw
 }
 
-async function getPups() {
+async function getTeamCapsFor(filters) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					TO_CHAR(
+						(sum(play_time) / sum(cap_team_for)) * interval '1 sec'
+					, 'MI:SS') ASC
+			) rank,
+
+			player.name as player,
+			TO_CHAR(
+				(sum(play_time) / sum(cap_team_for)) * interval '1 sec'
+			, 'MI:SS') as cap_every
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
+		ORDER BY cap_every ASC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getPups(filters) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -102,9 +124,9 @@ async function getPups() {
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
-        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
+		${filters.where}
 		GROUP BY player.name
-		HAVING COUNT(*) > 50
+		${filters.having}
 		ORDER BY pup_every ASC
 		LIMIT 10
 	`, [], 'all')
@@ -112,181 +134,95 @@ async function getPups() {
 	return raw
 }
 
-
-async function getPrevent() {
+async function getPrevent(filters) {
 	let sql = `
 		SELECT
 			RANK() OVER (
 				ORDER BY sum(prevent) / (sum(play_time) / 60) DESC
 			) rank,
 			player.name as player,
-			TO_CHAR( (sum(prevent) / (sum(play_time) / 60)) * interval '1 sec', 'mi:ss') as per_min
+			-- TO_CHAR( (sum(prevent) / (sum(play_time) / 60)) * interval '1 sec', 'mi:ss') as per_min
+			ROUND(sum(prevent) / (sum(play_time) / 60)::numeric, 2) as per_min
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
-        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
+		${filters.where}
 		GROUP BY player.name
-		HAVING COUNT(*) > 50
+		${filters.having}
 		ORDER BY per_min DESC
 		LIMIT 10
 	`
 	return await db.select(sql, [], 'all')
 }
 
-
-
-
-
-
-async function getCapDiff() {
+async function getReturn(filters) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
-				ORDER BY ROUND((sum(cap_team_for) - sum(cap_team_against)) / count(*)::numeric, 2) DESC
-			) rank,
-
-			player.name as player,
-			sum(playergame.cap_team_for) as cap_for,
-			sum(playergame.cap_team_against) as cap_against,
-			sum(playergame.cap_team_for) - sum(playergame.cap_team_against) as cap_diff,
-
-			TO_CHAR(
-				(sum(play_time) / (sum(cap_team_for) - sum(cap_team_against))) * interval '1 sec'
-			, 'MI:SS') as cap_every,
-			(sum(play_time) / (sum(cap_team_for) - sum(cap_team_against))) as cap_every_raw
-
-		FROM playergame
-		LEFT JOIN player ON player.id = playergame.playerid
-        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
-		GROUP BY player.name
-		HAVING
-			COUNT(*) > 50
-				AND
-			sum(playergame.cap_team_for) - sum(playergame.cap_team_against) > 0
-		ORDER BY cap_every_raw ASC
-		LIMIT 10
-	`, [], 'all')
-
-	console.log(raw)
-	return raw
-}
-
-async function getScoring() {
-	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY (sum(playergame.cap) + sum(playergame.assist)) / count(*) DESC
-			) rank,
-
-			player.name as player,
-			sum(playergame.assist) as assist,
-			sum(playergame.cap) as cap,
-			sum(playergame.cap) + sum(playergame.assist) as combined,
-			(sum(playergame.cap) + sum(playergame.assist)) / count(*) as per_game
-
-		FROM playergame
-		LEFT JOIN player ON player.id = playergame.playerid
-		GROUP BY player.name
-		ORDER BY per_game DESC
-		LIMIT 10
-	`, [], 'all')
-
-	return raw
-}
-
-
-async function getTagpro() {
-	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY ROUND((sum(pup_tp)) / count(*)::numeric, 2) DESC
-			) rank,
-
-			player.name as player,
-
-            ROUND(
-				(sum(pup_tp)::decimal)
-				/
-				(
-                	sum(pup_tp_team_for)::decimal / 100
-				)
-            , 2) as my_share,
-
-			sum(pup_tp_team_for) - sum(pup_tp_team_against) as plusminus,
-
-			sum(pup_tp) as pups,
-			ROUND(sum(pup_tp) / count(*)::numeric, 2) as per_game
-
-		FROM playergame
-		LEFT JOIN player ON player.id = playergame.playerid
-		GROUP BY player.name
-		ORDER BY per_game DESC
-		LIMIT 10
-	`, [], 'all')
-
-	return raw
-}
-
-async function getCleansheet() {
-	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY count(*) filter (WHERE cap_team_against = 0) DESC
-			) rank,
-			player.name as player,
-			count(*) filter (WHERE cap_team_against = 0) as cleansheet
-		FROM playergame
-		LEFT JOIN player ON player.id = playergame.playerid
-        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
-		GROUP BY player.name
-		HAVING COUNT(*) > 50
-		ORDER BY cleansheet DESC
-		LIMIT 10
-	`, [], 'all')
-
-	return raw
-}
-
-async function getMercy() {
-	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY count(*) filter (WHERE cap_team_against = 0) DESC
-			) rank,
-			player.name as player,
-			count(*) filter (WHERE cap_team_against = 0 AND (cap_team_for - cap_team_against = 5)) as mercy
-
-		FROM playergame
-		LEFT JOIN player ON player.id = playergame.playerid
-        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
-		GROUP BY player.name
-		HAVING COUNT(*) > 50
-		ORDER BY mercy DESC
-		LIMIT 10
-	`, [], 'all')
-
-	return raw
-}
-
-async function getFlagInBase() {
-	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY (sum(play_time) - (sum(hold_team_against) - sum(hold_whilst_opponents_do))) / (sum(play_time) / 60) DESC
+				ORDER BY
+					TO_CHAR(
+						(sum(play_time) / sum(return)) * interval '1 sec'
+					, 'MI:SS') ASC
 			) rank,
 
 			player.name as player,
 			TO_CHAR(
-				(sum(play_time) - (sum(hold_team_against) - sum(hold_whilst_opponents_do))) / (sum(play_time) / 60) * interval '1 sec'
-				, 'MI:SS'
-			) as per_min
+				(sum(play_time) / sum(return)) * interval '1 sec'
+			, 'MI:SS') as return_every
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
-        WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1)
+		${filters.where}
 		GROUP BY player.name
-		HAVING COUNT(*) > 50
+		${filters.having}
+		ORDER BY return_every ASC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getHold(filters) {
+	let sql = `
+		SELECT
+			RANK() OVER (
+				ORDER BY sum(hold) / (sum(play_time) / 60) DESC
+			) rank,
+			player.name as player,
+			ROUND(sum(hold) / (sum(play_time) / 60)::numeric, 2) as per_min
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
 		ORDER BY per_min DESC
+		LIMIT 10
+	`
+	return await db.select(sql, [], 'all')
+}
+
+async function getTag(filters) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					TO_CHAR(
+						(sum(play_time) / sum(tag)) * interval '1 sec'
+					, 'MI:SS') ASC
+			) rank,
+
+			player.name as player,
+			TO_CHAR(
+				(sum(play_time) / sum(tag)) * interval '1 sec'
+			, 'MI:SS') as tag_every
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
+		ORDER BY tag_every ASC
 		LIMIT 10
 	`, [], 'all')
 

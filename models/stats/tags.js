@@ -1,10 +1,10 @@
-const db = require ('../lib/db')
-const util = require ('../lib/util')
+const db = require ('../../lib/db')
+const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
-		title: 'Flaccids',
+		title: 'Tags',
 		tab: 'player stats',
 		results: await getData(req.query)
 	}
@@ -18,16 +18,16 @@ async function getData(filters) {
 			RANK() OVER (
 				ORDER BY
 					TO_CHAR(
-						(sum(play_time) / sum(flaccid)) * interval '1 sec'
+						(sum(play_time) / sum(tag)) * interval '1 sec'
 					, 'MI:SS') ASC
 			) rank,
 
 			player.name as player,
 
-			SUM(flaccid) as caps,
-			round( (sum(flaccid)::FLOAT / count(*))::numeric , 2) as per_game,
+			SUM(tag) as tags,
+			round( (sum(tag)::FLOAT / count(*))::numeric , 2) as per_game,
 			TO_CHAR(
-				(sum(play_time) / sum(flaccid)) * interval '1 sec'
+				(sum(play_time) / sum(tag)) * interval '1 sec'
 			, 'MI:SS') as every
 
 		FROM playergame

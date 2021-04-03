@@ -45,6 +45,7 @@ gulp.task('browser-sync', gulp.series(function(done) {
 // --------------------------------------------------------------------------
 gulp.task('js', gulp.series(function(done) {
 	gulp.src([
+			'./src/js/init.js',
 			'./src/js/*.js'
 		])
 		.pipe(concat('init.js'))
@@ -81,7 +82,7 @@ gulp.task('css', gulp.series(function(done) {
 //  watch for edits
 // --------------------------------------------------------------------------
 gulp.task('watch', gulp.series(gulp.parallel('browser-sync'), function(done) {
-	gulp.watch('./src/css/*/*.styl', gulp.series('css'))
+	gulp.watch(['./src/css/*/*.styl', './src/css/*.styl'], gulp.series('css'))
 	gulp.watch(['./src/js/*.js', './src/js/vendors/*.js'], gulp.series('js'))
 
 	gulp.watch('./views/*.pug').on('change', browserSync.reload)
