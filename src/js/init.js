@@ -50,23 +50,23 @@ app.filters = (async() => {
 if(document.querySelector('.page-filter')) {
 	app.filters()
 
+	// let snapValues = [
+	// 	document.getElementById('s-value_lower'),
+	// 	document.getElementById('s-value_upper')
+	// ]
 
-	var slider = document.getElementById('slider');
-	var snapValues = [
-		document.getElementById('s-value_lower'),
-		document.getElementById('s-value_upper')
-	];
-
+	let slider = document.getElementById('slider')
 	noUiSlider.create(slider, {
-		start: [20, 80],
+		start: [2000, 3000],
 		connect: true,
 		tooltips: true,
+		format: wNumb({decimals: 0}),
+		step: 50,
 		range: {
 			'min': 0,
-			'max': 100
-		}
-	});
-
+			'max': 3000
+		},
+	})
 }
 
 

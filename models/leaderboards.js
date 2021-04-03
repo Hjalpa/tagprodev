@@ -5,7 +5,7 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let filters =  {
 		// where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1 AND elo > 1800)',
-		where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo < 1050)',
+		where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2050)',
 		having: 'HAVING COUNT(*) > 75'
 	}
 
@@ -13,12 +13,14 @@ let init = async (req, res) => {
 		tab: 'leaderboards',
 		winratio: await getWinRatio(filters),
 		pup: await getPups(filters),
-		cap: await getCaps(filters),
 		teamcap: await getTeamCapsFor(filters),
-		prevent: await getPrevent(filters),
-		returns: await getReturn(filters),
+		teamcapagainst: await getTeamCapsAgainst(filters),
+		cap: await getCaps(filters),
 		hold: await getHold(filters),
-		tag: await getTag(filters)
+		returns: await getReturn(filters),
+		prevent: await getPrevent(filters),
+		tag: await getTag(filters),
+		pop: await getPop(filters)
 	}
 
 	res.render('leaderboards', data);
@@ -101,6 +103,33 @@ async function getTeamCapsFor(filters) {
 		GROUP BY player.name
 		${filters.having}
 		ORDER BY cap_every ASC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getTeamCapsAgainst(filters) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					TO_CHAR(
+						(sum(play_time) / sum(cap_team_against)) * interval '1 sec'
+					, 'MI:SS') DESC
+			) rank,
+
+			player.name as player,
+			TO_CHAR(
+				(sum(play_time) / sum(cap_team_against)) * interval '1 sec'
+			, 'MI:SS') as cap_every
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
+		ORDER BY cap_every DESC
 		LIMIT 10
 	`, [], 'all')
 
@@ -223,6 +252,33 @@ async function getTag(filters) {
 		GROUP BY player.name
 		${filters.having}
 		ORDER BY tag_every ASC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getPop(filters) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					TO_CHAR(
+						(sum(play_time) / sum(pop)) * interval '1 sec'
+					, 'MI:SS') DESC
+			) rank,
+
+			player.name as player,
+			TO_CHAR(
+				(sum(play_time) / sum(pop)) * interval '1 sec'
+			, 'MI:SS') as pop_every
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
+		ORDER BY pop_every DESC
 		LIMIT 10
 	`, [], 'all')
 
