@@ -94,6 +94,8 @@ input, textarea, select
 			transform: rotate(45deg)
 //checkboxes
 .form_checkbox-wrapper
+	display: inline-block
+
 	& + &
 		margin-left 3rem
 
@@ -125,20 +127,29 @@ input, textarea, select
 			border-radius: 50%
 		/*Checkmark of the fake checkbox*/
 		&::after
-			background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='12' height='10' viewBox='0 0 12 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3.91668 7.33891L1.30972 4.73195L0.190308 5.85137L3.91668 9.57774L11.6014 1.89304L10.482 0.773621L3.91668 7.33891Z' fill='white'/%3E%3C/svg%3E");
+			background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='12' height='10' viewBox='0 0 12 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5L4 8L11 1' stroke='white' stroke-width='2.5'/%3E%3C/svg%3E");
 			height: 1.7em;
 			width: 1.7em;
 			background-repeat: no-repeat;
 			background-position: center;
 
-	input[type="checkbox"]:checked + label
-		font-weight: 700
 	/*Hide the checkmark by default*/
 	input[type="checkbox"] + label::after
 		content: none
-	/*Unhide on the checked state*/
-	input[type="checkbox"]:checked + label::after
-		content: ""
+
+
+	/* When checkbox is checkked */
+	input[type="checkbox"]:checked + label
+		font-weight: 700
+
+		/*Show checkmark*/
+		&::after
+			content: ""
+
+		//change color of checkbox bg
+		&::before
+			background-color: $checkbox-checked-bg
+
 	/*Adding focus styles on the outer-box of the fake checkbox*/
 	input[type="checkbox"]:focus + label::before
 		outline: $primary-color auto 5px
@@ -148,7 +159,3 @@ input, textarea, select
 	&:hover label::before
 		background $checkbox-hover-bg
 		outline: 0
-
-	/*checked */
-	input:checked + label::before
-		background-color: $checkbox-checked-bg
