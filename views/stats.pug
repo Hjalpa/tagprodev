@@ -7,59 +7,49 @@ block content
 	main#main
 		header
 
-			.sub-nav.stat-nav-overlay
-				nav
-					header
-						h2.title General
-						ul
-							li
-								a(href="/stats/wins") Wins
-							li
-								a(href="/stats/summary-per-minute") Summary Per Minute
-							// li
-							// 	a(href="/stats/summary-total") Totals
-							// li
-							// 	a(href="/stats/pups") Pups
-							li
-								a(href="/stats/mercies") Mercies
+			h2 Stats:
+				.drop-down.page-select
+					.drop-down_current(role="button")= title
+						.drop-down_list
+							.mega-nav-wrap
+								nav
+									h2 General
+									ul
+										li(role="option")
+											a(href="/stats/summary-per-minute") Summary Per Minute
+										li(role="option")
+											a(href="/stats/wins") Wins
+										li(role="option")
+											a(href="/stats/mercies") Mercies
 
-				nav
-					header
-						h2.title Attacking
-						ul
-							li
-								a(href="/stats/caps") Caps
-							li
-								a(href="/stats/hold") Hold
-							li
-								a(href="/stats/flaccids") Flaccids
-
-
-				nav
-					header
-						h2.title Defence
-						ul
-							li
-								a(href="/stats/prevent") Prevent
-							li
-								a(href="/stats/returns") Returns
-							li
-								a(href="/stats/key-returns") Key Returns
-							li
-								a(href="/stats/quick-returns") Quick Returns
-							li
-								a(href="/stats/tags") Tags
-							li
-								a(href="/stats/team-cap-from-my-prevent") Team Cap From My Prevent
-
-
-			h2.stat-nav #{title}
+								nav
+									h2 Attacking
+									ul
+										li(role="option")
+											a(href="/stats/caps") Caps
+										li(role="option")
+											a(href="/stats/hold") Hold
+										li(role="option")
+											a(href="/stats/flaccids") Flaccids
+								nav
+									h2 Defence
+									ul
+										li(role="option")
+											a(href="/stats/prevent") Prevent
+										li(role="option")
+											a(href="/stats/returns") Returns
+										li(role="option")
+											a(href="/stats/key-returns") Key Returns
+										li(role="option")
+											a(href="/stats/quick-returns") Quick Returns
+										li(role="option")
+											a(href="/stats/tags") Tags
+										// li(role="option")
+										// 	a(href="/stats/team-cap-from-my-prevent") Team Cap From My Prevent
 
 
 
 		.page-filter
-
-
 			.drop-down.season
 				.drop-down_label Filter by Season
 				.drop-down_current(role="button") All
@@ -101,10 +91,8 @@ block content
 			// 						label(for="checkc") CTF Season 1
 
 
-			.filter-button_reset.applyFilters
-				span.filter-button_reset-text
-					i
-					| Reset Filters
+			.filter-submit
+				button.button-secondary Apply
 
 
 		section

@@ -6,7 +6,7 @@ app.filters = (async() => {
 		let season = util.findParentBySelector(e.target, ".season")
 		let elo = util.findParentBySelector(e.target, ".elo")
 		let map = util.findParentBySelector(e.target, ".map")
-		let btn = util.findParentBySelector(e.target, ".applyFilters")
+		let btn = util.findParentBySelector(e.target, ".filter-submit button")
 
 		if(season)
 			openFilter(season)
@@ -67,14 +67,12 @@ app.filters = (async() => {
 if(document.querySelector('.page-filter')) {
 	app.filters()
 
-	// let snapValues = [
-	// 	document.getElementById('s-value_lower'),
-	// 	document.getElementById('s-value_upper')
-	// ]
+	let url = new URLSearchParams(window.location.search)
+	let elo = (url.get('elo') ? url.get('elo').split('-') : [2000,3000])
 
 	const slider = document.getElementById('slider')
 	noUiSlider.create(slider, {
-		start: [2000, 3000],
+		start: elo,
 		connect: true,
 		tooltips: true,
 		format: wNumb({decimals: 0}),
@@ -97,7 +95,7 @@ if(document.querySelector('.page-filter')) {
 }
 
 
-// document.querySelector('.stat-nav').addEventListener('click', (e) => {
-// 	console.log('test')
-// 	document.querySelector('.stat-nav-overlay').classList.add('active')
-// })
+document.querySelector('.page-select').addEventListener('click', (e) => {
+	console.log('test')
+	document.querySelector('.page-select .drop-down_list').classList.add('active')
+})

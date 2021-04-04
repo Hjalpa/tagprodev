@@ -14,7 +14,6 @@ let init = async (req, res) => {
 	} catch(e) {
 		res.status(400).json({error: e})
 	}
-
 }
 
 async function getData(filters) {
