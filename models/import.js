@@ -35,10 +35,6 @@ async function makeGame(param, res) {
 				})
 
 				console.log(error)
-				// res.json({
-				// 	added: false,
-				// 	message: error,
-				// })
 			} finally {
 				res.json(data)
 			}

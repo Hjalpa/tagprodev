@@ -3,12 +3,18 @@ const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
-	let data = {
-		title: 'Wins',
-		tab: 'player stats',
-		results: await getData(req.query)
+	try {
+		let data = {
+			title: 'Wins',
+			tab: 'player stats',
+			results: await getData(req.query)
+		}
+		res.render('stats', data);
+
+	} catch(e) {
+		res.status(400).json({error: e})
 	}
-	res.render('stats', data);
+
 }
 
 async function getData(filters) {

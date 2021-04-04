@@ -1111,8 +1111,7 @@ select + .error:before {
 }
 .stats-card header {
   padding: 0.8rem 10px 0.1em 10px;
-  background: -webkit-gradient(linear, left bottom, left top, from(#8a34e6), to(#a353f8));
-  background: linear-gradient(to top, #8a34e6, #a353f8);
+  background: #9e4ce7;
 }
 .stats-card header h3 {
   font-weight: 700;
@@ -1123,8 +1122,8 @@ select + .error:before {
   padding-bottom: 0.3em;
 }
 .stats-card .top {
-  background: -webkit-gradient(linear, left top, left bottom, from(#8a34e6), to(#501070)), rgba(220,148,254,0.09);
-  background: linear-gradient(180deg, #8a34e6 0%, #501070 100%), rgba(220,148,254,0.09);
+  background: -webkit-gradient(linear, left top, left bottom, from(#9e4ce7), to(#693a86));
+  background: linear-gradient(180deg, #9e4ce7 0%, #693a86 100%);
   color: #fff;
   border-bottom: none;
 }
@@ -1699,6 +1698,11 @@ body {
 .page-filter .drop-down_list.active {
   display: block;
 }
+.page-filter .drop-down_list .desc {
+  color: #363636;
+  font-size: 0.85rem;
+  padding-bottom: 1rem;
+}
 header .stat-nav {
   cursor: pointer;
   display: inline-block;
@@ -1714,6 +1718,7 @@ header .sub-nav {
   background: #ff2882;
   margin-top: -1.5rem;
   margin-bottom: 3rem;
+  display: none !important;
 }
 header .sub-nav.active {
   -webkit-animation: slideUp 0.2s ease-in-out;

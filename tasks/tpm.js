@@ -13,6 +13,10 @@ tpm.call = async () => {
 		let data = raw.data.match(/[^,]+,[^,]+/g);
 		for await (const x of data) {
 			let tmp = x.split(',')
+			if(tmp[0] === '2852298') continue
+			if(tmp[0] === '2852285') continue
+			if(tmp[0] === '2852267') continue
+			if(tmp[0] === '2852219') continue
 			let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [tmp[0]], 'id')
 			if(!gameExists) {
 				await axios.post(`https://tagpro.dev/api/import`, {

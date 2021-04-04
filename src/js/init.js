@@ -6,23 +6,32 @@ app.filters = (async() => {
 		let season = util.findParentBySelector(e.target, ".season")
 		let elo = util.findParentBySelector(e.target, ".elo")
 		let map = util.findParentBySelector(e.target, ".map")
-		let played = util.findParentBySelector(e.target, ".played")
-		let reset = util.findParentBySelector(e.target, ".reset")
+		let btn = util.findParentBySelector(e.target, ".applyFilters")
 
 		if(season)
 			openFilter(season)
-
+		else if(elo)
+			openFilter(elo)
 		else if(map)
 			openFilter(map)
 
-		else if(elo)
-			openFilter(elo)
+		else if(btn) {
+			let uri = []
 
-		else if(played)
-			openFilter(played)
+			// elo
+			let elo = slider.noUiSlider.get()
+			uri.push(`elo=${elo[0]}-${elo[1]}`)
 
-		// else if(reset)
-		// 	played.querySelector('.drop-down_list').classList.add('active')
+			// seasons
+			// let seasons = document.querySelectorAll('.season input:checked')
+
+			const url = window.location.origin + window.location.pathname
+			window.location.href = url + '?' + uri[0]
+
+
+
+			console.log(url)
+		}
 
 
 
@@ -32,9 +41,17 @@ app.filters = (async() => {
 
 
 
+
 	function openFilter(self) {
+
+		// close all existing
+		if(document.querySelector('.drop-down_list.active'))
+			document.querySelector('.drop-down_list.active').classList.remove('active')
+
+		// open selected
 		self.querySelector('.drop-down_list').classList.add('active')
 
+		// close when clicked outside
 		document.body.addEventListener('click', closeServing)
 		function closeServing(e) {
 			if(!util.findParentBySelector(e.target, ".drop-down")) {
@@ -55,7 +72,7 @@ if(document.querySelector('.page-filter')) {
 	// 	document.getElementById('s-value_upper')
 	// ]
 
-	let slider = document.getElementById('slider')
+	const slider = document.getElementById('slider')
 	noUiSlider.create(slider, {
 		start: [2000, 3000],
 		connect: true,
@@ -67,6 +84,16 @@ if(document.querySelector('.page-filter')) {
 			'max': 3000
 		},
 	})
+
+	slider.noUiSlider.on('update', function() {
+		let value =slider.noUiSlider.get()
+		let elo = document.querySelector('.drop-down.elo')
+		elo.querySelector('.drop-down_current .value').innerText = value[0] + '-' + value[1]
+	});
+
+
+
+
 }
 
 

@@ -4,9 +4,9 @@ const util = require ('../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let filters =  {
-		// where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND game.seasonid = 1 AND elo > 1800)',
-		where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2050)',
-		having: 'HAVING COUNT(*) > 75'
+		where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2100)',
+		// where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo <= 1000)',
+		having: 'HAVING COUNT(*) >= 47'
 	}
 
 	let data = {

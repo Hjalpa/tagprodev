@@ -55,46 +55,53 @@ block content
 
 			h2.stat-nav #{title}
 
+
+
 		.page-filter
-			.drop-down
+
+
+			.drop-down.season
 				.drop-down_label Filter by Season
-				.drop-down_current(role="button") 2020/21
-					.drop-down_list(style="display: block")
+				.drop-down_current(role="button") All
+					.drop-down_list
 						ul
-							li(role="option" class="filter-all")
-								.form_checkbox-wrapper
-									input(type="checkbox", name="checka", id="checka" checked)
-									label(for="checka") All Seasons
 							li(role="option")
 								.form_checkbox-wrapper
-									input(type="checkbox", name="checkb", id="checkb" )
-									label(for="checkb") CTF Season 2
+									input(type="checkbox", name="season", id="season_euctfs2" value="EU CTF S2" checked)
+									label(for="season_euctfs2") EU CTF S2
 							li(role="option")
 								.form_checkbox-wrapper
-									input(type="checkbox", name="checkc", id="checkc")
-									label(for="checkc") CTF Season 1
+									input(type="checkbox", name="season", id="season_euctfs1" value="EU CTF S1" checked)
+									label(for="season_euctfs1") EU CTF S1
 
-
-			.drop-down
-				.drop-down_label Filter by Team
-				.drop-down_current(role="button") All Teams
-					.drop-down_list(style="display: none")
-						ul
-							li(role="option") All Teams
-							li(role="option") Team A
-							li(role="option") Team B
-							li(role="option") 2018/19
-			.drop-down
-				.drop-down_label Filter by Range
-				.drop-down_current(role="button") Select
-					.drop-down_list(style="display: block; width:130%" class="pad")
+			.drop-down.elo
+				.drop-down_label Filter by ELO
+				.drop-down_current(role="button")
+					span.value 2000-3000
+					.drop-down_list(style="width:150%" class="pad")
+						p.desc Average ELO across both teams
 						#slider.slider
 
-						footer
-							button.button-secondary Apply
+			// .drop-down.map
+			// 	.drop-down_label Filter by Map
+			// 	.drop-down_current(role="button") All
+			// 		.drop-down_list
+			// 			ul
+			// 				li(role="option" class="filter-all")
+			// 					.form_checkbox-wrapper
+			// 						input(type="checkbox", name="checka", id="checka" checked)
+			// 						label(for="checka") All Seasons
+			// 				li(role="option")
+			// 					.form_checkbox-wrapper
+			// 						input(type="checkbox", name="checkb", id="checkb" )
+			// 						label(for="checkb") CTF Season 2
+			// 				li(role="option")
+			// 					.form_checkbox-wrapper
+			// 						input(type="checkbox", name="checkc", id="checkc")
+			// 						label(for="checkc") CTF Season 1
 
 
-			.filter-button_reset
+			.filter-button_reset.applyFilters
 				span.filter-button_reset-text
 					i
 					| Reset Filters
