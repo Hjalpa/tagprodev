@@ -23,9 +23,10 @@ my-button($font-weight = normal, $background = $button-bg, $background-hover = $
 	background-color: $background
 	border-radius: 44px;
 	color: $color
-	padding 0.6em 1.4em
+	padding 0.6em 1.8em
 	min-width 4rem
 	font-size .9rem
+	font-weight: $font-weight
 	text-transform $text-transform
 
 	&:hover,
@@ -67,7 +68,7 @@ $button
 	my-button()
 
 $button-secondary
-	my-button(400, $tertiary-color, #d2048b, white, white, uppercase)
+	my-button(700, $tertiary-color, #d2048b, white, white, uppercase)
 
 $button-negative
 	my-button(400, transparent, transparent, $button-delete-color, $button-delete-color)
