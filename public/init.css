@@ -275,8 +275,6 @@ select {
   padding: 0.8em;
   vertical-align: middle;
   border-radius: 2px;
-  -webkit-transition: all 0.2s;
-  transition: all 0.2s;
   outline: 0;
 }
 .form_checkbox-wrapper {
@@ -375,9 +373,6 @@ select {
   transition: -webkit-transform 0.3s;
   transition: transform 0.3s;
   transition: transform 0.3s, -webkit-transform 0.3s;
-}
-.noUi-state-drag * {
-  cursor: inherit !important;
 }
 .noUi-horizontal {
   height: 18px;
@@ -918,8 +913,8 @@ select + .error:before {
   font-family: 'Nunito', sans-serif;
   text-align: center;
   display: inline-block;
-  -webkit-transition: all 0.2s;
-  transition: all 0.2s;
+  -webkit-transition: background 0.2s ease-in, color 0.2s ease-in;
+  transition: background 0.2s ease-in, color 0.2s ease-in;
   text-decoration: none;
 }
 .button:disabled,
@@ -1276,29 +1271,6 @@ table .pos {
   display: block;
   color: rgba(6,6,6,0.43);
 }
-table .reorder-btn {
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 0.5rem;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 2px;
-  cursor: pointer;
-  -webkit-transition: 0.2s;
-  transition: 0.2s;
-  position: relative;
-  border-radius: 5px;
-}
-table .reorder-btn.asc .icon-sort {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='25' height='25' viewBox='0 0 25 25' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5625 7.9375L2.66719 9.04219L5.46875 6.24062V22H7.03125V6.24062L9.83281 9.04219L10.9375 7.9375L6.25 3.25L1.5625 7.9375Z' fill='%232F2F2F'/%3E%3Cpath d='M23.4686 20.375H12.5311V21.9375H23.4686V20.375Z' fill='%232F2F2F'/%3E%3Cpath d='M20.3436 15.6875H12.5311V17.25H20.3436V15.6875Z' fill='%232F2F2F'/%3E%3Cpath d='M17.2186 11H12.5311V12.5625H17.2186V11Z' fill='%232F2F2F'/%3E%3C/svg%3E");
-}
-table .reorder-btn.desc .icon-sort {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='25' height='25' viewBox='0 0 25 25' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.5625 17.1875L2.66719 16.0828L5.46875 18.8844V3.125H7.03125V18.8844L9.83281 16.0828L10.9375 17.1875L6.25 21.875L1.5625 17.1875Z' fill='%232F2F2F'/%3E%3Cpath d='M23.4686 6.25H12.5311V4.6875H23.4686V6.25Z' fill='%232F2F2F'/%3E%3Cpath d='M20.3436 10.9375H12.5311V9.375H20.3436V10.9375Z' fill='%232F2F2F'/%3E%3Cpath d='M17.2186 15.625H12.5311V14.0625H17.2186V15.625Z' fill='%232F2F2F'/%3E%3C/svg%3E");
-}
-table .reorder-btn:hover,
-table .reorder-btn:focus {
-  background-color: #e8e8e8;
-}
 table .icon-sort {
   position: absolute;
   top: 50%;
@@ -1389,8 +1361,8 @@ table .has-icon_label {
 }
 .drop-down_current {
   font-weight: 700;
-  -webkit-transition: all 0.2s;
-  transition: all 0.2s;
+  -webkit-transition: color 0.2s;
+  transition: color 0.2s;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -1426,8 +1398,6 @@ table .has-icon_label {
   z-index: 70;
   background: #fff;
   min-width: 100%;
-  -webkit-transition: 0.1s;
-  transition: 0.1s;
   -webkit-box-shadow: 0 1px 12px 0 rgba(0,0,0,0.15);
           box-shadow: 0 1px 12px 0 rgba(0,0,0,0.15);
   border-radius: 0 0 2px 2px;
@@ -1618,18 +1588,24 @@ table .has-icon_label {
   top: -14px;
   border-color: #ff2882;
   border-width: 2px;
-  cursor: pointer;
+  cursor: -webkit-grab;
+  cursor: grab;
 }
 .noUi-horizontal .noUi-handle:before,
 .noUi-horizontal .noUi-handle:after {
   display: none;
 }
-.noUi-horizontal .noUi-handle:focus {
+.noUi-horizontal .noUi-handle:focus,
+.noUi-horizontal .noUi-handle:active {
   outline: none;
   background: #ff2882;
 }
 .noUi-connect {
   background: #ff2882;
+}
+.noUi-state-drag * {
+  cursor: -webkit-grabbing !important;
+  cursor: grabbing !important;
 }
 body {
   min-height: 100vh;
