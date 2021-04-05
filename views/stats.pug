@@ -63,8 +63,8 @@ block content
 						ul.check-list
 							li(role="option")
 								.form_checkbox-wrapper
-									input(type="checkbox", name="season", id="season_euctfs2" value="all" checked)
-									label(for="season_euctfs2") All
+									input(type="checkbox", name="season", id="season_all" value="all" checked)
+									label(for="season_all") All
 							li(role="option")
 								.form_checkbox-wrapper
 									input(type="checkbox", name="season", id="season_euctfs2" value="2" disabled)
@@ -84,13 +84,14 @@ block content
 
 			.drop-down.map
 				.drop-down_label Filter by Map
-				.drop-down_current(role="button") All
+				.drop-down_current(role="button")
+					span.value All
 					.drop-down_list
 						ul.check-list
 							li(role="option" class="filter-all")
 								.form_checkbox-wrapper
-									input(type="checkbox" name="map" id="all" value="all" checked)
-									label(for="all") All
+									input(type="checkbox" name="map" id="map_all" value="all" checked)
+									label(for="map_all") All
 							each raw in maps
 								li(role="option")
 									.form_checkbox-wrapper

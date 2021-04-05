@@ -28,7 +28,7 @@ app.filters = (async() => {
 			let seasonIDs = []
 			for (const s of document.querySelectorAll('.season input:checked'))
 				seasonIDs.push(s.value)
-			if(seasonIDs.length === 1)
+			if(seasonIDs[0] != 'all')
 				uri.push(`season=${seasonIDs.join(',')}`)
 
 			// maps
@@ -84,107 +84,93 @@ app.filters = (async() => {
 		})
 	}
 
-
 	function initSeason() {
+		// on change
+		document.querySelector('.season').addEventListener('change', (e) => {
+			let seasons = []
+			let options = document.querySelectorAll('.season input:not(input[value=all])')
+			let label = document.querySelector('.season .value')
+			let all = document.querySelector('.season input[value="all"]')
+
+			if(all.checked) {
+				label.innerText = 'All'
+				for (const s of options) {
+					s.disabled = true
+					s.checked = false
+				}
+			}
+			else {
+				label.innerText = '-'
+				for (const s of options) {
+					s.disabled = false
+					if(s.checked)
+						seasons.push(s.parentNode.querySelector('label').innerText)
+				}
+			}
+
+			if(seasons.length > 0)
+				label.innerText = seasons.join(', ')
+		})
+
+		// set inital values
 		let url = new URLSearchParams(window.location.search)
 		let season = (url.get('season') ? url.get('season').split(',') : false)
+		let label = document.querySelector('.season .value')
 		if(season) {
-			document.querySelector(".season input[value='1']").checked = false
-			document.querySelector(".season input[value='2']").checked = false
-			let text = []
-			for (let s of season) {
+			for (let s of season)
 				document.querySelector(`.season input[value='${s}']`).checked = true
-				text.push('EU CTF S' + s)
-			}
-			if(text.length < 2)
-				document.querySelector('.season .value').innerText = text.join(',')
+
+			document.querySelector('.season input[value="all"]').click()
 		}
-
-		// set label text on input changes
-		for (let i of document.querySelectorAll('.season input')) {
-			i.addEventListener('change', (e) => {
-				let text = []
-
-				for (const s of document.querySelectorAll('.season input:checked'))
-					text.push('EU CTF S' + s.value)
-
-				if(text.length === 1)
-					document.querySelector('.season .value').innerText = text.join(',')
-				else
-					document.querySelector('.season .value').innerText = 'All'
-
-			})
-
-		}
-
-		// disable+enable options
-		document.querySelector('.season input[value="all"]').addEventListener('change', (e) => {
-			let all = document.querySelector('.season input[value="all"]')
-			if(all.checked)
-				for (const s of document.querySelectorAll('.season input:not(input[value=all])')) {
-					s.disabled = true
-					s.checked = false
-				}
-			else
-				for (const s of document.querySelectorAll('.season input:not(input[value=all])'))
-					s.disabled = false
-		})
 	}
+
 
 	function initMap() {
-		// let url = new URLSearchParams(window.location.search)
-		// let season = (url.get('season') ? url.get('season').split(',') : false)
-		// if(season) {
-		// 	document.querySelector(".season input[value='1']").checked = false
-		// 	document.querySelector(".season input[value='2']").checked = false
-		// 	let text = []
-		// 	for (let s of season) {
-		// 		document.querySelector(`.season input[value='${s}']`).checked = true
-		// 		text.push('EU CTF S' + s)
-		// 	}
-		// 	if(text.length < 2)
-		// 		document.querySelector('.season .value').innerText = text.join(',')
-		// }
-
-		// set label text on input changes
-		// for (let i of document.querySelectorAll('.map input')) {
-		// 	i.addEventListener('change', (e) => {
-		// 		let text = []
-
-		// 		for (const s of document.querySelectorAll('.map input:checked'))
-		// 			text.push(s.value)
-
-		// 		if(text[0] === 'All')
-		// 			document.querySelector('.map .value').innerText = 'All'
-		// 		else
-		// 			document.querySelector('.map .value').innerText = text.join(',')
-		// 	})
-
-		// }
-
-		// disable+enable options
-		document.querySelector('.map input[value="all"]').addEventListener('change', (e) => {
+		// on change
+		document.querySelector('.map').addEventListener('change', (e) => {
+			let maps = []
+			let options = document.querySelectorAll('.map input:not(input[value=all])')
+			let label = document.querySelector('.map .value')
 			let all = document.querySelector('.map input[value="all"]')
-			if(all.checked)
-				for (const s of document.querySelectorAll('.map input:not(input[value=all])')) {
+
+			if(all.checked) {
+				label.innerText = 'All'
+				for (const s of options) {
 					s.disabled = true
 					s.checked = false
 				}
-			else
-				for (const s of document.querySelectorAll('.map input:not(input[value=all])'))
+			}
+			else {
+				label.innerText = '-'
+				for (const s of options) {
 					s.disabled = false
+					if(s.checked)
+						maps.push(s.parentNode.querySelector('label').innerText)
+				}
+			}
+
+			if(maps.length > 0)
+				label.innerText = maps.join(', ')
 		})
+
+		// set inital values
+		let url = new URLSearchParams(window.location.search)
+		let map = (url.get('map') ? url.get('map').split(',') : false)
+		let label = document.querySelector('.map .value')
+		if(map) {
+			for (let s of map)
+				document.querySelector(`.map input[value='${s}']`).checked = true
+
+			document.querySelector('.map input[value="all"]').click()
+		}
 	}
-
-
 
 })
 
 if(document.querySelector('.page-filter')) {
 	app.filters()
 
-	document.querySelector('.page-select').addEventListener('click', (e) => {
-		console.log('test')
+	document.querySelector('.button-fake').addEventListener('click', (e) => {
 		document.querySelector('.page-select .drop-down_list').classList.add('active')
 	})
 }
