@@ -1,5 +1,6 @@
 app.filters = (async() => {
-	initSlider()
+	initELO()
+	initSeason()
 
 	let filters = document.querySelector('.page-filter')
 	filters.addEventListener('click', (e) => {
@@ -23,9 +24,14 @@ app.filters = (async() => {
 			uri.push(`elo=${elo[0]}-${elo[1]}`)
 
 			// seasons
-			// let seasons = document.querySelectorAll('.season input:checked')
+			let seasonIDs = []
+			for (const s of document.querySelectorAll('.season input:checked'))
+				seasonIDs.push(s.value)
+			if(seasonIDs.length === 1)
+				uri.push(`season=${seasonIDs.join(',')}`)
+
 			const url = window.location.origin + window.location.pathname
-			window.location.href = url + '?' + uri[0]
+			window.location.href = url + '?' + uri.join('&')
 		}
 	})
 
@@ -46,12 +52,11 @@ app.filters = (async() => {
 		}
 	}
 
-	function initSlider() {
-
+	function initELO() {
+		const slider = document.getElementById('slider')
 		let url = new URLSearchParams(window.location.search)
 		let elo = (url.get('elo') ? url.get('elo').split('-') : [2000,3000])
 
-		const slider = document.getElementById('slider')
 		noUiSlider.create(slider, {
 			start: elo,
 			connect: true,
@@ -69,6 +74,39 @@ app.filters = (async() => {
 			let elo = document.querySelector('.drop-down.elo')
 			elo.querySelector('.drop-down_current .value').innerText = value[0] + '-' + value[1]
 		})
+	}
+
+	function initSeason() {
+		let url = new URLSearchParams(window.location.search)
+		let season = (url.get('season') ? url.get('season').split(',') : false)
+		if(season) {
+			document.querySelector(".season input[value='1']").checked = false
+			document.querySelector(".season input[value='2']").checked = false
+			let text = []
+			for (let s of season) {
+				document.querySelector(`.season input[value='${s}']`).checked = true
+				text.push('EU CTF S' + s)
+			}
+			if(text.length < 2)
+				document.querySelector('.season .value').innerText = text.join(',')
+		}
+
+		// set label text on input changes
+		for (let i of document.querySelectorAll('.season input')) {
+			i.addEventListener('change', (e) => {
+				let text = []
+
+				for (const s of document.querySelectorAll('.season input:checked'))
+					text.push('EU CTF S' + s.value)
+
+				if(text.length === 1)
+					document.querySelector('.season .value').innerText = text.join(',')
+				else
+					document.querySelector('.season .value').innerText = 'All'
+
+			})
+
+		}
 
 	}
 

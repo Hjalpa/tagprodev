@@ -52,16 +52,17 @@ block content
 		.page-filter
 			.drop-down.season
 				.drop-down_label Filter by Season
-				.drop-down_current(role="button") All
+				.drop-down_current(role="button")
+					span.value All
 					.drop-down_list
 						ul
 							li(role="option")
 								.form_checkbox-wrapper
-									input(type="checkbox", name="season", id="season_euctfs2" value="EU CTF S2" checked)
+									input(type="checkbox", name="season", id="season_euctfs2" value="2" checked)
 									label(for="season_euctfs2") EU CTF S2
 							li(role="option")
 								.form_checkbox-wrapper
-									input(type="checkbox", name="season", id="season_euctfs1" value="EU CTF S1" checked)
+									input(type="checkbox", name="season", id="season_euctfs1" value="1" checked)
 									label(for="season_euctfs1") EU CTF S1
 
 			.drop-down.elo
@@ -72,23 +73,23 @@ block content
 						p.desc Average ELO across both teams
 						#slider.slider
 
-			// .drop-down.map
-			// 	.drop-down_label Filter by Map
-			// 	.drop-down_current(role="button") All
-			// 		.drop-down_list
-			// 			ul
-			// 				li(role="option" class="filter-all")
-			// 					.form_checkbox-wrapper
-			// 						input(type="checkbox", name="checka", id="checka" checked)
-			// 						label(for="checka") All Seasons
-			// 				li(role="option")
-			// 					.form_checkbox-wrapper
-			// 						input(type="checkbox", name="checkb", id="checkb" )
-			// 						label(for="checkb") CTF Season 2
-			// 				li(role="option")
-			// 					.form_checkbox-wrapper
-			// 						input(type="checkbox", name="checkc", id="checkc")
-			// 						label(for="checkc") CTF Season 1
+			.drop-down.map
+				.drop-down_label Filter by Map
+				.drop-down_current(role="button") All
+					.drop-down_list
+						ul
+							li(role="option" class="filter-all")
+								.form_checkbox-wrapper
+									input(type="checkbox", name="checka", id="checka" checked)
+									label(for="checka") All Seasons
+							li(role="option")
+								.form_checkbox-wrapper
+									input(type="checkbox", name="checkb", id="checkb" )
+									label(for="checkb") CTF Season 2
+							li(role="option")
+								.form_checkbox-wrapper
+									input(type="checkbox", name="checkc", id="checkc")
+									label(for="checkc") CTF Season 1
 
 
 			.filter-submit
