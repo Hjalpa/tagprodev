@@ -10,7 +10,7 @@ const size 				= require('gulp-size')
 const browserSync		= require('browser-sync')
 const reload 			= browserSync.reload
 const rsync 			= require('rsyncwrapper')
-
+const ttf2woff2 		= require('gulp-ttf2woff2')
 
 //  browser sync & reload
 // --------------------------------------------------------------------------
@@ -40,7 +40,6 @@ gulp.task('browser-sync', gulp.series(function(done) {
 	done()
 }))
 
-
 //  js app
 // --------------------------------------------------------------------------
 gulp.task('js', gulp.series(function(done) {
@@ -59,9 +58,6 @@ gulp.task('js', gulp.series(function(done) {
 	done()
 }))
 
-
-
-
 //  css minification
 // --------------------------------------------------------------------------
 gulp.task('css', gulp.series(function(done) {
@@ -79,7 +75,6 @@ gulp.task('css', gulp.series(function(done) {
 	done()
 }))
 
-
 //  watch for edits
 // --------------------------------------------------------------------------
 gulp.task('watch', gulp.series(gulp.parallel('browser-sync'), function(done) {
@@ -91,3 +86,11 @@ gulp.task('watch', gulp.series(gulp.parallel('browser-sync'), function(done) {
 
 	done()
 }))
+
+//  font gen
+// --------------------------------------------------------------------------
+gulp.task('fonts', function(){
+  gulp.src(['public/*.ttf'])
+	.pipe(ttf2woff2())
+	.pipe(gulp.dest('public/'));
+});
