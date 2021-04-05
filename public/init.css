@@ -925,15 +925,20 @@ select + .error:before {
 .button-search,
 .button-text {
   border: 2px solid transparent;
-  background: none;
   cursor: pointer;
   font-size: 1rem;
   font-family: 'Nunito', sans-serif;
   text-align: center;
   display: inline-block;
+  text-decoration: none;
+}
+.button:hover,
+.button-secondary:hover,
+.button-negative:hover,
+.button-search:hover,
+.button-text:hover {
   -webkit-transition: background 0.2s ease-in, color 0.2s ease-in;
   transition: background 0.2s ease-in, color 0.2s ease-in;
-  text-decoration: none;
 }
 .button:disabled,
 .button-secondary:disabled,

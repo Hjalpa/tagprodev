@@ -1,14 +1,16 @@
 /***************BUTTON HELPERS********************/
 $button-reset
 	border: 2px solid transparent
-	background: none
 	cursor: pointer
 	font-size: 1rem
 	font-family: $font-family
 	text-align: center
 	display: inline-block
-	transition: background .2s ease-in, color .2s ease-in
 	text-decoration: none
+
+	&:hover
+		transition: background .2s ease-in, color .2s ease-in
+
 $button-disabled
 	background-color: $disabled-color
 	color: #ffffff
