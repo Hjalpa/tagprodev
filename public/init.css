@@ -1391,6 +1391,7 @@ table .has-icon_label {
   white-space: nowrap;
   color: #2f2f2f;
   padding: 2.5rem 1rem 1rem 1rem;
+  width: 215px;
 }
 .drop-down_current:after {
   display: block;

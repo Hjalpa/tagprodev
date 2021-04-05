@@ -5,7 +5,7 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
 		title: 'Summary Per Minute',
-		tab: 'player stats',
+		maps: await getMaps(),
 		results: await getData(req.query)
 	}
 	res.render('stats', data);
@@ -40,5 +40,10 @@ async function getData(filters) {
 		ORDER BY sum(play_time) DESC
 		LIMIT 100
 	`
+	return await db.select(sql, [], 'all')
+}
+
+async function getMaps() {
+	let sql = `SELECT id, name FROM map ORDER BY name ASC`
 	return await db.select(sql, [], 'all')
 }
