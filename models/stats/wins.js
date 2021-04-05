@@ -6,7 +6,6 @@ let init = async (req, res) => {
 	try {
 		let data = {
 			title: 'Wins',
-			tab: 'player stats',
 			maps: await getMaps(),
 			results: await getData(req.query)
 		}

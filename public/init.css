@@ -1140,7 +1140,8 @@ select + .error:before {
 }
 .stats-card header {
   padding: 0.8rem 10px 0.1em 10px;
-  background: #ff2882;
+  background: -webkit-gradient(linear, left bottom, left top, from(#8a34e6), to(#a353f8));
+  background: linear-gradient(to top, #8a34e6, #a353f8);
 }
 .stats-card header h3 {
   font-weight: 700;
@@ -1153,6 +1154,7 @@ select + .error:before {
 .stats-card .top {
   background: -webkit-gradient(linear, left top, left bottom, from(#ff2882), to(#b51e88));
   background: linear-gradient(180deg, #ff2882, #b51e88);
+  background: #8a34e6;
   color: #fff;
   border-bottom: none;
 }
