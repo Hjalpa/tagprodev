@@ -85,14 +85,14 @@ app.filters = (async() => {
 			let seasonIDs = []
 			for (const s of document.querySelectorAll('.season input:checked'))
 				seasonIDs.push(s.value)
-			if(seasonIDs[0] != 'all')
+			if(seasonIDs[0] != 'all' && seasonIDs.length > 0)
 				uri.push(`season=${seasonIDs.join(',')}`)
 
 			// maps
 			let mapIDs = []
 			for (const s of document.querySelectorAll('.map input:checked'))
 				mapIDs.push(s.value)
-			if(mapIDs[0] != 'all')
+			if(mapIDs[0] != 'all' && mapIDs.length > 0)
 				uri.push(`map=${mapIDs.join(',')}`)
 
 			const url = window.location.origin + window.location.pathname
