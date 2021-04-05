@@ -74,14 +74,6 @@ block content
 									input(type="checkbox", name="season", id="season_euctfs1" value="1" disabled)
 									label(for="season_euctfs1") EU CTF S1
 
-			.drop-down.elo
-				.drop-down_label Filter by ELO
-				.drop-down_current(role="button")
-					span.value 2000-3000
-					.drop-down_list(style="width:150%" class="pad")
-						p.desc Average ELO across both teams
-						#slider.slider
-
 			.drop-down.map
 				.drop-down_label Filter by Map
 				.drop-down_current(role="button")
@@ -97,6 +89,14 @@ block content
 									.form_checkbox-wrapper
 										input(type="checkbox", name="map", id='map_'+raw.id, value= raw.id, disabled)
 										label(for='map_'+raw.id)= raw.name
+
+			.drop-down.elo
+				.drop-down_label Filter by ELO
+				.drop-down_current(role="button")
+					span.value 2000-3000
+					.drop-down_list(style="width:150%" class="pad")
+						p.desc Average ELO across both teams
+						#slider.slider
 
 			.filter-submit
 				button.button-secondary Apply
