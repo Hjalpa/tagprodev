@@ -8,6 +8,10 @@ html(lang='en')
   body
     div#page-wrapper
       include ../includes/_header.pug
+
+      block nav-current
+          -var tab = 'none'
+
       include ../includes/_nav.pug
       block content
       block demo-script

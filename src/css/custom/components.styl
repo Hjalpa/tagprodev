@@ -404,36 +404,76 @@ table
 
 //============== page select ============
 .page-select
-	border-bottom: 1px solid #ccc;
-	width: auto;
-	padding-right: 4rem;
-	max-width 100%
+
+	.button-fake
+		display: inline-block
+		font-size: .8rem;
+		padding: .4em 1em;
+
+		// &:hover + .drop-down_list
+		// 	display: block !important
+
+		& + .drop-down_list
+			top 2.2rem
+
+		span
+			position: relative;
+			display: flex;
+			align-items: center;
+
+			&:after
+				background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='11' height='6' viewBox='0 0 11 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.141574 1.19466C0.0327539 1.0424 -0.016123 0.853619 0.0046979 0.666C0.0255188 0.478382 0.114506 0.305721 0.2539 0.182478C0.393293 0.0592348 0.572841 -0.0055261 0.756708 0.0011195C0.940576 0.0077651 1.11524 0.0853284 1.24584 0.21833L5.11517 4.18966L8.98449 0.21833L9.06636 0.145306C9.21471 0.0336177 9.39864 -0.016548 9.58144 0.00482174C9.76424 0.0261915 9.93247 0.117524 10.0525 0.260592C10.1726 0.403661 10.2357 0.587942 10.2292 0.776657C10.2228 0.965372 10.1472 1.14464 10.0176 1.27869L5.63173 5.78019L5.54986 5.85322C5.40905 5.95997 5.23559 6.01131 5.06103 5.99791C4.88646 5.98451 4.72238 5.90725 4.59861 5.78019L0.212722 1.27869L0.141574 1.19466Z' fill='%23FFFFFF'/%3E%3C/svg%3E");
+				background-position: center;
+				background-repeat no-repeat
+				background-size: 91%;
+				width: 11px;
+				height: 11px;
+				position: relative;
+				display: inline-block;
+				bottom: auto;
+				line-height: 100%;
+				content ''
+				margin-left: .4em;
+
 
 	.drop-down
+		width: auto;
+		margin-left 1rem
 		&_current
-			padding 0 .5rem .5rem .5rem
-			color: $tertiary-color
+			padding 0
+
 			&:after
-				background-image: url("data:image/svg+xml;charset=utf8,%3Csvg width='11' height='6' viewBox='0 0 11 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0.141574 1.19466C0.0327539 1.0424 -0.016123 0.853619 0.0046979 0.666C0.0255188 0.478382 0.114506 0.305721 0.2539 0.182478C0.393293 0.0592348 0.572841 -0.0055261 0.756708 0.0011195C0.940576 0.0077651 1.11524 0.0853284 1.24584 0.21833L5.11517 4.18966L8.98449 0.21833L9.06636 0.145306C9.21471 0.0336177 9.39864 -0.016548 9.58144 0.00482174C9.76424 0.0261915 9.93247 0.117524 10.0525 0.260592C10.1726 0.403661 10.2357 0.587942 10.2292 0.776657C10.2228 0.965372 10.1472 1.14464 10.0176 1.27869L5.63173 5.78019L5.54986 5.85322C5.40905 5.95997 5.23559 6.01131 5.06103 5.99791C4.88646 5.98451 4.72238 5.90725 4.59861 5.78019L0.212722 1.27869L0.141574 1.19466Z' fill='%23FF2882'/%3E%3C/svg%3E");
-				right: 1rem;
+				background none
 
 		&_list
 			top 2.5rem
 			padding 1rem
-
 			z-index 4
-			width 50vw
+
 
 .mega-nav-wrap
 	display: flex
-	justify-content: space-between
 
 	nav
-		width 30%
+		width 11rem
+
+		&:not(:last-child)
+			border-right: 1px solid $table-row-color
+			margin-right 1rem
 		h2
 			color $body-color
 			font-size: .8rem
 			text-transform: uppercase
+			color #454545
+			margin-bottom 1em
+
+		li
+			border-bottom none
+			padding .4rem 0
+
+			&:hover, &.active
+				color $tertiary-color
+				font-weight: 700
 
 
 //============== sliders ==============

@@ -10,7 +10,6 @@ let init = async (req, res) => {
 	}
 
 	let data = {
-		tab: 'leaderboards',
 		winratio: await getWinRatio(filters),
 		pup: await getPups(filters),
 		teamcap: await getTeamCapsFor(filters),

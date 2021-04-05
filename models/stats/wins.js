@@ -7,6 +7,7 @@ let init = async (req, res) => {
 		let data = {
 			title: 'Wins',
 			tab: 'player stats',
+			maps: await getMaps(),
 			results: await getData(req.query)
 		}
 		res.render('stats', data);
@@ -49,5 +50,10 @@ async function getData(filters) {
 		${f.having}
 		ORDER BY win_rate DESC
 	`
+	return await db.select(sql, [], 'all')
+}
+
+async function getMaps() {
+	let sql = `SELECT id, name FROM map ORDER BY name ASC`
 	return await db.select(sql, [], 'all')
 }

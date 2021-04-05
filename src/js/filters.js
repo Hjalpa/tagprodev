@@ -1,6 +1,7 @@
 app.filters = (async() => {
 	initELO()
 	initSeason()
+	initMap()
 
 	let filters = document.querySelector('.page-filter')
 	filters.addEventListener('click', (e) => {
@@ -29,6 +30,13 @@ app.filters = (async() => {
 				seasonIDs.push(s.value)
 			if(seasonIDs.length === 1)
 				uri.push(`season=${seasonIDs.join(',')}`)
+
+			// maps
+			let mapIDs = []
+			for (const s of document.querySelectorAll('.map input:checked'))
+				mapIDs.push(s.value)
+			if(mapIDs[0] != 'all')
+				uri.push(`map=${mapIDs.join(',')}`)
 
 			const url = window.location.origin + window.location.pathname
 			window.location.href = url + '?' + uri.join('&')
@@ -76,6 +84,7 @@ app.filters = (async() => {
 		})
 	}
 
+
 	function initSeason() {
 		let url = new URLSearchParams(window.location.search)
 		let season = (url.get('season') ? url.get('season').split(',') : false)
@@ -108,7 +117,66 @@ app.filters = (async() => {
 
 		}
 
+		// disable+enable options
+		document.querySelector('.season input[value="all"]').addEventListener('change', (e) => {
+			let all = document.querySelector('.season input[value="all"]')
+			if(all.checked)
+				for (const s of document.querySelectorAll('.season input:not(input[value=all])')) {
+					s.disabled = true
+					s.checked = false
+				}
+			else
+				for (const s of document.querySelectorAll('.season input:not(input[value=all])'))
+					s.disabled = false
+		})
 	}
+
+	function initMap() {
+		// let url = new URLSearchParams(window.location.search)
+		// let season = (url.get('season') ? url.get('season').split(',') : false)
+		// if(season) {
+		// 	document.querySelector(".season input[value='1']").checked = false
+		// 	document.querySelector(".season input[value='2']").checked = false
+		// 	let text = []
+		// 	for (let s of season) {
+		// 		document.querySelector(`.season input[value='${s}']`).checked = true
+		// 		text.push('EU CTF S' + s)
+		// 	}
+		// 	if(text.length < 2)
+		// 		document.querySelector('.season .value').innerText = text.join(',')
+		// }
+
+		// set label text on input changes
+		// for (let i of document.querySelectorAll('.map input')) {
+		// 	i.addEventListener('change', (e) => {
+		// 		let text = []
+
+		// 		for (const s of document.querySelectorAll('.map input:checked'))
+		// 			text.push(s.value)
+
+		// 		if(text[0] === 'All')
+		// 			document.querySelector('.map .value').innerText = 'All'
+		// 		else
+		// 			document.querySelector('.map .value').innerText = text.join(',')
+		// 	})
+
+		// }
+
+		// disable+enable options
+		document.querySelector('.map input[value="all"]').addEventListener('change', (e) => {
+			let all = document.querySelector('.map input[value="all"]')
+			if(all.checked)
+				for (const s of document.querySelectorAll('.map input:not(input[value=all])')) {
+					s.disabled = true
+					s.checked = false
+				}
+			else
+				for (const s of document.querySelectorAll('.map input:not(input[value=all])'))
+					s.disabled = false
+		})
+	}
+
+
 
 })
 
