@@ -4,8 +4,8 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
-		title: 'Summary - Totals',
-		tab: 'player stats',
+		title: 'Summary Totals',
+		maps: await req.maps,
 		results: await getData(req.query)
 	}
 	res.render('stats', data);

@@ -1,12 +1,21 @@
+const db = require ('../lib/db')
 const express = require('express')
 const router = express.Router()
+
+ // get maps
+ let maps = async function (req, res, next) {
+	req.maps = await db.select(`SELECT id, name FROM map ORDER BY name ASC`, [], 'all')
+	next()
+ }
+ router.use(maps)
+
 
 // general
 router.get('/wins', (req, res) => require('../models/stats/wins').init(req, res))
 router.get('/summary-per-minute', (req, res) => require('../models/stats/summary-per-minute').init(req, res))
 router.get('/summary-total', (req, res) => require('../models/stats/summary-total').init(req, res))
 router.get('/pups', (req, res) => require('../models/stats/pups').init(req, res))
-router.get('/mercies', (req, res) => require('../models/stats/pups').init(req, res))
+router.get('/mercies', (req, res) => require('../models/stats/mercies').init(req, res))
 
 
 // attacking

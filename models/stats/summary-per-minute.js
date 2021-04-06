@@ -5,7 +5,7 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
 		title: 'Summary Per Minute',
-		maps: await getMaps(),
+		maps: await req.maps,
 		results: await getData(req.query)
 	}
 	res.render('stats', data);
@@ -31,7 +31,6 @@ async function getData(filters) {
 			ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) as pups,
 			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time
 
-
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		${f.where}
@@ -40,10 +39,5 @@ async function getData(filters) {
 		ORDER BY sum(play_time) DESC
 		LIMIT 100
 	`
-	return await db.select(sql, [], 'all')
-}
-
-async function getMaps() {
-	let sql = `SELECT id, name FROM map ORDER BY name ASC`
 	return await db.select(sql, [], 'all')
 }

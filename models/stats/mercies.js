@@ -5,7 +5,7 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
 		title: 'Mercies',
-		tab: 'player stats',
+		maps: req.maps,
 		results: await getData(req.query)
 	}
 	res.render('stats', data);
@@ -25,6 +25,7 @@ async function getData(filters) {
 			count(*) filter (WHERE cap_team_for = 0) as cleansheet_against,
 			count(*) filter (WHERE cap_team_against = 0) as cleansheet,
 			count(*) / greatest(count(*) filter (WHERE cap_team_against = 0), 1) as game_per_cleansheet
+
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		${f.where}
