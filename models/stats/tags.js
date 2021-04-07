@@ -5,7 +5,7 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let data = {
 		title: 'Tags',
-		tab: 'player stats',
+		maps: req.maps,
 		results: await getData(req.query)
 	}
 	res.render('stats', data);

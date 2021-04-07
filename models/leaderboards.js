@@ -5,11 +5,12 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	let filters =  {
 		where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2100)',
-		// where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo <= 1000)',
-		having: 'HAVING COUNT(*) >= 47'
+		// where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000)',
+		having: 'HAVING COUNT(*) >= 50'
 	}
 
 	let data = {
+		nav: 'leaderboards',
 		winratio: await getWinRatio(filters),
 		pup: await getPups(filters),
 		teamcap: await getTeamCapsFor(filters),

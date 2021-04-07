@@ -1,10 +1,7 @@
 extends layouts/_layout.pug
 
-block nav-current
-	- var tab = 'leaderboards'
-
 block title
-	title Tagpro TPM Stats
+	title EU TPM Stats - Tagpro.dev
 
 block content
 	main#main
@@ -27,7 +24,7 @@ block content
 								td.text-r= n.win_ratio
 
 				footer
-					a(href="/stats/wins") View full list
+					a(href="/stats/league-table") View full list
 						span.icon
 
 			.stats-card
