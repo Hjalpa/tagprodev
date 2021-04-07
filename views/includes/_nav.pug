@@ -4,9 +4,21 @@ aside#sidebar
 		ul
 			li
 				a(href="/" class=(tab === 'leaderboards' ? 'active' : '')) Leaderboards
+
 			li
-				a(href="/stats/wins" class=(tab === 'player stats' ? 'active' : '')) Player Stats
+				a(href="/stats/league-table" class=(nav === 'league-table' ? 'active' : '')) League Table
+
 			li
-				a(href="/compare" class=(tab === 'compare' ? 'active' : '')) Player Comparison
-			// li
-			// 	a(href="/records" class=(tab === 'records' ? 'active' : '')) Records
+				a(href="/stats/summary" class=(nav === 'summary' ? 'active' : '')) Summary
+
+			li
+				a(href="/stats/attacking" class=(nav === 'attacking' ? 'active' : '')) Attacking
+
+			li
+				a(href="/stats/defending" class=(nav === 'defending' ? 'active' : '')) Defending
+
+			li
+				a(href="/stats/pups" class=(nav === 'powerups' ? 'active' : '')) Powerups
+
+			li
+				a(href="/stats/miscellaneous" class=(nav === 'misc' ? 'active' : '')) Miscellaneous

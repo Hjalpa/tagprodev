@@ -5,7 +5,8 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
 		let data = {
-			title: 'Wins',
+			title: 'League Table',
+			nav: 'league-table',
 			maps: await req.maps,
 			results: await getData(req.query)
 		}
