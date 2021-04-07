@@ -9,5 +9,107 @@ block content
 			h2 Records
 
 			ul
-				li
-					span.test Test
+				li.game
+					.key Longest Game
+					.value
+						a(
+							href= 'https://tagpro.eu/?match=' + longestgame.euid
+						)
+							span= longestgame.time + ' on ' + longestgame.map + ' (' + longestgame.date + ')'
+
+						// .red
+						// 	.players
+						// 		p Red:
+						// 			each n, key in longestgame.players
+						// 				if(n.team === 1)
+						// 					span= n.name + ', '
+
+						// .blue
+						// 	.players
+						// 		p Blues:
+						// 		each n, key in longestgame.players
+						// 			if(n.team === 2)
+						// 				span= n.name
+
+				li.game
+					.key Shortest Game
+					.value
+						a(
+							href= 'https://tagpro.eu/?match=' + shortestgame.euid
+						)
+							span= shortestgame.time + ' on ' + shortestgame.map + ' (' + shortestgame.date + ')'
+
+				li.game
+					.key Highest ELO Game
+					.value
+						a(
+							href= 'https://tagpro.eu/?match=' + highestelogame.euid
+						)
+							span= highestelogame.elo + ' ELO on ' + longestgame.map + ' (' + highestelogame.date + ')'
+
+				li.game
+					.key Lowest ELO Game
+					.value
+						a(
+							href= 'https://tagpro.eu/?match=' + lowestelogame.euid
+						)
+							span= lowestelogame.elo + ' ELO on ' + lowestelogame.map + ' (' + lowestelogame.date + ')'
+
+
+				li.map
+					.key Most Picked Map
+					.value
+						span= mostpickedmap.map + ' ' + mostpickedmap.total + ' times'
+
+				li.map
+					.key Average ELO
+					.value
+						span= averageelo.elo
+
+
+
+
+
+
+
+
+
+				li.map
+					.key Most Caps in a Game
+					.value
+						a(
+							href= 'https://tagpro.eu/?match=' + mostcapsinagame.euid
+						)
+							span= mostcapsinagame.name + ' capped ' + mostcapsinagame.cap + ' times' + ' (' + mostcapsinagame.date + ')'
+
+				li.map
+					.key Most Returns in a Game
+					.value
+						a(
+							href= 'https://tagpro.eu/?match=' + mostreturns.euid
+						)
+							span= mostreturns.name + ' returned ' + mostreturns.returns + ' times' + ' (' + mostreturns.date + ')'
+
+				li.stat
+					.key Most Tags in a Game
+					.value
+						a(
+							href= 'https://tagpro.eu/?match=' + mosttags.euid
+						)
+							span= mosttags.name + ' tagged ' + mosttags.tag + ' times' + ' (' + mosttags.date + ')'
+
+				li.map
+					.key Most Prevent in a Game
+					.value
+						a(
+							href= 'https://tagpro.eu/?match=' + mostprevent.euid
+						)
+							span= mostprevent.name + ' had ' + mostprevent.prevent + ' prevent ' + ' (' + mostprevent.date + ')'
+
+				li.map
+					.key Most Powerups in a Game
+					.value
+						a(
+							href= 'https://tagpro.eu/?match=' + mostpups.euid
+						)
+							span= mostpups.name + ' won ' + mostpups.pups + ' pups ' + ' (' + mostpups.date + ')'

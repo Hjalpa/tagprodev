@@ -13,6 +13,7 @@ const router = express.Router()
 // general
 router.get('/league-table', (req, res) => require('../models/stats/league-table').init(req, res))
 router.get('/summary', (req, res) => require('../models/stats/summary').init(req, res))
+router.get('/attacking', (req, res) => require('../models/stats/attacking').init(req, res))
 
 router.get('/summary-total', (req, res) => require('../models/stats/summary-total').init(req, res))
 router.get('/pups', (req, res) => require('../models/stats/pups').init(req, res))
