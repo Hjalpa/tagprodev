@@ -1,58 +1,12 @@
 extends layouts/_layout.pug
 
-block nav-current
-	- var tab = 'player stats'
-
 block title
 	title #{title} - Tagpro.dev
 
 block content
 	main#main
 		header
-
 			h2.page-select= title
-				.drop-down(style="display:none")
-					.drop-down_current(role="button")
-						span.button-fake.button-secondary
-							span Change
-						.drop-down_list
-							.mega-nav-wrap
-								nav
-									h2 General
-									ul
-										li
-											a(href="/stats/wins") Wins
-										li
-											a(href="/stats/summary-per-minute") Summary Per Minute
-										li
-											a(href="/stats/pups") Powerups
-										li
-											a(href="/stats/mercies") Mercies
-
-								nav
-									h2 Attacking
-									ul
-										li
-											a(href="/stats/caps") Caps
-										li
-											a(href="/stats/hold") Hold
-										li
-											a(href="/stats/flaccids") Flaccids
-								nav
-									h2 Defence
-									ul
-										li
-											a(href="/stats/prevent") Prevent
-										li
-											a(href="/stats/returns") Returns
-										li
-											a(href="/stats/key-returns") Key Returns
-										li
-											a(href="/stats/quick-returns") Quick Returns
-										li
-											a(href="/stats/tags") Tags
-										// li
-										// 	a(href="/stats/team-cap-from-my-prevent") Team Cap From My Prevent
 
 		.page-filter
 			.drop-down.season
@@ -105,7 +59,7 @@ block content
 			table.table-sticky
 				thead
 					each raw in results
-						- function th(string){ return string.replace(/(?:_| |\b)(\w)/g, function($1){return $1.toUpperCase().replace('_',' ');});}
+						- function th(string){ return string.replace(/(?:_| |\b)(\w)/g, function($1){return $1.toUpperCase().replace('_',' ')})}
 
 						tr
 							- let n = 0

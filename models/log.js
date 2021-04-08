@@ -18,10 +18,13 @@ async function getData() {
 	let raw = await db.select(`
 		SELECT
 			euid,
-			TO_CHAR(date, 'MON-DD-YYYY') as date,
+			TO_CHAR(date, 'DD Month YYYY') as date,
+			season.name as season,
 			ROUND(elo)::integer as elo,
 			TO_CHAR(duration * interval '1 sec', 'MI:SS') as duration,
-			season.name as season
+			redcaps as red,
+			bluecaps as blue,
+			winner
 		FROM game
 		LEFT JOIN season ON season.id = game.seasonid
 		ORDER BY euid DESC
