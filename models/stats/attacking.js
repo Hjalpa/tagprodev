@@ -29,8 +29,6 @@ async function getData(filters) {
 			-- hold per cap
 			-- hold whilst opponents DONT
 
-
-
 			-- grab
 			-- grab / grab_team_for (percentage of team grabs)
 			-- grab vs grab_team_against (percent)
@@ -42,16 +40,26 @@ async function getData(filters) {
 
 			--
 
+			TO_CHAR(
+				(sum(play_time) / sum(grab)) * interval '1 sec'
+			, 'MI:SS') as grab_every,
 
+			TO_CHAR(
+				(sum(play_time) / sum(long_hold)) * interval '1 sec'
+			, 'MI:SS') as long_hold_every,
 
 			ROUND(sum(hold) / sum(grab)::numeric, 2) as hold_per_grab,
-			ROUND(sum(hold) / sum(cap)::numeric, 2) as hold_per_cap,
+
 			ROUND(sum(grab) / sum(cap)::numeric, 2) as grabs_per_cap,
+
+			TO_CHAR(
+				ROUND(sum(hold) / sum(cap)::numeric, 2)
+				* interval '1 sec'
+			, 'MI:SS') as hold_per_cap,
 
 			TO_CHAR(
 				(sum(play_time) / sum(cap)) * interval '1 sec'
 			, 'MI:SS') as cap_every
-
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid

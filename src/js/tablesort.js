@@ -16,7 +16,7 @@ app.tableSort = (async() => {
 
       for (let [columnIndex, th] of tableHeadHeaders.entries('table')) {
         let timesClickedColumn = 0
-        th.addEventListener("click", function() {
+        th.addEventListener("click", () => {
 			// prevent rank & player sorting
 			if(columnIndex === 0 || columnIndex === 1) return false
 
@@ -43,7 +43,7 @@ app.tableSort = (async() => {
             function naturalSortAescending(a, b) {
               return a.localeCompare(b, navigator.languages[0] || navigator.language, {
                 numeric: true,
-                ignorePunctuation: true
+                // ignorePunctuation: true
               })
             }
 

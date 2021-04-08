@@ -21,15 +21,12 @@ async function getData(filters) {
 	let sql = `
 		SELECT
 			RANK() OVER (
-				ORDER BY
-				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
+				ORDER BY avg(elo) DESC
 			) rank,
 			player.name as player,
 
-			ROUND(avg(elo)::NUMERIC, 2) as avg_game_elo,
-			-- TO_CHAR((sum(play_time) / count(*)) * interval '1 sec', 'MI:SS') as avg_game_length,
 			TO_CHAR(avg(play_time) * interval '1 sec', 'MI:SS') as avg_game_length,
-			max(cap) as most_caps
+			ROUND(avg(elo)::NUMERIC, 2) as avg_game_elo
 
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
@@ -38,7 +35,7 @@ async function getData(filters) {
 		${f.where}
 		GROUP BY player.name
 		${f.having}
-		ORDER BY avg_game_length DESC
+		ORDER BY avg_game_elo DESC
 	`
 	return await db.select(sql, [], 'all')
 }
