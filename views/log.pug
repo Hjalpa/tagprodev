@@ -15,12 +15,13 @@ block content
 					tr
 						th EUID
 						th Date
-						th.text-c Season
-						th.text-c Average ELO
+						th.text-c ELO
 						th.text-c Duration
-						th.text-c Red
-						th.text-c Blue
-						th.text-c Winner
+						th.text-r Red
+						th.text-c
+						th.text-c
+						th.text-c
+						th.text-l Blue
 
 				tbody
 					each n, key in games
@@ -30,9 +31,10 @@ block content
 								a(href=`${href}`)= n.euid
 
 							td= n.date
-							td.text-c= n.season
 							td.text-c= n.elo
 							td.text-c= n.duration
-							td.text-c= n.red
-							td.text-c= n.blue
-							td.text-c= n.winner
+							td.text-r= n.red_team
+							td.text-c= n.red_caps
+							td.text-c :
+							td.text-c= n.blue_caps
+							td.text-l= n.blue_team

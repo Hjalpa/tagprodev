@@ -5,9 +5,7 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 
 	let data = {
-		title: 'Last Updates',
-		tab: false,
-
+		title: 'Recent Games',
 		games: await getData(),
 	}
 
@@ -19,12 +17,22 @@ async function getData() {
 		SELECT
 			euid,
 			TO_CHAR(date, 'DD Month YYYY') as date,
-			season.name as season,
 			ROUND(elo)::integer as elo,
 			TO_CHAR(duration * interval '1 sec', 'MI:SS') as duration,
-			redcaps as red,
-			bluecaps as blue,
-			winner
+			redcaps as red_caps,
+			bluecaps as blue_caps,
+			-- grab red team
+			array_to_string (
+				ARRAY(
+					select name from playergame left join player on player.id = playergame.playerid where playergame.gameid = game.id AND playergame.team = 1
+				),
+			', ') AS red_team,
+			-- grab blue team
+			array_to_string (
+				ARRAY(
+					select name from playergame left join player on player.id = playergame.playerid where playergame.gameid = game.id AND playergame.team = 2
+				),
+			', ') AS blue_team
 		FROM game
 		LEFT JOIN season ON season.id = game.seasonid
 		ORDER BY euid DESC

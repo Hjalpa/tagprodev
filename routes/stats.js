@@ -15,6 +15,7 @@ router.get('/league-table', (req, res) => require('../models/stats/league-table'
 router.get('/summary', (req, res) => require('../models/stats/summary').init(req, res))
 
 router.get('/attacking', (req, res) => require('../models/stats/attacking').init(req, res))
+router.get('/attacking/od', (req, res) => require('../models/stats/attacking-od').init(req, res))
 
 router.get('/defending', (req, res) => require('../models/stats/defending').init(req, res))
 router.get('/defending/returns', (req, res) => require('../models/stats/defending-returns').init(req, res))
