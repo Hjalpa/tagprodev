@@ -3,12 +3,17 @@ const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
-	let data = {
-		title: 'Prevent',
-		tab: 'player stats',
-		results: await getData(req.query)
+	try {
+		let data = {
+			title: 'Prevent',
+			tab: 'Defending',
+			maps: await req.maps,
+			results: await getData(req.query)
+		}
+		res.render('stats', data);
+	} catch(e) {
+		res.status(400).json({error: e})
 	}
-	res.render('stats', data);
 }
 
 async function getData(filters) {
@@ -33,5 +38,5 @@ async function getData(filters) {
 		ORDER BY per_min DESC
 		LIMIT 100
 	`
-	return await db.select(sql, [], 'all')
+	return await db.select(sql, f.clause, 'all')
 }

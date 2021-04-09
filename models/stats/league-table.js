@@ -27,13 +27,9 @@ async function getData(filters) {
 
 			player.name as player,
 			count(*)as games,
-
-			-- TO_CHAR( MIN(play_time) * interval '1 sec', 'MI:SS') as min_game_length,
-			-- TO_CHAR( MAX(play_time) * interval '1 sec', 'MI:SS') as max_game_length,
-			-- TO_CHAR((sum(play_time) / count(*)) * interval '1 sec', 'MI:SS') as average_game_length,
 			count(*) filter (WHERE result_half_win = 1) as won,
 			count(*) filter (WHERE result_half_lose = 1) as lost,
-
+			-- win rate
 			ROUND(
 				(
 					count(*) filter (WHERE result_half_win = 1)
@@ -49,5 +45,5 @@ async function getData(filters) {
 		${f.having}
 		ORDER BY win_rate DESC
 	`
-	return await db.select(sql, [], 'all')
+	return await db.select(sql, f.clause, 'all')
 }

@@ -51,5 +51,5 @@ async function getData(filters) {
 		${f.having}
 		ORDER BY avg_game_elo DESC
 	`
-	return await db.select(sql, [], 'all')
+	return await db.select(sql, f.clause, 'all')
 }

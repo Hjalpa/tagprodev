@@ -46,5 +46,5 @@ async function getData(filters) {
 		ORDER BY games DESC
 		LIMIT 100
 	`
-	return await db.select(sql, [], 'all')
+	return await db.select(sql, f.clause, 'all')
 }

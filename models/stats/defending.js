@@ -69,5 +69,5 @@ async function getData(filters) {
 		ORDER BY cap_from_my_prevent_every ASC
 		LIMIT 100
 	`
-	return await db.select(sql, [], 'all')
+	return await db.select(sql, f.clause, 'all')
 }

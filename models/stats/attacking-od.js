@@ -54,5 +54,5 @@ async function getData(filters) {
 		ORDER BY return_within_2_tiles_every ASC
 		LIMIT 100
 	`
-	return await db.select(sql, [], 'all')
+	return await db.select(sql, f.clause, 'all')
 }

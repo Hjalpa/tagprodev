@@ -37,5 +37,5 @@ async function getData(filters) {
 		ORDER BY per_min DESC
 		LIMIT 100
 	`
-	return await db.select(sql, [], 'all')
+	return await db.select(sql, f.clause, 'all')
 }

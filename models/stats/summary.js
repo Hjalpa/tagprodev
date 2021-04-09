@@ -40,5 +40,5 @@ async function getData(filters) {
 		ORDER BY sum(play_time) DESC
 		LIMIT 100
 	`
-	return await db.select(sql, [], 'all')
+	return await db.select(sql, f.clause, 'all')
 }

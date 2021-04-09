@@ -73,5 +73,5 @@ async function getData(filters) {
 		ORDER BY cap_every ASC
 		LIMIT 100
 	`
-	return await db.select(sql, [], 'all')
+	return await db.select(sql, f.clause, 'all')
 }
