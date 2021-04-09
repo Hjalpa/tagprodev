@@ -9,7 +9,7 @@ let init = async (req, res) => {
 		maps: await req.maps,
 		results: await getData(req.query)
 	}
-	res.render('stats', data);
+	res.render('stats', data)
 }
 
 async function getData(filters) {
