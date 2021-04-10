@@ -49,7 +49,7 @@ async function getData(filters) {
 			, 'MI:SS') as grab_every,
 
 			TO_CHAR(
-				(sum(play_time) / sum(long_hold)) * interval '1 sec'
+				(sum(play_time) / greatest(sum(long_hold), 1)) * interval '1 sec'
 			, 'MI:SS') as long_hold_every,
 
 			ROUND(sum(hold) / sum(grab)::numeric, 2) as hold_per_grab,
