@@ -46,7 +46,8 @@ let init = async (req, res) => {
 			prevent: await getPrevent(filters),
 			tag: await getTag(filters),
 			pop: await getPop(filters),
-			killdeath: await getKillDeath(filters)
+			killdeath: await getKillDeath(filters),
+			flaginbase: await getFlagInBase(filters)
 		}
 		res.render('leaderboards', data);
 	} catch(e) {
@@ -330,6 +331,29 @@ async function getKillDeath(filters) {
 		GROUP BY player.name
 		${filters.having}
 		ORDER BY killdeath DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getFlagInBase(filters) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					(100 - ROUND((sum(hold_team_against)::numeric / sum(play_time)::numeric) * 100, 2)) DESC
+			) rank,
+
+			player.name as player,
+			(100 - ROUND((sum(hold_team_against)::numeric / sum(play_time)::numeric) * 100, 2)) || '%' as flag_in_base
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
+		ORDER BY flag_in_base DESC
 		LIMIT 10
 	`, [], 'all')
 

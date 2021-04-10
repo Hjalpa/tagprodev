@@ -142,3 +142,22 @@ body
 
 			&:hover, &.active
 				background $nav-sub-link-hover-bg
+
+.tabs
+	border-bottom 1px solid #e8e8e8
+	margin-bottom 1.5rem
+	display flex
+	margin-top -1rem
+
+	a
+		display block
+		padding: .5em 1em;
+
+		&.active
+			color $tertiary-color
+			border-bottom: 3px solid $tertiary-color
+			transition: color 0.2s ease-in-out, border 0.06s ease-in-out
+			font-weight 700
+
+		&:not(.active):hover
+			opacity .6

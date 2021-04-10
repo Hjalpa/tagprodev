@@ -1821,6 +1821,28 @@ body {
 #nav-main nav li > a.active {
   background: #743279;
 }
+.tabs {
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 1.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: -1rem;
+}
+.tabs a {
+  display: block;
+  padding: 0.5em 1em;
+}
+.tabs a.active {
+  color: #ff2882;
+  border-bottom: 3px solid #ff2882;
+  -webkit-transition: color 0.2s ease-in-out, border 0.06s ease-in-out;
+  transition: color 0.2s ease-in-out, border 0.06s ease-in-out;
+  font-weight: 700;
+}
+.tabs a:not(.active):hover {
+  opacity: 0.6;
+}
 /******************/
 .page-select .drop-down_list,
 .page-filter .drop-down_list {

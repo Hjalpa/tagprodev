@@ -8,10 +8,10 @@ block content
 		header
 			h2= title
 
-			.tabs
-				a(href="/") All-Time
-				a(href="/?season=2") Season 2
-				a(href="/?season=1") Season 1
+		.tabs
+			a(href="/" class=(season === false ? 'active' : '')) All-Time
+			a(href="/?season=2" class=(season === '2' ? 'active' : '')) Season 2
+			a(href="/?season=1" class=(season === '1' ? 'active' : '')) Season 1
 
 		section.stats-card-wrapper
 
@@ -200,4 +200,21 @@ block content
 
 				// footer
 				// 	a(href="/stats/summary") View full list
+				// 		span.icon
+
+			.stats-card
+				header
+					h3 Flag In Base
+
+				table
+					tbody
+						each n, key in flaginbase
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.flag_in_base
+
+				// footer
+				// 	a(href="/stats/defending") View full list
 				// 		span.icon
