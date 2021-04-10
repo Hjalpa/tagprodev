@@ -42,8 +42,6 @@ async function getData(filters) {
 			-- grab / cap
 			-- grab / hold
 
-			--
-
 			TO_CHAR(
 				(sum(play_time) / sum(grab)) * interval '1 sec'
 			, 'MI:SS') as grab_every,
