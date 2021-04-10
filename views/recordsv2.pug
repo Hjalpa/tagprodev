@@ -8,7 +8,7 @@ block content
 		header
 			h2 Records
 
-		section.stats-card-wrapper
+		section.stats-card-wrapper.stats-records
 
 			.stats-card
 				header
@@ -17,12 +17,13 @@ block content
 				table
 					tbody
 						each n, key in mostcaps
-							tr(class=(key === 0 ? 'top' : ''))
+							tr(class=(key === 0 ? 'top no-icon' : ''))
 								td.rank
 									span.pos #{n.rank}.
 									| #{n.player}
-								td.text-l= n.date
-								td.text-r= n.cap
+								td.text-r=
+									span.text-i.date n.date
+									| n.cap
 
 
 			.stats-card
