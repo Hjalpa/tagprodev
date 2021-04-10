@@ -47,10 +47,13 @@
 			background-repeat no-repeat
 			background-size: 1.4rem
 
+		&.no-icon
+			td:last-child
+				background-image:none
 		a
 			color white
 
-		.pos
+		.pos, span
 			color white
 			height: 30px;
 			line-height: 30px;
@@ -168,11 +171,13 @@ table
 		font-weight: 700
 	.text-r
 		text-align right
+	.text-i
+		font-style: italic
 
 	.text-c
 		text-align center
 
-	.pos
+	span, .pos
 		display block
 		color rgba(6,6,6,0.43)
 
