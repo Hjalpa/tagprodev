@@ -3,27 +3,55 @@ const util = require ('../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
-	let filters =  {
-		where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2100)',
-		// where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000)',
-		having: 'HAVING COUNT(*) >= 50'
-	}
+	try {
+		// default to all seasons
+		let filters =  {
+			where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000)',
+			having: 'HAVING COUNT(*) >= 50'
+		}
+		let title = 'CTF All-Time Leaderboards'
 
-	let data = {
-		nav: 'leaderboards',
-		winratio: await getWinRatio(filters),
-		pup: await getPups(filters),
-		teamcap: await getTeamCapsFor(filters),
-		teamcapagainst: await getTeamCapsAgainst(filters),
-		cap: await getCaps(filters),
-		hold: await getHold(filters),
-		returns: await getReturn(filters),
-		prevent: await getPrevent(filters),
-		tag: await getTag(filters),
-		pop: await getPop(filters)
-	}
+		if(req.query.season) {
+			// season 2
+			if(req.query.season === '2') {
+				filters =  {
+					where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000 AND seasonid = 1)',
+					having: 'HAVING COUNT(*) >= 11'
+				}
+				title = 'CTF Season 2 Leaderboards'
+			}
+			// season 1
+			else if(req.query.season === '1') {
+				filters =  {
+					where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000 AND seasonid = 2)',
+					having: 'HAVING COUNT(*) >= 50'
+				}
+				title = 'CTF Season 1 Leaderboards'
+			}
+			else
+				throw 'invalid season'
+		}
 
-	res.render('leaderboards', data);
+		let data = {
+			title,
+			season: (req.query.season) ? req.query.season : false,
+			nav: 'leaderboards',
+			winratio: await getWinRatio(filters),
+			pup: await getPups(filters),
+			teamcap: await getTeamCapsFor(filters),
+			teamcapagainst: await getTeamCapsAgainst(filters),
+			cap: await getCaps(filters),
+			hold: await getHold(filters),
+			returns: await getReturn(filters),
+			prevent: await getPrevent(filters),
+			tag: await getTag(filters),
+			pop: await getPop(filters),
+			killdeath: await getKillDeath(filters)
+		}
+		res.render('leaderboards', data);
+	} catch(e) {
+		res.status(400).json({error: e})
+	}
 }
 
 async function getWinRatio(filters) {
@@ -279,6 +307,29 @@ async function getPop(filters) {
 		GROUP BY player.name
 		${filters.having}
 		ORDER BY pop_every DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getKillDeath(filters) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					avg(tag) - avg(pop) DESC
+			) rank,
+
+			player.name as player,
+			ROUND(avg(tag) - avg(pop), 2) as killdeath
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
+		ORDER BY killdeath DESC
 		LIMIT 10
 	`, [], 'all')
 
