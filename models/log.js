@@ -6,6 +6,7 @@ let init = async (req, res) => {
 
 	let data = {
 		title: 'Recent Games',
+		nav: 'log',
 		games: await getData(),
 	}
 
@@ -36,7 +37,7 @@ async function getData() {
 		FROM game
 		LEFT JOIN season ON season.id = game.seasonid
 		ORDER BY euid DESC
-		LIMIT 100
+		LIMIT 50
 	`, [], 'all')
 
 	return raw

@@ -5,9 +5,8 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 
 	let data = {
-		tab: 'compare',
+		nav: 'compare',
 		players: await getPlayers(),
-		// winratio: await longestGame(),
 	}
 	res.render('compare', data);
 }
