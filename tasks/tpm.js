@@ -23,6 +23,7 @@ tpm.call = async () => {
 			if(tmp[0] === '2854361') continue
 			if(tmp[0] === '2854381') continue
 			if(tmp[0] === '2854393') continue
+			if(tmp[0] === '2859869') continue
 			let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [tmp[0]], 'id')
 			if(!gameExists) {
 				await axios.post(`https://tagpro.dev/api/import`, {

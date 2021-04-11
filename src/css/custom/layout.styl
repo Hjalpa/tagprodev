@@ -165,11 +165,51 @@ body
 
 .stats-records
 	.stats-card .top
-		.pos, span
-			height: auto;
-			line-height: inherit;
-	.date
-		font-weight: 400
-	.text-r:last-child
+		background inherit
+		color inherit
+
+
+	td:last-child
 		font-weight: 700
 
+	.date
+		font-size .8rem
+
+	h3
+		position relative
+		text-align center
+		top 10px
+
+	thead
+		tr
+			th
+				background #8b35e7
+				color #c2adff
+				font-size .8rem
+				// padding .5rem 0 .5rem 0
+
+	tbody
+		tr
+			td
+				padding .5rem 0
+				line-height 1rem
+				vertical-align middle
+				font-size .9rem !important
+				vertical-align middle !important
+				padding .75em 0
+
+				&:first-child
+					padding-left .5rem
+					width 18px
+
+		a
+			font-weight 400
+			font-style normal
+			color #888
+
+		tr:hover a
+			color #ff2882
+			box-shadow inset 0 -2px 0 0 rgba(#ff2882, .2)
+
+			&:hover
+				box-shadow none

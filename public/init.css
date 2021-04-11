@@ -648,10 +648,6 @@ a:hover,
 a:focus {
   text-decoration: none;
 }
-a:focus {
-  -webkit-box-shadow: 0 0 1px #222;
-          box-shadow: 0 0 1px #222;
-}
 ::-moz-selection {
   background-color: #ff2882;
   color: #fff;
@@ -1169,10 +1165,14 @@ select + .error:before {
   background-repeat: no-repeat;
   background-size: 1.4rem;
 }
+.stats-card .top.no-icon td:last-child {
+  background-image: none;
+}
 .stats-card .top a {
   color: #fff;
 }
-.stats-card .top .pos {
+.stats-card .top .pos,
+.stats-card .top span {
   color: #fff;
   height: 30px;
   line-height: 30px;
@@ -1290,9 +1290,13 @@ table .bold {
 table .text-r {
   text-align: right;
 }
+table .text-i {
+  font-style: italic;
+}
 table .text-c {
   text-align: center;
 }
+table span,
 table .pos {
   display: block;
   color: rgba(6,6,6,0.43);
@@ -1842,6 +1846,52 @@ body {
 }
 .tabs a:not(.active):hover {
   opacity: 0.6;
+}
+.stats-records .stats-card .top {
+  background: inherit;
+  color: inherit;
+}
+.stats-records td:last-child {
+  font-weight: 700;
+}
+.stats-records .date {
+  font-size: 0.8rem;
+}
+.stats-records h3 {
+  position: relative;
+  text-align: center;
+  top: 10px;
+}
+.stats-records thead tr th {
+  background: #8b35e7;
+  color: #c2adff;
+  font-size: 0.8rem;
+}
+.stats-records tbody tr td {
+  padding: 0.5rem 0;
+  line-height: 1rem;
+  vertical-align: middle;
+  font-size: 0.9rem !important;
+  vertical-align: middle !important;
+  padding: 0.75em 0;
+}
+.stats-records tbody tr td:first-child {
+  padding-left: 0.5rem;
+  width: 18px;
+}
+.stats-records tbody a {
+  font-weight: 400;
+  font-style: normal;
+  color: #888;
+}
+.stats-records tbody tr:hover a {
+  color: #ff2882;
+  -webkit-box-shadow: inset 0 -2px 0 0 rgba(255,40,130,0.2);
+          box-shadow: inset 0 -2px 0 0 rgba(255,40,130,0.2);
+}
+.stats-records tbody tr:hover a:hover {
+  -webkit-box-shadow: none;
+          box-shadow: none;
 }
 /******************/
 .page-select .drop-down_list,
