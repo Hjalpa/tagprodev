@@ -26,10 +26,10 @@ async function mostCaps() {
 	let raw = await db.select(`
 		select
 			rank() OVER (
-				ORDER BY play_time / cap ASC
+				ORDER BY ROUND(play_time::NUMERIC / cap, 2) ASC
 			) rank,
 			player.name as player,
-			play_time / cap as cap,
+			ROUND(play_time::NUMERIC / cap, 2) as cap,
 			euid,
 			TO_CHAR(date, 'DD Mon YY') as date
 		FROM playergame
@@ -93,10 +93,10 @@ async function mostReturns() {
 	let raw = await db.select(`
 		select
 			rank() OVER (
-				ORDER BY play_time / NULLIF(return, 0) ASC
+				ORDER BY ROUND(play_time::NUMERIC / NULLIF(return, 0), 2) ASC
 			) rank,
 			player.name as player,
-			play_time / NULLIF(return, 0) as returns,
+			ROUND(play_time::NUMERIC / NULLIF(return, 0), 2) as returns,
 			euid,
 			TO_CHAR(date, 'DD Mon YY') as date
 		FROM playergame
@@ -154,10 +154,10 @@ async function mostTags() {
 	let raw = await db.select(`
 		select
 			rank() OVER (
-				ORDER BY play_time / tag ASC
+				ORDER BY ROUND(play_time::NUMERIC / tag, 2) ASC
 			) rank,
 			player.name as player,
-			play_time / tag as tag,
+			ROUND(play_time::NUMERIC / tag, 2) as tag,
 			euid,
 			TO_CHAR(date, 'DD Mon YY') as date
 		FROM playergame
