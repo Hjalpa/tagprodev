@@ -1,7 +1,7 @@
 const db = require ('../lib/db')
 const util = require ('../lib/util')
 
-module.exports.initv2 = async (req, res) => await init(req, res)
+module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 
 	let data = {
@@ -19,7 +19,7 @@ let init = async (req, res) => {
 		mostprevent: await mostPrevent(),
 		mosthold: await mostHold(),
 	}
-	res.render('recordsv2', data);
+	res.render('records', data);
 }
 
 async function mostCaps() {
