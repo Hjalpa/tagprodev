@@ -1964,6 +1964,15 @@ body {
   background: linear-gradient(270deg, rgba(237,237,237,0.75) 0, rgba(237,237,237,0) 50%, rgba(255,255,255,0));
   color: #ff2882;
 }
+.tabs .left,
+.tabs .right {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.tabs .right {
+  margin-left: auto;
+}
 @-webkit-keyframes slideUp {
   0% {
     -webkit-transform: translateY(5%);

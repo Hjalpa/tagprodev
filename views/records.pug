@@ -9,11 +9,16 @@ block content
 			h2= title
 
 		.tabs
-			a(href="/records" class=(season === false ? 'active' : '')) All-Time
-			a(href="/records?season=2" class=(season === '2' ? 'active' : '')) Season 2
-			a(href="/records?season=1" class=(season === '1' ? 'active' : '')) Season 1
+			.left
+				a(href="/records" class=(season === false ? 'active' : '')) All-Time
+				a(href="/records?season=2" class=(season === '2' ? 'active' : '')) Season 2
+				a(href="/records?season=1" class=(season === '1' ? 'active' : '')) Season 1
+			.right
+				a(href="/records" class=(elo === false ? 'active' : '')) High ELO
+				a(href="/records?elo=low" class=(elo === 'low' ? 'active' : '')) Low ELO
 
 		section.stats-card-wrapper.stats-records
+
 
 			.stats-card
 				header
@@ -38,51 +43,6 @@ block content
 									)= n.date
 								td.text-c= n.cap
 
-			.stats-card
-				header
-					h3 Powerups
-
-				table
-					thead
-						tr
-							th.text-l
-							th.text-l
-							th.text-l
-							th.text-c Every
-
-					tbody
-						each n, key in mostpups
-							tr
-								td.text-l.pos= n.rank
-								td.text-l.name= n.player
-								td.text-l.date
-									a(
-										href= 'https://tagpro.eu/?match=' + n.euid
-									)= n.date
-								td.text-c= n.pup
-
-			.stats-card
-				header
-					h3 Tagpros
-
-				table
-					thead
-						tr
-							th.text-l
-							th.text-l
-							th.text-l
-							th.text-c Every
-
-					tbody
-						each n, key in mosttagpros
-							tr
-								td.text-l.pos= n.rank
-								td.text-l.name= n.player
-								td.text-l.date
-									a(
-										href= 'https://tagpro.eu/?match=' + n.euid
-									)= n.date
-								td.text-c= n.pup
 
 			.stats-card
 				header
@@ -131,6 +91,29 @@ block content
 										href= 'https://tagpro.eu/?match=' + n.euid
 									)= n.date
 								td.text-c= n.grab
+
+			.stats-card
+				header
+					h3 Tags
+
+				table
+					thead
+						tr
+							th.text-c
+							th.text-l
+							th.text-l
+							th.text-c Every
+
+					tbody
+						each n, key in mosttags
+							tr
+								td.text-l.pos= n.rank
+								td.text-l.name= n.player
+								td.text-l.date
+									a(
+										href= 'https://tagpro.eu/?match=' + n.euid
+									)= n.date
+								td.text-c= n.tag
 
 			.stats-card
 				header
@@ -226,20 +209,23 @@ block content
 
 
 
+
+
+
 			.stats-card
 				header
-					h3 Tags
+					h3 Powerups
 
 				table
 					thead
 						tr
-							th.text-c
+							th.text-l
 							th.text-l
 							th.text-l
 							th.text-c Every
 
 					tbody
-						each n, key in mosttags
+						each n, key in mostpups
 							tr
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
@@ -247,4 +233,45 @@ block content
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
 									)= n.date
-								td.text-c= n.tag
+								td.text-c= n.pup
+
+			.stats-card
+				header
+					h3 Tagpros
+
+				table
+					thead
+						tr
+							th.text-l
+							th.text-l
+							th.text-l
+							th.text-c Every
+
+					tbody
+						each n, key in mosttagpros
+							tr
+								td.text-l.pos= n.rank
+								td.text-l.name= n.player
+								td.text-l.date
+									a(
+										href= 'https://tagpro.eu/?match=' + n.euid
+									)= n.date
+								td.text-c= n.pup
+
+			.stats-card
+				header
+					h3 Win Streak
+
+				table
+					thead
+						tr
+							th.text-l
+							th.text-l
+							th.text-c(style="width:80px") Streak
+
+					tbody
+						each n, key in winstreak
+							tr
+								td.text-l.pos= n.rank
+								td.text-l.name= n.player
+								td.text-c= n.streak

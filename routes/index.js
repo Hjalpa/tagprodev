@@ -16,4 +16,6 @@ router.use('/stats',  require('./stats'))
 router.use('/compare',  require('./compare'))
 router.use('/records',  require('./records'))
 
+router.use((req, res) => res.status(404).render('404'))
+
 module.exports = router
