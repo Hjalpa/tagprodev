@@ -1,12 +1,17 @@
 extends layouts/_layout.pug
 
 block title
-	title All-Time Records Per Game
+	title= title
 
 block content
 	main#main
 		header
-			h2 All-Time Records Per Game
+			h2= title
+
+		.tabs
+			a(href="/records" class=(season === false ? 'active' : '')) All-Time
+			a(href="/records?season=2" class=(season === '2' ? 'active' : '')) Season 2
+			a(href="/records?season=1" class=(season === '1' ? 'active' : '')) Season 1
 
 		section.stats-card-wrapper.stats-records
 

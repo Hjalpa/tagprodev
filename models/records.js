@@ -3,26 +3,56 @@ const util = require ('../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
+	try {
+		// default to all seasons
+		let filters =  {
+			where: 'WHERE ELO >= 2000 AND duration >= 360'
+		}
+		let title = 'All-Time Records'
 
-	let data = {
-		nav: 'records',
-		mostcaps: await mostCaps(),
-		mostpups: await mostPups(),
-		mosttagpros: await mostTagpros(),
+		if(req.query.season) {
+			// season 2
+			if(req.query.season === '2') {
+				filters =  {
+					where: 'WHERE ELO >= 2000 AND duration >= 420 AND seasonid = 1'
+				}
+				title = 'Season 2 Records'
+			}
+			// season 1
+			else if(req.query.season === '1') {
+				filters =  {
+					where: 'WHERE ELO >= 2000 AND duration >= 420 AND seasonid = 2'
+				}
+				title = 'Season 1 Records'
+			}
+			else
+				throw 'invalid season'
+		}
 
-		mostreturns: await mostReturns(),
-		mostquickreturns: await mostQuickReturns(),
-		mostkeyreturns: await mostKeyReturns(),
+		let data = {
+			title,
+			season: (req.query.season) ? req.query.season : false,
+			nav: 'records',
+			mostcaps: await mostCaps(filters),
+			mostpups: await mostPups(filters),
+			mosttagpros: await mostTagpros(filters),
 
-		mosttags: await mostTags(),
-		mostgrabs: await mostGrabs(),
-		mostprevent: await mostPrevent(),
-		mosthold: await mostHold(),
+			mostreturns: await mostReturns(filters),
+			mostquickreturns: await mostQuickReturns(filters),
+			mostkeyreturns: await mostKeyReturns(filters),
+
+			mosttags: await mostTags(filters),
+			mostgrabs: await mostGrabs(filters),
+			mostprevent: await mostPrevent(filters),
+			mosthold: await mostHold(filters),
+		}
+		res.render('records', data);
+	} catch(e) {
+		res.status(400).json({error: e})
 	}
-	res.render('records', data);
 }
 
-async function mostCaps() {
+async function mostCaps(filters) {
 	let raw = await db.select(`
 		select
 			rank() OVER (
@@ -35,15 +65,15 @@ async function mostCaps() {
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE elo >= 2000 AND cap > 1
-		ORDER BY cap ASC
+		${filters.where} AND cap > 0
+ 		ORDER BY cap ASC
 		LIMIT 10
 	`, [], 'all')
 
 	return raw
 }
 
-async function mostPups() {
+async function mostPups(filters) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -58,7 +88,7 @@ async function mostPups() {
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE (pup_jj+pup_rb+pup_tp) > 1 AND elo >= 2000
+		${filters.where} AND (pup_jj+pup_rb+pup_tp) > 0
 		ORDER BY pup ASC
 		LIMIT 10
 	`, [], 'all')
@@ -66,7 +96,7 @@ async function mostPups() {
 	return raw
 }
 
-async function mostTagpros() {
+async function mostTagpros(filters) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -81,7 +111,7 @@ async function mostTagpros() {
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE pup_tp > 1 AND elo >= 2000
+		${filters.where} AND pup_tp > 0
 		ORDER BY pup ASC
 		LIMIT 10
 	`, [], 'all')
@@ -89,7 +119,7 @@ async function mostTagpros() {
 	return raw
 }
 
-async function mostReturns() {
+async function mostReturns(filters) {
 	let raw = await db.select(`
 		select
 			rank() OVER (
@@ -102,7 +132,7 @@ async function mostReturns() {
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE elo >= 2000 AND return > 1
+		${filters.where} AND return > 0
 		ORDER BY returns ASC
 		LIMIT 10
 	`, [], 'all')
@@ -110,7 +140,7 @@ async function mostReturns() {
 	return raw
 }
 
-async function mostQuickReturns() {
+async function mostQuickReturns(filters) {
 	let raw = await db.select(`
 		select
 			rank() OVER (
@@ -123,34 +153,34 @@ async function mostQuickReturns() {
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE elo >= 2000 AND quick_return > 1
+		${filters.where} AND quick_return > 0
 		ORDER BY quickreturns ASC
 		LIMIT 10
 	`, [], 'all')
 	return raw
 }
 
-async function mostKeyReturns() {
+async function mostKeyReturns(filters) {
 	let raw = await db.select(`
 		select
 			rank() OVER (
-				ORDER BY play_time / key_return::NUMERIC ASC
+				ORDER BY play_time::NUMERIC / key_return::NUMERIC ASC
 			) rank,
 			player.name as player,
-			ROUND(play_time / key_return::NUMERIC, 2) as keyreturns,
+			ROUND(play_time::NUMERIC / key_return::NUMERIC, 2) as keyreturns,
 			euid,
 			TO_CHAR(date, 'DD Mon YY') as date
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE elo >= 2000 AND key_return > 1
+		${filters.where} AND key_return > 0
 		ORDER BY keyreturns ASC
 		LIMIT 10
 	`, [], 'all')
 	return raw
 }
 
-async function mostTags() {
+async function mostTags(filters) {
 	let raw = await db.select(`
 		select
 			rank() OVER (
@@ -163,7 +193,7 @@ async function mostTags() {
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE tag > 10 AND elo >= 2000
+		${filters.where} AND tag > 0
 		ORDER BY tag ASC
 		LIMIT 10
 	`, [], 'all')
@@ -171,11 +201,11 @@ async function mostTags() {
 	return raw
 }
 
-async function mostPrevent() {
+async function mostPrevent(filters) {
 	let raw = await db.select(`
 		select
 			rank() OVER (
-				ORDER BY     prevent / (play_time::numeric / 60) DESC
+				ORDER BY prevent / (play_time::numeric / 60) DESC
 			) rank,
 			player.name as player,
 			ROUND(prevent / (play_time::numeric / 60), 2) as prevent,
@@ -184,7 +214,7 @@ async function mostPrevent() {
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE prevent > 1 AND elo >= 2000 AND duration >= 480
+		${filters.where} AND prevent > 0
 		ORDER BY prevent DESC
 		LIMIT 10
 	`, [], 'all')
@@ -192,7 +222,7 @@ async function mostPrevent() {
 	return raw
 }
 
-async function mostGrabs() {
+async function mostGrabs(filters) {
 	let raw = await db.select(`
 		select
 			rank() OVER (
@@ -205,7 +235,7 @@ async function mostGrabs() {
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE grab > 1 AND elo >= 2000
+		${filters.where} AND grab > 0
 		ORDER BY grab ASC
 		LIMIT 10
 	`, [], 'all')
@@ -213,9 +243,7 @@ async function mostGrabs() {
 	return raw
 }
 
-
-
-async function mostHold() {
+async function mostHold(filters) {
 	let raw = await db.select(`
 		select
 			rank() OVER (
@@ -228,7 +256,7 @@ async function mostHold() {
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
-		WHERE hold > 1 AND elo >= 2000 AND duration >= 480
+		${filters.where} AND hold > 0
 		ORDER BY hold DESC
 		LIMIT 10
 	`, [], 'all')
