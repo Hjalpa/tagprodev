@@ -59,7 +59,9 @@ async function mostCaps(filters) {
 				ORDER BY ROUND(play_time::NUMERIC / cap, 2) ASC
 			) rank,
 			player.name as player,
-			ROUND(play_time::NUMERIC / cap, 2) as cap,
+			TO_CHAR(
+				ROUND(play_time::NUMERIC / cap, 2) * interval '1 sec'
+			, 'MI:SS') as cap,
 			euid,
 			TO_CHAR(date, 'DD Mon YY') as date
 		FROM playergame
@@ -167,7 +169,9 @@ async function mostKeyReturns(filters) {
 				ORDER BY play_time::NUMERIC / key_return::NUMERIC ASC
 			) rank,
 			player.name as player,
-			ROUND(play_time::NUMERIC / key_return::NUMERIC, 2) as keyreturns,
+			TO_CHAR(
+				ROUND(play_time::NUMERIC / key_return::NUMERIC, 2) * interval '1 sec'
+			, 'MI:SS') as keyreturns,
 			euid,
 			TO_CHAR(date, 'DD Mon YY') as date
 		FROM playergame
