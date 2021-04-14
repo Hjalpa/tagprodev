@@ -169,8 +169,4 @@ app.filters = (async() => {
 
 if(document.querySelector('.page-filter')) {
 	app.filters()
-
-	// document.querySelector('.button-fake').addEventListener('click', (e) => {
-	// 	document.querySelector('.page-select .drop-down_list').classList.add('active')
-	// })
 }

@@ -11,14 +11,13 @@ block content
 		.tabs
 			.left
 				a(href="/records" class=(season === false ? 'active' : '')) All-Time
-				a(href="/records?season=2" class=(season === '2' ? 'active' : '')) Season 2
-				a(href="/records?season=1" class=(season === '1' ? 'active' : '')) Season 1
+				a(href="/records?season=2" class=(season === '2' ? 'active' : '') data-param='season=2') Season 2
+				a(href="/records?season=1" class=(season === '1' ? 'active' : '') data-param='season=1') Season 1
 			.right
 				a(href="/records" class=(elo === false ? 'active' : '')) High ELO
-				a(href="/records?elo=low" class=(elo === 'low' ? 'active' : '')) Low ELO
+				a(href="/records?elo=low" class=(elo === 'low' ? 'active' : '') data-param='elo=low') Low ELO
 
 		section.stats-card-wrapper.stats-records
-
 
 			.stats-card
 				header
@@ -43,7 +42,6 @@ block content
 									)= n.date
 								td.text-c= n.cap
 
-
 			.stats-card
 				header
 					h3 Hold
@@ -66,8 +64,6 @@ block content
 										href= 'https://tagpro.eu/?match=' + n.euid
 									)= n.date
 								td.text-c= n.hold
-
-
 
 			.stats-card
 				header
@@ -206,11 +202,6 @@ block content
 										href= 'https://tagpro.eu/?match=' + n.euid
 									)= n.date
 								td.text-c= n.keyreturns
-
-
-
-
-
 
 			.stats-card
 				header

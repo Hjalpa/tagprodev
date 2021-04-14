@@ -2,20 +2,38 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
 
 const fs = require('fs')
 const express = require('express')
+const cache = require('memory-cache')
 const router = express.Router()
 const db = require('../lib/db')
 const exec = require('child_process').exec
 
 // router.get('/.well-known/acme-challenge/rNyakLXFOhNqszyN3dQIc8ylfC0GkOJzXxHpMmTfyI4', async (req, res) => res.send('rNyakLXFOhNqszyN3dQIc8ylfC0GkOJzXxHpMmTfyI4.qHHteSBfKXYnAnQTAXoiP82unkcnaaMWYrV7cwF4zAk'))
 
-router.get('/', (req, res) => require('../models/leaderboards').init(req, res))
-router.get('/log', (req, res) => require('../models/log').init(req, res))
+let memCache = new cache.Cache()
+let cacheMiddleware = (duration) => {
+	return (req, res, next) => {
+		let key =  '__express__' + req.originalUrl || req.url
+		let cacheContent = memCache.get(key)
+		if(cacheContent){
+			res.send( cacheContent )
+			return
+		}else{
+			res.sendResponse = res.send
+			res.send = (body) => {
+				memCache.put(key,body,duration*1000)
+				res.sendResponse(body)
+			}
+			next()
+		}
+	}
+}
 
+router.get('/', cacheMiddleware(3600), (req, res) => require('../models/leaderboards').init(req, res))
+router.use('/records', cacheMiddleware(3600), require('./records'))
+router.get('/log', (req, res) => require('../models/log').init(req, res))
 router.use('/api',  require('./api'))
 router.use('/stats',  require('./stats'))
 router.use('/compare',  require('./compare'))
-router.use('/records',  require('./records'))
-
 router.use((req, res) => res.status(404).render('404'))
 
 module.exports = router
