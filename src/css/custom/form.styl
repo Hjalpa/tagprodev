@@ -10,6 +10,7 @@ select
 	width: $field-width
 	font-family: $font-family
 	border: none
+	border-bottom: 1px solid $field-border
 	background-color: $field-bg
 	color: $field-color
 	border-radius: $field-radius
@@ -17,9 +18,8 @@ select
 	max-width $field-max-width
 
 	&:focus
-		fieldoutline()
+		border-bottom-color: $field-outline
 		outline: 0
-		color white
 	&.error, &:invalid
 		fieldoutline($error-bg)
 	&.valid
