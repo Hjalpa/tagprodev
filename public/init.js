@@ -5,46 +5,13 @@
 
 const app = {}
 
-if(document.querySelector('.stats-records')) {
-	let tabs = document.querySelector('.tabs')
-	tabs.addEventListener('click', (e) => {
-		e.preventDefault()
-
-		let left = util.findParentBySelector(e.target, ".left")
-		let right = util.findParentBySelector(e.target, ".right")
-
-		let filter = []
-		let link  = util.findParentBySelector(e.target, "a")
-
-		if(left) {
-			if(document.querySelector('.tabs .right .active').innerText === 'Low ELO')
-				filter.push('elo=low')
-
-			if(link.hasAttribute('data-param'))
-				filter.push(link.dataset.param)
-		}
-		else if (right) {
-			if(document.querySelector('.tabs .left .active').innerText === 'Season 2')
-				filter.push('season=2')
-			else if(document.querySelector('.tabs .left .active').innerText === 'Season 1')
-				filter.push('season=1')
-
-			if(link.hasAttribute('data-param'))
-				filter.push(link.dataset.param)
-		}
-
-		let url = window.location.origin + window.location.pathname
-		if(filter.length > 0)
-			url = url + '?' + filter.join('&')
-
-		window.location.href = url
-	})
-}
-
 app.compare = (async() => {
 	let form = document.querySelector('form')
 	form.querySelector('button').addEventListener('click', async (e) => {
 		e.preventDefault()
+
+		document.querySelector('.compare-results').style.display = 'block'
+
 		let players = {
 			player1: form.querySelector('.player1 select').value,
 			player2: form.querySelector('.player2 select').value,
@@ -74,8 +41,6 @@ app.compare = (async() => {
 				// set values
 				document.querySelector('.'+stat+' .player1').innerText = data[0][stat]
 				document.querySelector('.'+stat+' .player2').innerText = data[1][stat]
-
-
 
 				// set highlight
 				if(data[0][stat] > data[1][stat])
@@ -262,6 +227,42 @@ app.filters = (async() => {
 
 if(document.querySelector('.page-filter')) {
 	app.filters()
+}
+
+if(document.querySelector('.stats-records')) {
+	let tabs = document.querySelector('.tabs')
+	tabs.addEventListener('click', (e) => {
+		e.preventDefault()
+
+		let left = util.findParentBySelector(e.target, ".left")
+		let right = util.findParentBySelector(e.target, ".right")
+
+		let filter = []
+		let link  = util.findParentBySelector(e.target, "a")
+
+		if(left) {
+			if(document.querySelector('.tabs .right .active').innerText === 'Low ELO')
+				filter.push('elo=low')
+
+			if(link.hasAttribute('data-param'))
+				filter.push(link.dataset.param)
+		}
+		else if (right) {
+			if(document.querySelector('.tabs .left .active').innerText === 'Season 2')
+				filter.push('season=2')
+			else if(document.querySelector('.tabs .left .active').innerText === 'Season 1')
+				filter.push('season=1')
+
+			if(link.hasAttribute('data-param'))
+				filter.push(link.dataset.param)
+		}
+
+		let url = window.location.origin + window.location.pathname
+		if(filter.length > 0)
+			url = url + '?' + filter.join('&')
+
+		window.location.href = url
+	})
 }
 
 app.tableSort = (async() => {

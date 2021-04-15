@@ -2,6 +2,9 @@ app.compare = (async() => {
 	let form = document.querySelector('form')
 	form.querySelector('button').addEventListener('click', async (e) => {
 		e.preventDefault()
+
+		document.querySelector('.compare-results').style.display = 'block'
+
 		let players = {
 			player1: form.querySelector('.player1 select').value,
 			player2: form.querySelector('.player2 select').value,
@@ -31,8 +34,6 @@ app.compare = (async() => {
 				// set values
 				document.querySelector('.'+stat+' .player1').innerText = data[0][stat]
 				document.querySelector('.'+stat+' .player2').innerText = data[1][stat]
-
-
 
 				// set highlight
 				if(data[0][stat] > data[1][stat])
