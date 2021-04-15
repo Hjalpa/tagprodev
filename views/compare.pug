@@ -9,148 +9,62 @@ block content
 			h2 Player Comparison
 			p Normalised to an 8 minute game
 
-		form.select_players
+		section.player-comparison__select-wrapper
+			.player-comparison__select
+				.form-group
+					select#select-players(name="state[]" multiple placeholder="Select players" autocomplete="true")
+						each v, k in players
+							option= v.name
 
-			.player1
-				h5 Player 1
-				select
-					option(disabled, selected)
-					each v, k in players
-						option= v.name
-
-			.player2
-				h5 Player 2
-				select
-					option(disabled, selected)
-					each v, k in players
-						option= v.name
-
-			button Compare
+					button.button-secondary Compare
 
 
-		.compare-results
 
-			span.set-head Overview
-			.set
-				.row.player
-					.label Player
-					.player1
-					.player2
-				.row.games
-					.label Games
-					.player1
-					.player2
-				.row.minutes
-					.label Minutes
-					.player1
-					.player2
-				.row.winrate
-					.label Win Rate
-					.player1
-					.player2
-				.row.elo
-					.label Average ELO Game
-					.player1
-					.player2
+			.player-comparison__accordion.compare-results(style="display:none")
+				.player-comparison__stats.name-area
+					.row
+						.label
+						.player-value.player1 123
+						.player-value.player2 asdasd
+						.player-value.player3 asdasdad
+						.player-value.player4 asd
+				ul
+					// overview
+					li.player-comparison__group.active
+						.player-comparison__group-header
+							h3.player-comparison__group-title Overview
+								span.icn
 
-			span.set-head General
-			.set
-				.row.teampossession
-					.label Team Possession
-					.player1
-					.player2
-				.row.teamcapfor
-					.label Team Cap For
-					.player1
-					.player2
-				.row.teamcapagainst
-					.label Team Cap Against
-					.player1
-					.player2
-				.row.tags
-					.label Tags
-					.player1
-					.player2
-				.row.pops
-					.label Pops
-					.player1
-					.player2
-				.row.pups
-					.label Pups
-					.player1
-					.player2
+						.player-comparison__stats
+							.row.games
+								.label Games
+								.player-value 12
+								.player-value 12
+								.player-value 12
+								.player-value 12
+							.row.minutes
+								.label Minutes
+							.row.winrate
+								.label Win Rate
+							.row.elo
+								.label Average ELO Game
 
+					// general
+					// li.player-comparison__group.active
+					// 	.player-comparison__group-header
+					// 		h3.player-comparison__group-title General
+					// 			span.icn
 
-			span.set-head Attacking
-			.set
-				.row.caps
-					.label Caps
-					.player1
-					.player2
-				.row.grabs
-					.label Grabs
-					.player1
-					.player2
-				.row.grabwhilstopponentsprevent
-					.label Grabs Whilst Opponents Prevent
-					.player1
-					.player2
-				.row.grabwhilstopponentshold
-					.label Grabs Whilst Opponents Hold
-					.player1
-					.player2
-				.row.hold
-					.label Hold
-					.player1
-					.player2
-				.row.drops
-					.label Drops
-					.player1
-					.player2
-				.row.dropwithin2tilesfrommybase
-					.label Drops Within 2 Tiles From My Base
-					.player1
-					.player2
-				.row.dropwithin5tilesfrommybase
-					.label Drops Within 5 Tiles From My Base
-					.player1
-					.player2
-
-			span.set-head Defensive
-			.set
-				.row.flaginbase
-					.label Flag In Base
-					.player1
-					.player2
-				.row.prevent
-					.label Prevent
-					.player1
-					.player2
-				.row.returns
-					.label Returns
-					.player1
-					.player2
-				.row.quickreturns
-					.label Quick Returns
-					.player1
-					.player2
-				.row.keyreturns
-					.label Key Returns
-					.player1
-					.player2
-				.row.returnwithin2tilesfromopponentsbase
-					.label Returns Within 2 Tiles From Opponents Base
-					.player1
-					.player2
-				.row.returnwithin5tilesfromopponentsbase
-					.label Returns Within 5 Tiles From Opponents Base
-					.player1
-					.player2
-
-
-			span.set-head Misc
-			.set
-				.row.flaccids
-					.label Flaccids
-					.player1
-					.player2
+					// 	.player-comparison__stats
+					// 		.row.teampossession
+					// 			.label Team Possession
+					// 		.row.teamcapfor
+					// 			.label Team Cap For
+					// 		.row.teamcapagainst
+					// 			.label Team Cap Against
+					// 		.row.tags
+					// 			.label Tags
+					// 		.row.pops
+					// 			.label Pops
+					// 		.row.pups
+					// 			.label Pups

@@ -30,18 +30,20 @@ async function getPlayers() {
 module.exports.data = async (req, res) => await comparePlayers(req, res)
 let comparePlayers = async (req, res) => {
 	try {
-		let where = []
+		let filter = { where: [], data: [] }
+		let num = 1
+		for (let k in req.body) {
+			if(await playerExists(req.body[k])) {
+				filter.where.push('player.name = $'+num)
+				filter.data.push(req.body[k])
+				num++
+			}
+		}
 
-		if(await playerExists(req.body.player1))
-			where.push(req.body.player1)
+		if(filter.data.length <= 1)
+			throw 'cannot compare less than 1 player'
 
-		if(await playerExists(req.body.player2))
-			where.push(req.body.player2)
-
-		if(req.body.player1 === req.body.player2)
-			throw 'cannot compare ' + req.body.player1 + ' with ' + req.body.player2
-
-		let data = await getComparePlayersData(where)
+		let data = await getComparePlayersData(filter)
 
 		res.json(data);
 	}
@@ -59,7 +61,7 @@ async function playerExists(player) {
 	return true
 }
 
-async function getComparePlayersData(where) {
+async function getComparePlayersData(filter) {
 	let raw = await db.select(`
 		SELECT
             player.name as player,
@@ -114,9 +116,9 @@ async function getComparePlayersData(where) {
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		LEFT JOIN game ON game.id = playergame.gameid
-		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000) AND (player.name = $1 OR player.name = $2)
+		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000) AND (${filter.where.join(' OR ')})
 		GROUP BY player.name
-	`, where, 'all')
+	`, filter.data, 'all')
 
 	return raw
 }

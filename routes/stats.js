@@ -15,11 +15,11 @@ router.get('/league-table', (req, res) => require('../models/stats/league-table'
 router.get('/summary', (req, res) => require('../models/stats/summary').init(req, res))
 router.get('/summary/total', (req, res) => require('../models/stats/summary-total').init(req, res))
 
-router.get('/attacking', (req, res) => require('../models/stats/attacking').init(req, res))
-router.get('/attacking/od', (req, res) => require('../models/stats/attacking-od').init(req, res))
+router.get('/offense', (req, res) => require('../models/stats/offense').init(req, res))
+router.get('/offense/od', (req, res) => require('../models/stats/offense-od').init(req, res))
 
-router.get('/defending', (req, res) => require('../models/stats/defending').init(req, res))
-router.get('/defending/returns', (req, res) => require('../models/stats/defending-returns').init(req, res))
+router.get('/defense', (req, res) => require('../models/stats/defense').init(req, res))
+router.get('/defense/returns', (req, res) => require('../models/stats/defense-returns').init(req, res))
 
 router.get('/pups', (req, res) => require('../models/stats/pups').init(req, res))
 router.get('/miscellaneous', (req, res) => require('../models/stats/miscellaneous').init(req, res))
