@@ -29,6 +29,15 @@ tpm.call = async () => {
 			}
 		}
 	}
+	await axios.get(`https://tagpro.dev`)
+	await axios.get(`https://tagpro.dev/?season=2`)
+	await axios.get(`https://tagpro.dev/?season=1`)
+	await axios.get(`https://tagpro.dev/records`)
+	await axios.get(`https://tagpro.dev/records?season=2`)
+	await axios.get(`https://tagpro.dev/records?season=1`)
+	await axios.get(`https://tagpro.dev/records?elo=low`)
+	await axios.get(`https://tagpro.dev/records?season=2&elo=low`)
+	await axios.get(`https://tagpro.dev/records?season=1&elo=low`)
 	process.kill(process.pid)
 }
 

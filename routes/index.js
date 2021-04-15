@@ -9,6 +9,7 @@ const exec = require('child_process').exec
 
 // router.get('/.well-known/acme-challenge/rNyakLXFOhNqszyN3dQIc8ylfC0GkOJzXxHpMmTfyI4', async (req, res) => res.send('rNyakLXFOhNqszyN3dQIc8ylfC0GkOJzXxHpMmTfyI4.qHHteSBfKXYnAnQTAXoiP82unkcnaaMWYrV7cwF4zAk'))
 
+// https://scotch.io/tutorials/how-to-optimize-node-requests-with-simple-caching-strategies
 let memCache = new cache.Cache()
 let cacheMiddleware = (duration) => {
 	return (req, res, next) => {

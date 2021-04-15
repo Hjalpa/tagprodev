@@ -1,10 +1,11 @@
 doctype html
-html(lang='en')
+html
   head
     block title
     meta(charset="utf-8")
-    link(rel='stylesheet' href='/init.css')
     script(src='/init.js' async)
+    link(rel='stylesheet' href='/init.css')
+    link(rel='icon', href='/favicon.svg')
   body
     div#page-wrapper
       include ../includes/_header.pug

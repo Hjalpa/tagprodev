@@ -33,8 +33,11 @@ if(document.querySelector('.stats-records')) {
 				filter.push(link.dataset.param)
 		}
 
-		const url = window.location.origin + window.location.pathname
-		window.location.href = url + '?' + filter.join('&')
+		let url = window.location.origin + window.location.pathname
+		if(filter.length > 0)
+			url = url + '?' + filter.join('&')
+
+		window.location.href = url
 	})
 }
 
