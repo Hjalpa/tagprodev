@@ -1,7 +1,7 @@
 app.compare = (async() => {
 
 	new TomSelect('#select-players',{
-		maxItems: 4,
+		maxItems: 6,
 		plugins: {
 			remove_button:{
 				title:'Remove',
@@ -54,8 +54,6 @@ app.compare = (async() => {
 	form.querySelector('button').addEventListener('click', async (e) => {
 		e.preventDefault()
 
-		document.querySelector('.compare-results').style.display = 'block'
-
 		let options = form.querySelector('select').selectedOptions
 		let players = Array.from(options).map(({ value }) => value)
 
@@ -71,37 +69,38 @@ app.compare = (async() => {
 		let data = await raw.json()
 
 		if(data) {
-			let keys = Object.keys(data[0])
 
-			// remove all highlight
-			document.querySelectorAll('.highlight').forEach(e => e.classList.remove('highlight'))
+			// remove all values
+			document.querySelectorAll('.player-value').forEach(e => e.remove())
 
-			for (let k in keys) {
-				let stat = keys[k]
-				if(stat === 'player') {
-					console.log(k)
-					continue
+			for(let playerid in data) {
+				let player = data[playerid].player
+				for (let stat in data[playerid]) {
+					let value = data[playerid][stat]
+
+					// set value if stat exists
+					if(document.querySelector('.'+stat)) {
+						let div = document.createElement('div')
+						div.classList.add('player-value')
+						div.innerText = value
+
+						util.insertAfter(div, document.querySelector('.'+stat+' .label'))
+					}
+
+
+					// set highlight
+					// if(data[0][stat] > data[1][stat])
+					// 	document.querySelector('.'+stat+' .player1').classList.add('highlight')
+					// else if(data[0][stat] < data[1][stat])
+					// 	document.querySelector('.'+stat+' .player2').classList.add('highlight')
 				}
-
-				// find stat (if exists)
-				// loop through data entries for each player for this stat
-
-				// console.log(keys[k])
-
-
-				// set values
-				document.querySelector('.'+stat+' .player1').innerText = data[0][stat]
-				document.querySelector('.'+stat+' .player2').innerText = data[1][stat]
-
-				// set highlight
-				// if(data[0][stat] > data[1][stat])
-				// 	document.querySelector('.'+stat+' .player1').classList.add('highlight')
-				// else if(data[0][stat] < data[1][stat])
-				// 	document.querySelector('.'+stat+' .player2').classList.add('highlight')
 			}
+
+			document.querySelector('.compare-results').style.display = 'block'
 		}
 
 	})
+
 })
 
 if(document.querySelector('.player-comparison__select'))

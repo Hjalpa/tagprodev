@@ -22,12 +22,8 @@ block content
 
 			.player-comparison__accordion.compare-results(style="display:none")
 				.player-comparison__stats.name-area
-					.row
+					.row.player
 						.label
-						.player-value.player1 123
-						.player-value.player2 asdasd
-						.player-value.player3 asdasdad
-						.player-value.player4 asd
 				ul
 					// overview
 					li.player-comparison__group.active
@@ -38,33 +34,63 @@ block content
 						.player-comparison__stats
 							.row.games
 								.label Games
-								.player-value 12
-								.player-value 12
-								.player-value 12
-								.player-value 12
-							.row.minutes
-								.label Minutes
+							.row.time
+								.label Time
 							.row.winrate
 								.label Win Rate
 							.row.elo
 								.label Average ELO Game
+							.row.mercies
+								.label Mercies
+							.row.cleansheets
+								.label Clean Sheets
+							.row.overtimes
+								.label Overtimes
+							.row.overtimewinrate
+								.label Overtime Win Rate
+
+					// attacking
+					li.player-comparison__group.active
+						.player-comparison__group-header
+							h3.player-comparison__group-title Attacking
+								span.icn
+
+						.player-comparison__stats
+
+							.row.caps
+								.label Caps
+
+							.row.hold
+								.label Hold
+
+
+							.row.grabs
+								.label Grabs
+							.row.grabswhilstopponentsprevent
+								.label Grabs Whilst Opponents Prevent
+							.row.grabswhilstopponentshold
+								.label Grabs Whilst Opponents Hold
+
+							.row.drops
+								.label Drops
+							.row.dropwithin2tilesfrommybase
+								.label Drops Within 2 Tiles From Capping
+							.row.dropwithin5tilesfrommybase
+								.label Drops Within 5 Tiles From Capping
+
+							.row.flaccids
+								.label Flaccids
 
 					// general
-					// li.player-comparison__group.active
-					// 	.player-comparison__group-header
-					// 		h3.player-comparison__group-title General
-					// 			span.icn
+					li.player-comparison__group.active
+						.player-comparison__group-header
+							h3.player-comparison__group-title Attacking
+								span.icn
 
-					// 	.player-comparison__stats
-					// 		.row.teampossession
-					// 			.label Team Possession
-					// 		.row.teamcapfor
-					// 			.label Team Cap For
-					// 		.row.teamcapagainst
-					// 			.label Team Cap Against
-					// 		.row.tags
-					// 			.label Tags
-					// 		.row.pops
-					// 			.label Pops
-					// 		.row.pups
-					// 			.label Pups
+						.player-comparison__stats
+							.row.teampossession
+								.label Team Possession
+							.row.teamcapfor
+								.label Team Cap For
+							.row.teamcapagainst
+								.label Team Cap Against

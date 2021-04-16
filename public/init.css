@@ -2422,7 +2422,6 @@ body {
   border-left-color: transparent;
 }
 .player-comparison__select-wrapper {
-  max-width: 50rem;
   margin: 0 auto;
 }
 .player-comparison__select .form-group {
@@ -2505,6 +2504,7 @@ body {
   -webkit-box-pack: start;
       -ms-flex-pack: start;
           justify-content: flex-start;
+  min-width: 310px;
 }
 .player-comparison__stats .row .player-value {
   border-right: 1px solid #e8e8e8;
