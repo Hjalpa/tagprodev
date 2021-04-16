@@ -10,7 +10,7 @@ const app = {}
 app.compare = (async() => {
 
 	new TomSelect('#select-players',{
-		maxItems: 6,
+		maxItems: 8,
 		plugins: {
 			remove_button:{
 				title:'Remove',
@@ -78,37 +78,92 @@ app.compare = (async() => {
 		let data = await raw.json()
 
 		if(data) {
-
-			// remove all values
-			document.querySelectorAll('.player-value').forEach(e => e.remove())
-
-			for(let playerid in data) {
-				let player = data[playerid].player
-				for (let stat in data[playerid]) {
-					let value = data[playerid][stat]
-
-					// set value if stat exists
-					if(document.querySelector('.'+stat)) {
-						let div = document.createElement('div')
-						div.classList.add('player-value')
-						div.innerText = value
-
-						util.insertAfter(div, document.querySelector('.'+stat+' .label'))
-					}
-
-
-					// set highlight
-					// if(data[0][stat] > data[1][stat])
-					// 	document.querySelector('.'+stat+' .player1').classList.add('highlight')
-					// else if(data[0][stat] < data[1][stat])
-					// 	document.querySelector('.'+stat+' .player2').classList.add('highlight')
-				}
-			}
+			await render(data)
+			await highlight()
 
 			document.querySelector('.compare-results').style.display = 'block'
 		}
 
 	})
+
+	async function render(data) {
+
+		// remove all values
+		document.querySelectorAll('.player-value').forEach(e => e.remove())
+
+		for(let playerid in data) {
+			let player = data[playerid].player
+			for (let stat in data[playerid]) {
+				let value = data[playerid][stat]
+
+				// set value if stat exists
+				if(document.querySelector('.'+stat)) {
+					let div = document.createElement('div')
+					div.classList.add('player-value')
+					div.innerText = value
+
+					util.insertAfter(div, document.querySelector('.'+stat+' .label'))
+				}
+			}
+		}
+
+	}
+
+
+	async function highlight() {
+		let data = {}
+
+		// each row
+		document.querySelectorAll('.row:not(.player)').forEach((row) => {
+			let label = row.querySelector('.label').innerText
+
+			// each player value
+			row.querySelectorAll('.player-value').forEach((pv) => {
+				let value = getValue(pv.innerText)
+
+				if(!data.hasOwnProperty(label)) {
+					data[label] = value
+					pv.classList.add('highlight')
+				}
+				else if(value >= data[label]) {
+
+					if(value > data[label])
+						row.querySelectorAll('.highlight').forEach(e => e.classList.remove('highlight'))
+
+					pv.classList.add('highlight')
+
+					data[label] = value
+				}
+
+			})
+
+		})
+
+
+		function getValue(value) {
+
+			// MM:SS
+			if((/^([0-9][0-9]):[0-5][0-9]$/).test(value)){
+				// console.log('MM:SS', value)
+				let a = value.replace(':', '.')
+				return parseFloat(a)
+			}
+
+			// HH:MM:SS
+			else if (value.match(/\d+:[0-5]\d/)) {
+				let a = value.split(':')
+				return (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2])
+			}
+
+			else
+				return parseFloat(value)
+
+		}
+
+	}
+
+
+
 
 })
 
