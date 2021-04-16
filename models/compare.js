@@ -20,7 +20,7 @@ async function getPlayers() {
 		LEFT JOIN player ON player.id = playergame.playerid
 		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
 		GROUP BY player.name
-		HAVING count(*) > 50
+		HAVING count(*) > 30
 		ORDER BY player.name ASC
 	`, [], 'all')
 
@@ -77,9 +77,6 @@ async function getComparePlayersData(filter) {
                 ) * 100
             , 2) || '%' as winrate,
 			ROUND((sum(game.elo)::FLOAT / count(*))::numeric , 2) as elo,
-			count(*) filter (WHERE (cap_team_for - cap_team_against = 5)) as mercies,
-			count(*) filter (WHERE cap_team_against = 0) as cleansheets,
-			count(*) filter (WHERE play_time > 480) as overtimes,
             ROUND(
                 (
                     count(*) filter (WHERE result_half_win = 1 AND play_time > 480)
@@ -88,52 +85,109 @@ async function getComparePlayersData(filter) {
                 ) * 100
             , 2) || '%' as overtimewinrate,
 
+			-- count(*) filter (WHERE (cap_team_for - cap_team_against = 5)) as mercies,
+			-- count(*) filter (WHERE cap_team_against = 0) as cleansheets,
+			-- count(*) filter (WHERE play_time > 480) as overtimes,
 
-
-
-			-- attacking
-			ROUND((sum(play_time) - (sum(hold_team_against) - sum(hold_whilst_opponents_do))) / (sum(play_time) / 60)::numeric, 2) as flaginbase,
+			-- offense
 			ROUND(sum(cap) / (sum(play_time) / 60)::numeric, 2) * 8 as caps,
-			TO_CHAR((ROUND(sum(hold) / (sum(play_time) / 60)::numeric, 2) * 8) * interval '1 sec', 'mi:ss') as hold,
+			ROUND(sum(hold) / (sum(play_time) / 60)::numeric, 2) * 8 as hold,
+			ROUND(sum(hold_whilst_opponents_dont) / (sum(play_time) / 60)::numeric, 2) * 8 as holdwhilstopponentsdont,
+			ROUND(sum(hold_whilst_team_prevent_time) / (sum(play_time) / 60)::numeric, 2) * 8 as holdwhilstteamprevent,
+			ROUND(sum(long_hold) / (sum(play_time) / 60)::numeric, 2) * 8 as longhold,
+            ROUND(
+                (
+                    sum(long_hold_and_cap)::numeric
+                    /
+					sum(long_hold)::numeric
+                ) * 100
+            , 2) || '%' as longholdcaprate,
+
+
+			ROUND((sum(handoff_drop) + sum(handoff_pickup)) / (sum(play_time) / 60)::numeric, 2) * 8 as handoffs,
+			ROUND(sum(handoff_drop) / (sum(play_time) / 60)::numeric, 2) * 8 as handoffdrops,
+			ROUND(sum(handoff_pickup) / (sum(play_time) / 60)::numeric, 2) *8 as handoffpickups,
+
+
+
+
+
 			ROUND(sum(grab) / (sum(play_time) / 60)::numeric, 2) * 8 as grabs,
 			ROUND(sum(grab_whilst_opponents_prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as grabswhilstopponentsprevent,
 			ROUND(sum(grab_whilst_opponents_hold) / (sum(play_time) / 60)::numeric, 2) * 8 as grabswhilstopponentshold,
+			ROUND(sum(grab_whilst_opponents_hold_long) / (sum(play_time) / 60)::numeric, 2) * 8 as grabswhilstopponentsholdlong,
+
 			ROUND(sum(drop) / (sum(play_time) / 60)::numeric, 2) * 8 as drops,
             ROUND(sum(drop_within_2_tiles_from_my_base) / (sum(play_time) / 60)::numeric, 2) * 8 as dropwithin2tilesfrommybase,
-            ROUND(sum(drop_within_5_tiles_from_my_base) / (sum(play_time) / 60)::numeric, 2) * 8  as dropwithin5tilesfrommybase,
-            ROUND(sum(flaccid) / (sum(play_time) / 60)::numeric, 2) * 10 as flaccids,
+            ROUND(sum(drop_within_5_tiles_from_my_base) / (sum(play_time) / 60)::numeric, 2) * 8 as dropwithin5tilesfrommybase,
+            ROUND(sum(flaccid) / (sum(play_time) / 60)::numeric, 2) * 8 as flaccids,
 
-			-- defensive
-			ROUND((sum(play_time) - sum(hold_team_against)) / (sum(play_time) / 60)::numeric, 2) * 8 as flaginbase,
-            ROUND(sum(prevent) / (sum(play_time) / 60)::numeric, 2) * 10 as prevent,
-			ROUND(sum(return) / (sum(play_time) / 60)::numeric, 2) * 10 as returns,
-            ROUND(sum(quick_return) / (sum(play_time) / 60)::numeric, 2) * 10 as quickreturns,
-            ROUND(sum(key_return) / (sum(play_time) / 60)::numeric, 2) * 10 as keyreturns,
-            ROUND(sum(return_within_2_tiles_from_opponents_base) / (sum(play_time) / 60)::numeric, 2) * 10 as returnwithin2tilesfromopponentsbase,
-            ROUND(sum(return_within_5_tiles_from_opponents_base) / (sum(play_time) / 60)::numeric, 2) * 10 as returnwithin5tilesfromopponentsbase,
+			-- defense
 
-
-
+            ROUND(
+                (
+                    (sum(play_time)::numeric - sum(hold_team_against))::numeric
+                    /
+					sum(play_time)::numeric
+                ) * 100
+            , 2) || '%' as flaginbase,
 
 
 
+            ROUND(sum(prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as prevent,
+			ROUND(sum(prevent_whilst_team_hold_time) / (sum(play_time) / 60)::numeric, 2) * 8 as preventwhilstteamhold,
+			ROUND(sum(return) / (sum(play_time) / 60)::numeric, 2) * 8 as returns,
+            ROUND(sum(quick_return) / (sum(play_time) / 60)::numeric, 2) * 8 as quickreturns,
+            ROUND(sum(key_return) / (sum(play_time) / 60)::numeric, 2) * 8 as keyreturns,
+			ROUND((sum(reset_from_my_return) + sum(reset_from_my_prevent)) / (sum(play_time) / 60)::numeric, 2) * 8 as resets,
+			ROUND(sum(reset_from_my_return) / (sum(play_time) / 60)::numeric, 2) * 8 as resetfrommyreturn,
+			ROUND(sum(reset_from_my_prevent) / (sum(play_time) / 60)::numeric, 2) *8 as returnfrommyprevent,
 
 
-			-- teamplay
-			TO_CHAR((((sum(play_time) - (sum(hold_team_against) - sum(hold_whilst_opponents_do))) / (sum(play_time) / 60)) * 8) * interval '1 sec', 'MI:SS') as teampossession,
-            ROUND(sum(cap_team_for) / (sum(play_time) / 60)::numeric, 2) * 8 as teamcapfor,
-			ROUND(sum(cap_team_against) / (sum(play_time) / 60)::numeric, 2) * 8 as teamcapagainst,
+			-- offense defense
+			ROUND(sum(kiss) / (sum(play_time) / 60)::numeric, 2) * 10 as kisses,
+            ROUND(
+                (
+                    sum(good_kiss)::numeric
+                    /
+					sum(kiss)::numeric
+                ) * 100
+            , 2) || '%' as goodkissrate,
+            ROUND(sum(return_within_5_tiles_from_opponents_base) / (sum(play_time) / 60)::numeric, 2) * 8 as saves,
 
-            ROUND(sum(tag) / (sum(play_time) / 60)::numeric, 2) * 8 as tags,
-            ROUND(sum(pop) / (sum(play_time) / 60)::numeric, 2) * 8 as pops,
-            ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) * 8 as pups,
+
 
 
 			-- summary
             ROUND(sum(tag) / (sum(play_time) / 60)::numeric, 2) * 8 as tags,
             ROUND(sum(pop) / (sum(play_time) / 60)::numeric, 2) * 8 as pops,
-            ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) * 8 as pups
 
+			-- powerups
+            ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) * 7 as pups,
+            ROUND(sum(pup_tp) / (sum(play_time) / 60)::numeric, 2) * 7 as tagpros,
+			ROUND((sum(pup_tp_team_for)+sum(pup_rb_team_for)+sum(pup_jj_team_for)) / (sum(play_time) / 60)::numeric, 2) * 7 as teampups,
+			ROUND(
+				(
+					(ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) * 7)
+					/
+					(ROUND((sum(pup_tp_team_for)+sum(pup_rb_team_for)+sum(pup_jj_team_for)) / (sum(play_time) / 60)::numeric, 2) * 7)
+				) * 100
+			, 2) || '%' as mysharepups,
+		ROUND(
+				(
+					(sum(pup_tp_team_for)+sum(pup_rb_team_for)+sum(pup_jj_team_for))
+					-
+					(sum(pup_tp_team_against)+sum(pup_rb_team_against)+sum(pup_jj_team_against))
+				)::NUMERIC
+				/
+				(
+					(
+						(sum(pup_tp_team_for)+sum(pup_rb_team_for)+sum(pup_jj_team_for))
+						+
+						(sum(pup_tp_team_against)+sum(pup_rb_team_against)+sum(pup_jj_team_against))
+					) / 2
+				)::NUMERIC * 100
+			, 2) || '%' as teampupdiff
 
 
 		FROM playergame

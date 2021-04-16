@@ -102,10 +102,10 @@ app.compare = (async() => {
 
 
 	async function highlight() {
-		let data = {}
 
 		// each row
 		document.querySelectorAll('.row:not(.player)').forEach((row) => {
+			let data = {}
 			let label = row.querySelector('.label').innerText
 
 			// each player value

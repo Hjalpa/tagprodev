@@ -19,7 +19,6 @@ block content
 					button.button-secondary Compare
 
 
-
 			.player-comparison__accordion.compare-results(style="display:none")
 				.player-comparison__stats.name-area
 					.row.player
@@ -34,63 +33,125 @@ block content
 						.player-comparison__stats
 							.row.games
 								.label Games
+							.row.elo
+								.label.sub Average ELO
 							.row.time
-								.label Time
+								.label.sub Time
 							.row.winrate
 								.label Win Rate
-							.row.elo
-								.label Average ELO Game
-							.row.mercies
-								.label Mercies
-							.row.cleansheets
-								.label Clean Sheets
-							.row.overtimes
-								.label Overtimes
 							.row.overtimewinrate
-								.label Overtime Win Rate
+								.label.sub Overtime Win Rate
 
-					// attacking
-					li.player-comparison__group
+
+					// Offense
+					li.player-comparison__group.active
 						.player-comparison__group-header
-							h3.player-comparison__group-title Attacking
+							h3.player-comparison__group-title Offense
 								span.icn
 
 						.player-comparison__stats
-
 							.row.caps
 								.label Caps
 
 							.row.hold
 								.label Hold
+							.row.holdwhilstopponentsdont
+								.label.sub Whilst opponents dont hold
+							.row.holdwhilstteamprevent
+								.label.sub Whilst team prevent
+							.row.longhold
+								.label Long Holds
+							.row.longholdcaprate
+								.label.sub Leads to a cap
+
 
 
 							.row.grabs
 								.label Grabs
 							.row.grabswhilstopponentsprevent
-								.label Grabs Whilst Opponents Prevent
+								.label.sub Whilst opponents prevent
 							.row.grabswhilstopponentshold
-								.label Grabs Whilst Opponents Hold
+								.label.sub Whilst opponents hold
+							.row.grabswhilstopponentsholdlong
+								.label.sub Whilst opponents long hold
 
 							.row.drops
 								.label Drops
+
 							.row.dropwithin2tilesfrommybase
-								.label Drops Within 2 Tiles From Capping
+								.label.sub Within 2 tiles from capping
 							.row.dropwithin5tilesfrommybase
-								.label Drops Within 5 Tiles From Capping
+								.label.sub Within 5 tiles from capping
+
+							.row.handoffs
+								.label Handoffs
+							.row.handoffpickups
+								.label.sub Pickups
+							.row.handoffdrops
+								.label.sub Drops
 
 							.row.flaccids
 								.label Flaccids
 
-					// general
-					li.player-comparison__group
+
+					// Defense
+					li.player-comparison__group.active
 						.player-comparison__group-header
-							h3.player-comparison__group-title Attacking
+							h3.player-comparison__group-title Defense
 								span.icn
 
 						.player-comparison__stats
-							.row.teampossession
-								.label Team Possession
-							.row.teamcapfor
-								.label Team Cap For
-							.row.teamcapagainst
-								.label Team Cap Against
+							.row.flaginbase
+								.label Flag In Base
+							.row.prevent
+								.label Prevent
+							.row.preventwhilstteamhold
+								.label.sub Whilst team hold
+							.row.returns
+								.label Returns
+							.row.quickreturns
+								.label.sub Quick
+							.row.keyreturns
+								.label.sub Key
+							.row.tags
+								.label Tags
+							.row.resets
+								.label Resets
+							.row.resetfrommyreturn
+								.label.sub From my return
+							.row.returnfrommyprevent
+								.label.sub From my prevent
+
+
+					// Offense-Defense
+					li.player-comparison__group
+						.player-comparison__group-header
+							h3.player-comparison__group-title Offense-Defense
+								span.icn
+
+						.player-comparison__stats
+							.row.kisses
+								.label Kisses
+							.row.goodkissrate
+								.label.sub Good Kiss Rate
+							.row.saves
+								.label Saves
+
+
+					// Powerups
+					li.player-comparison__group
+						.player-comparison__group-header
+							h3.player-comparison__group-title Powerups
+								span.icn
+
+						.player-comparison__stats
+							.row.pups
+								.label Pups
+							.row.teampups
+								.label Team Pups
+							.row.mysharepups
+								.label.sub My share
+							.row.teampupdiff
+								.label.sub Versus opponent total
+							.row.tagpros
+								.label Tagpros

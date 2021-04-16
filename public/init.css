@@ -2505,6 +2505,11 @@ body {
       -ms-flex-pack: start;
           justify-content: flex-start;
   min-width: 310px;
+  max-width: 310px;
+}
+.player-comparison__stats .row .label.sub {
+  font-weight: normal;
+  padding-left: 20px;
 }
 .player-comparison__stats .row .player-value {
   border-right: 1px solid #e8e8e8;
