@@ -20,7 +20,7 @@ async function getPlayers() {
 		LEFT JOIN player ON player.id = playergame.playerid
 		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
 		GROUP BY player.name
-		HAVING count(*) > 30
+		HAVING count(*) > 20
 		ORDER BY player.name ASC
 	`, [], 'all')
 
@@ -68,6 +68,7 @@ async function getComparePlayersData(filter) {
 
 			-- overview
 			count(*) as games,
+			ROUND((sum(game.elo)::FLOAT / count(*))::numeric , 2) as elo,
 			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
             ROUND(
                 (
@@ -76,7 +77,6 @@ async function getComparePlayersData(filter) {
                     count(*)::DECIMAL
                 ) * 100
             , 2) || '%' as winrate,
-			ROUND((sum(game.elo)::FLOAT / count(*))::numeric , 2) as elo,
             ROUND(
                 (
                     count(*) filter (WHERE result_half_win = 1 AND play_time > 480)
@@ -85,12 +85,14 @@ async function getComparePlayersData(filter) {
                 ) * 100
             , 2) || '%' as overtimewinrate,
 
+			-- whats this?
 			-- count(*) filter (WHERE (cap_team_for - cap_team_against = 5)) as mercies,
 			-- count(*) filter (WHERE cap_team_against = 0) as cleansheets,
 			-- count(*) filter (WHERE play_time > 480) as overtimes,
 
 			-- offense
 			ROUND(sum(cap) / (sum(play_time) / 60)::numeric, 2) * 8 as caps,
+			ROUND(sum(cap_from_prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as capfromteamprevent,
 			ROUND(sum(hold) / (sum(play_time) / 60)::numeric, 2) * 8 as hold,
 			ROUND(sum(hold_whilst_opponents_dont) / (sum(play_time) / 60)::numeric, 2) * 8 as holdwhilstopponentsdont,
 			ROUND(sum(hold_whilst_team_prevent_time) / (sum(play_time) / 60)::numeric, 2) * 8 as holdwhilstteamprevent,
@@ -103,14 +105,9 @@ async function getComparePlayersData(filter) {
                 ) * 100
             , 2) || '%' as longholdcaprate,
 
-
 			ROUND((sum(handoff_drop) + sum(handoff_pickup)) / (sum(play_time) / 60)::numeric, 2) * 8 as handoffs,
 			ROUND(sum(handoff_drop) / (sum(play_time) / 60)::numeric, 2) * 8 as handoffdrops,
 			ROUND(sum(handoff_pickup) / (sum(play_time) / 60)::numeric, 2) *8 as handoffpickups,
-
-
-
-
 
 			ROUND(sum(grab) / (sum(play_time) / 60)::numeric, 2) * 8 as grabs,
 			ROUND(sum(grab_whilst_opponents_prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as grabswhilstopponentsprevent,
@@ -118,12 +115,21 @@ async function getComparePlayersData(filter) {
 			ROUND(sum(grab_whilst_opponents_hold_long) / (sum(play_time) / 60)::numeric, 2) * 8 as grabswhilstopponentsholdlong,
 
 			ROUND(sum(drop) / (sum(play_time) / 60)::numeric, 2) * 8 as drops,
+			ROUND(sum(flaccid) / (sum(play_time) / 60)::numeric, 2) * 8 as flaccids,
             ROUND(sum(drop_within_2_tiles_from_my_base) / (sum(play_time) / 60)::numeric, 2) * 8 as dropwithin2tilesfrommybase,
             ROUND(sum(drop_within_5_tiles_from_my_base) / (sum(play_time) / 60)::numeric, 2) * 8 as dropwithin5tilesfrommybase,
-            ROUND(sum(flaccid) / (sum(play_time) / 60)::numeric, 2) * 8 as flaccids,
+			ROUND(
+                (
+					sum(drop_within_my_half)::numeric
+                    /
+					sum(drop)::numeric
+                ) * 100
+            , 2) || '%' as dropwithinmyhalf,
+
+
+
 
 			-- defense
-
             ROUND(
                 (
                     (sum(play_time)::numeric - sum(hold_team_against))::numeric
@@ -131,14 +137,22 @@ async function getComparePlayersData(filter) {
 					sum(play_time)::numeric
                 ) * 100
             , 2) || '%' as flaginbase,
-
-
-
+            ROUND(sum(cap_team_against) / (sum(play_time) / 60)::numeric, 2) * 8 as concedes,
             ROUND(sum(prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as prevent,
 			ROUND(sum(prevent_whilst_team_hold_time) / (sum(play_time) / 60)::numeric, 2) * 8 as preventwhilstteamhold,
+			ROUND(sum(cap_from_my_prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as capfrommyprevent,
+			ROUND(sum(opponents_grab_whilst_my_prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as opponentsgrabwhilstmyprevent,
+
 			ROUND(sum(return) / (sum(play_time) / 60)::numeric, 2) * 8 as returns,
             ROUND(sum(quick_return) / (sum(play_time) / 60)::numeric, 2) * 8 as quickreturns,
             ROUND(sum(key_return) / (sum(play_time) / 60)::numeric, 2) * 8 as keyreturns,
+			ROUND(
+                (
+					sum(return_within_my_half)::numeric
+                    /
+					sum(return)::numeric
+                ) * 100
+            , 2) || '%' as returnwithinmyhalf,
 			ROUND((sum(reset_from_my_return) + sum(reset_from_my_prevent)) / (sum(play_time) / 60)::numeric, 2) * 8 as resets,
 			ROUND(sum(reset_from_my_return) / (sum(play_time) / 60)::numeric, 2) * 8 as resetfrommyreturn,
 			ROUND(sum(reset_from_my_prevent) / (sum(play_time) / 60)::numeric, 2) *8 as returnfrommyprevent,
@@ -195,6 +209,7 @@ async function getComparePlayersData(filter) {
 		LEFT JOIN game ON game.id = playergame.gameid
 		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000) AND (${filter.where.join(' OR ')})
 		GROUP BY player.name
+		HAVING count(*) > 20
 	`, filter.data, 'all')
 
 	return raw
