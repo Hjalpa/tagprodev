@@ -111,7 +111,7 @@ async function mostCaps(filters) {
 	let raw = await db.select(`
 		select
 			rank() OVER (
-				ORDER BY ROUND(play_time::NUMERIC / cap, 2) ASC
+				ORDER BY TO_CHAR(ROUND(play_time::NUMERIC / cap, 2) * interval '1 sec', 'MI:SS') ASC
 			) rank,
 			player.name as player,
 			TO_CHAR(
