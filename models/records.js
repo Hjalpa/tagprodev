@@ -6,7 +6,7 @@ let init = async (req, res) => {
 	try {
 		// default to all seasons
 		let filters =  {
-			where: 'WHERE duration >= 360',
+			where: 'WHERE duration >= 60',
 			where_streak: 'WHERE duration >= 10'
 		}
 		let title = 'All-Time Records'
@@ -30,15 +30,17 @@ let init = async (req, res) => {
 
 		if(req.query.elo) {
 			if(req.query.elo === 'low') {
-				filters.where = filters.where + ' AND ELO <= 1800'
-				filters.where_streak = filters.where_streak + ' AND ELO <= 1800'
+				filters.where = filters.where + ' AND ELO < 2000'
+				filters.where_streak = filters.where_streak + ' AND ELO < 2000'
 				title = title + ' -  Low ELO'
 			}
 			else
 				throw 'invalid elo'
 		}
-		else
-			filters.where = filters.where + ' AND ELO > 1800'
+		else {
+			filters.where = filters.where + ' AND ELO >= 2000'
+			filters.where_streak = filters.where_streak + ' AND ELO >= 2000'
+		}
 
 
 		let data = {
