@@ -29,6 +29,14 @@ async function getData(filters) {
 
 			player.name as player,
 
+			ROUND(
+				(
+					(sum(pup_tp_team_for)+sum(pup_tp_team_against))::FLOAT
+					/
+					(sum(pup_tp_team_for)+sum(pup_tp_team_against)+sum(pup_jj_team_for)+sum(pup_jj_team_against)+sum(pup_rb_team_for)+sum(pup_rb_team_against))::FLOAT
+				)::NUMERIC
+					* 100
+			, 2) || '%' as tagpro_spawn_chance,
 
 			-- team plus minus difference
 			ROUND(

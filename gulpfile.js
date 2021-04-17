@@ -49,7 +49,7 @@ gulp.task('js', gulp.series(function(done) {
 			'./src/js/*.js'
 		])
 		.pipe(concat('init.js'))
-		// .pipe(uglify())
+		.pipe(uglify())
 		.pipe(size(
 			{'title':'init.js'}
 		))
@@ -65,7 +65,7 @@ gulp.task('css', gulp.series(function(done) {
 		.pipe(stylus())
 		.pipe(concat('init.css'))
 		.pipe(autoprefix('last 2 versions'))
-	    //.pipe(cleanCSS())
+	    .pipe(cleanCSS())
 		.pipe(size(
 			{'title':'init.css'}
 		))

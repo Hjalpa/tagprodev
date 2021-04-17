@@ -7,7 +7,7 @@ block content
 	main#main
 		header
 			h2 Player Comparison
-			p Normalised to an 8 minute game
+			p Normalised to an 8 minute game. 2000+ ELO games only
 
 		section.player-comparison__select-wrapper
 			.player-comparison__select
@@ -40,7 +40,9 @@ block content
 							.row.winrate
 								.label Win Rate
 							.row.overtimewinrate
-								.label.sub Overtime Win Rate
+								.label.sub Overtime win rate
+							.row.mercywinrate
+								.label.sub Mercy win rate
 
 
 					// Offense
@@ -56,16 +58,24 @@ block content
 								.label.sub Whilst team prevent
 							.row.hold
 								.label Hold
+							.row.holdpercap
+								.label.sub Per cap
+							.row.holdpergrab
+								.label.sub Per grab
 							.row.holdwhilstopponentsdont
 								.label.sub Whilst opponents dont hold
 							.row.holdwhilstteamprevent
 								.label.sub Whilst team prevent
 							.row.longhold
 								.label Long Holds
+							.row.longholdevery
+								.label.sub Every
 							.row.longholdcaprate
 								.label.sub Leads to a cap
 							.row.grabs
 								.label Grabs
+							.row.grabspercap
+								.label.sub Per cap
 							.row.grabswhilstopponentsprevent
 								.label.sub Whilst opponents prevent
 							.row.grabswhilstopponentshold
@@ -81,7 +91,7 @@ block content
 							.row.dropwithin5tilesfrommybase
 								.label.sub Within 5 tiles from capping
 							.row.dropwithinmyhalf
-								.label.sub Within My Half
+								.label.sub Within my half
 							.row.handoffs
 								.label Handoffs
 							.row.handoffpickups
@@ -105,12 +115,14 @@ block content
 								.label Concedes
 							.row.prevent
 								.label Prevent
+							.row.preventperreturn
+								.label.sub Per return
 							.row.capfrommyprevent
-								.label.sub Team Caps
+								.label.sub Team caps
 							.row.preventwhilstteamhold
 								.label.sub Whilst team hold
 							.row.opponentsgrabwhilstmyprevent
-								.label.sub Opponent Grabs
+								.label.sub Opponent grabs
 							.row.returns
 								.label Returns
 							.row.quickreturns
@@ -118,7 +130,7 @@ block content
 							.row.keyreturns
 								.label.sub Key
 							.row.returnwithinmyhalf
-								.label.sub Within My Half
+								.label.sub Within my half
 							.row.resets
 								.label Resets
 							.row.resetfrommyreturn
@@ -139,7 +151,7 @@ block content
 							.row.kisses
 								.label Kisses
 							.row.goodkissrate
-								.label.sub Good Kiss Rate
+								.label.sub Good kiss rate
 							.row.saves
 								.label Saves
 
@@ -161,3 +173,5 @@ block content
 								.label.sub Versus opponent total
 							.row.tagpros
 								.label Tagpros
+							.row.tagprospawnchance
+								.label.sub Spawn chance

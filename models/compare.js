@@ -85,6 +85,15 @@ async function getComparePlayersData(filter) {
                 ) * 100
             , 2) || '%' as overtimewinrate,
 
+            ROUND(
+                (
+                    count(*) filter (WHERE cap_team_for - cap_team_against = 5)
+                    /
+					count(*)::DECIMAL
+                ) * 100
+            , 2) || '%' as mercywinrate,
+
+
 			-- whats this?
 			-- count(*) filter (WHERE (cap_team_for - cap_team_against = 5)) as mercies,
 			-- count(*) filter (WHERE cap_team_against = 0) as cleansheets,
@@ -93,10 +102,19 @@ async function getComparePlayersData(filter) {
 			-- offense
 			ROUND(sum(cap) / (sum(play_time) / 60)::numeric, 2) * 8 as caps,
 			ROUND(sum(cap_from_prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as capfromteamprevent,
+
 			ROUND(sum(hold) / (sum(play_time) / 60)::numeric, 2) * 8 as hold,
+			ROUND(sum(hold) / sum(grab)::numeric, 2) as holdpergrab,
+			TO_CHAR(
+				ROUND(sum(hold) / sum(cap)::numeric, 2)
+				* interval '1 sec'
+			, 'MI:SS') as holdpercap,
 			ROUND(sum(hold_whilst_opponents_dont) / (sum(play_time) / 60)::numeric, 2) * 8 as holdwhilstopponentsdont,
 			ROUND(sum(hold_whilst_team_prevent_time) / (sum(play_time) / 60)::numeric, 2) * 8 as holdwhilstteamprevent,
 			ROUND(sum(long_hold) / (sum(play_time) / 60)::numeric, 2) * 8 as longhold,
+			TO_CHAR(
+				(sum(play_time) / greatest(sum(long_hold), 1)) * interval '1 sec'
+			, 'MI:SS') as longholdevery,
             ROUND(
                 (
                     sum(long_hold_and_cap)::numeric
@@ -110,6 +128,7 @@ async function getComparePlayersData(filter) {
 			ROUND(sum(handoff_pickup) / (sum(play_time) / 60)::numeric, 2) *8 as handoffpickups,
 
 			ROUND(sum(grab) / (sum(play_time) / 60)::numeric, 2) * 8 as grabs,
+			ROUND(sum(grab) / sum(cap)::numeric, 2) as grabspercap,
 			ROUND(sum(grab_whilst_opponents_prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as grabswhilstopponentsprevent,
 			ROUND(sum(grab_whilst_opponents_hold) / (sum(play_time) / 60)::numeric, 2) * 8 as grabswhilstopponentshold,
 			ROUND(sum(grab_whilst_opponents_hold_long) / (sum(play_time) / 60)::numeric, 2) * 8 as grabswhilstopponentsholdlong,
@@ -139,6 +158,7 @@ async function getComparePlayersData(filter) {
             , 2) || '%' as flaginbase,
             ROUND(sum(cap_team_against) / (sum(play_time) / 60)::numeric, 2) * 8 as concedes,
             ROUND(sum(prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as prevent,
+			ROUND(sum(prevent) / sum(return)::numeric, 2) as preventperreturn,
 			ROUND(sum(prevent_whilst_team_hold_time) / (sum(play_time) / 60)::numeric, 2) * 8 as preventwhilstteamhold,
 			ROUND(sum(cap_from_my_prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as capfrommyprevent,
 			ROUND(sum(opponents_grab_whilst_my_prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as opponentsgrabwhilstmyprevent,
@@ -179,6 +199,15 @@ async function getComparePlayersData(filter) {
 			-- powerups
             ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) * 7 as pups,
             ROUND(sum(pup_tp) / (sum(play_time) / 60)::numeric, 2) * 7 as tagpros,
+			ROUND(
+				(
+					(sum(pup_tp_team_for)+sum(pup_tp_team_against))::FLOAT
+					/
+					(sum(pup_tp_team_for)+sum(pup_tp_team_against)+sum(pup_jj_team_for)+sum(pup_jj_team_against)+sum(pup_rb_team_for)+sum(pup_rb_team_against))::FLOAT
+				)::NUMERIC
+					* 100
+			, 2) || '%' as tagprospawnchance,
+
 			ROUND((sum(pup_tp_team_for)+sum(pup_rb_team_for)+sum(pup_jj_team_for)) / (sum(play_time) / 60)::numeric, 2) * 7 as teampups,
 			ROUND(
 				(

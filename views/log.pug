@@ -1,19 +1,18 @@
 extends layouts/_layout.pug
 
 block title
-	title Logged Games
+	title= title
 
 block content
 	main#main
 		header
-			h2 #{title}
+			h2= title
 
 		section
-			table
+			table.log
 				thead
 					tr
-						th EUID
-						th Date
+						th.text-l Date
 						th.text-c ELO
 						th.text-c Duration
 						th.text-r Red
@@ -21,14 +20,12 @@ block content
 						th.text-c
 						th.text-c
 						th.text-l Blue
+						th.text-c EUID
 
 				tbody
 					each n, key in games
 						- var href= 'https://tagpro.eu/?match=' + n.euid
 						tr
-							td
-								a(href=`${href}`)= n.euid
-
 							td= n.date
 							td.text-c= n.elo
 							td.text-c= n.duration
@@ -37,3 +34,5 @@ block content
 							td.text-c :
 							td.text-c= n.blue_caps
 							td.text-l= n.blue_team
+							td.text-c
+								a(href=`${href}`)= n.euid

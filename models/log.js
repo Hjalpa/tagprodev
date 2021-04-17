@@ -5,7 +5,7 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 
 	let data = {
-		title: 'Logged Games',
+		title: 'Recently Logged Games',
 		nav: 'log',
 		games: await getData(),
 	}
@@ -37,7 +37,7 @@ async function getData() {
 		FROM game
 		LEFT JOIN season ON season.id = game.seasonid
 		ORDER BY euid DESC
-		LIMIT 25
+		LIMIT 75
 	`, [], 'all')
 
 	return raw
