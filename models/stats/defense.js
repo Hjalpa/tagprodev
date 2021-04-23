@@ -34,13 +34,13 @@ async function getData(filters) {
 			, 'MI:SS') as concede_every,
 
 			-- convert to percentage
-			(100 - ROUND((sum(hold_team_against)::numeric / sum(play_time)::numeric) * 100, 2)) || '%' as flag_in_base,
+			-- (100 - ROUND((sum(hold_team_against)::numeric / sum(play_time)::numeric) * 100, 2)) || '%' as flag_in_base,
 
 			-- ROUND((sum(return_within_my_half)::numeric / sum(return)::numeric) * 100, 2) || '%' as returns_within_my_half,
 
-			-- TO_CHAR(
-			--	avg(hold_team_against) * interval '1 sec'
-			-- , 'MI:SS') as avg_hold_against,
+			TO_CHAR(
+				avg(hold_team_against) * interval '1 sec'
+			, 'MI:SS') as hold_against,
 
 			TO_CHAR(
 				(sum(play_time) / sum(return)) * interval '1 sec'
