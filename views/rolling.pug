@@ -1,0 +1,42 @@
+extends layouts/_layout.pug
+
+block title
+	title= title
+
+block content
+	main#main
+		header
+			h2= title
+
+		section
+			table.table-sticky
+				thead
+					each raw in results
+						- function th(string){ return string.replace(/(?:_| |\b)(\w)/g, function($1){return $1.toUpperCase().replace('_',' ')})}
+
+						tr
+							- let n = 0
+							- let last = Object.keys(raw).length
+							each v, k in raw
+								-- ++n
+								if(k === 'rank')
+									th(style="width:70px")
+								else if(k === 'player')
+									th Player
+								else
+									if(last === n)
+										th.text-c.sort.sort-desc
+											span= th(k)
+									else
+										th.text-c.sort
+											span= th(k)
+							- break
+
+				tbody
+					each raw in results
+						tr
+							each v, k in raw
+								if(k === 'rank' || k === 'player')
+									td.bold= v
+								else
+									td.text-c= v

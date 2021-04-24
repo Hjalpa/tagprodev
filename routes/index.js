@@ -30,7 +30,8 @@ let cacheMiddleware = (duration) => {
 }
 
 router.get('/', cacheMiddleware(3600), (req, res) => require('../models/leaderboards').init(req, res))
-router.use('/records', cacheMiddleware(3600), require('./records'))
+router.use('/records', require('./records'))
+router.get('/rolling', cacheMiddleware(3600), (req, res) => require('../models/rolling').init(req, res))
 router.get('/log', (req, res) => require('../models/log').init(req, res))
 router.use('/api',  require('./api'))
 router.use('/stats',  require('./stats'))
