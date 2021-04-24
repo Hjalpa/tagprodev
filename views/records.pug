@@ -33,7 +33,7 @@ block content
 
 					tbody
 						each n, key in mostcaps
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -56,7 +56,7 @@ block content
 
 					tbody
 						each n, key in mosthold
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -79,7 +79,7 @@ block content
 
 					tbody
 						each n, key in mostgrabs
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -102,7 +102,7 @@ block content
 
 					tbody
 						each n, key in mosttags
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -125,7 +125,7 @@ block content
 
 					tbody
 						each n, key in mostprevent
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -148,7 +148,7 @@ block content
 
 					tbody
 						each n, key in mostreturns
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -171,7 +171,7 @@ block content
 
 					tbody
 						each n, key in mostquickreturns
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -194,7 +194,7 @@ block content
 
 					tbody
 						each n, key in mostkeyreturns
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -217,7 +217,7 @@ block content
 
 					tbody
 						each n, key in mostpups
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -240,7 +240,7 @@ block content
 
 					tbody
 						each n, key in mosttagpros
-							tr
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-l.date
@@ -262,7 +262,8 @@ block content
 
 					tbody
 						each n, key in winstreak
-							tr
+
+							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
 								td.text-l.name= n.player
 								td.text-c= n.streak

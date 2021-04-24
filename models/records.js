@@ -118,7 +118,8 @@ async function mostCaps(filters) {
 				ROUND(play_time::NUMERIC / cap, 2) * interval '1 sec'
 			, 'MI:SS') as cap,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
@@ -141,7 +142,8 @@ async function mostPups(filters) {
 				ROUND(play_time::NUMERIC / (pup_jj + pup_rb + pup_tp)::NUMERIC, 2) * interval '1 sec',
 			'MI:SS') as pup,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
@@ -164,7 +166,8 @@ async function mostTagpros(filters) {
 				ROUND(play_time::NUMERIC / pup_tp::NUMERIC, 2) * interval '1 sec',
 			'MI:SS') as pup,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
@@ -185,7 +188,8 @@ async function mostReturns(filters) {
 			player.name as player,
 			ROUND(play_time::NUMERIC / NULLIF(return, 0), 2) as returns,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
@@ -206,7 +210,8 @@ async function mostQuickReturns(filters) {
 			player.name as player,
 			ROUND(play_time / quick_return::NUMERIC, 2) as quickreturns,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
@@ -228,7 +233,8 @@ async function mostKeyReturns(filters) {
 				ROUND(play_time::NUMERIC / key_return::NUMERIC, 2) * interval '1 sec'
 			, 'MI:SS') as keyreturns,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
@@ -248,7 +254,8 @@ async function mostTags(filters) {
 			player.name as player,
 			ROUND(play_time::NUMERIC / tag, 2) as tag,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
@@ -269,7 +276,8 @@ async function mostPrevent(filters) {
 			player.name as player,
 			ROUND(prevent / (play_time::numeric / 60), 2) as prevent,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
@@ -290,7 +298,8 @@ async function mostGrabs(filters) {
 			player.name as player,
 			ROUND(play_time::NUMERIC / grab::NUMERIC, 2) as grab,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
@@ -311,7 +320,8 @@ async function mostHold(filters) {
 			player.name as player,
 			ROUND(hold / (play_time::numeric / 60), 2) as hold,
 			euid,
-			TO_CHAR(date, 'DD Mon YY') as date
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
 		FROM playergame
 		LEFT JOIN player on playergame.playerid = player.id
 		LEFT JOIN game on game.id = playergame.gameid
