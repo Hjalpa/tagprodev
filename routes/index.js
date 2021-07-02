@@ -31,16 +31,13 @@ let cacheMiddleware = (duration) => {
 
 router.get('/', cacheMiddleware(3600), (req, res) => require('../models/leaderboards').init(req, res))
 router.use('/records', require('./records'))
-
-
 router.get('/rolling', cacheMiddleware(3600), (req, res) => require('../models/rolling').init(req, res))
-router.get('/maps', cacheMiddleware(3600), (req, res) => require('../models/maps').init(req, res))
-router.get('/log', (req, res) => require('../models/log').init(req, res))
-
-
 router.use('/api',  require('./api'))
 router.use('/stats',  require('./stats'))
 router.use('/compare',  require('./compare'))
+router.use('/player',  require('./player'))
+router.get('/maps', cacheMiddleware(3600), (req, res) => require('../models/maps').init(req, res))
+router.get('/log', (req, res) => require('../models/log').init(req, res))
 router.use((req, res) => res.status(404).render('404'))
 
 module.exports = router

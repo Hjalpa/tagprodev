@@ -5,7 +5,7 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
 		let data = {
-			title: 'Rolling Hundred Fifty',
+			title: 'Rolling Twenty Five',
 			nav: 'rolling',
 			results: await getData(),
 		}
@@ -19,7 +19,6 @@ async function getData() {
 	let raw = await db.query(`
 		with recentgames as (
 			select playergame.id, playerid,result_half_win,cap,hold,prevent,row_number()over(partition by playerid order by playergame.id desc) rn from playergame
-			-- select playergame.id, playerid,result_half_win,row_number()over(partition by playerid order by playergame.id desc) rn from playergame left join game on game.id = playergame.gameid where elo > 2000
 		)
 
 		SELECT
@@ -44,7 +43,7 @@ async function getData() {
 
 		FROM player
 		LEFT JOIN recentgames ON playerid = player.id
-		WHERE rn <= 150
+		WHERE rn <= 25
 		GROUP BY player.name
 		ORDER BY won DESC
 		LIMIT 75

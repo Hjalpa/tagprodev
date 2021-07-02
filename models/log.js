@@ -10,7 +10,7 @@ let init = async (req, res) => {
 		games: await getData(),
 	}
 
-	res.render('log', data);
+	res.render('log', data)
 }
 
 async function getData() {
