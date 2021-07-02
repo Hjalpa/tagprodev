@@ -12,8 +12,14 @@ let init = async (req, res) => {
 		let title = 'All-Time Records'
 
 		if(req.query.season) {
+			// season 3
+			if(req.query.season === '3') {
+				filters.where = filters.where + ' AND seasonid = 3'
+				filters.where_streak = filters.where_streak + ' AND seasonid = 3'
+				title = 'Season 3 Records'
+			}
 			// season 2
-			if(req.query.season === '2') {
+			else if(req.query.season === '2') {
 				filters.where = filters.where + ' AND seasonid = 1'
 				filters.where_streak = filters.where_streak + ' AND seasonid = 1'
 				title = 'Season 2 Records'

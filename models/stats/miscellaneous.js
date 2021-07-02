@@ -25,17 +25,7 @@ async function getData(filters) {
 			) rank,
 			player.name as player,
 
-			count(*) filter (WHERE cap_team_against = 0 AND (cap_team_for - cap_team_against = 5)) as mercies,
-
-			-- tagpro spawn chance
-			ROUND(
-				(
-					(sum(pup_tp_team_for)+sum(pup_tp_team_against))::FLOAT
-					/
-					(sum(pup_tp_team_for)+sum(pup_tp_team_against)+sum(pup_jj_team_for)+sum(pup_jj_team_against)+sum(pup_rb_team_for)+sum(pup_rb_team_against))::FLOAT
-				)::NUMERIC
-					* 100
-			, 2) || '%' as tagpro_spawn_chance,
+			-- count(*) filter (WHERE cap_team_against = 0 AND (cap_team_for - cap_team_against = 5)) as mercies,
 
 			ROUND(avg(flag_carry_distance), 2) as avg_flag_carry_distance,
 

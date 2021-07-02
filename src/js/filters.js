@@ -1,5 +1,6 @@
 app.filters = (async() => {
 	initELO()
+	initGame()
 	initSeason()
 	initMap()
 
@@ -8,6 +9,7 @@ app.filters = (async() => {
 		let season = util.findParentBySelector(e.target, ".season")
 		let elo = util.findParentBySelector(e.target, ".elo")
 		let map = util.findParentBySelector(e.target, ".map")
+		let game = util.findParentBySelector(e.target, ".game")
 		let btn = util.findParentBySelector(e.target, ".filter-submit button")
 
 		if(season)
@@ -16,6 +18,8 @@ app.filters = (async() => {
 			openFilter(elo)
 		else if(map)
 			openFilter(map)
+		else if(game)
+			openFilter(game)
 
 		else if(btn) {
 			let uri = []
@@ -37,6 +41,9 @@ app.filters = (async() => {
 				mapIDs.push(s.value)
 			if(mapIDs[0] != 'all' && mapIDs.length > 0)
 				uri.push(`map=${mapIDs.join(',')}`)
+
+			// game
+			uri.push(`games=${document.querySelector('.drop-down.game .value').innerText}`)
 
 			const url = window.location.origin + window.location.pathname
 			window.location.href = url + '?' + uri.join('&')
@@ -81,6 +88,29 @@ app.filters = (async() => {
 			let value =slider.noUiSlider.get()
 			let elo = document.querySelector('.drop-down.elo')
 			elo.querySelector('.drop-down_current .value').innerText = value[0] + '-' + value[1]
+		})
+	}
+
+	function initGame() {
+		const slider = document.getElementById('slider-game')
+		let url = new URLSearchParams(window.location.search)
+		let game = (url.get('games') ? url.get('games') : 50)
+
+		noUiSlider.create(slider, {
+			start: game,
+			connect: true,
+			tooltips: true,
+			format: wNumb({decimals: 0}),
+			step: 1,
+			range: {
+				'min': 1,
+				'max': 1000
+			},
+		})
+
+		slider.noUiSlider.on('update', function() {
+			let game = document.querySelector('.drop-down.game')
+			game.querySelector('.drop-down_current .value').innerText = slider.noUiSlider.get()
 		})
 	}
 

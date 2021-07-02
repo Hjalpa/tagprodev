@@ -11,6 +11,7 @@ block content
 		.tabs
 			.left
 				a(href="/records" class=(season === false ? 'active' : '')) All-Time
+				a(href="/records?season=3" class=(season === '3' ? 'active' : '') data-param='season=3') Season 3
 				a(href="/records?season=2" class=(season === '2' ? 'active' : '') data-param='season=2') Season 2
 				a(href="/records?season=1" class=(season === '1' ? 'active' : '') data-param='season=1') Season 1
 			.right

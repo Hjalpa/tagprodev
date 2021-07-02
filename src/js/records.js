@@ -17,7 +17,9 @@ if(document.querySelector('.stats-records')) {
 				filter.push(link.dataset.param)
 		}
 		else if (right) {
-			if(document.querySelector('.tabs .left .active').innerText === 'Season 2')
+			if(document.querySelector('.tabs .left .active').innerText === 'Season 3')
+				filter.push('season=3')
+			else if(document.querySelector('.tabs .left .active').innerText === 'Season 2')
 				filter.push('season=2')
 			else if(document.querySelector('.tabs .left .active').innerText === 'Season 1')
 				filter.push('season=1')

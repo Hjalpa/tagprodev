@@ -14,10 +14,6 @@ tpm.call = async () => {
 		for await (const x of data) {
 			let tmp = x.split(',')
 			if(tmp[0] === '2852298') continue
-			if(tmp[0] === '2852285') continue
-			if(tmp[0] === '2852267') continue
-			if(tmp[0] === '2852219') continue
-			if(tmp[0] === '2859869') continue
 			let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [tmp[0]], 'id')
 			if(!gameExists) {
 				await axios.post(`https://tagpro.dev/api/import`, {
@@ -30,14 +26,14 @@ tpm.call = async () => {
 		}
 	}
 	await axios.get(`https://tagpro.dev`)
+	await axios.get(`https://tagpro.dev/?season=3`)
 	await axios.get(`https://tagpro.dev/?season=2`)
-	await axios.get(`https://tagpro.dev/?season=1`)
 	await axios.get(`https://tagpro.dev/records`)
+	await axios.get(`https://tagpro.dev/records?season=3`)
 	await axios.get(`https://tagpro.dev/records?season=2`)
-	await axios.get(`https://tagpro.dev/records?season=1`)
 	await axios.get(`https://tagpro.dev/records?elo=low`)
+	await axios.get(`https://tagpro.dev/records?season=3&elo=low`)
 	await axios.get(`https://tagpro.dev/records?season=2&elo=low`)
-	await axios.get(`https://tagpro.dev/records?season=1&elo=low`)
 	process.kill(process.pid)
 }
 

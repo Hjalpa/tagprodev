@@ -7,16 +7,24 @@ let init = async (req, res) => {
 		// default to all seasons
 		let filters =  {
 			where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000)',
-			having: 'HAVING COUNT(*) >= 50'
+			having: 'HAVING COUNT(*) >= 100'
 		}
 		let title = 'TPM All-Time Leaderboards'
 
 		if(req.query.season) {
+			// season 3
+			if(req.query.season === '3') {
+				filters =  {
+					where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000 AND seasonid = 3)',
+					having: 'HAVING COUNT(*) >= 10'
+				}
+				title = 'TPM Season 3 Leaderboards'
+			}
 			// season 2
-			if(req.query.season === '2') {
+			else if(req.query.season === '2') {
 				filters =  {
 					where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000 AND seasonid = 1)',
-					having: 'HAVING COUNT(*) >= 49'
+					having: 'HAVING COUNT(*) >= 50'
 				}
 				title = 'TPM Season 2 Leaderboards'
 			}

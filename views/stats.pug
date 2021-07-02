@@ -21,6 +21,10 @@ block content
 									label(for="season_all") All
 							li(role="option")
 								.form_checkbox-wrapper
+									input(type="checkbox", name="season", id="season_euctfs3" value="3" disabled)
+									label(for="season_euctfs3") EU CTF S3
+							li(role="option")
+								.form_checkbox-wrapper
 									input(type="checkbox", name="season", id="season_euctfs2" value="2" disabled)
 									label(for="season_euctfs2") EU CTF S2
 							li(role="option")
@@ -51,6 +55,14 @@ block content
 					.drop-down_list(style="width:150%" class="pad")
 						p.desc Average ELO across both teams
 						#slider.slider
+
+			.drop-down.game
+				.drop-down_label Filter by Min Played
+				.drop-down_current(role="button")
+					span.value 50
+					.drop-down_list(style="width:150%" class="pad")
+						p.desc Minimum amount of games played per player
+						#slider-game.slider
 
 			.filter-submit
 				button.button-secondary Apply
