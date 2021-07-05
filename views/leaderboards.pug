@@ -219,3 +219,17 @@ block content
 				// footer
 				// 	a(href="/stats/defending") View full list
 				// 		span.icon
+
+
+			.stats-card
+				header
+					h3 Cap Difference Per Min
+
+				table
+					tbody
+						each n, key in capdiffpermin
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									| #{n.player}
+								td.text-r= n.cap

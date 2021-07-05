@@ -1,5 +1,5 @@
-const db = require ('../lib/db')
-const util = require ('../lib/util')
+const db = require ('../../lib/db')
+const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -9,7 +9,7 @@ let init = async (req, res) => {
 		await playerExists(user)
 
 		let data = {
-			title: `${user}'s team mates`,
+			title: `${user}'s allies`,
 			nav: 'player',
 			results: await getData(user)
 		}
@@ -30,7 +30,11 @@ async function getData(player) {
 
 			name as player,
 			count(*) as played,
-			sum(cap_team_for) - sum(cap_team_against) as cap_diff,
+			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
+			ROUND(
+				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
+			, 3) as cap_diff_per_min,
+			-- sum(cap_team_for) - sum(cap_team_against) as cap_diff_total,
 			count(*) filter (WHERE result_half_win = 1) as won,
 			count(*) filter (WHERE result_half_win = 0) as lost,
 			ROUND(
@@ -46,7 +50,7 @@ async function getData(player) {
 		-- LEFT JOIN game on game.id = playergame.gameid
 
 		WHERE
-			-- seasonid = 2 AND
+			-- seasonid = 2 AND ELO > 2000 AND
 			name != $1 AND
 
 			gameid IN (

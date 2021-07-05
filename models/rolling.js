@@ -18,7 +18,7 @@ let init = async (req, res) => {
 async function getData() {
 	let raw = await db.query(`
 		with recentgames as (
-			select playergame.id, playerid,result_half_win,cap,hold,prevent,row_number()over(partition by playerid order by playergame.id desc) rn from playergame
+			select playergame.id, playerid,result_half_win,cap,cap_team_for,cap_team_against,play_time,row_number()over(partition by playerid order by playergame.id desc) rn from playergame
 		)
 
 		SELECT
@@ -27,26 +27,29 @@ async function getData() {
 					count(*) filter (WHERE result_half_win = 1) DESC
 			) rank,
 			player.name AS player,
-			count(*) filter (WHERE result_half_win = 1) AS won,
 
-			-- sum(cap) AS caps,
-			-- sum(hold) AS hold,
-			-- sum(prevent) AS prevent,
 
 			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) || '%' as win_rate
+				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
+			, 3) as cap_diff_per_min,
+
+			count(*) filter (WHERE result_half_win = 1) AS won
+
+			--ROUND(
+			--	(
+			--		count(*) filter (WHERE result_half_win = 1)
+			--		/
+			--		count(*)::DECIMAL
+			--	) * 100
+			--, 2) || '%' as win_rate
+
 
 		FROM player
 		LEFT JOIN recentgames ON playerid = player.id
 		WHERE rn <= 25
 		GROUP BY player.name
 		ORDER BY won DESC
-		LIMIT 75
+		LIMIT 100
 	`, 'all')
 
 	return raw

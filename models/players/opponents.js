@@ -1,5 +1,5 @@
-const db = require ('../lib/db')
-const util = require ('../lib/util')
+const db = require ('../../lib/db')
+const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -9,7 +9,7 @@ let init = async (req, res) => {
 		await playerExists(user)
 
 		let data = {
-			title: `${user}'s team mates`,
+			title: `${user}'s opponents`,
 			nav: 'player',
 			results: await getData(user)
 		}
@@ -25,17 +25,22 @@ async function getData(player) {
 		SELECT
 			RANK() OVER (
 				ORDER BY
-				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
+				(count(*) filter (WHERE result_half_win = 0) / count(*)::DECIMAL) * 100 DESC
 			) rank,
 
 			name as player,
 			count(*) as played,
-			sum(cap_team_for) - sum(cap_team_against) as cap_diff,
-			count(*) filter (WHERE result_half_win = 1) as won,
-			count(*) filter (WHERE result_half_win = 0) as lost,
+			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
+
+			ROUND(
+				(sum(cap_team_against)::DECIMAL - sum(cap_team_for)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
+			, 3) as cap_diff_per_min,
+			-- (sum(cap_team_against) - sum(cap_team_for))::NUMERIC as cap_diff_total,
+			count(*) filter (WHERE result_half_win = 0) as won,
+			count(*) filter (WHERE result_half_win = 1) as lost,
 			ROUND(
 				(
-					count(*) filter (WHERE result_half_win = 1)
+					count(*) filter (WHERE result_half_win = 0)
 					/
 					count(*)::DECIMAL
 				) * 100
@@ -55,7 +60,7 @@ async function getData(player) {
 					FROM
 						playergame as pg
 					INNER JOIN player ON player.id = pg.playerid
-					WHERE name = $2 AND gameid = playergame.gameid AND pg.team = playergame.team
+					WHERE name = $2 AND gameid = playergame.gameid AND pg.team != playergame.team
 				)
 
 		GROUP BY name

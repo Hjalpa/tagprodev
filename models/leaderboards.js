@@ -48,6 +48,7 @@ let init = async (req, res) => {
 			pup: await getPups(filters),
 			teamcap: await getTeamCapsFor(filters),
 			teamcapagainst: await getTeamCapsAgainst(filters),
+			capdiffpermin: await getCapDiffPerMin(filters),
 			cap: await getCaps(filters),
 			hold: await getHold(filters),
 			returns: await getReturn(filters),
@@ -145,6 +146,32 @@ async function getTeamCapsFor(filters) {
 
 	return raw
 }
+
+async function getCapDiffPerMin(filters) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY (sum(cap_team_for) - sum(cap_team_against))::DECIMAL / sum(play_time) DESC
+			) rank,
+
+			player.name as player,
+
+			ROUND(
+				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
+			, 3) as cap
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
+		ORDER BY cap DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
 
 async function getTeamCapsAgainst(filters) {
 	let raw = await db.select(`

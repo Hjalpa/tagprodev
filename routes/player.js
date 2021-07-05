@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const player = require('../models/player')
 
-router.get('/:userId', (req, res) => player.init(req, res))
+router.get('/:userId/allies', (req, res) => require('../models/players/allies').init(req, res))
+router.get('/:userId/opponents', (req, res) => require('../models/players/opponents').init(req, res))
 
 module.exports = router
