@@ -68,9 +68,12 @@ app.filters = (async() => {
 	}
 
 	function initELO() {
+		let raw = document.querySelector('.drop-down.elo .value').innerText
+		let values = raw.split('-')
+
 		const slider = document.getElementById('slider')
 		let url = new URLSearchParams(window.location.search)
-		let elo = (url.get('elo') ? url.get('elo').split('-') : [2000,3000])
+		let elo = (url.get('elo') ? url.get('elo').split('-') : [values[0],values[1]])
 
 		noUiSlider.create(slider, {
 			start: elo,
@@ -94,7 +97,7 @@ app.filters = (async() => {
 	function initGame() {
 		const slider = document.getElementById('slider-game')
 		let url = new URLSearchParams(window.location.search)
-		let game = (url.get('games') ? url.get('games') : 50)
+		let game = (url.get('games') ? url.get('games') : document.querySelector('.drop-down.game .value').innerText)
 
 		noUiSlider.create(slider, {
 			start: game,

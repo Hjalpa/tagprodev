@@ -11,7 +11,8 @@ let init = async (req, res) => {
 		let data = {
 			title: `${user}'s opponents`,
 			nav: 'player',
-			results: await getData(user)
+			maps: await req.maps,
+			results: await getData(user, req.query)
 		}
 		res.render('player', data);
 	}
@@ -20,7 +21,13 @@ let init = async (req, res) => {
 	}
 }
 
-async function getData(player) {
+async function getData(player, filters) {
+
+	// defaults
+	if(!filters.games) filters.games = '10'
+	if(!filters.elo) filters.elo = '0-3000'
+
+	let f = util.getFilters(filters)
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -35,7 +42,6 @@ async function getData(player) {
 			ROUND(
 				(sum(cap_team_against)::DECIMAL - sum(cap_team_for)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
 			, 3) as cap_diff_per_min,
-			-- (sum(cap_team_against) - sum(cap_team_for))::NUMERIC as cap_diff_total,
 			count(*) filter (WHERE result_half_win = 0) as won,
 			count(*) filter (WHERE result_half_win = 1) as lost,
 			ROUND(
@@ -48,11 +54,9 @@ async function getData(player) {
 
 		FROM playergame
 		LEFT JOIN player on player.id = playergame.playerid
-		-- LEFT JOIN game on game.id = playergame.gameid
 
-		WHERE
-			-- seasonid = 2 AND
-			name != $1 AND
+		${f.where}
+			AND name != '${player}' AND
 
 			gameid IN (
 					SELECT
@@ -60,13 +64,13 @@ async function getData(player) {
 					FROM
 						playergame as pg
 					INNER JOIN player ON player.id = pg.playerid
-					WHERE name = $2 AND gameid = playergame.gameid AND pg.team != playergame.team
+					WHERE name = '${player}' AND gameid = playergame.gameid AND pg.team != playergame.team
 				)
 
 		GROUP BY name
-		HAVING count(*) > 10
+		${f.having}
 		order by winrate DESC
-	`, [player, player], 'all')
+	`, f.clause, 'all')
 
 	return raw
 }
