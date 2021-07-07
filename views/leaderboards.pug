@@ -26,12 +26,11 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.win_ratio
 
-				// footer
-				// 	a(href="/stats/league-table") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -43,12 +42,10 @@ block content
 							tr(class=(n.rank === '1' ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.pup_every
-
-				// footer
-				// 	a(href="/stats/pups") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -60,12 +57,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.cap_every
-
-				// footer
-				// 	a(href="/stats/prevent") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -77,12 +72,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.cap_every
-
-				// footer
-				// 	a(href="/stats/defending") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -94,12 +87,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.cap_every
-
-				// footer
-				// 	a(href="/stats/attacking") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -111,12 +102,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.per_min
-
-				// footer
-				// 	a(href="/stats/summary") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -128,12 +117,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.return_every
-
-				// footer
-				// 	a(href="/stats/defending") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -145,12 +132,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.per_min
-
-				// footer
-				// 	a(href="/stats/summary") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -162,12 +147,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.tag_every
-
-				// footer
-				// 	a(href="/stats/summary") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -179,12 +162,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.pop_every
-
-				// footer
-				// 	a(href="/stats/summary") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -196,12 +177,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.killdeath
-
-				// footer
-				// 	a(href="/stats/summary") View full list
-				// 		span.icon
 
 			.stats-card
 				header
@@ -213,13 +192,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.flag_in_base
-
-				// footer
-				// 	a(href="/stats/defending") View full list
-				// 		span.icon
-
 
 			.stats-card
 				header
@@ -231,5 +207,10 @@ block content
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
-									| #{n.player}
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-r= n.cap
+				// footer
+				// 	a(href="/stats/defending") View full list
+				// 		span.icon

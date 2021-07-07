@@ -36,7 +36,10 @@ block content
 						each n, key in mostcaps
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -59,7 +62,10 @@ block content
 						each n, key in mosthold
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -82,7 +88,10 @@ block content
 						each n, key in mostgrabs
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -105,7 +114,10 @@ block content
 						each n, key in mosttags
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -128,7 +140,10 @@ block content
 						each n, key in mostprevent
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -151,7 +166,10 @@ block content
 						each n, key in mostreturns
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -174,7 +192,10 @@ block content
 						each n, key in mostquickreturns
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -197,7 +218,10 @@ block content
 						each n, key in mostkeyreturns
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -220,7 +244,10 @@ block content
 						each n, key in mostpups
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -243,7 +270,10 @@ block content
 						each n, key in mosttagpros
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-l.date
 									a(
 										href= 'https://tagpro.eu/?match=' + n.euid
@@ -266,5 +296,8 @@ block content
 
 							tr(class=(n.recent == true ? 'mark' : ''))
 								td.text-l.pos= n.rank
-								td.text-l.name= n.player
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
 								td.text-c= n.streak

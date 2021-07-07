@@ -5,14 +5,18 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
 		let user = req.params.userId
-
-		await playerExists(user)
+		let userid = await playerExists(user)
 
 		let data = {
 			title: `${user}'s allies`,
+			user,
+			navtab: 'allies',
 			nav: 'player',
+			show: {
+				filters: true
+			},
 			maps: await req.maps,
-			results: await getData(user, req.query)
+			results: await getData(userid, req.query)
 		}
 		res.render('player', data);
 	}
@@ -56,7 +60,7 @@ async function getData(player, filters) {
 		LEFT JOIN game on game.id = playergame.gameid
 
 		${f.where}
-			AND name != '${player}' AND
+			AND playerid != '${player}' AND
 
 			gameid IN (
 					SELECT
@@ -64,7 +68,7 @@ async function getData(player, filters) {
 					FROM
 						playergame as pg
 					INNER JOIN player ON player.id = pg.playerid
-					WHERE name = '${player}' AND gameid = playergame.gameid AND pg.team = playergame.team
+					WHERE playerid = '${player}' AND gameid = playergame.gameid AND pg.team = playergame.team
 				)
 
 		GROUP BY name
@@ -76,10 +80,10 @@ async function getData(player, filters) {
 }
 
 async function playerExists(player) {
-	let id = await db.select(`SELECT id from player WHERE name = $1`, [player], 'row')
+	let id = await db.select(`SELECT id from player WHERE name = $1`, [player], 'id')
 
 	if(!id)
 		throw 'cannot find player name: ' + player
 
-	return true
+	return id
 }

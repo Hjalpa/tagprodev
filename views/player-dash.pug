@@ -11,19 +11,19 @@ block content
 		.tabs
 			.left
 				a(
-					href= './' + user
+					href= '/player/' + user
 					class=(navtab == 'summary' ? 'active' : '')
 				) Summary
 				a(
-					href= './' + user + '/allies'
+					href= '/player/' + user + '/allies'
 					class=(navtab === 'allies' ? 'active' : '')
 				) Allies
 				a(
-					href= './' + user + '/opponents'
+					href= '/player/' + user + '/opponents'
 					class=(navtab === 'opponents' ? 'active' : '')
 				) Opponents
 				a(
-					href= './' + user + '/maps'
+					href= '/player/' + user + '/maps'
 					class=(navtab === 'maps' ? 'active' : '')
 				) Maps
 
@@ -56,9 +56,12 @@ block content
 
 				table
 					tbody
-						each n, key in legends
+						each n, key in godteam
 							tr
-								td.map= n.player
+								td.map
+									a(
+										href= '/player/' + n.player
+									)= n.player
 
 								if(n.winrate <= 61)
 									td.text-r ⭐
@@ -77,9 +80,12 @@ block content
 
 				table
 					tbody
-						each n, key in shitters
+						each n, key in shitteam
 							tr
-								td.map= n.player
+								td.map
+									a(
+										href= '/player/' + n.player
+									)= n.player
 
 								if(n.winrate >= 39)
 									td.text-r 💩

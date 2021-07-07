@@ -5,14 +5,18 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
 		let user = req.params.userId
-
-		await playerExists(user)
+		let userid = await playerExists(user)
 
 		let data = {
 			title: `${user}'s maps`,
+			user,
+			navtab: 'maps',
 			nav: 'player',
+			show: {
+				filters: false,
+			},
 			maps: await req.maps,
-			results: await getData(user, req.query)
+			results: await getData(userid, req.query)
 		}
 		res.render('player', data);
 	}
@@ -51,7 +55,7 @@ async function getData(player, filters) {
 		LEFT JOIN map on map.id = game.mapid
 
 		WHERE
-			player.name = $1
+			player.id = $1
 		GROUP BY map.name
 		ORDER BY winrate DESC
 	`, [player], 'all')
@@ -60,10 +64,10 @@ async function getData(player, filters) {
 }
 
 async function playerExists(player) {
-	let id = await db.select(`SELECT id from player WHERE name = $1`, [player], 'row')
+	let id = await db.select(`SELECT id from player WHERE name = $1`, [player], 'id')
 
 	if(!id)
 		throw 'cannot find player name: ' + player
 
-	return true
+	return id
 }
