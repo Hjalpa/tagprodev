@@ -83,6 +83,8 @@ block content
 									th(style="width:70px")
 								else if(k === 'player')
 									th Player
+								else if(k === 'map')
+									th Map
 								else
 									if(last === n)
 										th.text-c.sort.sort-desc
@@ -96,7 +98,7 @@ block content
 					each raw in results
 						tr
 							each v, k in raw
-								if(k === 'rank' || k === 'player')
+								if(k === 'rank' || k === 'player' || k === 'map')
 									td.bold= v
 								else
 									td.text-c= v

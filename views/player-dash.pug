@@ -1,0 +1,81 @@
+extends layouts/_layout.pug
+
+block title
+	title= title
+
+block content
+	main#main
+		header
+			h2= title
+
+		.tabs
+			.left
+				a.active Summary
+				a Allies
+				a Opponents
+				a Maps
+
+		section.stats-card-wrapper
+
+			.stats-card
+				header
+					h3 Best Maps
+
+				table
+					tbody
+						each n, key in maps
+							tr
+								td.map= n.map
+
+								if(n.winrate <= 55)
+									td.text-r ⭐
+								else if(n.winrate <= 60)
+									td.text-r ⭐⭐
+								else if(n.winrate <= 70)
+									td.text-r ⭐⭐⭐
+								else if(n.winrate <= 80)
+									td.text-r ⭐⭐⭐⭐
+								else
+									td.text-r ⭐⭐⭐⭐⭐
+
+			.stats-card
+				header
+					h3 Godly Teammates
+
+				table
+					tbody
+						each n, key in legends
+							tr
+								td.map= n.player
+
+								if(n.winrate <= 61)
+									td.text-r ⭐
+								else if(n.winrate <= 63)
+									td.text-r ⭐⭐
+								else if(n.winrate <= 65)
+									td.text-r ⭐⭐⭐
+								else if(n.winrate <= 67)
+									td.text-r ⭐⭐⭐⭐
+								else
+									td.text-r ⭐⭐⭐⭐⭐
+
+			.stats-card
+				header
+					h3 Shit Teammates
+
+				table
+					tbody
+						each n, key in shitters
+							tr
+								td.map= n.player
+
+								if(n.winrate >= 39)
+									td.text-r 💩
+								else if(n.winrate >= 37)
+									td.text-r 💩💩
+								else if(n.winrate >= 35)
+									td.text-r 💩💩💩
+								else if(n.winrate >= 33)
+									td.text-r 💩💩💩💩
+								else
+									td.text-r 💩💩💩💩💩
