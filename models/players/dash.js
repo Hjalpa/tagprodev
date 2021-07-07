@@ -10,6 +10,8 @@ let init = async (req, res) => {
 
 		let data = {
 			title: `${user}`,
+			user: user,
+			navtab: 'summary',
 			nav: 'player',
 			maps: await getMaps(user),
 			legends: await getLegends(user),
