@@ -22,7 +22,7 @@ router.get('/defense', (req, res) => require('../models/stats/defense').init(req
 router.get('/defense/returns', (req, res) => require('../models/stats/defense-returns').init(req, res))
 
 router.get('/pups', (req, res) => require('../models/stats/pups').init(req, res))
-router.get('/miscellaneous', (req, res) => require('../models/stats/miscellaneous').init(req, res))
+// router.get('/miscellaneous', (req, res) => require('../models/stats/miscellaneous').init(req, res))
 
 // attacking
 router.get('/caps', (req, res) => require('../models/stats/caps').init(req, res))

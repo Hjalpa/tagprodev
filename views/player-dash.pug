@@ -4,6 +4,8 @@ block title
 	title= title
 
 block content
+	| <script src="https://d3js.org/d3.v3.min.js"></script>
+
 	main#main
 		header
 			h2= title
@@ -27,28 +29,83 @@ block content
 					class=(navtab === 'maps' ? 'active' : '')
 				) Maps
 
-		section.stats-card-wrapper
+		section.stats-card-wrapper.stars
 
 			.stats-card
 				header
-					h3 Best Maps
+					h3 Godly Maps
 
 				table
 					tbody
 						each n, key in maps
 							tr
 								td.map= n.map
+								td.text-r
+									if(n.winrate <= 52.5)
+										include ../src/svg/star-half.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 55)
+										include ../src/svg/star.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 57.5)
+										include ../src/svg/star.svg
+										include ../src/svg/star-half.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 60)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 62.5)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-half.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 65)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 67.5)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-half.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 70)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 72.5)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-half.svg
+									else
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
 
-								if(n.winrate <= 55)
-									td.text-r ⭐
-								else if(n.winrate <= 60)
-									td.text-r ⭐⭐
-								else if(n.winrate <= 70)
-									td.text-r ⭐⭐⭐
-								else if(n.winrate <= 80)
-									td.text-r ⭐⭐⭐⭐
-								else
-									td.text-r ⭐⭐⭐⭐⭐
+
+
+
+
 
 			.stats-card
 				header
@@ -63,16 +120,67 @@ block content
 										href= '/player/' + n.player
 									)= n.player
 
-								if(n.winrate <= 61)
-									td.text-r ⭐
-								else if(n.winrate <= 63)
-									td.text-r ⭐⭐
-								else if(n.winrate <= 65)
-									td.text-r ⭐⭐⭐
-								else if(n.winrate <= 67)
-									td.text-r ⭐⭐⭐⭐
-								else
-									td.text-r ⭐⭐⭐⭐⭐
+								td.text-r
+									if(n.winrate <= 52.5)
+										include ../src/svg/star-half.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 55)
+										include ../src/svg/star.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 57.5)
+										include ../src/svg/star.svg
+										include ../src/svg/star-half.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 60)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 62.5)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-half.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 65)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 67.5)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-half.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 70)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate <= 72.5)
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star-half.svg
+									else
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
+										include ../src/svg/star.svg
 
 			.stats-card
 				header
@@ -87,17 +195,77 @@ block content
 										href= '/player/' + n.player
 									)= n.player
 
-								if(n.winrate >= 39)
-									td.text-r 💩
-								else if(n.winrate >= 37)
-									td.text-r 💩💩
-								else if(n.winrate >= 35)
-									td.text-r 💩💩💩
-								else if(n.winrate >= 33)
-									td.text-r 💩💩💩💩
-								else
-									td.text-r 💩💩💩💩💩
+								td.text-r
+									if(n.winrate >= 47.5)
+										include ../src/svg/shit-half.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate >= 45)
+										include ../src/svg/shit.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate >= 42.5)
+										include ../src/svg/shit.svg
+										include ../src/svg/shit-half.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate >= 40)
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate >= 37.5)
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit-half.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate >= 35)
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/star-blank.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate >= 32.5)
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit-half.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate >= 30)
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/star-blank.svg
+									else if(n.winrate >= 27.5)
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit-half.svg
+									else
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
+										include ../src/svg/shit.svg
 
-		section.test
-			p recent 20 games
-			p tags, pops, grabs, drops, hold, caps, prevent, returns, pups
+
+		.radar
+			ul
+				// li.elo= radar.elo
+				// li.elo= rank.mmr
+				// li.cap= radar.cap
+				// li.prevent= radar.prevent
+				// li.hold= radar.hold
+				// li.grab= radar.grab
+				// li.pop= radar.pop
+				// li.return= radar.return
+				// li.drop= radar.drop

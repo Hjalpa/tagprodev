@@ -8,7 +8,7 @@ app.compare = (async() => {
 			}
 		},
 		persist: false
-	});
+	})
 
 	// collapse expand block
 	document.addEventListener('click', function (event) {
@@ -152,9 +152,6 @@ app.compare = (async() => {
 		}
 
 	}
-
-
-
 
 })
 

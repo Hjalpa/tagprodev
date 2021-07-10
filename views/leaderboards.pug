@@ -31,21 +31,22 @@ block content
 									)= n.player
 								td.text-r= n.win_ratio
 
-
 			.stats-card
 				header
-					h3 Pup Every
+					h3 Cap Diff Per Min
 
 				table
 					tbody
-						each n, key in pup
-							tr(class=(n.rank === '1' ? 'top' : ''))
+						each n, key in capdiffpermin
+							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
 									a(
 										href= '/player/' + n.player
 									)= n.player
-								td.text-r= n.pup_every
+								td.text-r= n.cap
+
+
 
 			.stats-card
 				header
@@ -197,20 +198,22 @@ block content
 									)= n.player
 								td.text-r= n.flag_in_base
 
+
 			.stats-card
 				header
-					h3 Cap Difference Per Min
+					h3 Pup Every
 
 				table
 					tbody
-						each n, key in capdiffpermin
-							tr(class=(key === 0 ? 'top' : ''))
+						each n, key in pup
+							tr(class=(n.rank === '1' ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
 									a(
 										href= '/player/' + n.player
 									)= n.player
-								td.text-r= n.cap
+								td.text-r= n.pup_every
+
 				// footer
 				// 	a(href="/stats/defending") View full list
 				// 		span.icon

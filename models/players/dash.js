@@ -14,7 +14,9 @@ let init = async (req, res) => {
 			nav: 'player',
 			maps: await getMaps(userid),
 			godteam: await getGodlyTeammates(userid),
-			shitteam: await getShitTeammates(userid)
+			shitteam: await getShitTeammates(userid),
+			radar: await getRadar(userid),
+			rank: await getRank(userid),
 		}
 		res.render('player-dash', data);
 	}
@@ -30,6 +32,41 @@ async function playerExists(player) {
 		throw 'cannot find player name: ' + player
 
 	return id
+}
+
+async function getRank(player) {
+	let raw = await db.select(`
+		SELECT
+			ROUND(CAST(playerskill.rank AS numeric), 2) as mmr
+		FROM playerskill
+		WHERE
+			playerid = $1
+		LIMIT 1
+	`, [player], 'row')
+
+	return raw
+}
+
+async function getRadar(player) {
+	let raw = await db.select(`
+		SELECT
+			avg(cap) as cap,
+			avg(prevent) as prevent,
+			avg(hold) as hold,
+			avg(grab) as grab,
+			avg(pop) as pop,
+			avg(return) as return,
+			avg(drop) as drop,
+			avg(elo) as elo
+		FROM playergame
+		LEFT JOIN game on playergame.gameid = game.id
+		WHERE
+			playerid = $1
+			-- AND date > now() - interval '2 week'
+		GROUP BY playerid
+	`, [player], 'row')
+
+	return raw
 }
 
 async function getMaps(player) {
@@ -132,9 +169,7 @@ async function getGodlyTeammates(player) {
 					/
 					count(*)::DECIMAL
 				) * 100
-			, 2) >= 60
-
-
+			, 2) > 50
 
 		ORDER BY winrate DESC
 		LIMIT 6
@@ -192,7 +227,7 @@ async function getShitTeammates(player) {
 					/
 					count(*)::DECIMAL
 				) * 100
-			, 2) <= 40
+			, 2) < 50
 
 
 
