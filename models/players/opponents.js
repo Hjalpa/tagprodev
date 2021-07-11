@@ -40,7 +40,7 @@ async function getData(player, filters) {
 			) rank,
 
 			name as player,
-			count(*) as played,
+			count(*) as games,
 			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
 
 			ROUND(
