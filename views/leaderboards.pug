@@ -80,6 +80,25 @@ block content
 
 			.stats-card
 				header
+					h3 Pup Every
+
+				table
+					tbody
+						each n, key in pup
+							tr(class=(n.rank === '1' ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									a(
+										href= '/player/' + n.player
+									)= n.player
+								td.text-r= n.pup_every
+
+
+
+
+
+			.stats-card
+				header
 					h3 Cap Every
 
 				table
@@ -110,18 +129,33 @@ block content
 
 			.stats-card
 				header
-					h3 Return Every
+					h3 Grab Every
 
 				table
 					tbody
-						each n, key in returns
+						each n, key in grab
 							tr(class=(key === 0 ? 'top' : ''))
 								td.rank
 									span.pos #{n.rank}.
 									a(
 										href= '/player/' + n.player
 									)= n.player
-								td.text-r= n.return_every
+								td.text-r= n.grab_every
+
+			.stats-card
+				header
+					h3 Flag In Base
+
+				table
+					tbody
+						each n, key in flaginbase
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									a(
+										href= '/player/' + n.player
+									)= n.player
+								td.text-r= n.flag_in_base
 
 			.stats-card
 				header
@@ -140,6 +174,24 @@ block content
 
 			.stats-card
 				header
+					h3 Return Every
+
+				table
+					tbody
+						each n, key in returns
+							tr(class=(key === 0 ? 'top' : ''))
+								td.rank
+									span.pos #{n.rank}.
+									a(
+										href= '/player/' + n.player
+									)= n.player
+								td.text-r= n.return_every
+
+
+
+
+			.stats-card
+				header
 					h3 Tag Every
 
 				table
@@ -152,6 +204,7 @@ block content
 										href= '/player/' + n.player
 									)= n.player
 								td.text-r= n.tag_every
+
 
 			.stats-card
 				header
@@ -168,6 +221,7 @@ block content
 									)= n.player
 								td.text-r= n.pop_every
 
+
 			.stats-card
 				header
 					h3 Kill Death
@@ -183,36 +237,9 @@ block content
 									)= n.player
 								td.text-r= n.killdeath
 
-			.stats-card
-				header
-					h3 Flag In Base
-
-				table
-					tbody
-						each n, key in flaginbase
-							tr(class=(key === 0 ? 'top' : ''))
-								td.rank
-									span.pos #{n.rank}.
-									a(
-										href= '/player/' + n.player
-									)= n.player
-								td.text-r= n.flag_in_base
 
 
-			.stats-card
-				header
-					h3 Pup Every
 
-				table
-					tbody
-						each n, key in pup
-							tr(class=(n.rank === '1' ? 'top' : ''))
-								td.rank
-									span.pos #{n.rank}.
-									a(
-										href= '/player/' + n.player
-									)= n.player
-								td.text-r= n.pup_every
 
 				// footer
 				// 	a(href="/stats/defending") View full list

@@ -51,6 +51,7 @@ let init = async (req, res) => {
 			capdiffpermin: await getCapDiffPerMin(filters),
 			cap: await getCaps(filters),
 			hold: await getHold(filters),
+			grab: await getGrab(filters),
 			returns: await getReturn(filters),
 			prevent: await getPrevent(filters),
 			tag: await getTag(filters),
@@ -293,6 +294,33 @@ async function getHold(filters) {
 		LIMIT 10
 	`
 	return await db.select(sql, [], 'all')
+}
+
+async function getGrab(filters) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					TO_CHAR(
+						(sum(play_time) / sum(grab)) * interval '1 sec'
+					, 'MI:SS') ASC
+			) rank,
+
+			player.name as player,
+			TO_CHAR(
+				(sum(play_time) / sum(grab)) * interval '1 sec'
+			, 'MI:SS') as grab_every
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
+		ORDER BY grab_every ASC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
 }
 
 async function getTag(filters) {

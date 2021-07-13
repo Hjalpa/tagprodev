@@ -257,15 +257,21 @@ block content
 										include ../src/svg/shit.svg
 										include ../src/svg/shit.svg
 
+		//winloss
+		script.
+			let wonlost = !{JSON.stringify(wonlost)}
+		.stats-card.daywrap
+			// header
+			// 	h3 Recent Monthly Win Loss
 
-		.radar
-			ul
-				// li.elo= radar.elo
-				// li.elo= rank.mmr
-				// li.cap= radar.cap
-				// li.prevent= radar.prevent
-				// li.hold= radar.hold
-				// li.grab= radar.grab
-				// li.pop= radar.pop
-				// li.return= radar.return
-				// li.drop= radar.drop
+		.stats-card.radar(style="display:none")
+			ul(style="display:none")
+				li.elo= radar.elo
+				li.elo= rank.mmr
+				li.cap= radar.cap
+				li.prevent= radar.prevent
+				li.hold= radar.hold
+				li.grab= radar.grab
+				li.pop= radar.pop
+				li.return= radar.return
+				li.drop= radar.drop

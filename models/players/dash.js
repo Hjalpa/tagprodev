@@ -16,6 +16,7 @@ let init = async (req, res) => {
 			godteam: await getGodlyTeammates(userid),
 			shitteam: await getShitTeammates(userid),
 			radar: await getRadar(userid),
+			wonlost: await getWonLost(userid),
 			rank: await getRank(userid),
 		}
 		res.render('player-dash', data);
@@ -43,6 +44,41 @@ async function getRank(player) {
 			playerid = $1
 		LIMIT 1
 	`, [player], 'row')
+
+	return raw
+}
+
+async function getWonLost(player) {
+
+
+	let raw = await db.select(`
+		SELECT
+			CONCAT(
+				TO_CHAR(DATE_TRUNC('month', date), 'Mon')
+				,' ',
+				extract(year from date)
+			) AS monthyear,
+			date_trunc('month', date) as dates,
+
+			(
+				count(*) filter (WHERE result_half_win = 1)
+				/
+				count(*)::DECIMAL
+			) * 100 as won,
+
+			(
+				count(*) filter (WHERE result_half_win != 1)
+				/
+				count(*)::DECIMAL
+			) * 100 as lost
+
+		from playergame
+		left join game ON game.id = playergame.gameid
+		where playerid = $1
+		GROUP by monthyear, dates
+		ORDER BY dates DESC
+		LIMIT 11
+	`, [player], 'all')
 
 	return raw
 }
