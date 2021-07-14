@@ -61,6 +61,7 @@ async function saveGame(raw) {
 	let data = {
 		euid: raw.euid,
 		date: raw.date,
+		datetime: raw.datetime,
 		duration: raw.duration,
 		mapid: await getMapID(raw.map),
 		serverid: await getServerID(raw.server),

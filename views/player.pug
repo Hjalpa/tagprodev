@@ -26,6 +26,10 @@ block content
 					href= '/player/' + user + '/maps'
 					class=(navtab === 'maps' ? 'active' : '')
 				) Maps
+				a(
+					href= '/player/' + user + '/breakdown'
+					class=(navtab === 'breakdown' ? 'active' : '')
+				) Breakdown
 
 		if(show.filters)
 			.page-filter

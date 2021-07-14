@@ -28,6 +28,10 @@ block content
 					href= '/player/' + user + '/maps'
 					class=(navtab === 'maps' ? 'active' : '')
 				) Maps
+				a(
+					href= '/player/' + user + '/breakdown'
+					class=(navtab === 'breakdown' ? 'active' : '')
+				) Breakdown
 
 		section.stats-card-wrapper.stars
 
@@ -257,12 +261,6 @@ block content
 										include ../src/svg/shit.svg
 										include ../src/svg/shit.svg
 
-		//winloss
-		script.
-			let wonlost = !{JSON.stringify(wonlost)}
-		.stats-card.daywrap
-			// header
-			// 	h3 Recent Monthly Win Loss
 
 		.stats-card.radar(style="display:none")
 			ul(style="display:none")

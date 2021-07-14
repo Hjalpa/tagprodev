@@ -1,0 +1,50 @@
+extends layouts/_layout.pug
+
+block title
+	title= title
+
+block content
+	| <script src="https://d3js.org/d3.v3.min.js"></script>
+
+	main#main
+		header
+			h2= title
+
+		.tabs
+			.left
+				a(
+					href= '/player/' + user
+					class=(navtab == 'summary' ? 'active' : '')
+				) Summary
+				a(
+					href= '/player/' + user + '/allies'
+					class=(navtab === 'allies' ? 'active' : '')
+				) Allies
+				a(
+					href= '/player/' + user + '/opponents'
+					class=(navtab === 'opponents' ? 'active' : '')
+				) Opponents
+				a(
+					href= '/player/' + user + '/maps'
+					class=(navtab === 'maps' ? 'active' : '')
+				) Maps
+				a(
+					href= '/player/' + user + '/breakdown'
+					class=(navtab === 'breakdown' ? 'active' : '')
+				) Breakdown
+
+		//winloss
+		script.
+			let monthwonlost = !{JSON.stringify(monthwonlost)}
+			let hourwonlost = !{JSON.stringify(hourwonlost)}
+			let daywonlost = !{JSON.stringify(daywonlost)}
+		.wrapwrap
+			.stats-card.monthwrap
+				header
+					h3 Monthly
+			.stats-card.hourwrap
+				header
+					h3 Hourly
+			.stats-card.daywrap
+				header
+					h3 Week Day

@@ -109,28 +109,38 @@
 		width 1rem
 		vertical-align middle
 
-
+.wrapwrap
+	font-size 0
 
 // player profile
+.hourwrap
+	margin-left 8px
+
+.monthwrap
+	margin-right 8px
+
 .daywrap
+.hourwrap
+.monthwrap
 	display inline-block
-	width 510px
+	width calc(50% - 8px)
 	padding-bottom 15px
 	font-size .8rem
 	margin-top 10px
+	vertical-align top
 
 	#xaxis .domain
 		fill none
 
 	.tick
-		fill #ccc
+		fill #c3c3c3
 
 	#xaxis text
 	#yaxis text
 		font-size 12px
 		display none
 
-	#xaxis_chartOne .domain
+	.domain
 		display none
 
 
