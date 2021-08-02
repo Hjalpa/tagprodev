@@ -14,7 +14,8 @@ let init = async (req, res) => {
 			nav: 'player',
 			monthwonlost: await getMonthWonLost(userid),
 			daywonlost: await getDayWonLost(userid),
-			hourwonlost: await getHourWonLost(userid)
+			hourwonlost: await getHourWonLost(userid),
+			elowonlost: await getEloWonLost(userid)
 		}
 		res.render('player-breakdown', data);
 	}
@@ -57,6 +58,32 @@ async function getHourWonLost(player) {
 		where playerid = $1
 		GROUP by fake_hour, am, hour
 		ORDER BY am DESC, fake_hour ASC
+	`, [player], 'all')
+
+	return raw
+}
+
+async function getEloWonLost(player) {
+	let raw = await db.select(`
+		SELECT
+		    CAST(ROUND(elo / 250) * 250 as integer) as eloband,
+			(
+				count(*) filter (WHERE result_half_win = 1)
+				/
+				count(*)::DECIMAL
+			) * 100 as won,
+			(
+				count(*) filter (WHERE result_half_win != 1)
+				/
+				count(*)::DECIMAL
+			) * 100 as lost,
+			count(*)::DECIMAL as games
+
+		from playergame
+		left join game ON game.id = playergame.gameid
+		where playerid = $1
+		GROUP BY eloband
+		ORDER BY eloband ASC
 	`, [player], 'all')
 
 	return raw

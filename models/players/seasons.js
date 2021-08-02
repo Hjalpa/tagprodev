@@ -12,12 +12,10 @@ let init = async (req, res) => {
 			user: user,
 			navtab: 'summary',
 			nav: 'player',
-			// star ratings
-			maps: await getMaps(userid),
-			godteam: await getGodlyTeammates(userid),
-			shitteam: await getShitTeammates(userid),
 			// radar
-			data: await getDataReal(userid),
+			data: await getDataReal(userid, 2),
+			// dataSeason2: await getDataReal(userid, 1),
+			// dataSeason3: await getDataReal(userid, 3),
 			max: {
 				cap: await getMaxCap(),
 				return: await getMaxReturn(),
@@ -29,6 +27,8 @@ let init = async (req, res) => {
 				rank: await getMaxRank(),
 			},
 			value: {}
+			// value2: {},
+			// value3: {}
 		}
 
 		data.value.cap = calc(data.data.cap, data.max.cap)
@@ -39,9 +39,26 @@ let init = async (req, res) => {
 		data.value.hold = calc(data.data.hold, data.max.hold)
 		data.value.grab = calc(data.data.grab, data.max.grab)
 		data.value.rank = calc(data.data.rank, data.max.rank)
-		// console.log(data)
 
-		res.render('player-dash', data);
+		// data.value2.cap = calc(data.dataSeason2.cap, data.max.cap)
+		// data.value2.pup = calc(data.dataSeason2.pup, data.max.pup)
+		// data.value2.return = calc(data.dataSeason2.return, data.max.return)
+		// data.value2.tag = calc(data.dataSeason2.tag, data.max.tag)
+		// data.value2.prevent = calc(data.dataSeason2.prevent, data.max.prevent)
+		// data.value2.hold = calc(data.dataSeason2.hold, data.max.hold)
+		// data.value2.grab = calc(data.dataSeason2.grab, data.max.grab)
+		// data.value2.rank = calc(data.dataSeason2.rank, data.max.rank)
+
+		// data.value3.cap = calc(data.dataSeason3.cap, data.max.cap)
+		// data.value3.pup = calc(data.dataSeason3.pup, data.max.pup)
+		// data.value3.return = calc(data.dataSeason3.return, data.max.return)
+		// data.value3.tag = calc(data.dataSeason3.tag, data.max.tag)
+		// data.value3.prevent = calc(data.dataSeason3.prevent, data.max.prevent)
+		// data.value3.hold = calc(data.dataSeason3.hold, data.max.hold)
+		// data.value3.grab = calc(data.dataSeason3.grab, data.max.grab)
+		// data.value3.rank = calc(data.dataSeason3.rank, data.max.rank)
+
+		res.render('player-seasons', data);
 	}
 	catch(e) {
 		res.status(400).json({error: e})
@@ -64,175 +81,6 @@ function calc(original, max) {
 	return v
 }
 
-async function getMaps(player) {
-	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY
-				-- (count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) DESC
-
-
-				ROUND(
-					(
-						count(*) filter (WHERE result_half_win = 1)
-						/
-						count(*)::DECIMAL
-					) * 100
-				, 2) DESC
-
-
-			) rank,
-
-			map.name as map,
-			count(*) as played,
-			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
-			ROUND(
-				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
-			, 3) as cap_diff_per_min,
-			count(*) filter (WHERE result_half_win = 1) as won,
-			count(*) filter (WHERE result_half_win = 0) as lost,
-			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) as winrate
-
-		FROM playergame
-		LEFT JOIN player on player.id = playergame.playerid
-		LEFT JOIN game on game.id = playergame.gameid
-		LEFT JOIN map on map.id = game.mapid
-
-		WHERE
-			player.id = $1
-		GROUP BY map.name
-		HAVING count(*) >= 20
-		ORDER BY winrate DESC
-		LIMIT 6
-	`, [player], 'all')
-
-	return raw
-}
-
-async function getGodlyTeammates(player) {
-	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY
-				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
-			) rank,
-
-			name as player,
-			count(*) as played,
-			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
-			ROUND(
-				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
-			, 3) as cap_diff_per_min,
-			count(*) filter (WHERE result_half_win = 1) as won,
-			count(*) filter (WHERE result_half_win = 0) as lost,
-			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) as winrate
-
-		FROM playergame
-		LEFT JOIN player on player.id = playergame.playerid
-		LEFT JOIN game on game.id = playergame.gameid
-
-		WHERE
-			playerid != $1 AND
-
-			gameid IN (
-					SELECT
-						gameid
-					FROM
-						playergame as pg
-					INNER JOIN player ON player.id = pg.playerid
-					WHERE playerid = $2 AND gameid = playergame.gameid AND pg.team = playergame.team
-				)
-
-		GROUP BY name
-		HAVING count(*) >= 30 AND
-
-			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) > 50
-
-		ORDER BY winrate DESC
-		LIMIT 6
-	`, [player, player], 'all')
-
-	return raw
-}
-
-async function getShitTeammates(player) {
-	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY
-				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
-			) rank,
-
-			name as player,
-			count(*) as played,
-			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
-			ROUND(
-				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
-			, 3) as cap_diff_per_min,
-			count(*) filter (WHERE result_half_win = 1) as won,
-			count(*) filter (WHERE result_half_win = 0) as lost,
-			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) as winrate
-
-		FROM playergame
-		LEFT JOIN player on player.id = playergame.playerid
-		LEFT JOIN game on game.id = playergame.gameid
-
-		WHERE
-			playerid != $1 AND
-
-			gameid IN (
-					SELECT
-						gameid
-					FROM
-						playergame as pg
-					INNER JOIN player ON player.id = pg.playerid
-					WHERE playerid = $2 AND gameid = playergame.gameid AND pg.team = playergame.team
-				)
-
-		GROUP BY name
-		HAVING count(*) >= 15 AND
-
-			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) < 50
-
-
-
-		ORDER BY winrate ASC
-		LIMIT 6
-	`, [player, player], 'all')
-
-	return raw
-}
-
 async function getMaxCap() {
 	return await db.select(`
 		SELECT
@@ -244,7 +92,7 @@ async function getMaxCap() {
 			elo >= 2000
 		-- 	seasonid = 3
 		--	date > now() - interval '6 month'
-		GROUP BY playerid
+		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY cap DESC
 	`, false, 'cap')
@@ -262,7 +110,7 @@ async function getMaxTag() {
 			elo >= 2000
 		--	seasonid = 3
 		--	date > now() - interval '6 month'
-		GROUP BY playerid
+		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY tag DESC
 	`, false, 'tag')
@@ -280,7 +128,7 @@ async function getMaxReturn() {
 			elo >= 2000
 		--	seasonid = 3
 		--	date > now() - interval '6 month'
-		GROUP BY playerid
+		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY return DESC
 	`, false, 'return')
@@ -298,7 +146,7 @@ async function getMaxHold() {
 			elo >= 2000
 		--	seasonid = 3
 		--	date > now() - interval '6 month'
-		GROUP BY playerid
+		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY hold DESC
 	`, false, 'hold')
@@ -316,7 +164,7 @@ async function getMaxPrevent() {
 			elo >= 2000
 		-- 	seasonid = 3
 		--	date > now() - interval '6 month'
-		GROUP BY playerid
+		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY prevent DESC
 	`, false, 'prevent')
@@ -334,7 +182,7 @@ async function getMaxPup() {
 			elo >= 2000
 		--	seasonid = 3
 		--	date > now() - interval '6 month'
-		GROUP BY playerid
+		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY pup DESC
 	`, false, 'pup')
@@ -352,7 +200,7 @@ async function getMaxGrab() {
 			elo >= 2000
 		--	seasonid = 3
 		--	date > now() - interval '6 month'
-		GROUP BY playerid
+		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY grab DESC
 	`, false, 'grab')
@@ -370,7 +218,7 @@ async function getMaxRank() {
 	return raw
 }
 
-async function getDataReal(player) {
+async function getDataReal(player, seasonid) {
 	let raw = await db.select(`
 		SELECT
 			-- avg(cap) as cap,
@@ -395,11 +243,11 @@ async function getDataReal(player) {
 		LEFT JOIN playerskill ON playerskill.playerid = playergame.playerid
 		WHERE
 			playergame.playerid = $1
-			-- and seasonid = 3
+			AND seasonid = $2
+			-- AND elo >= 2000
 			-- AND date > now() - interval '6 month'
-			AND elo >= 2000
 		GROUP BY playerskill.rank
-	`, [player], 'row')
+	`, [player, seasonid], 'row')
 
 	return raw
 }
