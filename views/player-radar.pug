@@ -33,22 +33,8 @@ block content
 					class=(navtab === 'breakdown' ? 'active' : '')
 				) Breakdown
 
-		//winloss
+
 		script.
-			let monthwonlost = !{JSON.stringify(monthwonlost)}
-			let hourwonlost = !{JSON.stringify(hourwonlost)}
-			let daywonlost = !{JSON.stringify(daywonlost)}
-			let elowonlost = !{JSON.stringify(elowonlost)}
-		.wrapwrap
-			.stats-card.elowrap
-				header
-					h3 Game Elo
-			.stats-card.monthwrap
-				header
-					h3 Monthly
-			.stats-card.hourwrap
-				header
-					h3 Hourly
-			.stats-card.daywrap
-				header
-					h3 Week Day
+			const radar  = !{JSON.stringify(value)}
+
+		.radar

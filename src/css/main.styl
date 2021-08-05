@@ -113,12 +113,14 @@
 	font-size 0
 
 // player profile
+.elowrap
 .hourwrap
+	margin-right 8px
+.monthwrap
+.daywrap
 	margin-left 8px
 
-.monthwrap
-	margin-right 8px
-
+.elowrap
 .daywrap
 .hourwrap
 .monthwrap
@@ -146,8 +148,17 @@
 
 .radar
 	display inline-block
-	width calc(100% - 530px)
-	margin-left 20px
 	vertical-align top
-	height 500px
 	margin-top 10px
+
+	.names
+		font-size .75rem
+
+	.season1
+		stroke rgba(black, .75)
+
+	.season2
+		stroke rgba(red, .75)
+
+	.season3
+		stroke rgba(blue, .75)

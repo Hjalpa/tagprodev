@@ -57,7 +57,8 @@ let init = async (req, res) => {
 			tag: await getTag(filters),
 			pop: await getPop(filters),
 			killdeath: await getKillDeath(filters),
-			flaginbase: await getFlagInBase(filters)
+			flaginbase: await getFlagInBase(filters),
+			grabsperflaccid: await getGrabsPerFlaccid(filters)
 		}
 		res.render('leaderboards', data);
 	} catch(e) {
@@ -371,6 +372,29 @@ async function getPop(filters) {
 		GROUP BY player.name
 		${filters.having}
 		ORDER BY pop_every DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function getGrabsPerFlaccid(filters) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					(sum(grab)::NUMERIC / sum(flaccid)::NUMERIC) DESC
+			) rank,
+
+			player.name as player,
+			ROUND(sum(grab)::NUMERIC / sum(flaccid)::NUMERIC, 2) as grabs_per_flaccid
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		${filters.where}
+		GROUP BY player.name
+		${filters.having}
+		ORDER BY grabs_per_flaccid DESC
 		LIMIT 10
 	`, [], 'all')
 

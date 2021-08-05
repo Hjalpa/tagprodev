@@ -9,7 +9,7 @@ score = (() => {})
 score.call = async () => {
 	try {
 
-		let games = await db.select('SELECT * FROM game ORDER BY euid ASC', [], 'all')
+		let games = await db.select('SELECT * FROM game WHERE elo >= 2000 ORDER BY euid ASC', [], 'all')
 		for await (const game of games) {
 			console.log(game.id+ 'started')
 			let playerData = await db.select('SELECT * FROM playergame WHERE gameid = $1', [game.id], 'all')

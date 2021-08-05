@@ -32,23 +32,13 @@ block content
 					href= '/player/' + user + '/breakdown'
 					class=(navtab === 'breakdown' ? 'active' : '')
 				) Breakdown
+				a(
+					href= '/player/' + user + '/seasons'
+					class=(navtab === 'seasons' ? 'active' : '')
+				) Seasons
 
-		//winloss
 		script.
-			let monthwonlost = !{JSON.stringify(monthwonlost)}
-			let hourwonlost = !{JSON.stringify(hourwonlost)}
-			let daywonlost = !{JSON.stringify(daywonlost)}
-			let elowonlost = !{JSON.stringify(elowonlost)}
-		.wrapwrap
-			.stats-card.elowrap
-				header
-					h3 Game Elo
-			.stats-card.monthwrap
-				header
-					h3 Monthly
-			.stats-card.hourwrap
-				header
-					h3 Hourly
-			.stats-card.daywrap
-				header
-					h3 Week Day
+			const radar  = !{JSON.stringify(value)}
+			const radar2  = !{JSON.stringify(value2)}
+			const radar3  = !{JSON.stringify(value3)}
+		.radar
