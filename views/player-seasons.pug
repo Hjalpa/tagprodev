@@ -40,31 +40,72 @@ block content
 		script.
 			const seasons = !{JSON.stringify(seasons)}
 
-		each n, key in seasons
-			.season(data-seasonid= n.seasonid)
-				h1= n.seasonname
-				.radar
-				.stats
-					.lab MMR
-					.val= n.real.mmr
 
-					.lab Pups
-					.val= n.real.pup
+		.byseason
 
-					.lab Prevent
-					.val= n.real.prevent
+			.filter(style='display:none')
+				label
+					input(type="checkbox", checked)
+					span Exclude low ELO games
 
-					.lab Returns
-					.val= n.real.return
+			each n, key in seasons
+				.season(data-seasonid= n.seasonid)
 
-					.lab Tags
-					.val= n.real.tag
+					.block_right
+						.radar
 
-					.lab Hold
-					.val= n.real.hold
+					.block_left
+						h1= n.seasonname
+						ul.stats
+							li
+								.lab Games
+								.val= n.real.total
 
-					.lab Caps
-					.val= n.real.caps
+							// li
+							// 	.lab Avg Game ELO
+							// 	.val= n.real.elo
 
-					.lab Grabs
-					.val= n.real.grabs
+							li
+								.lab MMR
+								.val= n.real.mmr
+
+						ul.stats
+							li
+								.lab Win %
+								.val= n.real.rank
+								.pos= n.radar.rank
+
+							li
+								.lab Pups
+								.val= n.real.pup
+								.pos= n.radar.pup
+
+							li
+								.lab Prevent
+								.val= n.real.prevent
+								.pos= n.radar.prevent
+
+							li
+								.lab Returns
+								.val= n.real.return
+								.pos= n.radar.return
+
+							li
+								.lab Tags
+								.val= n.real.tag
+								.pos= n.radar.tag
+
+							li
+								.lab Hold
+								.val= n.real.hold
+								.pos= n.radar.hold
+
+							li
+								.lab Caps
+								.val= n.real.cap
+								.pos= n.radar.cap
+
+							li
+								.lab Grabs
+								.val= n.real.grab
+								.pos= n.radar.grab

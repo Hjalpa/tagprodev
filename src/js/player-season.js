@@ -39,18 +39,18 @@ function makeRadar(raw) {
 			},
 			{
 				"skill": "Hold",
-				"count": raw.radar.hold
+				"count": (raw.radar.hold > 20) ? 20 : raw.radar.hold
 			},
 			{
 				"skill": "Caps",
-				"count": raw.radar.cap
+				"count": (raw.radar.cap > 20) ? 20 : raw.radar.cap
 			},
 			{
 				"skill": "Grabs",
 				"count": (raw.radar.grab < 0 ? 0 : (raw.radar.grab > 20 ? 20 : raw.radar.grab))
 			},
 			{
-				"skill": "MMR",
+				"skill": "Win %",
 				"count": (raw.radar.rank < 0 ? 0 : (raw.radar.rank > 20 ? 20 : raw.radar.rank))
 			},
 			{

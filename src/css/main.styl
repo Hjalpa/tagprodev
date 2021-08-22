@@ -146,19 +146,72 @@
 		display none
 
 
-.radar
-	display inline-block
-	vertical-align top
-	margin-top 10px
+.byseason
+	.filter
+		text-align right
+		display block
 
-	.names
-		font-size .75rem
+	.season:not(:last-child)
+		border-bottom 1px solid #e8e8e8
 
-	.season1
-		stroke rgba(black, .75)
+	.season
+		padding 1rem 0
+		min-height 350px
 
-	.season2
-		stroke rgba(red, .75)
+		h1
+			font-size 1.1rem
+			margin 0
 
-	.season3
-		stroke rgba(blue, .75)
+		.block_left
+			display inline-block
+			width 70%
+			vertical-align top
+
+			ul.stats
+				display block
+				list-style none
+				margin 0
+				margin-bottom 1.5rem
+
+				li
+					display inline-block
+					width 7rem
+
+					.lab
+						display block
+						font-size: .9rem;
+						color: #6c6c6c;
+
+					.val
+						font-size 1.4rem
+						border-radius: 10px;
+						display: inline-block;
+						margin-top: .25rem;
+						// padding: .4rem .5rem
+						// background: #fff3f5;
+						// color: #ff2882;
+
+					.pos
+						display none
+
+		.block_right
+			display inline-block
+			width 30%
+			min-width 300px
+			vertical-align top
+
+		.radar
+			display inline-block
+			vertical-align top
+
+			.names
+				font-size .75rem
+
+			.season1
+				stroke rgba(black, .75)
+
+			.season2
+				stroke rgba(red, .75)
+
+			.season3
+				stroke rgba(blue, .75)
