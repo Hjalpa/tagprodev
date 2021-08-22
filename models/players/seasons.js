@@ -4,59 +4,56 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
-		let user = req.params.userId
-		let userid = await playerExists(user)
+		const user = req.params.userId
+		const userid = await playerExists(user)
+		const elo = 2000
+
+		const calc = (original, max) => {
+			let diff = max - original
+			let per_diff = 100 - ((diff/max) * 100)
+			let v = (per_diff / 100) * 20
+			return v
+		}
 
 		let data = {
 			title: `${user}`,
 			user: user,
-			navtab: 'summary',
+			navtab: 'seasons',
 			nav: 'player',
-			// radar
-			data: await getDataReal(userid, 2),
-			// dataSeason2: await getDataReal(userid, 1),
-			// dataSeason3: await getDataReal(userid, 3),
-			max: {
-				cap: await getMaxCap(),
-				return: await getMaxReturn(),
-				tag: await getMaxTag(),
-				hold: await getMaxHold(),
-				prevent: await getMaxPrevent(),
-				pup: await getMaxPup(),
-				grab: await getMaxGrab(),
-				rank: await getMaxRank(),
-			},
-			value: {}
-			// value2: {},
-			// value3: {}
+			seasons: [],
 		}
 
-		data.value.cap = calc(data.data.cap, data.max.cap)
-		data.value.pup = calc(data.data.pup, data.max.pup)
-		data.value.return = calc(data.data.return, data.max.return)
-		data.value.tag = calc(data.data.tag, data.max.tag)
-		data.value.prevent = calc(data.data.prevent, data.max.prevent)
-		data.value.hold = calc(data.data.hold, data.max.hold)
-		data.value.grab = calc(data.data.grab, data.max.grab)
-		data.value.rank = calc(data.data.rank, data.max.rank)
+		// get each season
+		let seasons = await getSeasonsPlayed(userid)
+		for await (const s of seasons) {
+			let raw = {
+				seasonid: s.seasonid,
+				seasonname: s. name,
+				real: await getDataReal(userid, s.seasonid, elo),
+				max: {
+					cap: await getMaxCap(s.seasonid, elo),
+					return: await getMaxReturn(s.seasonid, elo),
+					tag: await getMaxTag(s.seasonid, elo),
+					hold: await getMaxHold(s.seasonid, elo),
+					prevent: await getMaxPrevent(s.seasonid, elo),
+					pup: await getMaxPup(s.seasonid, elo),
+					grab: await getMaxGrab(s.seasonid, elo),
+					rank: await getMaxRank(s.seasonid, elo),
+				},
+				radar: {}
+			}
 
-		// data.value2.cap = calc(data.dataSeason2.cap, data.max.cap)
-		// data.value2.pup = calc(data.dataSeason2.pup, data.max.pup)
-		// data.value2.return = calc(data.dataSeason2.return, data.max.return)
-		// data.value2.tag = calc(data.dataSeason2.tag, data.max.tag)
-		// data.value2.prevent = calc(data.dataSeason2.prevent, data.max.prevent)
-		// data.value2.hold = calc(data.dataSeason2.hold, data.max.hold)
-		// data.value2.grab = calc(data.dataSeason2.grab, data.max.grab)
-		// data.value2.rank = calc(data.dataSeason2.rank, data.max.rank)
+			raw.radar.cap = calc(raw.real.cap, raw.max.cap)
+			raw.radar.pup = calc(raw.real.pup, raw.max.pup)
+			raw.radar.return = calc(raw.real.return, raw.max.return)
+			raw.radar.tag = calc(raw.real.tag, raw.max.tag)
+			raw.radar.prevent = calc(raw.real.prevent, raw.max.prevent)
+			raw.radar.hold = calc(raw.real.hold, raw.max.hold)
+			raw.radar.grab = calc(raw.real.grab, raw.max.grab)
+			raw.radar.rank = calc(raw.real.rank, raw.max.rank)
 
-		// data.value3.cap = calc(data.dataSeason3.cap, data.max.cap)
-		// data.value3.pup = calc(data.dataSeason3.pup, data.max.pup)
-		// data.value3.return = calc(data.dataSeason3.return, data.max.return)
-		// data.value3.tag = calc(data.dataSeason3.tag, data.max.tag)
-		// data.value3.prevent = calc(data.dataSeason3.prevent, data.max.prevent)
-		// data.value3.hold = calc(data.dataSeason3.hold, data.max.hold)
-		// data.value3.grab = calc(data.dataSeason3.grab, data.max.grab)
-		// data.value3.rank = calc(data.dataSeason3.rank, data.max.rank)
+			data.seasons.push(raw)
+		}
 
 		res.render('player-seasons', data);
 	}
@@ -74,14 +71,19 @@ async function playerExists(player) {
 	return id
 }
 
-function calc(original, max) {
-	let diff = max - original
-	let per_diff = 100 - ((diff/max) * 100)
-	let v = (per_diff / 100) * 20
-	return v
+async function getSeasonsPlayed(player) {
+	return await db.select(`
+		SELECT seasonid, name
+		FROM playergame
+		LEFT JOIN game ON playergame.gameid = game.id
+		LEFT JOIN season ON game.seasonid = season.id
+		WHERE playerid = $1
+		GROUP BY seasonid, name, number, playerid
+		ORDER BY number DESC
+	`, [player], 'all')
 }
 
-async function getMaxCap() {
+async function getMaxCap(seasonid, elo) {
 	return await db.select(`
 		SELECT
 			-- avg(cap) as cap
@@ -89,17 +91,15 @@ async function getMaxCap() {
 		FROM playergame
 		left join game ON game.id = playergame.gameid
 		WHERE
-			elo >= 2000
-		-- 	seasonid = 3
-		--	date > now() - interval '6 month'
+			seasonid = $1 AND elo >= $2
 		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY cap DESC
-	`, false, 'cap')
+	`, [seasonid, elo], 'cap')
 	return raw
 }
 
-async function getMaxTag() {
+async function getMaxTag(seasonid, elo) {
 	return await db.select(`
 		SELECT
 			-- avg(tag) as tag
@@ -107,17 +107,15 @@ async function getMaxTag() {
 		FROM playergame
 		left join game ON game.id = playergame.gameid
 		WHERE
-			elo >= 2000
-		--	seasonid = 3
-		--	date > now() - interval '6 month'
+			seasonid = $1 AND elo >= $2
 		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY tag DESC
-	`, false, 'tag')
+	`, [seasonid, elo], 'tag')
 	return raw
 }
 
-async function getMaxReturn() {
+async function getMaxReturn(seasonid, elo) {
 	return await db.select(`
 		SELECT
 			-- avg(return) as return
@@ -125,17 +123,15 @@ async function getMaxReturn() {
 		FROM playergame
 		left join game ON game.id = playergame.gameid
 		WHERE
-			elo >= 2000
-		--	seasonid = 3
-		--	date > now() - interval '6 month'
+			seasonid = $1 AND elo >= $2
 		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY return DESC
-	`, false, 'return')
+	`, [seasonid, elo], 'return')
 	return raw
 }
 
-async function getMaxHold() {
+async function getMaxHold(seasonid, elo) {
 	return await db.select(`
 		SELECT
 			-- avg(hold) as hold
@@ -143,17 +139,15 @@ async function getMaxHold() {
 		FROM playergame
 		left join game ON game.id = playergame.gameid
 		WHERE
-			elo >= 2000
-		--	seasonid = 3
-		--	date > now() - interval '6 month'
+			seasonid = $1 AND elo >= $2
 		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY hold DESC
-	`, false, 'hold')
+	`, [seasonid, elo], 'hold')
 	return raw
 }
 
-async function getMaxPrevent() {
+async function getMaxPrevent(seasonid, elo) {
 	return await db.select(`
 		SELECT
 			-- avg(prevent) as prevent
@@ -161,17 +155,15 @@ async function getMaxPrevent() {
 		FROM playergame
 		left join game ON game.id = playergame.gameid
 		WHERE
-			elo >= 2000
-		-- 	seasonid = 3
-		--	date > now() - interval '6 month'
+			seasonid = $1 AND elo >= $2
 		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY prevent DESC
-	`, false, 'prevent')
+	`, [seasonid, elo], 'prevent')
 	return raw
 }
 
-async function getMaxPup() {
+async function getMaxPup(seasonid, elo) {
 	return await db.select(`
 		SELECT
 			-- avg(pup_tp)+avg(pup_rb)+avg(pup_jj) as pup
@@ -179,17 +171,15 @@ async function getMaxPup() {
 		FROM playergame
 		left join game ON game.id = playergame.gameid
 		WHERE
-			elo >= 2000
-		--	seasonid = 3
-		--	date > now() - interval '6 month'
+			seasonid = $1 AND elo >= $2
 		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY pup DESC
-	`, false, 'pup')
+	`, [seasonid, elo], 'pup')
 	return raw
 }
 
-async function getMaxGrab() {
+async function getMaxGrab(seasonid, elo) {
 	return await db.select(`
 		SELECT
 			-- avg(grab) as grab
@@ -197,57 +187,51 @@ async function getMaxGrab() {
 		FROM playergame
 		left join game ON game.id = playergame.gameid
 		WHERE
-			elo >= 2000
-		--	seasonid = 3
-		--	date > now() - interval '6 month'
+			seasonid = $1 AND elo >= $2
 		GROUP BY playerid, seasonid
 		HAVING count(*) > 50
 		ORDER BY grab DESC
-	`, false, 'grab')
+	`, [seasonid, elo], 'grab')
 	return raw
 }
 
-async function getMaxRank() {
+async function getMaxRank(seasonid, elo) {
 	return await db.select(`
-		SELECT
-			rank
+		SELECT rank
 		FROM playerskill
+		WHERE seasonid = $1
 		ORDER BY rank DESC
 		LIMIT 1
-	`, false, 'rank')
+	`, [seasonid], 'rank')
 	return raw
 }
 
-async function getDataReal(player, seasonid) {
+async function getDataReal(player, seasonid, elo) {
 	let raw = await db.select(`
 		SELECT
+			rank,
 			-- avg(cap) as cap,
 			-- avg(return) as return,
 			-- avg(tag) as tag,
 			-- avg(prevent) as prevent,
 			-- avg(hold) as hold,
 			-- avg(grab) as grab,
-			-- avg(pup_tp)+avg(pup_rb)+avg(pup_jj) as pup,
-
+			-- avg(pup_tp)+avg(pup_rb)+avg(pup_jj) as pup
 			ROUND(sum(cap) / (sum(play_time) / 60)::numeric, 2) * 8 as cap,
 			ROUND(sum(return) / (sum(play_time) / 60)::numeric, 2) * 8 as return,
 			ROUND(sum(tag) / (sum(play_time) / 60)::numeric, 2) * 8 as tag,
 			ROUND(sum(prevent) / (sum(play_time) / 60)::numeric, 2) * 8 as prevent,
 			ROUND(sum(hold) / (sum(play_time) / 60)::numeric, 2) * 8 as hold,
 			ROUND(sum(grab) / (sum(play_time) / 60)::numeric, 2) * 8 as grab,
-			ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) * 8 as pup,
-			rank
-
+			ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) * 8 as pup
 		FROM playergame
 		LEFT JOIN game ON game.id = playergame.gameid
-		LEFT JOIN playerskill ON playerskill.playerid = playergame.playerid
+		LEFT JOIN playerskill ON playerskill.playerid = playergame.playerid AND playerskill.seasonid = game.seasonid
 		WHERE
 			playergame.playerid = $1
-			AND seasonid = $2
-			-- AND elo >= 2000
-			-- AND date > now() - interval '6 month'
+			AND game.seasonid = $2
+			AND elo >= $3
 		GROUP BY playerskill.rank
-	`, [player, seasonid], 'row')
-
+	`, [player, seasonid, elo], 'row')
 	return raw
 }

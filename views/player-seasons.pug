@@ -38,7 +38,33 @@ block content
 				) Seasons
 
 		script.
-			const radar  = !{JSON.stringify(value)}
-			const radar2  = !{JSON.stringify(value2)}
-			const radar3  = !{JSON.stringify(value3)}
-		.radar
+			const seasons = !{JSON.stringify(seasons)}
+
+		each n, key in seasons
+			.season(data-seasonid= n.seasonid)
+				h1= n.seasonname
+				.radar
+				.stats
+					.lab MMR
+					.val= n.real.mmr
+
+					.lab Pups
+					.val= n.real.pup
+
+					.lab Prevent
+					.val= n.real.prevent
+
+					.lab Returns
+					.val= n.real.return
+
+					.lab Tags
+					.val= n.real.tag
+
+					.lab Hold
+					.val= n.real.hold
+
+					.lab Caps
+					.val= n.real.caps
+
+					.lab Grabs
+					.val= n.real.grabs

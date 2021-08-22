@@ -338,7 +338,6 @@ async function getMaxPup() {
 		HAVING count(*) > 50
 		ORDER BY pup DESC
 	`, false, 'pup')
-	return raw
 }
 
 async function getMaxGrab() {
@@ -356,7 +355,6 @@ async function getMaxGrab() {
 		HAVING count(*) > 50
 		ORDER BY grab DESC
 	`, false, 'grab')
-	return raw
 }
 
 async function getMaxRank() {
@@ -369,6 +367,25 @@ async function getMaxRank() {
 	`, false, 'rank')
 	return raw
 }
+
+// async function getMaxRank() {
+// 	let raw = await db.select(`
+// 		SELECT
+// 			ROUND(
+// 				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
+// 			, 3) as rank
+// 		FROM playergame
+// 		LEFT JOIN player ON player.id = playergame.playerid
+// 		LEFT JOIN game ON game.id = playergame.gameid
+// 		WHERE
+// 			elo >= 2000
+// 		GROUP BY player.id
+// 		HAVING count(*) > 100
+// 		ORDER BY rank DESC
+// 	`, false, 'rank')
+// 	console.log(raw)
+// 	return raw
+// }
 
 async function getDataReal(player) {
 	let raw = await db.select(`
@@ -388,7 +405,11 @@ async function getDataReal(player) {
 			ROUND(sum(hold) / (sum(play_time) / 60)::numeric, 2) * 8 as hold,
 			ROUND(sum(grab) / (sum(play_time) / 60)::numeric, 2) * 8 as grab,
 			ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) * 8 as pup,
+
 			rank
+			--ROUND(
+			--	(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
+			--, 3) as rank
 
 		FROM playergame
 		LEFT JOIN game ON game.id = playergame.gameid
