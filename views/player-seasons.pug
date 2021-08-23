@@ -50,13 +50,14 @@ block content
 
 			each n, key in seasons
 				.season(data-seasonid= n.seasonid)
+					h1= n.seasonname
 
 					.block_right
 						.radar
 
 					.block_left
-						h1= n.seasonname
-						ul.stats
+						.title Attributes
+						ul.stats(style="display:none")
 							li
 								.lab Games
 								.val= n.real.total
@@ -70,42 +71,44 @@ block content
 								.val= n.real.mmr
 
 						ul.stats
-							li
-								.lab Win %
-								.val= n.real.rank
-								.pos= n.radar.rank
 
 							li
-								.lab Pups
-								.val= n.real.pup
-								.pos= n.radar.pup
-
-							li
-								.lab Prevent
-								.val= n.real.prevent
+								.lab Preventing
+								// .val= n.real.prevent
 								.pos= n.radar.prevent
 
 							li
-								.lab Returns
-								.val= n.real.return
+								.lab Returning
+								// .val= n.real.return
 								.pos= n.radar.return
 
 							li
-								.lab Tags
-								.val= n.real.tag
+								.lab Tagging
+								// .val= n.real.tag
 								.pos= n.radar.tag
 
 							li
-								.lab Hold
-								.val= n.real.hold
+								.lab Holding
+								// .val= n.real.hold
 								.pos= n.radar.hold
 
 							li
-								.lab Caps
-								.val= n.real.cap
+								.lab Capping
+								// .val= n.real.cap
 								.pos= n.radar.cap
 
 							li
-								.lab Grabs
-								.val= n.real.grab
+								.lab Grabbing
+								// .val= n.real.grab
 								.pos= n.radar.grab
+
+							li
+								.lab Pups
+								// .val= n.real.pup
+								.pos= n.radar.pup
+
+
+							li
+								.lab Winning
+								// .val= n.real.rank
+								.pos= n.radar.rank
