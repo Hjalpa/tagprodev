@@ -13,7 +13,12 @@ let init = async (req, res) => {
 			let diff = max - original
 			let per_diff = 100 - ((diff/max) * 100)
 			let v = (per_diff / 100) * 20
-			return v.toFixed(2)
+
+			if(v > 20)
+				v = 20
+
+			// return v.toFixed(2)
+			return Math.round(v.toFixed(2))
 		}
 
 		let data = {

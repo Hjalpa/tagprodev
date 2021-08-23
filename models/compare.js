@@ -20,7 +20,7 @@ async function getPlayers() {
 		LEFT JOIN player ON player.id = playergame.playerid
 		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
 		GROUP BY player.name
-		HAVING count(*) > 20
+		HAVING count(*) > 30
 		ORDER BY player.name ASC
 	`, [], 'all')
 

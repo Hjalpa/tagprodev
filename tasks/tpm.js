@@ -7,6 +7,11 @@ const util = require('../lib/util')
 
 tpm = (() => {})
 tpm.call = async () => {
+	// await axios.post(`https://tagpro.dev/api/import`, {
+	// 	euid: '2937493',
+	// 	elo: 1976,
+	// 	tpmid: 'ebb115f1-c5d3-47f8-a06f-2850ee86129b'
+	// })
 	const tpmid = process.argv[2]
 	if(tpmid) {
 		let raw = await axios.get(`https://tpm.gg/eus/${tpmid}`)

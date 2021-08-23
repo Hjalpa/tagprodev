@@ -1,6 +1,17 @@
 app.playerSeasons = (async() => {
 	for(let s in seasons)
 		makeRadar(seasons[s])
+
+	let pos = document.querySelectorAll('.byseason .pos')
+	for (const stat of pos) {
+		let item = parseFloat(stat.innerText)
+
+		if(item >= 16)
+			stat.classList.add('high')
+		else if(item >= 11)
+			stat.classList.add('avg')
+	}
+
 })
 
 if(document.querySelector('.season .radar'))
@@ -8,8 +19,8 @@ if(document.querySelector('.season .radar'))
 
 function makeRadar(raw) {
 
-	let width = 360
-	let height = 300
+	let width = 300
+	let height = 240
 	let barHeight = height / 2 - 40
 
 	let color = d3.scale.ordinal()
@@ -104,7 +115,7 @@ function makeRadar(raw) {
 	lines.append("text")
 		.attr("class", "names")
 		.attr("x", function(d, i) { return (barHeight + 10) * Math.sin((i * 2 * Math.PI / numBars)); })
-		.attr("y", function(d, i) { return (d.skill == 'Prevent') ? -118 :  -(barHeight + 15) * Math.cos((i * 2 * Math.PI / numBars)); })
+		.attr("y", function(d, i) { return (d.skill == 'Prevent') ? -88 :  -(barHeight + 15) * Math.cos((i * 2 * Math.PI / numBars)); })
 		.attr("text-anchor", function(d,i) {
 		if (i===0 || i===numBars/2) {
 			return "middle";
