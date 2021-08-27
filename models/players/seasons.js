@@ -16,7 +16,6 @@ let init = async (req, res) => {
 			if(v > 20)
 				v = 20
 
-			// return v.toFixed(2)
 			return Math.round(v.toFixed(2))
 		}
 
