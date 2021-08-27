@@ -8,7 +8,6 @@ let init = async (req, res) => {
 		const userid = await playerExists(user)
 		const elo = (req.query.elo) ? req.query.elo : 2000
 
-
 		const calc = (original, max) => {
 			let diff = max - original
 			let per_diff = 100 - ((diff/max) * 100)
@@ -19,6 +18,32 @@ let init = async (req, res) => {
 
 			// return v.toFixed(2)
 			return Math.round(v.toFixed(2))
+		}
+
+		const calc_win = (current, max) => {
+			let min = 35
+
+			if(current < min)
+				current = min
+
+			let diff = max - min
+			// console.log('diff between max and min: ' + diff)
+
+			let diff_from_max_to_current = current - min
+			// console.log('diff between max and current: ' + diff_from_max_to_current)
+
+			let percent = diff_from_max_to_current / diff
+			// console.log('percentage diff: ' + percent)
+
+			let value = 20 * percent
+			// console.log(percent.toFixed(2) + '% of 20: ' + value.toFixed(2))
+
+			// console.log('value: ' + value)
+
+			if(value > 20)
+				value = 20
+
+			return Math.round(value)
 		}
 
 		let data = {
@@ -55,7 +80,12 @@ let init = async (req, res) => {
 			raw.radar.prevent = calc(raw.real.prevent, raw.max.prevent)
 			raw.radar.hold = calc(raw.real.hold, raw.max.hold)
 			raw.radar.grab = calc(raw.real.grab, raw.max.grab)
-			raw.radar.rank = calc(raw.real.rank, raw.max.rank)
+			raw.radar.rank = calc_win(raw.real.rank, raw.max.rank)
+			// raw.radar.rank = calc(raw.real.rank, raw.max.rank)
+
+			// if(s.seasonid === 1) {
+			// 	let test = calc_win(raw.real.rank, raw.max.rank)
+			// }
 
 			data.seasons.push(raw)
 		}
@@ -84,6 +114,7 @@ async function getSeasonsPlayed(player, elo) {
 		LEFT JOIN season ON game.seasonid = season.id
 		WHERE playerid = $1 AND elo >= $2
 		GROUP BY seasonid, name, number, playerid
+		HAVING count(*) > 20
 		ORDER BY number DESC
 	`, [player, elo], 'all')
 }
