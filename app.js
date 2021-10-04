@@ -7,6 +7,9 @@ const express = require('express')
 const https = require('https')
 const app = express()
 
+
+
+
 const server = https.createServer({
  	key: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/privkey.pem'),
  	cert: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/cert.pem'),
@@ -14,6 +17,12 @@ const server = https.createServer({
 }, app).listen(443)
 
 // app.listen(80)
+
+
+// const ipfilter = require('express-ipfilter').IpFilter
+// const ips = ['::ffff:86.169.91.7']
+// app.use(ipfilter(ips, { mode: 'allow' }))
+
 
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')

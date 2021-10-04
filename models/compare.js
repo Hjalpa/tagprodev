@@ -12,6 +12,19 @@ let init = async (req, res) => {
 }
 
 async function getPlayers() {
+		// SELECT
+		// 	player.name as name,
+		// 	count(*) as games,
+		// 	season.number as seasonid
+		// FROM playergame
+		// LEFT JOIN player ON player.id = playergame.playerid
+		// LEFT JOIN game on playergame.gameid = game.id
+		// LEFT JOIN season on game.seasonid = season.id
+		// WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
+		// GROUP BY player.name, season.number
+		// HAVING count(*) > 20
+		// ORDER BY player.name ASC, seasonid ASC
+
 	let raw = await db.select(`
 		SELECT
 			player.name as name,
@@ -20,7 +33,7 @@ async function getPlayers() {
 		LEFT JOIN player ON player.id = playergame.playerid
 		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
 		GROUP BY player.name
-		HAVING count(*) > 30
+		HAVING count(*) > 20
 		ORDER BY player.name ASC
 	`, [], 'all')
 
@@ -236,6 +249,11 @@ async function getComparePlayersData(filter) {
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		LEFT JOIN game ON game.id = playergame.gameid
+
+		-- see by season
+		-- LEFT JOIN season ON game.seasonid = season.id
+		-- WHERE gameid in (SELECT id FROM game WHERE season.number = 3 AND  gameid = game.id AND elo > 2000) AND (${filter.where.join(' OR ')})
+
 		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000) AND (${filter.where.join(' OR ')})
 		GROUP BY player.name
 		HAVING count(*) > 20

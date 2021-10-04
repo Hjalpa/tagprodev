@@ -1,4 +1,21 @@
 app.playerSeasons = (async() => {
+	let checkbox = document.querySelector('.byseason input')
+
+	let queryString = window.location.search
+	let urlParams = new URLSearchParams(queryString)
+	if(urlParams.has('elo'))
+		checkbox.checked = true
+
+	checkbox.addEventListener('change', () => {
+		let queryString = window.location.search
+		let urlParams = new URLSearchParams(queryString)
+		let path  = 'https://tagpro.dev' + window.location.pathname
+		if(!urlParams.has('elo'))
+			path = path + '?elo=low'
+
+		window.location.href = path
+	})
+
 	for(let s in seasons)
 		makeRadar(seasons[s])
 
@@ -14,7 +31,7 @@ app.playerSeasons = (async() => {
 
 })
 
-if(document.querySelector('.season .radar'))
+if(document.querySelector('.byseason'))
 	app.playerSeasons()
 
 function makeRadar(raw) {

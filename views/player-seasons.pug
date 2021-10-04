@@ -40,13 +40,11 @@ block content
 		script.
 			const seasons = !{JSON.stringify(seasons)}
 
-
 		.byseason
-
-			.filter(style='display:none')
+			.filter
 				label
-					input(type="checkbox", checked)
-					span Exclude low ELO games
+					input(type="checkbox")
+					span Include low ELO games
 
 			each n, key in seasons
 				.season(data-seasonid= n.seasonid)

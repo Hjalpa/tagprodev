@@ -5,7 +5,8 @@ const router = express.Router()
 const db = require('../lib/db')
 const exec = require('child_process').exec
 
-// router.get('/.well-known/acme-challenge/yPUXgBo-hd41Eu67ZBCm_q-kSrs5Qs6mvuiTRlxwkVs', async (req, res) => res.send('yPUXgBo-hd41Eu67ZBCm_q-kSrs5Qs6mvuiTRlxwkVs.qHHteSBfKXYnAnQTAXoiP82unkcnaaMWYrV7cwF4zAk'))
+// STOP APACHE IF THE PORT ERROR 80 exists AND RESTART AFTER CERT DONE
+// router.get('/.well-known/acme-challenge/k22aKnwPMsi6msEAaTljSg-prgzHomgmdNbX-6K16j0', async (req, res) => res.send('k22aKnwPMsi6msEAaTljSg-prgzHomgmdNbX-6K16j0.qHHteSBfKXYnAnQTAXoiP82unkcnaaMWYrV7cwF4zAk'))
 
 // https://scotch.io/tutorials/how-to-optimize-node-requests-with-simple-caching-strategies
 let memCache = new cache.Cache()

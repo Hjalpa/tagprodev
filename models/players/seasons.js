@@ -6,7 +6,8 @@ let init = async (req, res) => {
 	try {
 		const user = req.params.userId
 		const userid = await playerExists(user)
-		const elo = (req.query.elo) ? req.query.elo : 2000
+		const elo = (req.query.elo === 'low') ? 0 : 2000
+		// const elo = (req.query.elo) ? req.query.elo : 2000
 
 		const calc = (original, max) => {
 			let diff = max - original
