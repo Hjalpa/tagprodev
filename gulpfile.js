@@ -49,7 +49,7 @@ gulp.task('js', gulp.series(function(done) {
 			'./src/js/*.js'
 		])
 		.pipe(concat('init.js'))
-		.pipe(uglify())
+		// .pipe(uglify())
 		.pipe(size(
 			{'title':'init.js'}
 		))

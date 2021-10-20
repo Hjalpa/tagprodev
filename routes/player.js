@@ -15,5 +15,6 @@ router.get('/:userId/opponents', (req, res) => require('../models/players/oppone
 router.get('/:userId/maps', (req, res) => require('../models/players/maps').init(req, res))
 router.get('/:userId/breakdown', (req, res) => require('../models/players/breakdown').init(req, res))
 router.get('/:userId/seasons', (req, res) => require('../models/players/seasons').init(req, res))
+router.get('/:userId/day', (req, res) => require('../models/players/day').init(req, res))
 
 module.exports = router

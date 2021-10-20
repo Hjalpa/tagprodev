@@ -16,7 +16,7 @@ let init = async (req, res) => {
 			if(req.query.season === '3') {
 				filters =  {
 					where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000 AND seasonid = 3)',
-					having: 'HAVING COUNT(*) >= 25'
+					having: 'HAVING COUNT(*) >= 50'
 				}
 				title = 'Season 3 Leaderboards'
 			}

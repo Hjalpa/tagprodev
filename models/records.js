@@ -6,7 +6,7 @@ let init = async (req, res) => {
 	try {
 		// default to all seasons
 		let filters =  {
-			where: 'WHERE duration >= 60',
+			where: 'WHERE duration >= 300',
 			where_streak: 'WHERE duration >= 10'
 		}
 		let title = 'All-Time Records'
@@ -69,6 +69,7 @@ let init = async (req, res) => {
 			mostquickreturns: await mostQuickReturns(filters),
 			mostkeyreturns: await mostKeyReturns(filters),
 
+			mostcapsfrommyprevent: await mostCapsFromMyPrevent(filters),
 		}
 		res.render('records', data);
 	} catch(e) {
@@ -107,6 +108,30 @@ async function winStreak(filters) {
 		LEFT JOIN player ON dt.playerid = player.id
 		GROUP BY playerid, player.name
 		ORDER BY streak DESC
+		LIMIT 10
+	`, [], 'all')
+
+	return raw
+}
+
+async function mostCapsFromMyPrevent(filters) {
+	let raw = await db.select(`
+		select
+			rank() OVER (
+				ORDER BY TO_CHAR(ROUND(play_time::NUMERIC / cap_from_my_prevent, 2) * interval '1 sec', 'MI:SS') ASC
+			) rank,
+			player.name as player,
+			TO_CHAR(
+				ROUND(play_time::NUMERIC / cap_from_my_prevent, 2) * interval '1 sec'
+			, 'MI:SS') as cap_from_my_prevent,
+			euid,
+			TO_CHAR(date, 'DD Mon YY') as date,
+			date > now() - interval '1 week' as recent
+		FROM playergame
+		LEFT JOIN player on playergame.playerid = player.id
+		LEFT JOIN game on game.id = playergame.gameid
+		${filters.where} AND cap_from_my_prevent > 0
+ 		ORDER BY cap_from_my_prevent ASC
 		LIMIT 10
 	`, [], 'all')
 

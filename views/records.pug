@@ -230,6 +230,32 @@ block content
 
 			.stats-card
 				header
+					h3 Caps From My Prevent
+
+				table
+					thead
+						tr
+							th.text-l
+							th.text-l
+							th.text-l
+							th.text-c Every
+
+					tbody
+						each n, key in mostcapsfrommyprevent
+							tr(class=(n.recent == true ? 'mark' : ''))
+								td.text-l.pos= n.rank
+								td.text-l.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
+								td.text-l.date
+									a(
+										href= 'https://tagpro.eu/?match=' + n.euid
+									)= n.date
+								td.text-c= n.cap_from_my_prevent
+
+			.stats-card
+				header
 					h3 Powerups
 
 				table
