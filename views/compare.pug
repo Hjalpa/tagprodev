@@ -14,14 +14,14 @@ block content
 				.form-group
 					select#select-players(name="state[]" multiple placeholder="Select players" autocomplete="true")
 						each v, k in players
-							option= v.name
+							option= v.playernameseason
 
 					button.button-secondary Compare
 
 
 			.player-comparison__accordion.compare-results(style="display:none")
 				.player-comparison__stats.name-area
-					.row.player
+					.row.playernameseason
 						.label
 				ul
 					// overview

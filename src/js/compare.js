@@ -83,7 +83,7 @@ app.compare = (async() => {
 		document.querySelectorAll('.player-value').forEach(e => e.remove())
 
 		for(let playerid in data) {
-			let player = data[playerid].player
+			let player = data[playerid].playernameseason
 			for (let stat in data[playerid]) {
 				let value = data[playerid][stat]
 
@@ -104,7 +104,7 @@ app.compare = (async() => {
 	async function highlight() {
 
 		// each row
-		document.querySelectorAll('.row:not(.player)').forEach((row) => {
+		document.querySelectorAll('.row:not(.playernameseason)').forEach((row) => {
 			let data = {}
 			let label = row.querySelector('.label').innerText
 

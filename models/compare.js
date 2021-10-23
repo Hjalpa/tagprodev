@@ -14,17 +14,19 @@ let init = async (req, res) => {
 async function getPlayers() {
 	let raw = await db.select(`
 		SELECT
-			player.name as name,
+			-- player.name as name,
+			concat(player.name, ' - s', season.number) as playernameseason,
 			count(*) as games,
 			season.number as seasonid
+
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		LEFT JOIN game on playergame.gameid = game.id
 		LEFT JOIN season on game.seasonid = season.id
 		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
-		GROUP BY player.name, season.number
-		HAVING count(*) > 20
-		ORDER BY player.name ASC, seasonid ASC
+		GROUP BY playernameseason, season.number, player.name
+		HAVING count(*) > 10
+		ORDER BY player.name ASC, season.number ASC
 	`, [], 'all')
 
 	// let raw = await db.select(`
@@ -49,8 +51,12 @@ let comparePlayers = async (req, res) => {
 		let num = 1
 		for (let k in req.body) {
 			if(await playerExists(req.body[k])) {
-				filter.where.push('player.name = $'+num)
-				filter.data.push(req.body[k])
+				let playerName = req.body[k].slice(0, -5)
+				let playerSeason = req.body[k][req.body[k].length-1]
+				filter.where.push(`(player.name = $${num} AND season.number = $${num+1})`)
+				filter.data.push(playerName)
+				filter.data.push(playerSeason)
+				num++
 				num++
 			}
 		}
@@ -68,7 +74,8 @@ let comparePlayers = async (req, res) => {
 }
 
 async function playerExists(player) {
-	let id = await db.select(`SELECT id from player WHERE name = $1`, [player], 'row')
+	let name = player.slice(0, -5)
+	let id = await db.select(`SELECT id from player WHERE name = $1`, [name], 'row')
 
 	if(!id)
 		throw 'cannot find player name: ' + player
@@ -79,6 +86,7 @@ async function playerExists(player) {
 async function getComparePlayersData(filter) {
 	let raw = await db.select(`
 		SELECT
+			concat(player.name, ' - s', season.number) as playernameseason,
             player.name as player,
 
 			-- overview
@@ -251,15 +259,14 @@ async function getComparePlayersData(filter) {
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		LEFT JOIN game ON game.id = playergame.gameid
-
-		-- see by season
-		-- LEFT JOIN season ON game.seasonid = season.id
-		-- WHERE gameid in (SELECT id FROM game WHERE season.number = 3 AND  gameid = game.id AND elo > 2000) AND (${filter.where.join(' OR ')})
-
-		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000) AND (${filter.where.join(' OR ')})
-		GROUP BY player.name
-		HAVING count(*) > 20
+		LEFT JOIN season ON game.seasonid = season.id
+		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 0) AND (${filter.where.join(' OR ')})
+		GROUP BY playernameseason, season.number, player.name
+		HAVING count(*) > 10
+		ORDER BY playernameseason DESC
 	`, filter.data, 'all')
+
+	console.log(filter, raw)
 
 	return raw
 }
