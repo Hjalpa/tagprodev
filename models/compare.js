@@ -12,30 +12,32 @@ let init = async (req, res) => {
 }
 
 async function getPlayers() {
-		// SELECT
-		// 	player.name as name,
-		// 	count(*) as games,
-		// 	season.number as seasonid
-		// FROM playergame
-		// LEFT JOIN player ON player.id = playergame.playerid
-		// LEFT JOIN game on playergame.gameid = game.id
-		// LEFT JOIN season on game.seasonid = season.id
-		// WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
-		// GROUP BY player.name, season.number
-		// HAVING count(*) > 20
-		// ORDER BY player.name ASC, seasonid ASC
-
 	let raw = await db.select(`
 		SELECT
 			player.name as name,
-			count(*) as games
+			count(*) as games,
+			season.number as seasonid
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
+		LEFT JOIN game on playergame.gameid = game.id
+		LEFT JOIN season on game.seasonid = season.id
 		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
-		GROUP BY player.name
+		GROUP BY player.name, season.number
 		HAVING count(*) > 20
-		ORDER BY player.name ASC
+		ORDER BY player.name ASC, seasonid ASC
 	`, [], 'all')
+
+	// let raw = await db.select(`
+	// 	SELECT
+	// 		player.name as name,
+	// 		count(*) as games
+	// 	FROM playergame
+	// 	LEFT JOIN player ON player.id = playergame.playerid
+	// 	WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
+	// 	GROUP BY player.name
+	// 	HAVING count(*) > 20
+	// 	ORDER BY player.name ASC
+	// `, [], 'all')
 
 	return raw
 }

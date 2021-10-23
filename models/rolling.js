@@ -46,7 +46,7 @@ async function getData() {
 
 		FROM player
 		LEFT JOIN recentgames ON playerid = player.id
-		WHERE rn <= 25
+		WHERE rn <= 50
 		GROUP BY player.name
 		ORDER BY won DESC
 		LIMIT 100
