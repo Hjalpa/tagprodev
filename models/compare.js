@@ -29,18 +29,6 @@ async function getPlayers() {
 		ORDER BY player.name ASC, season.number ASC
 	`, [], 'all')
 
-	// let raw = await db.select(`
-	// 	SELECT
-	// 		player.name as name,
-	// 		count(*) as games
-	// 	FROM playergame
-	// 	LEFT JOIN player ON player.id = playergame.playerid
-	// 	WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 2000)
-	// 	GROUP BY player.name
-	// 	HAVING count(*) > 20
-	// 	ORDER BY player.name ASC
-	// `, [], 'all')
-
 	return raw
 }
 
@@ -260,13 +248,11 @@ async function getComparePlayersData(filter) {
 		LEFT JOIN player ON player.id = playergame.playerid
 		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN season ON game.seasonid = season.id
-		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo > 0) AND (${filter.where.join(' OR ')})
+		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000) AND (${filter.where.join(' OR ')})
 		GROUP BY playernameseason, season.number, player.name
 		HAVING count(*) > 10
 		ORDER BY playernameseason DESC
 	`, filter.data, 'all')
-
-	console.log(filter, raw)
 
 	return raw
 }
