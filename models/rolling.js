@@ -5,7 +5,7 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
 		let data = {
-			title: 'Rolling Twenty Five',
+			title: 'Rolling Fifty',
 			nav: 'rolling',
 			results: await getData(),
 		}

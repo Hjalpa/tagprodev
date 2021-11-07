@@ -7,7 +7,7 @@ let init = async (req, res) => {
 		// default to all seasons
 		let filters =  {
 			where: 'WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND elo >= 2000)',
-			having: 'HAVING COUNT(*) >= 80'
+			having: 'HAVING COUNT(*) >= 100'
 		}
 		let title = 'All-Time Leaderboards'
 
