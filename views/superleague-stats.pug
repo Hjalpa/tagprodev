@@ -1,0 +1,11 @@
+include template/head.pug
+include template/superleague-nav.pug
+
+.contain
+	.wrap
+		.nav-bar-tertiary
+			a(href="/superleague/leaders" class=(nav.tertiary === 'totals' ? 'active' : '')) Total
+			a(href="/superleague/leaders/averages" class=(nav.tertiary === 'averages' ? 'active' : '')) Average
+			a(href="/superleague/leaders/teampercent" class=(nav.tertiary === 'teampercent' ? 'active' : '')) Team %
+
+include template/foot.pug

@@ -1,0 +1,488 @@
+.table
+	// background linear-gradient(to bottom right, rgba(#292b33, .5) 0%, rgba(#1f2026, .5) 100%)
+	background #0b0c0e
+	width 100%
+	border-radius 6px 6px 0 0
+
+	.row
+		display flex
+		flex-direction row
+		align-items stretch
+		width 100%
+		border-bottom: 1px solid #131417;
+
+		&.head
+			background linear-gradient(to top right,#000000,#0b0c0e);
+			font-size .8rem
+			font-weight 600
+			text-transform uppercase
+			color #747474
+			border-radius inherit
+			border-bottom none
+
+		// &:not(.head)
+		// 	&:nth-of-type(odd)
+		// 		background #08080a
+
+		.item
+			flex 1
+			display flex
+			justify-content: center;
+			align-items: center;
+			padding .5rem
+
+			&.position
+				flex 0 0 34px
+
+			&.logo
+				flex 0 0 50px
+
+			&.acronym
+				justify-content left
+				flex 0 0 70px
+				padding-left 0
+
+			&.team
+				justify-content left
+				flex 0 0 350px
+
+			&.gap
+				flex 0 0 10px
+				color rgba(255,255,255,.1)
+				padding-left 0
+				padding-right 0
+				font-size .9rem
+				font-weight 600
+
+			&.won
+			&.tied
+			&.lost
+				flex 0 0 24px
+				padding-left 0
+				padding-right 0
+
+			&.winrate
+				padding-left 0
+				padding-right 0
+
+			&.capsfor
+			&.capsagainst
+			&.capdifference
+				flex 0 0 30px
+				padding-left 0
+				padding-right 0
+
+			&.points
+				justify-content center
+				flex 0 0 100px
+
+
+
+
+		&.entry
+			// &[data-position='5']
+			// 	border-bottom 2px dashed #2acb4f
+
+			&:hover
+				background rgba(black,.4)
+
+			.item
+
+				&.position
+					background black
+					font-size .7rem
+					color rgba(white, .15)
+
+				&.logo
+					img
+						height 1.2rem
+						width 1.2rem
+						border-radius 10rem
+						box-shadow 0 0 10px var(--teamglow)
+						background var(--teamcolor)
+
+				&.acronym
+					text-shadow 0 0 10px var(--teamglow)
+					color var(--teamcolor)
+					font-size .8rem
+					font-weight 600
+
+				&.team
+					color #747474
+
+
+
+				&.won
+				&.tied
+				&.lost
+					color #b9b9b9
+					font-size .9rem
+					font-weight 600
+
+				&.winrate
+					// background red
+
+					.val
+						color white
+						font-size .8rem
+						font-weight 600
+						text-align right
+						display inline-block
+						width 30%
+						padding-right .5rem
+					.bar
+						display inline-block
+						width 30%
+						background #ffffff17
+						height 8px
+						border-radius 2px
+						margin-right 1rem
+
+						.inner
+							display block
+							height inherit
+							border-radius inherit
+
+						&.good
+							.inner
+								background #2acb4f
+								box-shadow 0 0 10px #2acb4f
+
+						&.bad
+							.inner
+								background #ec041f
+								box-shadow 0 0 10px #ec041f
+
+				&.capsfor
+				&.capsagainst
+				&.capdifference
+					color #b9b9b9
+					font-size .9rem
+					font-weight 600
+
+
+				&.points
+					color white
+					font-size .9rem
+					text-shadow 0 0 10px white
+
+
+.teams
+	padding-top .8rem
+	display flex
+	flex-wrap wrap
+	gap 1rem
+
+	.team
+		width calc(25% - (3rem / 4))
+		display flex
+
+		.logo
+			max-width 120px
+			flex-basis 20%
+			flex-shrink 0
+			display flex
+			align-items center
+			justify-content center
+			position relative
+
+			.logo-bg-contain
+				overflow hidden
+				position absolute
+				display inline-flex
+				width 100%
+				height 100%
+				border-radius 6px 0 0 6px
+				user-select none
+
+				.logo-bg
+					filter blur(6rem) contrast(2.2)
+					position absolute
+					width 100%
+					height 100%
+					display flex
+					align-items center
+					justify-content center
+					z-index 0
+					opacity .8
+
+					img
+						object-fit contain
+						transform scale(8)
+
+			img._logo
+				height 2rem
+				width 2rem
+				border-radius 10rem
+				position relative
+				z-index 1
+				// display none
+
+
+
+		.info
+			background linear-gradient(to bottom right, rgba(#292b33, .5) 0%, rgba(#1f2026, .5) 100%)
+			// background #0b0c0e
+			width 100%
+			border-radius 0 6px 6px 0
+
+			.acronym
+				padding .8rem 0 0 1rem
+				font-size .8rem
+				font-weight 600
+				text-transform uppercase
+
+				text-shadow 0 0 10px var(--teamglow)
+				color var(--teamcolor)
+
+			.teamname
+				font-size 1rem
+				font-weight 600
+				color white
+				text-transform uppercase
+				padding 0 0 .6rem 1rem
+
+				white-space nowrap
+				overflow hidden
+				text-overflow ellipsis
+				width 240px
+
+
+		ul
+			border-top 1px solid #ffffff0d
+			padding .6rem 0 1.4rem 0
+
+			li
+
+				&:hover
+					background rgba(black, .2)
+
+				.name
+					font-size .8rem
+					line-height 1.6rem
+					display inline-block
+					width 80%
+					color #dbdbdb
+					padding-left 1rem
+
+				.country
+					display inline-block
+					width 20%
+					text-align right
+					padding-right 1rem
+
+					img
+						display inline-block
+						height 12px
+						width 16px
+						border-radius 3px
+						box-shadow 0 0 10px rgba(black, .3)
+						position relative
+						top 1px
+
+
+
+
+// leaders & records
+.stats
+	display grid
+	column-gap 1rem
+
+	&.leaders
+		--grid-width calc(25% - (3rem / 4))
+		grid-template-columns var(--grid-width) var(--grid-width) var(--grid-width) var(--grid-width)
+
+	&.records
+		--grid-width calc(33.33% - (1rem / 3))
+		grid-template-columns var(--grid-width) var(--grid-width) var(--grid-width)
+
+
+	.stat
+		// flex 0 0 25%
+		margin-bottom 1rem
+		border-radius 6px 6px 0 0
+		background #0b0c0e
+
+		h3
+			padding .6rem 1rem
+			font-size: .9rem;
+			font-weight: 600;
+			// color: #fff;
+			color #a8a8a8
+			text-transform: uppercase;
+			background: linear-gradient(to top right,#000000,#0b0c0e);
+			text-align center
+			border-radius inherit
+
+		.row
+			display flex
+			flex-direction row
+			align-items stretch
+
+			&:nth-of-type(even)
+				background #08080a
+
+			.item
+				color white
+				font-size .9rem
+				flex 1
+				display flex
+				align-items center
+				padding .2rem 0
+
+				a
+					text-decoration none
+					color #b9b9b9
+
+				&.rank
+					color rgba(white, .15)
+					background black
+					font-size .7rem
+					flex 0 0 24px
+					justify-content center
+
+				&.team
+					font-size .8rem
+					font-weight 600
+					text-transform uppercase
+					text-align left
+					padding-left .5rem
+					flex 0 0 52px
+					text-shadow 0 0 10px var(--teamglow)
+					color var(--teamcolor)
+					justify-content left
+
+				&.player
+					justify-content left
+
+				&.map
+				&.date
+					justify-content left
+
+				&.value
+					justify-content right
+					flex 0 0 75px
+					padding-right .5rem
+
+			&:hover
+				.rank
+					color #a8ff62
+
+				.player
+					a
+						color #538cff
+						box-shadow inset 0 -2px 0 0 #538cff33
+
+						&:hover
+							box-shadow none
+
+
+
+.schedule
+
+	.day
+		margin-bottom 2rem
+
+		h3
+			text-align center
+			font-size .8rem
+			font-weight 600
+			text-transform uppercase
+			padding .6rem 0
+			color #747474
+			background linear-gradient(to top right,#000000,#0b0c0e)
+			border-radius 6px 6px 0 0
+
+		.games
+			background #0b0c0e
+			margin 0
+
+			flex 1
+			display flex
+			justify-content: center;
+			align-items: center;
+
+			&:not(:last-child)
+				border-bottom 1px solid #131417
+
+			.map
+				color white
+				height 100%
+				font-size .8rem
+				padding-left 1rem
+				flex 0 0 15%
+
+				a
+					text-decoration none
+					color: #8b8b8b
+					box-shadow: 0 2px 0 #ffffff14
+
+					&:hover
+						box-shadow none
+
+			.game
+				display flex
+				flex 0 0 calc( (100% - 15%) / 4)
+				justify-content center
+				align-items center
+				padding .5rem 0
+				text-decoration none
+
+				&:hover
+					background rgba(black, .4)
+
+				.block
+					&.team
+						text-align center
+
+
+						.logo
+							justify-content center
+							align-items center
+							display flex
+							display none
+
+							img
+								height 1.2rem
+								width 1.2rem
+								border-radius 10rem
+								box-shadow 0 0 10px var(--teamglow)
+								background var(--teamcolor)
+
+						.name
+							display inline-block
+							font-size .8rem
+							font-weight 600
+							text-transform uppercase
+							width 50px
+							text-shadow 0 0 10px var(--teamglow)
+							color var(--teamcolor)
+							// color #d3d3d3
+
+						&.red.team
+							.name
+								vertical-align right
+
+						&.blue.team
+							.name
+								vertical-align left
+
+					&.score
+						.red
+						.blue
+							display inline-block
+							width 30px
+							margin 0 .2rem
+							border-radius .3rem
+							font-size .9rem
+							text-align center
+							color white
+							background linear-gradient(to bottom right, rgba(#292b33, .5) 0%, rgba(#1f2026, .5) 100%)
+
+							&.win
+								color lime
+								text-shadow 0 0 10px lime
+
+						.vs
+							display inline-block
+							color rgba(white, .2)

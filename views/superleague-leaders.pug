@@ -1,0 +1,34 @@
+include template/head.pug
+include template/superleague-nav.pug
+
+.contain
+	.wrap
+
+		.nav-bar-tertiary
+			a(href="/superleague/leaders" class=(nav.tertiary === 'totals' ? 'active' : '')) Total
+			a(href="/superleague/leaders/averages" class=(nav.tertiary === 'averages' ? 'active' : '')) Average
+			a(href="/superleague/leaders/top" class=(nav.tertiary === 'top' ? 'active' : '')) Top
+			a(href="/superleague/leaders/teampercent" class=(nav.tertiary === 'teampercent' ? 'active' : '')) Team %
+
+		.stats.leaders
+
+			each raw in leaders
+				if raw.data
+					.stat
+						h3= raw.title
+
+						each n, key in raw.data
+							.row(class=(key === 0 ? 'top' : ''))
+								.item.rank= n.rank
+								.item.team(
+									data-position= i
+									style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+								)= n.acronym
+								.item.player
+									// href= '/player/' + n.player
+									a(
+										href='#'
+									)= n.player
+								.item.value= n.value
+
+include template/foot.pug

@@ -1,328 +1,209 @@
-@import 'base/reset.styl'
-@import 'base/helpers.styl'
-@import 'base/form.styl'
+:root
+	font-size 17px
+	font-family 'Montserrat', sans-serif
+	--width 1450px
+	--color #004aff
+	--glow var(--color)
 
-/* plugins */
-@import 'plugins/nouislider.min.styl'
-@import 'plugins/tom-select.bootstrap5.styl'
+body
+	background #131417
+	height 100%
 
-/* custom variables */
-@import 'custom/variables.styl'
-@import 'custom/type.styl'
-@import 'custom/form.styl'
-@import 'custom/buttons.styl'
-@import 'custom/components.styl'
-@import 'custom/layout.styl'
+	display flex
+	flex-direction column
 
-/******************/
+	flex-wrap nowrap
+	justify-content flex-start
+	align-items stretch
+	align-content stretch
 
-@keyframes slideUp
-	0%
-		transform translateY(5%)
-		opacity 0
 
-	80%
-		transform translateX(0)
+.background
+	background black url('https://i.imgur.com/ycymETc.png')
+	// background black url('https://i.imgur.com/WE1LAXo.png')
+	background-position center center
+	background-size auto 100%
+	width 100%
+	height 1200px
+	display block
+	position absolute
+	z-index 0
+	filter grayscale(42%)
 
-	100%
-		opacity 1
+.hide
+	display none !important
 
-.page-select
-.page-filter
-	.drop-down_list
-		display none
-		animation slideUp .2s ease-in-out
-
-		&.active
-			display block
-
-		.desc
-			color #363636
-			font-size .85rem
-			padding-bottom 1rem
-
-	.map
-	.season
-		input[disabled]
-		input[disabled] + label
-			opacity .25
-			cursor not-allowed
-
-// compare hide dropdown
-.ts-dropdown
+.nav-bar-primary
+	backdrop-filter blur(10px)
+	background rgba(15,24,55,.9)
+	box-shadow inset 0 0 0 2px rgba(0,0,0,.15),0 0 0 2px transparent,inset 0 -.5rem .5rem -.5rem var(--glow), 0 -.5rem .5rem .5rem var(--glow)
+	border-bottom: 2px solid var(--color)
+	width 100%
+	display flex
+	flex-flow nowrap
 	display none
 
-// records
-// leaderboards
-.tabs
-	.left
+	a
+		color #4a6ba3
+		font-size .9rem
+		text-decoration none
+		padding 0 .8rem
+		display inline-block
+		vertical-align middle
+		height 3rem
+		display flex
+		align-items center
+		justify-content center
+		text-transform uppercase
+		font-weight 600
+
+		&.active span
+			color #1adbd4
+			box-shadow 0 2px 0 0 rgba(#1adbd4, 10%)
+
+		&.active
+		&:hover
+			color white
+
+		&:first-child
+			padding-left 1.5rem
+
+			svg
+				height 1.4rem
+				position relative
+				margin-top -.15rem
+
+
 	.right
 		display flex
-
-	.right
+		align-items center
+		justify-content center
 		margin-left auto
+		padding-right 6px
+
+		input
+			font-size .85rem
+			font-weight 400
+			color white
+			caret-color white
+			background-position calc(.75rem) calc(.56rem)
+			background-repeat no-repeat
+			background-size .95rem .95rem
+			border none
+			padding .4rem .4rem .4rem 2.1rem
+			margin-top -2px
+			background-color #132151e6
+			background-image url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.35-4.35'/></svg>")
+			border-radius .4rem
+
+			&:focus
+				transition background .2s ease-in-out
+				outline none
+				color white
+				outline 2px solid #f6d616
+
+			&::placeholder
+				color #5b7fc0
 
 
-.log
-	a
-		color #ff2882
-		box-shadow inset 0 -2px 0 0 rgba(#ff2882, .2)
+.nav-bar-secondary
+	// clip-path url(#wave)
+	padding 1rem 0 0 0
+	position relative
+	z-index 2
 
-	tr:hover a:hover
-		box-shadow none
-
-// records
-.mark
-	background #f9ffbc !important;
-
-
-.stats-card
-	tr:hover a
-		color #ff2882
-		box-shadow inset 0 -2px 0 0 rgba(#ff2882, .2)
-
-	tr:hover a:hover
-		box-shadow none
-
-.stars
-	svg
-		display inline-block
-		height 1rem
-		width 1rem
-		vertical-align middle
-
-.wrapwrap
-	font-size 0
-
-// player profile
-.elowrap
-.hourwrap
-	margin-right 8px
-.monthwrap
-.daywrap
-	margin-left 8px
-
-.elowrap
-.daywrap
-.hourwrap
-.monthwrap
-	display inline-block
-	width calc(50% - 8px)
-	padding-bottom 15px
-	font-size .8rem
-	margin-top 10px
-	vertical-align top
-
-	#xaxis .domain
-		fill none
-
-	.tick
-		fill #c3c3c3
-
-	#xaxis text
-	#yaxis text
-		font-size 12px
-		display none
-
-	.domain
-		display none
-
-
-.byseason
-	.filter
+	.wrap
+		max-width var(--width)
+		margin 0 auto
 		display block
-		text-align right
+		z-index 9
+		padding .5rem 1.5rem 0 1.5rem
+		color white
 
-		label
-			cursor pointer
+		.breadcrumb
+			line-height 1.2rem
+			font-size .8rem
+			text-transform: capitalize;
 
-			span
-				font-weight 300
+			a
+			.crumb
+			.current
 				display inline-block
-				margin-left .25rem
+				margin-right .5rem
+				color rgba(white, .75)
 
+			a
+				border-bottom 2px solid rgba(white, .1)
+				text-decoration none
 
+				&:hover
+					border-bottom-color transparent
 
-
-
-	.season:not(:last-child)
-		border-bottom 1px solid #e8e8e8
-
-	.season
-		min-height 350px
+			.current
+				font-weight 600
+				color white
 
 		h1
-			font-size 1.1rem
+			font-weight 800
+			font-size 2rem
+			color white
+			text-shadow 0 0 60px white
 
-		.block_left
-			display inline-block
-			width 30%
-			vertical-align top
+		.nav-bar
+			padding-top 1rem
 
-			.title
-				font-size 1rem
-				font-weight 700
-				padding 0 0 0.5rem 0
+			a
+				display inline-block
+				color white
+				padding .8rem 1rem
+				text-decoration none
+				font-size .9rem
+				line-height .9rem
+				margin-right .5rem
+				border-radius .2rem .2rem 0 0
+				background rgba(black, .2)
 
-			ul.stats
-				display block
-				list-style none
-				margin 0
-				margin-bottom 1.5rem
+				&.active
+				&:hover
+					position relative
+					z-index 999
+					color white
+					background linear-gradient(to top right,var(--color),#002787)
 
-				li
-					display block
-					width 10rem
-					padding .2rem 0
-					font-size .9rem
+.nav-bar-tertiary
+	border-bottom 1px solid #ffffff0a
+	width 100%
+	margin-bottom 1rem
 
-					&:not(:last-child)
-						border-bottom: 1px solid #f9f9f9;
-
-					.lab
-						display inline-block
-						color: #6c6c6c;
-						width 40%
-
-					.pos
-						width 50%
-						display: inline-block;
-						text-align right
-
-						&.high
-							color #1dbf38
-							font-weight 700
-						&.avg
-							color #a9b132
-							font-weight 700
-
-
-		.block_right
-			display inline-block
-			width 30%
-			min-width 300px
-			vertical-align top
-			text-align center
-
-		.radar
-			display inline-block
-			vertical-align top
-
-			.names
-				font-size .75rem
-
-			.season1
-				stroke rgba(black, .75)
-
-			.season2
-				stroke rgba(red, .75)
-
-			.season3
-				stroke rgba(blue, .75)
-
-
-
-.search
-	height 34px
-	width 20rem
-	display block
-	top 0
-	right 0
-	position absolute
-
-	input
-		background rgba(black, .73)
-		background #1c031f
-		// background white
-		padding 1rem
-		color white
-		// color #363636
-		width 80%
-		// border-radius 10px 0 0 10px
-		height inherit
-		font-size 1rem
-		vertical-align top
-
-		&::placeholder
-			color rgba(white, .5)
-
-		&:focus
-			outline none
-
-	button
-		vertical-align top
-		width 20%
-		display inline-block
-		border none
-		background linear-gradient(to right bottom,#2999f5,#1859d1)
-		// border-radius 0 10px 10px 0
-		cursor pointer
-		height inherit
-
-		svg
-			fill white
-			height 1rem
-
-.searchresults
 	a
-		padding: 2rem;
-		display: inline-block;
-		width: 200px;
-		background: rgba(#eee, .5);
-		border: 1px solid rgba(#ccc, .5);
-		border-radius: 6px;
-		cursor: pointer;
-		margin-right 1rem
-		margin-bottom 1rem
-		text-align center
+		font-size .9rem
+		color white
+		text-decoration none
+		color rgba(white, .3)
+		display inline-block
+		padding .5rem .75rem
 
-		em
-			font-style normal
-			color #ff2882
-			box-shadow inset 0 -2px 0 0 rgba(#ff2882, .2)
-
+		&.active
 		&:hover
-			background #fef7ff
+			color #1adbd4
+			box-shadow inset 0 -2px 0 #1adbd4
 
-			em
-				box-shadow none
+.contain
+	box-shadow inset 0 .5rem .5rem -.5rem var(--glow), 0 -.5rem .5rem -.5rem var(--glow)
+	border-top 2px solid var(--color)
+	display block
+	margin 0 auto
+	padding 1.5rem 0
+	width 100%
+	background #131417
+	position relative
+	z-index 1
 
-.last-updated
-	a
-		width 7rem
-		text-align center
-		padding 1rem
-		font-weight bold
-		color white
+	flex: 1 1 auto;
+	display: flex;
 
-		&.active
-			color #363636
-			background #eaff04
-
-.modes
-	position absolute
-	left 250px
-	height 34px
-
-	a
-		display inline-block
-		width 7rem
-		text-align center
-		padding .5rem
-		font-weight bold
-		color white
-		box-sizing border-box
-		height inherit
-
-		&.active
-			background #eaff04
-			color #37003c
-
-.summary
-	.highlight-good
-		background #dfffe3
-		color #11930a
-
-	.highlight-bad
-		background #ffdfdf
-		color #c34e4e
+	.wrap
+		width 100%
+		padding 0 1.5rem
+		max-width var(--width)
+		margin 0 auto

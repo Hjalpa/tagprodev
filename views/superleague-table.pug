@@ -1,0 +1,78 @@
+include template/head.pug
+include template/superleague-nav.pug
+
+.contain
+
+	// .nav-bar-tertiary
+	// 	.wrap
+	// 		a(href="/superleague/table" class="active") All
+	// 		a(href="#" class=(season === '3' ? 'active' : '')) Day 5
+	// 		a(href="#" class=(season === '3' ? 'active' : '')) Day 4
+	// 		a(href="#" class=(season === '3' ? 'active' : '')) Day 3
+	// 		a(href="#" class=(season === '2' ? 'active' : '')) Day 2
+	// 		a(href="#" class=(season === '1' ? 'active' : '')) Day 1
+
+	.wrap
+
+		.table
+			.row.head
+				.item.position
+				.item.logo
+				.item.acronym
+				.item.team
+				.item.won W
+				.item.gap
+				.item.tied T
+				.item.gap
+				.item.lost L
+				.item.winrate Win Rate
+				.item.capsfor CF
+				.item.gap
+				.item.capsagainst CA
+				.item.gap
+				.item.capdifference CD
+				.item.form FORM
+				.item.points POINTS
+
+			- let i = 0
+			each n, key in table
+				- i++
+
+				.row.entry(
+					data-position= i
+					style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+				)
+					.item.position= i
+					.item.logo
+						img(
+							src= n.logo
+						)
+					.item.acronym= n.acronym
+					.item.team= n.name
+
+					.item.won= n.data.won
+					.item.gap -
+					.item.tied= n.data.drawn
+					.item.gap -
+					.item.lost= n.data.lost
+
+					.item.winrate
+						.val= n.data.winrate +'%'
+						if(n.data.winrate >= 50)
+							.bar.good
+								.inner(style="width: " + n.data.winrate + "%")
+						else
+							.bar.bad
+								.inner(style="width: " + n.data.winrate + "%")
+
+					.item.capsfor= n.data.cf
+					.item.gap -
+					.item.capsagainst= n.data.ca
+					.item.gap -
+					.item.capdifference= n.data.cd
+
+					.item.form
+
+					.item.points= n.pts
+
+include template/foot.pug

@@ -1,0 +1,46 @@
+include template/head.pug
+include template/superleague-nav.pug
+
+.contain
+	.wrap.schedule
+
+		each n, date in schedule
+			.day
+				h3!= date + ' 8PM BST'
+
+				each i, k in n.round
+					.games
+						.map
+							a(href=
+								href="https://unfortunate-maps.jukejuice.com/show/" + i.map.unfortunateid
+							)!= i.map.name
+
+						each f, fkey in i.fixtures
+							- let url = (!f.euid) ? '#' : 'https://tagpro.eu?match=' + f.euid
+							a(
+								href= url
+							).game
+								.block.team.red(
+									style="--teamcolor: " + f.red.color + "; --teamglow: " + f.red.color + "80"
+								)
+									.name= f.red.acronym
+									.logo
+										img(
+											src= f.red.logo
+										)
+
+								.block.score
+									.red= f.red.caps
+									.vs :
+									.blue= f.blue.caps
+
+								.block.team.blue(
+									style="--teamcolor: " + f.blue.color + "; --teamglow: " + f.blue.color + "80"
+								)
+									.name= f.blue.acronym
+									.logo
+										img(
+											src= f.blue.logo
+										)
+
+include template/foot.pug

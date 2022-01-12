@@ -1,0 +1,31 @@
+include template/head.pug
+include template/superleague-nav.pug
+
+.contain
+	.wrap
+
+		.stats.records
+
+			each raw in records
+				.stat
+					h3= raw.title
+
+					each n, key in raw.data
+						.row(class=(key === 0 ? 'top' : ''))
+							.item.rank= n.rank
+							.item.team(
+								data-position= i
+								style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+							)= n.acronym
+							.item.player
+								a(
+									href= '/player/' + n.player
+								)= n.player
+							.item.map= n.map
+							.item.date
+								a(
+									href= 'https://tagpro.eu/?match=' + n.euid
+								)= n.date
+							.item.value= n.value
+
+include template/foot.pug

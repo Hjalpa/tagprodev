@@ -49,7 +49,7 @@ gulp.task('js', gulp.series(function(done) {
 			'./src/js/*.js'
 		])
 		.pipe(concat('init.js'))
-		// .pipe(uglify())
+		.pipe(uglify())
 		.pipe(size(
 			{'title':'init.js'}
 		))
@@ -61,10 +61,10 @@ gulp.task('js', gulp.series(function(done) {
 //  css minification
 // --------------------------------------------------------------------------
 gulp.task('css', gulp.series(function(done) {
-	gulp.src(['./src/css/main.styl', './src/css/*.styl'])
+	gulp.src(['./src/css/reset.styl', './src/css/*.styl'])
 		.pipe(stylus())
 		.pipe(concat('init.css'))
-		.pipe(autoprefix('last 2 versions'))
+		.pipe(autoprefix('last 1 versions'))
 	    .pipe(cleanCSS())
 		.pipe(size(
 			{'title':'init.css'}

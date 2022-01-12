@@ -6,7 +6,7 @@ const db = require('../lib/db')
 const exec = require('child_process').exec
 
 // STOP APACHE IF THE PORT ERROR 80 exists AND RESTART AFTER CERT DONE
-// router.get('/.well-known/acme-challenge/k22aKnwPMsi6msEAaTljSg-prgzHomgmdNbX-6K16j0', async (req, res) => res.send('k22aKnwPMsi6msEAaTljSg-prgzHomgmdNbX-6K16j0.qHHteSBfKXYnAnQTAXoiP82unkcnaaMWYrV7cwF4zAk'))
+// router.get('/.well-known/acme-challenge/xEnQIF270N03wZzphl0IPqUkPkMaZOWxo_ZGlh0iipM', async (req, res) => res.send('xEnQIF270N03wZzphl0IPqUkPkMaZOWxo_ZGlh0iipM.hYRGI90GO3NsQmmnTO1Uwp7jwf_HnYCV7HPC3UrthtQ'))
 
 // https://scotch.io/tutorials/how-to-optimize-node-requests-with-simple-caching-strategies
 let memCache = new cache.Cache()
@@ -28,16 +28,13 @@ let cacheMiddleware = (duration) => {
 	}
 }
 
-router.get('/', cacheMiddleware(3600), (req, res) => require('../models/leaderboards').init(req, res))
-router.use('/records', require('./records'))
-router.get('/rolling', cacheMiddleware(3600), (req, res) => require('../models/rolling').init(req, res))
+router.get('/', (req, res) => res.redirect('./superleague'))
 router.use('/api',  require('./api'))
-router.use('/stats',  require('./stats'))
-router.use('/compare',  require('./compare'))
-router.use('/player',  require('./player'))
-router.use('/search',  require('./search'))
-router.get('/maps', cacheMiddleware(3600), (req, res) => require('../models/maps').init(req, res))
-router.get('/log', (req, res) => require('../models/log').init(req, res))
+
+router.use('/superleague',  require('./superleague'))
+
+// router.use('/search',  require('./search'))
+
 router.use((req, res) => res.status(404).render('404'))
 
 module.exports = router

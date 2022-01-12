@@ -1,0 +1,18 @@
+.nav-bar-secondary
+	.wrap
+		.breadcrumb
+			// a(href="#") Neutral Flag
+			// .crumb ›
+			a(href="#") Season 1
+			// .crumb ›
+			// .current= nav.secondary
+
+		h1 NF Super League
+
+		.nav-bar
+			a(href="/superleague" class=(nav.secondary === 'schedule' ? 'active' : '')) Schedule
+			a(href="/superleague/teams" class=(nav.secondary === 'teams' ? 'active' : '')) Teams
+			a(href="/superleague/table" class=(nav.secondary === 'table' ? 'active' : '')) Table
+			a(href="/superleague/leaders" class=(nav.secondary === 'leaders' ? 'active' : '')) Leaders
+			a(href="/superleague/records" class=(nav.secondary === 'records' ? 'active' : '')) Records
+			a(href="/superleague/stats" class=(nav.secondary === 'stats' ? 'active' : '')) Stats
