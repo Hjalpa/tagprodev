@@ -36,7 +36,7 @@ let init = async (req, res) => {
 									)
 								)
 							* 100, 0)`,
-						// top: 'playergame.cap + playergame.assist = (SELECT MAX(cap) + MAX(assist)'
+						top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
 					}),
 				},
 				caps: {
@@ -45,7 +45,7 @@ let init = async (req, res) => {
 						sum: 'sum(cap)',
 						avg: 'ROUND(avg(cap), 2)',
 						teampercent: 'ROUND((sum(cap)::DECIMAL / sum(cap_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.hold = (SELECT MAX(hold)',
+						top: 'playergame.hold = (SELECT hold',
 					})
 				},
 				assists: {
@@ -54,7 +54,7 @@ let init = async (req, res) => {
 						sum: 'sum(assist)',
 						avg: 'ROUND(avg(assist), 2)',
 						teampercent: 'ROUND((sum(assist)::DECIMAL / sum(assist_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.assist = (SELECT MAX(assist)',
+						top: 'playergame.assist = (SELECT assist',
 					})
 				},
 				tags: {
@@ -63,7 +63,7 @@ let init = async (req, res) => {
 						sum: 'sum(tag)',
 						avg: 'ROUND(avg(tag), 2)',
 						teampercent: 'ROUND((sum(tag)::DECIMAL / sum(tag_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.tag = (SELECT MAX(tag)',
+						top: 'playergame.tag = (SELECT tag',
 					}),
 				},
 				hold: {
@@ -72,7 +72,7 @@ let init = async (req, res) => {
 						sum: `TO_CHAR( sum(hold) * interval '1 sec', 'mi:ss')`,
 						avg: `TO_CHAR( avg(hold) * interval '1 sec', 'mi:ss')`,
 						teampercent: 'ROUND((sum(hold)::DECIMAL / sum(hold_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.hold = (SELECT MAX(hold)',
+						top: 'playergame.hold = (SELECT hold',
 					}),
 				},
 				prevent: {
@@ -81,7 +81,7 @@ let init = async (req, res) => {
 						sum: `TO_CHAR( sum(prevent) * interval '1 sec', 'mi:ss')`,
 						avg: `TO_CHAR( avg(prevent) * interval '1 sec', 'mi:ss')`,
 						teampercent: 'ROUND((sum(prevent)::DECIMAL / sum(prevent_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.prevent = (SELECT MAX(prevent)',
+						top: 'playergame.prevent = (SELECT prevent',
 					}),
 				},
 				block: {
@@ -90,7 +90,7 @@ let init = async (req, res) => {
 						sum: `TO_CHAR( sum(block) * interval '1 sec', 'mi:ss')`,
 						avg: `TO_CHAR( avg(block) * interval '1 sec', 'mi:ss')`,
 						teampercent: 'ROUND((sum(block)::DECIMAL / sum(block_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.assist = (SELECT MAX(assist)',
+						top: 'playergame.block = (SELECT block',
 					}),
 				},
 				takeovers: {
@@ -99,7 +99,7 @@ let init = async (req, res) => {
 						sum: 'sum(takeover)',
 						avg: 'ROUND(avg(takeover), 2)',
 						teampercent: 'ROUND((sum(takeover)::DECIMAL / sum(takeover_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.takeover = (SELECT MAX(takeover)',
+						top: 'playergame.takeover = (SELECT takeover',
 					})
 				},
 				dispossessed: {
@@ -121,7 +121,7 @@ let init = async (req, res) => {
 								* 100
 							, 0)
 						`,
-						top: '(playergame.takeover_good - playergame.dispossessed) = (SELECT MAX(takeover_good) - MAX(dispossessed)'
+						top: '(playergame.takeover_good - playergame.dispossessed) = (SELECT (takeover_good - dispossessed)'
 					})
 				},
 				strongtakeovers: {
@@ -130,7 +130,7 @@ let init = async (req, res) => {
 						sum: 'sum(takeover_good)',
 						avg: 'ROUND(avg(takeover_good), 2)',
 						teampercent: 'ROUND((sum(takeover_good)::DECIMAL / sum(takeover_good_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.takeover_good = (SELECT MAX(takeover_good)',
+						top: 'playergame.takeover_good = (SELECT takeover_good',
 					})
 				},
 				regrabs: {
@@ -150,7 +150,7 @@ let init = async (req, res) => {
 									)
 								)
 							* 100, 0)`,
-						top: '(playergame.grab - playergame.takeover) = (SELECT MAX(grab) - MAX(takeover)'
+						top: '(playergame.grab - playergame.takeover) = (SELECT (grab - takeover)'
 					})
 				},
 				chains: {
@@ -159,7 +159,7 @@ let init = async (req, res) => {
 						sum: 'sum(chain)',
 						avg: 'ROUND(avg(chain), 2)',
 						teampercent: 'ROUND((sum(chain)::DECIMAL / sum(chain_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.chain = (SELECT MAX(chain)',
+						top: 'playergame.chain = (SELECT chain',
 					}),
 				},
 				tapinfromychain: {
@@ -168,7 +168,7 @@ let init = async (req, res) => {
 						sum: 'sum(tapin_from_my_chain)',
 						avg: 'ROUND(avg(tapin_from_my_chain), 2)',
 						teampercent: 'ROUND((sum(tapin_from_my_chain)::DECIMAL / sum(tapin_from_my_chain_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.tapin_from_my_chain = (SELECT MAX(tapin_from_my_chain)',
+						top: 'playergame.tapin_from_my_chain = (SELECT tapin_from_my_chain',
 					}),
 				},
 				tapincaps: {
@@ -177,7 +177,7 @@ let init = async (req, res) => {
 						sum: 'sum(cap_from_tapin)',
 						avg: 'ROUND(avg(cap_from_tapin), 2)',
 						teampercent: 'ROUND((sum(cap_from_tapin)::DECIMAL / sum(cap_from_tapin_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.cap_from_tapin = (SELECT MAX(cap_from_tapin)',
+						top: 'playergame.cap_from_tapin = (SELECT cap_from_tapin',
 					})
 				},
 				quickreturn: {
@@ -186,28 +186,29 @@ let init = async (req, res) => {
 						sum: 'sum(quick_return)',
 						avg: 'ROUND(avg(quick_return), 2)',
 						teampercent: 'ROUND((sum(quick_return)::DECIMAL / sum(quick_return_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.quick_return = (SELECT MAX(quick_return)',
+						top: 'playergame.quick_return = (SELECT quick_return',
 					})
 				},
-				// nontakeoverturns: {
-				// 	title: 'Non-Takeover Returns',
-				// 	data: await getData(filters, {
-				// 		sum: 'sum(return) - sum(takeover)',
-				// 		avg: 'ROUND(avg(return) - avg(takeover), 2)',
-				// 		teampercent: `
-				// 			ROUND(
-				// 				(
-				// 					(
-				// 						sum(return)::DECIMAL + sum(takeover)::DECIMAL
-				// 					)
-				// 					/
-				// 					(
-				// 						sum(return_team_for)::DECIMAL + sum(takeover_team_for)::DECIMAL
-				// 					)
-				// 				)
-				// 			* 100, 0)`,
-				// 	}),
-				// },
+				nontakeoverturns: {
+					title: 'Non-Takeover Returns',
+					data: await getData(filters, {
+						sum: 'sum(return) - sum(takeover)',
+						avg: 'ROUND(avg(return) - avg(takeover), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+										sum(return)::DECIMAL + sum(takeover)::DECIMAL
+									)
+									/
+									(
+										sum(return_team_for)::DECIMAL + sum(takeover_team_for)::DECIMAL
+									)
+								)
+							* 100, 0)`,
+						top: '(playergame.return - playergame.takeover) = (SELECT (return - takeover)',
+					}),
+				},
 				pups: {
 					title: 'Pups',
 					data: await getData(filters, {
@@ -225,7 +226,7 @@ let init = async (req, res) => {
 									)
 								)
 							* 100, 0)`,
-						top: '(playergame.pup_jj + playergame.pup_rb + playergame.pup_tp) = (SELECT MAX(pup_jj) + MAX(pup_rb) + MAX(pup_tp)',
+						top: '(playergame.pup_jj + playergame.pup_rb + playergame.pup_tp) = (SELECT (pup_jj + pup_rb + pup_tp)',
 					})
 				},
 				capwhilstpupactive: {
@@ -236,7 +237,7 @@ let init = async (req, res) => {
 						sum: 'sum(cap_whilst_team_have_active_pup)',
 						avg: 'ROUND(avg(cap_whilst_team_have_active_pup), 2)',
 						teampercent: 'ROUND((sum(cap_whilst_team_have_active_pup)::DECIMAL / sum(cap_whilst_team_have_active_pup_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.cap_whilst_team_have_active_pup = (SELECT MAX(cap_whilst_team_have_active_pup)',
+						top: 'playergame.cap_whilst_team_have_active_pup = (SELECT cap_whilst_team_have_active_pup',
 					})
 				},
 				// grabpercap: {
@@ -259,34 +260,41 @@ let init = async (req, res) => {
 				// 		teampercent: false,
 				// 	})
 				// },
-				// holdpergrab: {
-				// 	title: 'Hold / Grab',
-				// 	data: await getData(filters, {
-				// 		sum: 'ROUND(sum(hold) / sum(grab)::numeric, 2)',
-				// 		avg: 'ROUND(avg(hold) / avg(grab)::numeric, 2)',
-				// 		teampercent: false,
-				// 	}),
-				// },
-				// holdpercap: {
-				// 	title: 'Hold / Cap',
-				// 	data: await getData({...filters, ...{having: true, ascending: true}}, {
-				// 		sum: `
-				// 			COALESCE(
-				// 				ROUND(
-				// 					(sum(hold)::DECIMAL / NULLIF(sum(cap)::DECIMAL, 0))
-				// 				, 2)
-				// 			, 0)
-				// 		`,
-				// 		avg: `
-				// 			COALESCE(
-				// 				ROUND(
-				// 					(avg(hold)::DECIMAL / NULLIF(avg(cap)::DECIMAL, 0))
-				// 				, 2)
-				// 			, 0)
-				// 		`,
-				// 		teampercent: false,
-				// 	})
-				// },
+				holdpergrab: {
+					title: 'Hold / Grab',
+					data: await getData(filters, {
+						sum: 'ROUND(sum(hold) / sum(grab)::numeric, 2)',
+						avg: 'ROUND(avg(hold) / avg(grab)::numeric, 2)',
+						teampercent: false,
+						top: 'ROUND(playergame.hold / playergame.grab, 2) = (SELECT ROUND(hold / grab, 2)',
+					}),
+				},
+				holdpercap: {
+					// title: 'Hold / Cap',
+					title: 'WWWWWWWWWWWWWWWWWWWWWPPPPPPPPPPPPPPPMMMMMM',
+					data: await getData({...filters, ...{having: true, ascending: true}}, {
+						sum: `
+							COALESCE(
+								ROUND(
+									(sum(hold)::DECIMAL / NULLIF(sum(cap)::DECIMAL, 0))
+								, 2)
+							, 0)
+						`,
+						avg: `
+							COALESCE(
+								ROUND(
+									(avg(hold)::DECIMAL / NULLIF(avg(cap)::DECIMAL, 0))
+								, 2)
+							, 0)
+						`,
+						teampercent: false,
+						// top: `
+						// 	COALESCE(playergame.hold / NULLIF(playergame.cap, 0), 0) = (
+						// 		COALESCE(hold / NULLIF(cap, 0), 0)
+						// `,
+						top: 'playergame.long_hold = (SELECT long_hold',
+					})
+				},
 				longhold: {
 					title: 'Long Holds',
 					data: await getData(filters, {
@@ -303,7 +311,7 @@ let init = async (req, res) => {
 								* 100)
 							, 0)
 						`,
-						top: 'playergame.long_hold = (SELECT MAX(long_hold)',
+						top: 'playergame.long_hold = (SELECT long_hold',
 					}),
 				},
 				tagpop: {
@@ -325,7 +333,7 @@ let init = async (req, res) => {
 								* 100
 							, 0)
 						`,
-						top: '(playergame.tag - playergame.pop) = (SELECT MAX(tag) - MAX(pop)'
+						top: '(playergame.tag - playergame.pop) = (SELECT (tag - pop)'
 					}),
 				},
 				timedead: {
@@ -382,7 +390,7 @@ async function getData(filters, sql) {
 		percentage = " || '%' ";
 
 	else if(filters.mode.get === 'top') {
-		where = sql[filters.mode.get] + ' FROM playergame WHERE gameid = game.id AND playerid = playergame.playerid AND game.seasonid = $1)'
+		where = sql[filters.mode.get] + ' as score FROM playergame WHERE gameid = game.id AND playerid = playergame.playerid AND game.seasonid = $1 ORDER BY score DESC limit 1)'
 		select = 'count(*)'
 	}
 
