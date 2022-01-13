@@ -514,3 +514,75 @@
 						.vs
 							display inline-block
 							color rgba(white, .2)
+
+
+
+
+
+
+.player-stats
+	background #0b0c0e
+	width 100%
+	border-radius 6px 6px 0 0
+
+	.row
+		display flex
+		flex-direction row
+		align-items stretch
+		width 100%
+		border-bottom: 1px solid #131417;
+
+		&.head
+			background linear-gradient(to top right,#000000,#0b0c0e);
+			font-size .8rem
+			font-weight 600
+			text-transform uppercase
+			color #747474
+			border-radius inherit
+			border-bottom none
+
+		.item
+			flex 1
+			display flex
+			justify-content center
+			align-items center
+			padding .5rem 0
+
+			&.acronym
+				flex 0 0 60px
+
+			&.player
+				justify-content left
+				flex 0 0 160px
+
+
+		&.entry
+			.item
+				color white
+				font-size .9rem
+
+				a
+					text-decoration none
+					color #b9b9b9
+
+
+				&.acronym
+					text-shadow 0 0 10px var(--teamglow)
+					color var(--teamcolor)
+					font-size .8rem
+					font-weight 600
+
+
+				&.player
+					font-size .9rem
+					color rgba(white, .15)
+
+			&:hover
+				background rgba(black,.4)
+
+				a
+					color #538cff
+					box-shadow inset 0 -2px 0 0 #538cff33
+
+					&:hover
+						box-shadow none
