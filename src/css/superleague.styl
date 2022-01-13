@@ -293,24 +293,21 @@
 		grid-template-columns var(--grid-width) var(--grid-width) var(--grid-width) var(--grid-width)
 
 	&.records
-		--grid-width calc(33.33% - (1rem / 3))
+		--grid-width calc(33.33% - (3rem / 4))
 		grid-template-columns var(--grid-width) var(--grid-width) var(--grid-width)
 
-
 	.stat
-		// flex 0 0 25%
 		margin-bottom 1rem
 		border-radius 6px 6px 0 0
 		background #0b0c0e
 
 		h3
 			padding .6rem 1rem
-			font-size: .9rem;
-			font-weight: 600;
-			// color: #fff;
+			font-size .9rem
+			font-weight 600
 			color #a8a8a8
-			text-transform: uppercase;
-			background: linear-gradient(to top right,#000000,#0b0c0e);
+			text-transform uppercase
+			background linear-gradient(to top right,#000000,#0b0c0e)
 			text-align center
 			border-radius inherit
 
@@ -355,9 +352,16 @@
 				&.player
 					justify-content left
 
-				&.map
 				&.date
-					justify-content left
+					justify-content right
+					text-align right
+					padding-right 1rem
+					font-size .8rem
+					flex 0 0 75px
+
+				&.map
+					color #b9b9b9
+					font-size .8rem
 
 				&.value
 					justify-content right
@@ -368,6 +372,7 @@
 				.rank
 					color #a8ff62
 
+				.date
 				.player
 					a
 						color #538cff

@@ -57,6 +57,18 @@ let init = async (req, res) => {
 						top: 'playergame.assist = (SELECT assist',
 					})
 				},
+				// possession: {
+				// 	title: 'Possession',
+				// 	data: await getData({...filters, ...{percentage: true}}, {
+				// 		sum: `
+				// 			ROUND((
+				// 					sum(hold)::DECIMAL / (
+				// 						sum(hold_team_for)::DECIMAL + sum(hold_team_against)::DECIMAL
+				// 					)
+				// 			) * 100, 0)
+				// 		`,
+				// 	}),
+				// },
 				tags: {
 					title: 'Tags',
 					data: await getData(filters, {
@@ -229,7 +241,7 @@ let init = async (req, res) => {
 						top: '(playergame.pup_jj + playergame.pup_rb + playergame.pup_tp) = (SELECT (pup_jj + pup_rb + pup_tp)',
 					})
 				},
-				capwhilstpupactive: {
+				pupcaps: {
 					title: 'Pup Caps',
 					data: await getData(filters, {
 						// sum: 'sum(cap_whilst_having_active_pup)',
@@ -240,26 +252,27 @@ let init = async (req, res) => {
 						top: 'playergame.cap_whilst_team_have_active_pup = (SELECT cap_whilst_team_have_active_pup',
 					})
 				},
-				// grabpercap: {
-				// 	title: 'Cap / Grab',
-				// 	data: await getData({...filters, ...{percentage: true}}, {
-				// 		sum: `
-				// 			COALESCE(
-				// 				ROUND(
-				// 					(NULLIF(sum(cap)::DECIMAL, 0) / sum(grab)::DECIMAL) * 100
-				// 				, 2)
-				// 			, 0)
-				// 		`,
-				// 		avg: `
-				// 			COALESCE(
-				// 				ROUND(
-				// 					(NULLIF(avg(cap)::DECIMAL, 0) / avg(grab)::DECIMAL) * 100
-				// 				, 2)
-				// 			, 0)
-				// 		`,
-				// 		teampercent: false,
-				// 	})
-				// },
+				grabpercap: {
+					title: 'Cap / Grab',
+					data: await getData({...filters, ...{percentage: true}}, {
+						sum: `
+							COALESCE(
+								ROUND(
+									(NULLIF(sum(cap)::DECIMAL, 0) / sum(grab)::DECIMAL) * 100
+								, 2)
+							, 0)
+						`,
+						avg: `
+							COALESCE(
+								ROUND(
+									(NULLIF(avg(cap)::DECIMAL, 0) / avg(grab)::DECIMAL) * 100
+								, 2)
+							, 0)
+						`,
+						teampercent: false,
+						top: `(playergame.cap::DECIMAL / playergame.grab::DECIMAL) = (SELECT (cap::DECIMAL / grab::DECIMAL)`,
+					})
+				},
 				holdpergrab: {
 					title: 'Hold / Grab',
 					data: await getData(filters, {
@@ -270,8 +283,7 @@ let init = async (req, res) => {
 					}),
 				},
 				holdpercap: {
-					// title: 'Hold / Cap',
-					title: 'WWWWWWWWWWWWWWWWWWWWWPPPPPPPPPPPPPPPMMMMMM',
+					title: 'Hold / Cap',
 					data: await getData({...filters, ...{having: true, ascending: true}}, {
 						sum: `
 							COALESCE(
@@ -288,11 +300,7 @@ let init = async (req, res) => {
 							, 0)
 						`,
 						teampercent: false,
-						// top: `
-						// 	COALESCE(playergame.hold / NULLIF(playergame.cap, 0), 0) = (
-						// 		COALESCE(hold / NULLIF(cap, 0), 0)
-						// `,
-						top: 'playergame.long_hold = (SELECT long_hold',
+						top: `COALESCE(playergame.hold / NULLIF(playergame.cap, 0), 0) = (SELECT COALESCE(hold / NULLIF(cap, 0), 0)`
 					})
 				},
 				longhold: {
@@ -323,7 +331,7 @@ let init = async (req, res) => {
 							ROUND(
 								(
 									(
-										sum(tag) - sum(pop)
+				 						sum(tag) - sum(pop)
 									)::DECIMAL
 									/
 									(
@@ -392,6 +400,9 @@ async function getData(filters, sql) {
 	else if(filters.mode.get === 'top') {
 		where = sql[filters.mode.get] + ' as score FROM playergame WHERE gameid = game.id AND playerid = playergame.playerid AND game.seasonid = $1 ORDER BY score DESC limit 1)'
 		select = 'count(*)'
+		having = ''
+		ascending = 'DESC'
+		percentage = ''
 	}
 
 	if(!select) return false

@@ -101,6 +101,12 @@ let init = async (req, res) => {
 						Round(hold::DECIMAL / grab::DECIMAL, 2)
 					`)
 				},
+				holdpercap: {
+					title: 'Hold / Cap',
+					data: await getData({...filters, ...{having: true, ascending: true}}, `
+						Round(hold::DECIMAL / NULLIF(cap::DECIMAL, 0), 2)
+					`)
+				},
 				longhold: {
 					title: 'Long Hold',
 					data: await getData(filters, 'long_hold'),
@@ -115,7 +121,6 @@ let init = async (req, res) => {
 						TO_CHAR((pop * 3) * interval '1 sec', 'mi:ss')
 					`),
 				},
-
 			}
 		}
 
@@ -140,7 +145,6 @@ async function getData(filters, select) {
 			COALESCE(team.color, '#404040') as color,
 			map.name as map,
 			TO_CHAR(date, 'DD Mon') as date,
-			-- TO_CHAR(date, 'DD Mon YY') as date,
 			euid,
 			${select} ${percentage} as value
 

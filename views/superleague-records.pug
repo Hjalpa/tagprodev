@@ -21,11 +21,11 @@ include template/superleague-nav.pug
 								a(
 									href= '/player/' + n.player
 								)= n.player
-							.item.map= n.map
 							.item.date
 								a(
 									href= 'https://tagpro.eu/?match=' + n.euid
 								)= n.date
+							.item.map= n.map
 							.item.value= n.value
 
 include template/foot.pug

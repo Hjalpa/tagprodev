@@ -3,9 +3,27 @@ include template/superleague-nav.pug
 
 .contain
 	.wrap
-		.nav-bar-tertiary
-			a(href="/superleague/leaders" class=(nav.tertiary === 'totals' ? 'active' : '')) Total
-			a(href="/superleague/leaders/averages" class=(nav.tertiary === 'averages' ? 'active' : '')) Average
-			a(href="/superleague/leaders/teampercent" class=(nav.tertiary === 'teampercent' ? 'active' : '')) Team %
+		// .nav-bar-tertiary
+		// 	a(href="/superleague/stats" class=(nav.tertiary === 'summary' ? 'active' : '')) Totals
+		// 	a(href="/superleague/stats/averages" class=(nav.tertiary === 'averages' ? 'active' : '')) Average
+
+
+		.stats
+			// h3= title
+
+			each n, key in stats
+				.row(class=(key === 0 ? 'top' : ''))
+					.item.rank= n.rank
+					.item.team(
+						data-position= i
+						style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+					)= n.acronym
+					.item.player
+						// href= '/player/' + n.player
+						a(
+							href='#'
+						)= n.player
+					.item.value= n.value
+
 
 include template/foot.pug
