@@ -48,7 +48,5 @@ async function getData(filters) {
 	`
 	let data = await db.select(sql, [], 'all')
 
-	console.log(data)
-
 	return data
 }

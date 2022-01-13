@@ -9,7 +9,12 @@ include template/superleague-nav.pug
 
 
 		.stats
-			// h3= title
+
+			.row.head
+				each n, key in stats
+					each v, k in n
+						.item= k
+					- break
 
 			each n, key in stats
 				.row(class=(key === 0 ? 'top' : ''))
