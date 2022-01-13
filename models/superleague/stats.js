@@ -25,19 +25,25 @@ async function getData(filters) {
 			COALESCE(team.color, '#404040') as color,
 			player.name as player,
 
-			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
+			ROUND( sum(play_time) / 60, 0) as mins,
 
-			SUM(cap)+SUM(assist) as points,
 			SUM(cap) as caps,
 			SUM(assist) as assists,
 
+			ROUND((
+					sum(hold)::DECIMAL / (
+						sum(hold_team_for)::DECIMAL + sum(hold_team_against)::DECIMAL
+					)
+			) * 100, 0) || '%' as poss,
+
 			SUM(tag) as tags,
-			SUM(pop) as pops,
+			SUM(takeover) as takeovers,
 			SUM(grab) as grabs,
-			SUM(drop) as drops,
 			TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss') as hold,
+			SUM(pop) as chains,
 			TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss') as prevent,
-			SUM(return) as returns
+			TO_CHAR( sum(block) * interval '1 sec', 'hh24:mi:ss') as block,
+			SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups
 
 
 		FROM playergame
