@@ -144,7 +144,29 @@ async function getTable() {
 				FROM seasonschedule
 				LEFT JOIN game ON seasonschedule.gameid = game.id
 				WHERE seasonschedule.seasonid = 5 AND seasonschedule.league IS TRUE AND seasonschedule.gameid IS NOT null -- AND (seasonschedule.teamredid = 3 OR seasonschedule.teamblueid = 3)
-			) as capdifference
+			) as capdifference,
+
+			array(
+				SELECT jsonb_build_object(
+				'euid', euid,
+				'result',
+					CASE
+						WHEN
+							(seasonschedule.teamredid = t.id AND redcaps > bluecaps) OR (seasonschedule.teamblueid = t.id AND bluecaps > redcaps) THEN 'w'
+						WHEN
+							(seasonschedule.teamredid = t.id AND redcaps = bluecaps) OR (seasonschedule.teamblueid = t.id AND bluecaps = redcaps) THEN 't'
+						WHEN
+							(seasonschedule.teamredid = t.id AND redcaps < bluecaps) OR (seasonschedule.teamblueid = t.id AND bluecaps < redcaps) THEN 'l'
+					END
+				,
+				'map', map.name
+				)
+				FROM seasonschedule
+				LEFT JOIN game on game.id = seasonschedule.gameid
+				LEFT JOIN map on game.mapid = map.id
+				WHERE (seasonschedule.teamredid = t.id OR seasonschedule.teamblueid = t.id) AND gameid IS NOT NULL AND seasonschedule.seasonid = 5 AND league IS true
+				ORDER BY seasonschedule.date ASC, seasonschedule.order ASC
+			) as form
 
 		from seasonteam st
 		left join team t on st.teamid = t.id

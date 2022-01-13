@@ -2,16 +2,6 @@ include template/head.pug
 include template/superleague-nav.pug
 
 .contain
-
-	// .nav-bar-tertiary
-	// 	.wrap
-	// 		a(href="/superleague/table" class="active") All
-	// 		a(href="#" class=(season === '3' ? 'active' : '')) Day 5
-	// 		a(href="#" class=(season === '3' ? 'active' : '')) Day 4
-	// 		a(href="#" class=(season === '3' ? 'active' : '')) Day 3
-	// 		a(href="#" class=(season === '2' ? 'active' : '')) Day 2
-	// 		a(href="#" class=(season === '1' ? 'active' : '')) Day 1
-
 	.wrap
 
 		.table
@@ -72,6 +62,12 @@ include template/superleague-nav.pug
 					.item.capdifference= n.data.cd
 
 					.item.form
+						each r, k in n.form
+							.result
+								a(
+									href= 'https://tagpro.eu/?match=' + r.euid
+									class= r.result
+								)
 
 					.item.points= n.pts
 
