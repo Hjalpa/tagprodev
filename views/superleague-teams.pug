@@ -6,22 +6,15 @@ include template/superleague-nav.pug
 
 		.teams
 			each n, key in teams
-				.team
-
+				.team(
+					style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+				)
 					.logo
-						.logo-bg-contain
-							.logo-bg
-								img(
-									src= n.logo
-								)
-
-						img._logo(
+						img(
 							src= n.logo
 						)
 					.info
-						h3.acronym(
-							style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
-						)= n.acronym
+						h3.acronym= n.acronym
 						h2.teamname= n.name
 						ul.players
 							each p, pkey in n.players

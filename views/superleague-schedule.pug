@@ -19,6 +19,7 @@ include template/superleague-nav.pug
 							- let url = (!f.euid) ? '#' : 'https://tagpro.eu?match=' + f.euid
 							a(
 								href= url
+								data-seasonschedule-id= f.seasonscheduleid
 							).game
 								.block.team.red(
 									style="--teamcolor: " + f.red.color + "; --teamglow: " + f.red.color + "80"

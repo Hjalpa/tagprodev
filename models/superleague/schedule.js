@@ -19,6 +19,7 @@ let init = async (req, res) => {
 async function getSchedule() {
 	let raw = await db.select(`
 		SELECT
+			seasonschedule.id as seasonscheduleid,
 			seasonschedule.date,
 			map.name as map,
 			map.unfortunateid as unfortunateid,
@@ -82,6 +83,7 @@ async function format(raw) {
 
 		schedule[date]['round'][d.order]['fixtures'].push({
 		 	euid: d.euid,
+			seasonscheduleid: d.seasonscheduleid,
 		 	red: {
 		 		name: d.redname,
 		 		acronym: d.redacronym,

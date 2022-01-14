@@ -208,40 +208,15 @@
 			align-items center
 			justify-content center
 			position relative
+			background linear-gradient(to top right, var(--teamglow), var(--teamcolor))
+			border-radius 6px 0 0 6px
+			// box-shadow 0 0 10px var(--teamglow)
 
-			.logo-bg-contain
-				overflow hidden
-				position absolute
-				display inline-flex
-				width 100%
-				height 100%
-				border-radius 6px 0 0 6px
-				user-select none
-
-				.logo-bg
-					filter blur(6rem) contrast(2.2)
-					position absolute
-					width 100%
-					height 100%
-					display flex
-					align-items center
-					justify-content center
-					z-index 0
-					opacity .8
-
-					img
-						object-fit contain
-						transform scale(8)
-
-			img._logo
+			img
 				height 2rem
 				width 2rem
 				border-radius 10rem
-				position relative
-				z-index 1
-				// display none
-
-
+				box-shadow 0 0 10px var(--teamcolor)
 
 		.info
 			background linear-gradient(to bottom right, rgba(#292b33, .5) 0%, rgba(#1f2026, .5) 100%)
