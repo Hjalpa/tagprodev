@@ -9,14 +9,13 @@ let init = async (req, res) => {
 			primary: 'superleague',
 			secondary: 'schedule',
 		},
-		schedule: await getSchedule(),
+		schedule: await getSchedule(5),
 	}
 
 	res.render('superleague-schedule', data)
-	// res.json(data)
 }
 
-async function getSchedule() {
+async function getSchedule(seasonid) {
 	let raw = await db.select(`
 		SELECT
 			seasonschedule.id as seasonscheduleid,
@@ -51,8 +50,10 @@ async function getSchedule() {
 
 		left join game on game.id = seasonschedule.gameid
 
+		where seasonschedule.seasonid = $1
+
 		order by seasonschedule.id asc, seasonschedule.order asc
-	`, [], 'all')
+	`, [seasonid], 'all')
 
 	// return await raw
 	return await format(raw)

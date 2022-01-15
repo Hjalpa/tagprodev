@@ -1,3 +1,63 @@
+// const db = require ('../../lib/db')
+// const util = require ('../../lib/util')
+
+// module.exports.init = async (req, res) => await init(req, res)
+// let init = async (req, res) => {
+
+// 	let data = {
+// 		title: 'Stats',
+// 		nav: {
+// 			primary: 'superleague',
+// 			secondary: 'stats',
+// 			tertiary: 'Against',
+// 		},
+// 		stats: await getData()
+// 	}
+
+// 	res.render('superleague-stats-team-against', data)
+
+// }
+
+// async function getData(filters) {
+// 	let sql = `
+//         select
+
+
+// 			COALESCE(t.acronym, 'SUB') as acronym,
+// 			COALESCE(t.color, '#404040') as color,
+
+//             player.name,
+//             sum(cap) as total,
+//             ROUND(avg(cap),2) as avg,
+
+// 			-- ROUND((sum(prevent)::DECIMAL / sum(prevent_team_for)::DECIMAL) * 100, 0) as total,
+
+//             team.name as against
+
+//         from playergame
+//         left join game on playergame.gameid = game.id
+//         left join seasonschedule on playergame.gameid = seasonschedule.gameid
+//         left join team on
+//             (seasonschedule.teamredid = team.id AND playergame.team = 2) OR (seasonschedule.teamblueid = team.id AND playergame.team = 1)
+//         left join player on playergame.playerid = player.id
+
+// 		left join seasonplayer on seasonplayer.playerid = player.id
+// 		left join seasonteam on seasonteam.id = seasonplayer.seasonteamid
+// 		left join team as t on seasonplayer.seasonteamid = t.id
+
+//         group by team.name, player.name, t.acronym, t.color
+//         order by total DESC, avg DESC
+// 		limit 30
+// 	`
+// 	let data = await db.select(sql, [], 'all')
+
+// 	return data
+// }
+
+
+
+
+
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
 
@@ -389,7 +449,7 @@ let init = async (req, res) => {
 
 async function getData(filters, sql) {
 	let where = 'gameid in (SELECT id FROM game WHERE gameid = game.id AND seasonid = $1)'
-	let select = sql[filters.mode.get] || sql['sum']
+	let select = sql[filters.mode.get]
 	let ascending = (filters.ascending === true) ? 'ASC' : 'DESC'
 	let having = (filters.having) ? ' AND ' + select + ' > 0' : ''
 	let percentage = (filters.percentage) ? " || '%' " : ''
@@ -407,70 +467,65 @@ async function getData(filters, sql) {
 
 	if(!select) return false
 
-	// default
+		// SELECT
+		// 	RANK() OVER (
+		// 		ORDER BY
+		// 			${select} ${ascending}
+		// 	) rank,
+		// 	player.name as player,
+		// 	COALESCE(team.acronym, 'SUB') as acronym,
+		// 	COALESCE(team.color, '#404040') as color,
+		// 	${select} ${percentage} as value
+
+		// FROM playergame
+		// LEFT JOIN player ON player.id = playergame.playerid
+		// LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
+		// LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+		// LEFT JOIN team ON seasonteam.teamid = team.id
+		// LEFT JOIN game ON game.id = playergame.gameid
+
+		// WHERE ${where}
+		// GROUP BY player.name, team.color, team.acronym
+		// HAVING COUNT(*) >= 1 ${having}
+		// ORDER BY rank ASC, player.name ASC
+		// LIMIT 10
+
+
+
+
 	let raw = `
-		SELECT
+        select
 			RANK() OVER (
 				ORDER BY
 					${select} ${ascending}
 			) rank,
-			player.name as player,
-			COALESCE(team.acronym, 'SUB') as acronym,
-			COALESCE(team.color, '#404040') as color,
+
+
+			COALESCE(team.color, '#404040') as versuscolor,
+		   	team.acronym as versus,
+
+			COALESCE(t.acronym, 'SUB') as acronym,
+			COALESCE(t.color, '#404040') as color,
+
+            player.name as player,
 			${select} ${percentage} as value
 
-		FROM playergame
-		LEFT JOIN player ON player.id = playergame.playerid
-		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
-		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
-		LEFT JOIN team ON seasonteam.teamid = team.id
-		LEFT JOIN game ON game.id = playergame.gameid
+        from playergame
+        left join game on playergame.gameid = game.id
+        left join seasonschedule on playergame.gameid = seasonschedule.gameid
+        left join team on
+            (seasonschedule.teamredid = team.id AND playergame.team = 2) OR (seasonschedule.teamblueid = team.id AND playergame.team = 1)
+        left join player on playergame.playerid = player.id
 
-		WHERE ${where}
-		GROUP BY player.name, team.color, team.acronym
-		HAVING COUNT(*) >= 1 ${having}
-		ORDER BY rank ASC, player.name ASC
-		LIMIT 10
+		left join seasonplayer on seasonplayer.playerid = player.id
+		left join seasonteam on seasonteam.id = seasonplayer.seasonteamid
+		left join team as t on seasonplayer.seasonteamid = t.id
+
+		WHERE seasonschedule.seasonid = $1
+        group by team.acronym, team.color, player.name, t.acronym, t.color
+        order by rank ASC, player.name ASC
+		limit 10
 	`
-
-	// versus
-	if(filters.mode.get === 'versus') {
-		raw = `
-			select
-				RANK() OVER (
-					ORDER BY
-						${select} ${ascending}
-				) rank,
-
-
-				COALESCE(team.color, '#404040') as versuscolor,
-				team.acronym as versus,
-
-				COALESCE(t.acronym, 'SUB') as acronym,
-				COALESCE(t.color, '#404040') as color,
-
-				player.name as player,
-				${select} ${percentage} as value
-
-			from playergame
-			left join game on playergame.gameid = game.id
-			left join seasonschedule on playergame.gameid = seasonschedule.gameid
-			left join team on
-				(seasonschedule.teamredid = team.id AND playergame.team = 2) OR (seasonschedule.teamblueid = team.id AND playergame.team = 1)
-			left join player on playergame.playerid = player.id
-
-			left join seasonplayer on seasonplayer.playerid = player.id
-			left join seasonteam on seasonteam.id = seasonplayer.seasonteamid
-			left join team as t on seasonplayer.seasonteamid = t.id
-
-			WHERE seasonschedule.seasonid = $1
-
-			group by team.acronym, team.color, player.name, t.acronym, t.color
-			HAVING COUNT(*) >= 1 ${having}
-			order by rank ASC, player.name ASC
-			limit 10
-		`
-	}
 
 	let data = await db.select(raw, [filters.seasonid], 'all')
 
@@ -498,10 +553,10 @@ function getMode(id) {
 				get: 'top',
 			}
 			break;
-		case 'versus':
+		case 'team':
 			mode = {
-				name: 'versus',
-				get: 'versus',
+				name: 'team',
+				get: 'team',
 			}
 			break;
 		default:
