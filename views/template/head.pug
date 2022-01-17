@@ -7,6 +7,7 @@ html
 		link(rel='stylesheet', href='/init.css')
 		link(rel='icon', href='/favicon.svg', type='image/svg+xml')
 		// script(src='/init.js', async)
+		| <script defer type="text/javascript" src="https://api.pirsch.io/pirsch.js" id="pirschjs" data-code="rCf3zbJZfR6JWanXlrObtEsAvLrlZLHS"></script>
 
 	body
 		.background
@@ -19,14 +20,11 @@ html
 			a(href="/")
 				include ../../public/favicon.svg
 
-			// a(href="#" class=(nav.primary === 'tpm' ? 'active' : ''))
-			// 	span CTF
-
 			a(href="/superleague" class=(nav.primary === 'superleague' ? 'active' : ''))
 				span Neutral
 
-			a(href="#" class=(nav.primary === 'tpm' ? 'active' : ''))
-				span Eggball
+			// a(href="#" class=(nav.primary === 'tpm' ? 'active' : ''))
+			// 	span Eggball
 
 			a(href="#" class=(nav.primary === 'players' ? 'active' : ''))
 				span Players

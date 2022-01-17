@@ -7,7 +7,7 @@ const util = require ('../lib/util')
 module.exports.game = async (req, res) => await game(req, res)
 let game = async (req, res) => {
 
-	if(req.body.euid && req.body.elo && req.body.tpmid)
+	if(req.body.euid && req.body.elo)
 		await makeGame(req.body, res)
 }
 
@@ -21,7 +21,6 @@ async function makeGame(param, res) {
 
 			let data = JSON.parse(raw)
 			data.game.elo = param.elo
-			data.game.tpmid = param.tpmid
 
 			try {
 				let gameID = await saveGame(data.game)
@@ -65,7 +64,7 @@ async function saveGame(raw) {
 		duration: raw.duration,
 		mapid: await getMapID(raw.map),
 		serverid: await getServerID(raw.server),
-		seasonid: await getSeasonID(raw.tpmid),
+		seasonid: 5,
 		winner: await getResult(raw),
 		redcaps: raw.redscore,
 		bluecaps: raw.bluescore,
@@ -96,38 +95,6 @@ async function getMapID(mapName) {
 	return mapID
 }
 
-async function getServerID(serverName) {
-	let serverID = await db.select('SELECT id FROM server WHERE name = $1', [serverName], 'id')
-
-	if(!serverID) {
-		let data = {
-			name: serverName
-		}
-		serverID = await db.insert('server', data)
-	}
-
-	if(!serverID)
-		throw 'server not found and could not create: ' + serverName
-
-	return serverID
-}
-
-async function getSeasonID(tpmID) {
-	let seasonID = await db.select('SELECT id FROM season WHERE tpmid = $1', [tpmID], 'id')
-
-	if(!seasonID) {
-		let data = {
-			tpmid: tpmID,
-		}
-		seasonID = await db.insert('season', data)
-	}
-
-	if(!seasonID)
-		throw 'season not found and could not create: ' + tpmID
-
-	return seasonID
-}
-
 async function getResult(raw) {
 	if(raw.redscore === raw.bluescore)
 		return 't'
@@ -136,7 +103,6 @@ async function getResult(raw) {
 	else
 		return 'b'
 }
-
 
 async function getPlayerID(playerName) {
 	let playerID = await db.select('SELECT id FROM player WHERE name = $1', [playerName], 'id')

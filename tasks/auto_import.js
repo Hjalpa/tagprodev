@@ -7,8 +7,8 @@ const jsdom = require('jsdom')
 const db = require('../lib/db')
 const util = require('../lib/util')
 
-tpm = (() => {})
-tpm.call = async () => {
+init= (() => {})
+init.call = async () => {
 
 	let teamnames = await db.select(`
 		SELECT
@@ -90,4 +90,4 @@ tpm.call = async () => {
 	process.kill(process.pid)
 }
 
-tpm.call()
+init.call()
