@@ -9,7 +9,9 @@
 		flex-direction row
 		align-items stretch
 		width 100%
-		border-bottom: 1px solid #131417;
+
+		&:not(:last-child)
+			border-bottom: 1px solid #131417;
 
 		&.head
 			background linear-gradient(to top right,#000000,#0b0c0e);
@@ -77,8 +79,17 @@
 				flex 0 0 100px
 
 		&.entry
+			// &[data-position='1']
+			// &[data-position='2']
+			// &[data-position='3']
+			// &[data-position='4']
 			// &[data-position='5']
-			// 	border-bottom 2px dashed #2acb4f
+			// &[data-position='6']
+			// 	box-shadow -2px 0 0 0 #2acb4f
+
+			&[data-position='7']
+			&[data-position='8']
+				box-shadow -2px 0 0 0 #ec041f
 
 			&:hover
 				background rgba(black,.4)

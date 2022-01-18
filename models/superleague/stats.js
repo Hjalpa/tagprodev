@@ -4,21 +4,42 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 
-	let data = {
-		title: 'Stats',
-		nav: {
-			primary: 'superleague',
-			secondary: 'stats',
-			tertiary: 'summary',
-		},
-		stats: await getData()
+	try {
+
+		let filters =  {
+			seasonid: 5,
+			date: (req.params.dateid) ? await getRoundDate(req.params.dateid) : false,
+		}
+
+		let data = {
+			title: 'Stats',
+			nav: {
+				primary: 'superleague',
+				secondary: 'stats',
+				tertiary: (req.params.dateid) ? req.params.dateid : 'totals',
+			},
+			rounds: await getAllRounds(filters.seasonid),
+			stats: await getData(filters)
+		}
+
+		res.render('superleague-stats', data)
 	}
-
-	res.render('superleague-stats', data)
-
+	catch(error) {
+		res.status(404).render('404')
+	}
 }
 
 async function getData(filters) {
+	let query = {
+		where: ['game.seasonid = $1'],
+		data: [filters.seasonid],
+	}
+
+	if(filters.date) {
+		query.where.push('seasonschedule.date = $2')
+		query.data.push(filters.date)
+	}
+
 	let sql = `
 		SELECT
 			COALESCE(team.acronym, 'SUB') as acronym,
@@ -45,18 +66,52 @@ async function getData(filters) {
 			TO_CHAR( sum(block) * interval '1 sec', 'hh24:mi:ss') as block,
 			SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups
 
-
 		FROM playergame
 		LEFT JOIN player ON player.id = playergame.playerid
 		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
 		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
 		LEFT JOIN team ON seasonteam.teamid = team.id
 		LEFT JOIN game ON game.id = playergame.gameid
-		WHERE game.seasonid = 5
+		LEFT JOIN seasonschedule ON seasonschedule.gameid = game.id
+		WHERE ${query.where.join(' AND ')}
 		GROUP BY player.name, team.color, team.acronym
-		ORDER BY team.acronym ASC
+		ORDER BY sum(cap) DESC
+		--ORDER BY sum(cap)+sum(assist) DESC
+		-- team.acronym ASC
 	`
-	let data = await db.select(sql, [], 'all')
 
+	let data = await db.select(sql, query.data, 'all')
+
+	return data
+}
+
+
+async function getRoundDate(dateid) {
+	let sql = `
+		select
+			to_char(date, 'YYYY-MM-DD') as date
+		FROM seasonschedule
+		GROUP BY date
+		ORDER BY date ASC
+		LIMIT 1 OFFSET $1
+	`
+	let data = await db.select(sql, [dateid - 1], 'date')
+
+	if(!data)
+		throw 'invalid day'
+
+	return data
+}
+
+async function getAllRounds(seasonid) {
+	let sql = `
+		select
+			to_char(date, 'YYYY-MM-DD') as date
+		FROM seasonschedule
+		WHERE seasonid = $1 AND date <= NOW()
+		GROUP BY date
+		ORDER BY date ASC
+	`
+	let data = await db.select(sql, [seasonid], 'all')
 	return data
 }
