@@ -73,11 +73,9 @@ async function getData(filters) {
 		LEFT JOIN team ON seasonteam.teamid = team.id
 		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN seasonschedule ON seasonschedule.gameid = game.id
-		WHERE ${query.where.join(' AND ')}
+		WHERE seasonschedule.date <= now() AND ${query.where.join(' AND ')}
 		GROUP BY player.name, team.color, team.acronym
-		ORDER BY sum(cap) DESC
-		--ORDER BY sum(cap)+sum(assist) DESC
-		-- team.acronym ASC
+		ORDER BY team.acronym ASC, caps DESC
 	`
 
 	let data = await db.select(sql, query.data, 'all')
@@ -85,12 +83,12 @@ async function getData(filters) {
 	return data
 }
 
-
 async function getRoundDate(dateid) {
 	let sql = `
 		select
 			to_char(date, 'YYYY-MM-DD') as date
 		FROM seasonschedule
+		WHERE date <= NOW()
 		GROUP BY date
 		ORDER BY date ASC
 		LIMIT 1 OFFSET $1

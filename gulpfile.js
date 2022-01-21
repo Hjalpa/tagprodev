@@ -44,6 +44,7 @@ gulp.task('browser-sync', gulp.series(function(done) {
 // --------------------------------------------------------------------------
 gulp.task('js', gulp.series(function(done) {
 	gulp.src([
+			'./src/js/util.js',
 			'./src/js/vendors/*.js',
 			'./src/js/init.js',
 			'./src/js/*.js'
@@ -54,6 +55,7 @@ gulp.task('js', gulp.series(function(done) {
 			{'title':'init.js'}
 		))
 		.pipe(gulp.dest('./public/'))
+		.pipe(reload({stream:true}))
 
 	done()
 }))
@@ -70,7 +72,7 @@ gulp.task('css', gulp.series(function(done) {
 			{'title':'init.css'}
 		))
 		.pipe(gulp.dest('./public/'))
-		.pipe(reload({stream:true}))
+		// .pipe(reload({stream:true}))
 
 	done()
 }))

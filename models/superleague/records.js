@@ -13,7 +13,7 @@ let init = async (req, res) => {
 		let data = {
 			title: 'Records',
 			nav: {
-				primary: 'primary',
+				primary: 'superleague',
 				secondary: 'records',
 			},
 			records: {

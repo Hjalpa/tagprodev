@@ -28,11 +28,16 @@ include template/superleague-nav.pug
 							.item.acronym
 
 						else
-							.item= k
+							.item(
+								data-column= k
+							)= k
+
 					- break
 
 			each n, key in stats
-				.row.entry
+				.row.entry(
+						style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80; --teambg: " + n.color + "30"
+					)
 					each v, k in n
 						if(k === 'color')
 							- continue
@@ -44,11 +49,11 @@ include template/superleague-nav.pug
 								)= n.player
 
 						else if(k === 'acronym')
-							.item.acronym(
-								style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
-							)= n.acronym
+							.item.acronym= n.acronym
 
 						else
-							.item= v
+							.item(
+								data-column= k
+							)= v
 
 include template/foot.pug

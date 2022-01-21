@@ -81,7 +81,7 @@ let init = async (req, res) => {
 				hold: {
 					title: 'Hold',
 					data: await getData(filters, {
-						sum: `TO_CHAR( sum(hold) * interval '1 sec', 'mi:ss')`,
+						sum: `TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss')`,
 						avg: `TO_CHAR( avg(hold) * interval '1 sec', 'mi:ss')`,
 						teampercent: 'ROUND((sum(hold)::DECIMAL / sum(hold_team_for)::DECIMAL) * 100, 0)',
 						top: 'playergame.hold = (SELECT hold',
@@ -90,7 +90,7 @@ let init = async (req, res) => {
 				prevent: {
 					title: 'Prevent',
 					data: await getData(filters, {
-						sum: `TO_CHAR( sum(prevent) * interval '1 sec', 'mi:ss')`,
+						sum: `TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss')`,
 						avg: `TO_CHAR( avg(prevent) * interval '1 sec', 'mi:ss')`,
 						teampercent: 'ROUND((sum(prevent)::DECIMAL / sum(prevent_team_for)::DECIMAL) * 100, 0)',
 						top: 'playergame.prevent = (SELECT prevent',
@@ -99,7 +99,7 @@ let init = async (req, res) => {
 				block: {
 					title: 'Block',
 					data: await getData(filters, {
-						sum: `TO_CHAR( sum(block) * interval '1 sec', 'mi:ss')`,
+						sum: `TO_CHAR( sum(block) * interval '1 sec', 'hh24:mi:ss')`,
 						avg: `TO_CHAR( avg(block) * interval '1 sec', 'mi:ss')`,
 						teampercent: 'ROUND((sum(block)::DECIMAL / sum(block_team_for)::DECIMAL) * 100, 0)',
 						top: 'playergame.block = (SELECT block',
@@ -427,6 +427,10 @@ async function getData(filters, sql) {
 		LEFT JOIN game ON game.id = playergame.gameid
 
 		WHERE ${where}
+
+		-- removes SUBS
+		AND seasonteam IS NOT NULL
+
 		GROUP BY player.name, team.color, team.acronym
 		HAVING COUNT(*) >= 1 ${having}
 		ORDER BY rank ASC, player.name ASC
@@ -464,6 +468,9 @@ async function getData(filters, sql) {
 			left join team as t on seasonplayer.seasonteamid = t.id
 
 			WHERE seasonschedule.seasonid = $1
+
+			-- removes SUBS
+			AND seasonteam IS NOT NULL
 
 			group by team.acronym, team.color, player.name, t.acronym, t.color
 			HAVING COUNT(*) >= 1 ${having}

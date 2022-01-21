@@ -6,31 +6,27 @@ html
 		link(rel='stylesheet', href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap")
 		link(rel='stylesheet', href='/init.css')
 		link(rel='icon', href='/favicon.svg', type='image/svg+xml')
-		// script(src='/init.js', async)
+		script(src='/init.js', async)
 		| <script defer type="text/javascript" src="https://api.pirsch.io/pirsch.js" id="pirschjs" data-code="rCf3zbJZfR6JWanXlrObtEsAvLrlZLHS"></script>
 
 	body
 		.background
-		// 	img(src='https://i.imgur.com/trirbHV.png')._1
-		// 	img(src='https://i.imgur.com/ycymETc.png')._2
-		// 	img(src='https://i.imgur.com/ExScfB2.png')._3
-		//	img(src='https://i.imgur.com/WE1LAXo.png')._4
 
 		.nav-bar-primary
 			a(href="/")
 				include ../../public/favicon.svg
 
-			a(href="/superleague" class=(nav.primary === 'superleague' ? 'active' : ''))
-				span Neutral
-
 			// a(href="#" class=(nav.primary === 'tpm' ? 'active' : ''))
-			// 	span Eggball
+			// 	span CTF
 
-			a(href="#" class=(nav.primary === 'players' ? 'active' : ''))
-				span Players
+			a(href="/superleague" class=(nav.primary === 'superleague' ? 'active' : ''))
+				span NF
 
-			a(href="#" class=(nav.primary === 'rankings' ? 'active' : ''))
-				span Rankings
+			// a(href="#" class=(nav.primary === 'players' ? 'active' : ''))
+			// 	span Players
+
+			a(href="/leaderboards" class=(nav.primary === 'leaderboards' ? 'active' : ''))
+				span Leaderboard
 
 			.right
 				input(type="text", placeholder="Search", name="tagpro.dev search")

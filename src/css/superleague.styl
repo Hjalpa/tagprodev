@@ -46,7 +46,7 @@
 
 			&.team
 				justify-content left
-				flex 0 0 350px
+				flex 0 0 310px
 
 			&.gap
 				flex 0 0 10px
@@ -56,6 +56,7 @@
 				font-size .9rem
 				font-weight 600
 
+			&.games
 			&.won
 			&.tied
 			&.lost
@@ -118,8 +119,7 @@
 				&.team
 					color #747474
 
-
-
+				&.games
 				&.won
 				&.tied
 				&.lost
@@ -539,6 +539,14 @@
 			border-radius inherit
 			border-bottom none
 
+			[data-column]
+				&:not(.active):hover
+					cursor pointer
+					color #1adbd4
+
+				&.active
+					color #1adbd4
+
 		.item
 			flex 1
 			display flex
@@ -558,6 +566,14 @@
 			.item
 				color white
 				font-size .9rem
+
+				&.highlight
+					color var(--teamcolor)
+					text-shadow 0 0 10px var(--teamglow)
+					background var(--teambg)
+					// box-shadow inset 0 -2px 0 var(--teamglow)
+					// border-radius .2rem
+					font-weight 600
 
 				a
 					text-decoration none

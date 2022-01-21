@@ -20,7 +20,7 @@ body
 
 .background
 	background black url('https://i.imgur.com/ycymETc.png')
-	background-position center -920px
+	background-position center -867px
 	// background black url('https://i.imgur.com/trirbHV.png')
 	// background-position center -900px
 	background-size auto 100%
@@ -43,7 +43,7 @@ body
 	width 100%
 	display flex
 	flex-flow nowrap
-	display none
+	// display none
 
 	a
 		color #4a6ba3
@@ -82,6 +82,7 @@ body
 		justify-content center
 		margin-left auto
 		padding-right 6px
+		display none
 
 		input
 			font-size .85rem
@@ -168,10 +169,12 @@ body
 
 				&.active
 				&:hover
+					backdrop-filter none
 					position relative
-					z-index 999
+					z-index 99
 					color white
-					background linear-gradient(to top right,var(--color),#002787)
+					// background linear-gradient(to top right,var(--color),#002787)
+					background var(--color) linear-gradient(to top right,var(--color), rgba(black, .47))
 
 
 .nav-bar-tertiary

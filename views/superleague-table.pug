@@ -3,6 +3,9 @@ include template/superleague-nav.pug
 
 .contain
 	.wrap
+		.nav-bar-tertiary
+			a(href="/table" class=(nav.tertiary === 'totals' ? 'active' : '')) League
+			a(href="/playoffs" class=(nav.tertiary === 'playoffs' ? 'active' : '')) Playoffs
 
 		.table
 			.row.head
@@ -10,6 +13,8 @@ include template/superleague-nav.pug
 				.item.logo
 				.item.acronym
 				.item.team
+				.item.won GP
+				.item.gap
 				.item.won W
 				.item.gap
 				.item.tied T
@@ -40,6 +45,8 @@ include template/superleague-nav.pug
 					.item.acronym= n.acronym
 					.item.team= n.name
 
+					.item.games= (n.data.won + n.data.drawn + n.data.lost)
+					.item.gap -
 					.item.won= n.data.won
 					.item.gap -
 					.item.tied= n.data.drawn

@@ -27,6 +27,27 @@ util = {
 
 	insertAfter: function(newNode, referenceNode) {
 		referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling)
+	},
+
+	getValue: (value) => {
+		// MM:SS
+		if((/^([0-9][0-9]):[0-5][0-9]$/).test(value)){
+			// console.log('MM:SS', value)
+			let a = value.replace(':', '.')
+			return parseFloat(a)
+		}
+		// HH:MM:SS
+		else if (value.match(/\d+:[0-5]\d/)) {
+			let a = value.split(':')
+			return (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2])
+		}
+		// %
+		else if (value.match(/\d+:[0-5]\d/)) {
+			let a = value.split('%')
+			return a[0]
+		}
+		else
+			return parseFloat(value)
 	}
 
 }

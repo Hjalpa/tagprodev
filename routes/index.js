@@ -29,8 +29,9 @@ let cacheMiddleware = (duration) => {
 }
 
 router.get('/', (req, res) => res.redirect('./superleague'))
-router.use('/api',  require('./api'))
 
+router.use('/api',  require('./api'))
+router.use('/leaderboards',  require('./leaderboards'))
 router.use('/superleague',  require('./superleague'))
 
 // router.use('/search',  require('./search'))
