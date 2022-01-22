@@ -17,9 +17,7 @@ let game = async (req, res) => {
 
 			let data = JSON.parse(raw)
 			res.json(data)
-
 			// res.send(raw)
-
 		})
 	else
 		res.status(400).json({error: "euid doesn't exist"})
