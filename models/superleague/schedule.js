@@ -8,6 +8,7 @@ let init = async (req, res) => {
 		nav: {
 			primary: 'superleague',
 			secondary: 'schedule',
+			tertiary: 'league',
 		},
 		schedule: await getSchedule(5),
 	}
@@ -50,7 +51,7 @@ async function getSchedule(seasonid) {
 
 		left join game on game.id = seasonschedule.gameid
 
-		where seasonschedule.seasonid = $1
+		where seasonschedule.seasonid = $1 AND seasonschedule.league = TRUE
 
 		order by seasonschedule.id asc, seasonschedule.order asc
 	`, [seasonid], 'all')

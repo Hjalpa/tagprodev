@@ -9,12 +9,12 @@ let init = async (req, res) => {
 		nav: {
 			primary: 'superleague',
 			secondary: 'standings',
-			tertiary: 'league',
+			tertiary: 'playoffs',
 		},
 		table: await getTable()
 	}
 
-	res.render('superleague-table', data)
+	res.render('superleague-playoffs', data)
 }
 
 async function getTable() {

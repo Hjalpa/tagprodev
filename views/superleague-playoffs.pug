@@ -1,0 +1,96 @@
+include template/head.pug
+include template/superleague-nav.pug
+
+.contain
+	.wrap
+		.nav-bar-tertiary
+			a(href="/superleague/standings" class=(nav.tertiary === 'league' ? 'active' : '')) League
+			a(href="/superleague/standings/playoffs" class=(nav.tertiary === 'playoffs' ? 'active' : '')) Playoffs
+
+		.playoffs.playoff-top
+			.bracket
+				.round
+					.match
+						.team(
+							style="--teamcolor: #f586ff; --teamglow: #f586ff80"
+						)
+							.name CBH
+							.wins 0
+						.team(
+							style="--teamcolor: #b2b2b2; --teamglow: #b2b2b280"
+						)
+							.name CHE
+							.wins 0
+				.round
+					.links-single-long-bottom
+					.links-single-long-bottom-2
+
+		.playoffs
+			.bracket
+				.round
+					.match
+						.team(
+							style="--teamcolor: #ff635e; --teamglow: #ff635e80"
+						)
+							.name WIZ
+							.wins 0
+						.team(
+							style="--teamcolor: #5563ff; --teamglow: #5563ff80"
+						)
+							.name THE
+							.wins 0
+
+					.match
+						.team(
+							style="--teamcolor: #54da41; --teamglow: #54da4180"
+						)
+							.name TAG
+							.wins 0
+						.team(
+							style="--teamcolor: #ffc800; --teamglow: #ffc80080"
+						)
+							.name COO
+							.wins 0
+
+				.round
+					.links
+				.round
+					.links-single
+
+				.round
+					.match
+						.team
+							.name ???
+							.wins 0
+						.team
+							.name ???
+							.wins 0
+
+
+				.round
+					.links-single
+
+				.round
+					.match
+						.team
+							.name ???
+							.wins 0
+						.team
+							.name ???
+							.wins 0
+
+				.round
+					.links-single
+
+
+				.round
+					.match
+						.team
+							.name ???
+							.wins 0
+						.team
+							.name ???
+							.wins 0
+
+
+include template/foot.pug

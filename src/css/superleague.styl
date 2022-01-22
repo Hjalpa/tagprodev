@@ -1,5 +1,99 @@
+// playoffs
+.playoffs
+	display flex
+	--line rgba(white, .1)
+
+	&.playoff-top
+		margin-left 320px
+
+		.match
+			margin 1rem 0 2rem 0 !important
+
+	.bracket
+		display flex
+		width 100%
+
+	.round
+		display flex
+		flex-direction column
+		justify-content center
+		align-items left
+		height 100%
+
+		.links
+			display block
+			width 100px
+			height 152px
+			border-top 2px dashed var(--line)
+			border-bottom 2px dashed var(--line)
+			border-right 2px dashed var(--line)
+			border-radius 0 1rem 1rem 0
+
+		.links-single
+			display block
+			width 100px
+			height 2px
+			border-top 2px dashed var(--line)
+
+		.links-single-long-bottom
+			position absolute
+			display block
+			width 162px
+			height 200px
+			margin-top 220px
+			border-right 2px dashed var(--line)
+			border-top 2px dashed var(--line)
+			border-radius 0 1rem 0 0
+			z-index 0
+
+		.links-single-long-bottom-2
+			position absolute
+			display block
+			width 379px
+			height 220px
+			margin-top 170px
+			border-right 2px dashed var(--line)
+			border-top 2px dashed var(--line)
+			border-radius 0 1rem 0 0
+			z-index 0
+
+		.match
+			padding 1rem
+			background #0b0c0e
+			color white
+			height 5rem
+			justify-content center
+			align-items center
+			border-radius 6px
+			margin 2rem 0
+			position relative
+			z-index 1
+
+			.team
+
+				.name
+					display inline-block
+					font-size .8rem
+					font-weight 600
+					text-transform uppercase
+					width 49px
+					text-shadow 0 0 10px var(--teamglow)
+					color var(--teamcolor)
+					padding-right .5rem
+
+				.wins
+					color white
+					font-size .8rem
+					font-weight 600
+					display: inline-block;
+					width: 30px;
+					margin: 0 0.2rem;
+					border-radius: 0.3rem;
+					text-align: center;
+					background: linear-gradient(to bottom right,rgba(41,43,51,.5) 0,rgba(31,32,38,.5) 100%);
+
+
 .table
-	// background linear-gradient(to bottom right, rgba(#292b33, .5) 0%, rgba(#1f2026, .5) 100%)
 	background #0b0c0e
 	width 100%
 	border-radius 6px 6px 0 0

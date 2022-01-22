@@ -4,6 +4,10 @@ include template/superleague-nav.pug
 .contain
 	.wrap.schedule
 
+		// .nav-bar-tertiary
+		// 	a(href="/superleague" class=(nav.tertiary === 'league' ? 'active' : '')) League
+		// 	a(href="/superleague/playoffs" class=(nav.tertiary === 'playoffs' ? 'active' : '')) Playoffs
+
 		each n, date in schedule
 			.day
 				h3!= date + ' 8PM BST'

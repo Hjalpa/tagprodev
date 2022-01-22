@@ -156,7 +156,12 @@ async function getData(filters, select) {
 		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN map ON map.id = game.mapid
 
-		WHERE gameid in (SELECT id FROM game WHERE gameid = game.id AND seasonid = $1)
+		WHERE gameid in (
+			SELECT game.id
+			FROM game
+			LEFT JOIN seasonschedule ON seasonschedule.gameid = game.id
+			WHERE gameid = game.id AND game.seasonid = $1 AND league = TRUE
+		)
 		ORDER BY rank ASC, game.date ASC
 		LIMIT 10
 	`, [filters.seasonid], 'all')

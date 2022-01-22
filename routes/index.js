@@ -34,8 +34,6 @@ router.use('/api',  require('./api'))
 router.use('/leaderboards',  require('./leaderboards'))
 router.use('/superleague',  require('./superleague'))
 
-// router.use('/search',  require('./search'))
-
 router.use((req, res) => res.status(404).render('404'))
 
 module.exports = router
