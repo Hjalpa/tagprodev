@@ -204,21 +204,21 @@ let init = async (req, res) => {
 				nontakeoverturns: {
 					title: 'Non-Takeover Returns',
 					data: await getData(filters, {
-						sum: 'sum(return) - sum(takeover)',
-						avg: 'ROUND(avg(return) - avg(takeover), 2)',
+						sum: 'sum(tag) - sum(return)',
+						avg: 'ROUND(avg(tag) - avg(return), 2)',
 						teampercent: `
 							ROUND(
 								(
 									(
-										sum(return)::DECIMAL + sum(takeover)::DECIMAL
+										sum(tag)::DECIMAL - sum(return)::DECIMAL
 									)
 									/
 									(
-										sum(return_team_for)::DECIMAL + sum(takeover_team_for)::DECIMAL
+										sum(tag_team_for)::DECIMAL - sum(return_team_for)::DECIMAL
 									)
 								)
 							* 100, 0)`,
-						top: '(playergame.return - playergame.takeover) = (SELECT (return - takeover)',
+						top: '(playergame.tag - playergame.return) = (SELECT (tag - return)',
 					}),
 				},
 				pups: {
@@ -354,30 +354,30 @@ let init = async (req, res) => {
 					})
 				},
 
-				// capfrommyregrab: {
-				// 	title: 'Cap from regrab',
-				// 	data: await getData(filters, {
-				// 		sum: 'sum(cap_from_my_regrab)',
-				// 		avg: 'ROUND(avg(cap_from_my_regrab), 2)',
-				// 		teamprecent: false,
-				// 	}),
-				// },
-				// capfromprevent: {
-				// 	title: 'Cap from Prevent',
-				// 	data: await getData(filters, {
-				// 		sum: 'sum(cap_from_prevent)',
-				// 		avg: 'ROUND(avg(cap_from_prevent), 2)',
-				// 		teampercent: 'ROUND((sum(cap_from_prevent)::DECIMAL / sum(cap_from_prevent_team_for)::DECIMAL) * 100, 0)',
-				// 	}),
-				// },
-				// capfromblock: {
-				// 	title: 'Cap from Block',
-				// 	data: await getData(filters, {
-				// 		sum: 'sum(cap_from_block)',
-				// 		avg: 'ROUND(avg(cap_from_block), 2)',
-				// 		teampercent: 'ROUND((sum(cap_from_block)::DECIMAL / sum(cap_from_block_team_for)::DECIMAL) * 100, 0)',
-				// 	}),
-				// },
+// 				capfrommyregrab: {
+// 					title: 'Cap from regrab',
+// 					data: await getData(filters, {
+// 						sum: 'sum(cap_from_my_regrab)',
+// 						avg: 'ROUND(avg(cap_from_my_regrab), 2)',
+// 						top: '(cap_from_my_regrab) = (SELECT (cap_from_my_regrab)'
+// 					}),
+// 				},
+// 				capfromprevent: {
+// 					title: 'Cap from Prevent',
+// 					data: await getData(filters, {
+// 						sum: 'sum(cap_from_prevent)',
+// 						avg: 'ROUND(avg(cap_from_prevent), 2)',
+// 						teampercent: 'ROUND((sum(cap_from_prevent)::DECIMAL / sum(cap_from_prevent_team_for)::DECIMAL) * 100, 0)',
+// 					}),
+// 				},
+// 				capfromblock: {
+// 					title: 'Cap from Block',
+// 					data: await getData(filters, {
+// 						sum: 'sum(cap_from_block)',
+// 						avg: 'ROUND(avg(cap_from_block), 2)',
+// 						teampercent: 'ROUND((sum(cap_from_block)::DECIMAL / sum(cap_from_block_team_for)::DECIMAL) * 100, 0)',
+// 					}),
+// 				},
 			}
 		}
 

@@ -79,7 +79,7 @@ let init = async (req, res) => {
 				},
 				nontakeoverreturns: {
 					title: 'Non-Takeover Returns',
-					data: await getData(filters, 'return - takeover'),
+					data: await getData(filters, 'tag - return'),
 				},
 				pups: {
 					title: 'Pups',

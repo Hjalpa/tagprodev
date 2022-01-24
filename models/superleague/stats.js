@@ -106,7 +106,7 @@ async function getAllRounds(seasonid) {
 		select
 			to_char(date, 'YYYY-MM-DD') as date
 		FROM seasonschedule
-		WHERE seasonid = $1 AND date <= NOW()
+		WHERE seasonid = $1 AND date <= NOW() AND league = TRUE
 		GROUP BY date
 		ORDER BY date ASC
 	`
