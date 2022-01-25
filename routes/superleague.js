@@ -22,11 +22,10 @@ let cacheMiddleware = (duration) => {
 }
 
 router.get('/', (req, res) => require('../models/superleague/schedule').init(req, res))
-router.get('/playoffs', (req, res) => require('../models/superleague/schedule').init(req, res))
 
-router.get('/leaders', (req, res) => require('../models/superleague/leaders').init(req, res))
-// router.get('/leaders/versus', (req, res) => require('../models/superleague/stats-team-against').init(req, res))
-router.get('/leaders/:id', (req, res) => require('../models/superleague/leaders').init(req, res))
+router.get('/schedule/:id?', (req, res) => require('../models/superleague/schedule-playoffs').init(req, res))
+
+router.get('/leaders/:id?', (req, res) => require('../models/superleague/leaders').init(req, res))
 
 router.get('/records', (req, res) => require('../models/superleague/records').init(req, res))
 
@@ -35,8 +34,7 @@ router.get('/standings/playoffs', (req, res) => require('../models/superleague/p
 
 router.get('/teams', cacheMiddleware(3600), (req, res) => require('../models/superleague/teams').init(req, res))
 
-router.get('/stats', (req, res) => require('../models/superleague/stats').init(req, res))
-router.get('/stats/:dateid', (req, res) => require('../models/superleague/stats').init(req, res))
+router.get('/stats/:id?', (req, res) => require('../models/superleague/stats').init(req, res))
 
 router.get('/overview', (req, res) => require('../models/superleague/overview').init(req, res))
 

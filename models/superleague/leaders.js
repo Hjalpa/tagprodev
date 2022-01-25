@@ -388,7 +388,7 @@ let init = async (req, res) => {
 }
 
 async function getData(filters, sql) {
-	let where = 'gameid in (SELECT id FROM game WHERE gameid = game.id AND seasonid = $1)'
+	let where = 'playergame.gameid in (SELECT id FROM game WHERE playergame.gameid = game.id AND seasonid = $1)'
 	let select = sql[filters.mode.get] || sql['sum']
 	let ascending = (filters.ascending === true) ? 'ASC' : 'DESC'
 	let having = (filters.having) ? ' AND ' + select + ' > 0' : ''
@@ -425,8 +425,9 @@ async function getData(filters, sql) {
 		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
 		LEFT JOIN team ON seasonteam.teamid = team.id
 		LEFT JOIN game ON game.id = playergame.gameid
+		LEFT JOIN seasonschedule ON game.id = seasonschedule.gameid
 
-		WHERE ${where}
+		WHERE ${where} AND seasonschedule.league = TRUE
 
 		-- removes SUBS
 		AND seasonteam IS NOT NULL
@@ -467,7 +468,7 @@ async function getData(filters, sql) {
 			left join seasonteam on seasonteam.id = seasonplayer.seasonteamid
 			left join team as t on seasonplayer.seasonteamid = t.id
 
-			WHERE seasonschedule.seasonid = $1
+			WHERE seasonschedule.seasonid = $1 AND seasonschedule.league = TRUE
 
 			-- removes SUBS
 			AND seasonteam IS NOT NULL

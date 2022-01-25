@@ -8,7 +8,7 @@ let init = async (req, res) => {
 
 		let filters =  {
 			seasonid: 5,
-			date: (req.params.dateid) ? await getRoundDate(req.params.dateid) : false,
+			date: (req.params.id) ? await getRoundDate(req.params.id) : false,
 		}
 
 		let data = {
@@ -16,7 +16,7 @@ let init = async (req, res) => {
 			nav: {
 				primary: 'superleague',
 				secondary: 'stats',
-				tertiary: (req.params.dateid) ? req.params.dateid : 'totals',
+				tertiary: (req.params.id) ? req.params.id: 'totals',
 			},
 			rounds: await getAllRounds(filters.seasonid),
 			stats: await getData(filters)
@@ -83,7 +83,7 @@ async function getData(filters) {
 	return data
 }
 
-async function getRoundDate(dateid) {
+async function getRoundDate(id) {
 	let sql = `
 		select
 			to_char(date, 'YYYY-MM-DD') as date
@@ -93,7 +93,7 @@ async function getRoundDate(dateid) {
 		ORDER BY date ASC
 		LIMIT 1 OFFSET $1
 	`
-	let data = await db.select(sql, [dateid - 1], 'date')
+	let data = await db.select(sql, [id - 1], 'date')
 
 	if(!data)
 		throw 'invalid day'
