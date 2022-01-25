@@ -4,48 +4,85 @@ include template/superleague-nav.pug
 .contain
 	.wrap.schedule
 
-		// .nav-bar-tertiary
-		// 	a(href="/superleague" class=(nav.tertiary === 'league' ? 'active' : '')) League
-		// 	a(href="/superleague/playoffs" class=(nav.tertiary === 'playoffs' ? 'active' : '')) Playoffs
+		.nav-bar-tertiary
+			a(href="/superleague/schedule" class=(nav.tertiary === 'league' ? 'active' : '')) League
+			a(href="/superleague/schedule/playoffs" class=(nav.tertiary === 'playoffs' ? 'active' : '')) Playoffs
 
-		each n, date in schedule
-			.day
-				h3!= date + ' 8PM BST'
+		if nav.tertiary === 'league'
+			.schedule-league
+				each n, date in schedule
+					.day
+						h3!= date
 
-				each i, k in n.round
-					.games
-						.map
-							a(href=
-								href="https://unfortunate-maps.jukejuice.com/show/" + i.map.unfortunateid
-							)!= i.map.name
+						each i, k in n.round
+							.games
+								.map
+									a(href=
+										href="https://unfortunate-maps.jukejuice.com/show/" + i.map.unfortunateid
+									)!= i.map.name
 
-						each f, fkey in i.fixtures
-							- let url = (!f.euid) ? '#' : 'https://tagpro.eu?match=' + f.euid
-							a(
-								href= url
-								data-seasonschedule-id= f.seasonscheduleid
-							).game
-								.block.team.red(
-									style="--teamcolor: " + f.red.color + "; --teamglow: " + f.red.color + "80"
-								)
-									.name= f.red.acronym
-									.logo
-										img(
-											src= f.red.logo
+								each f, fkey in i.fixtures
+									- let url = (!f.euid) ? '#' : 'https://tagpro.eu?match=' + f.euid
+									a(
+										href= url
+										data-seasonschedule-id= f.seasonscheduleid
+									).game
+										.block.team.red(
+											style="--teamcolor: " + f.red.color + "; --teamglow: " + f.red.color + "80"
 										)
+											.name= f.red.acronym
 
-								.block.score
-									.red= f.red.caps
-									.vs :
-									.blue= f.blue.caps
+										.block.score
+											.red= f.red.caps
+											.vs :
+											.blue= f.blue.caps
 
-								.block.team.blue(
-									style="--teamcolor: " + f.blue.color + "; --teamglow: " + f.blue.color + "80"
-								)
-									.name= f.blue.acronym
-									.logo
-										img(
-											src= f.blue.logo
+										.block.team.blue(
+											style="--teamcolor: " + f.blue.color + "; --teamglow: " + f.blue.color + "80"
 										)
+											.name= f.blue.acronym
+
+
+		else if nav.tertiary === 'playoffs'
+			.schedule-playoffs
+				each n, date in schedule
+					each i, k in n.round
+						- let matches = Object.keys(i.match).length
+						.round(
+							data-games= matches
+						)
+							h3 Round #{k}
+							each m, mk in i.match
+								.match
+									// h4 Match #{mk}
+									each f, _mk in m
+										.games
+											.map
+												a(href=
+													href="https://unfortunate-maps.jukejuice.com/show/" + f.map.unfortunateid
+												)!= f.map.name
+
+											- let url = (!f.euid) ? '#' : 'https://tagpro.eu?match=' + f.euid
+											a(
+												href= url
+												data-seasonschedule-id= f.seasonscheduleid
+											).game
+												.block.team.red(
+													style="--teamcolor: " + f.red.color + "; --teamglow: " + f.red.color + "80"
+												)
+													.name= f.red.acronym
+
+												.block.score
+													.red= f.red.caps
+													.vs :
+													.blue= f.blue.caps
+
+												.block.team.blue(
+													style="--teamcolor: " + f.blue.color + "; --teamglow: " + f.blue.color + "80"
+												)
+													.name= f.blue.acronym
+
+			.round
+				h3 asd vs asd
 
 include template/foot.pug

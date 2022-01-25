@@ -20,11 +20,12 @@ let init = async (req, res) => {
 			nav: {
 				primary: 'superleague',
 				secondary: 'schedule',
-				tertiary: filters.schedule
+				tertiary: (req.params.id != 'playoffs') ? 'league' : 'playoffs'
 			},
 			schedule: await getSchedule(filters),
 		}
 		res.render('superleague-schedule', data)
+		// res.json(data)
 	}
 	catch(error) {
 		res.status(404).render('404')
@@ -39,6 +40,8 @@ async function getSchedule(filters) {
 			map.name as map,
 			map.unfortunateid as unfortunateid,
 			seasonschedule.order as order,
+			seasonschedule.round as round,
+			seasonschedule.match as match,
 
 			redteam.name as redname,
 			redteam.acronym as redacronym,
@@ -131,18 +134,21 @@ async function format(raw, filters) {
 					round: {}
 				}
 
-			if(!schedule[date]['round'][d.order])
-				schedule[date]['round'][d.order] = {
-					map: {
-						name: d.map,
-						unfortunateid: d.unfortunateid
-					},
-					fixtures: [],
+			if(!schedule[date]['round'][d.round])
+				schedule[date]['round'][d.round] = {
+					match: {}
 				}
 
-			schedule[date]['round'][d.order]['fixtures'].push({
+			if(!schedule[date]['round'][d.round]['match'][d.match])
+				schedule[date]['round'][d.round]['match'][d.match] = []
+
+			schedule[date]['round'][d.round]['match'][d.match].push({
 				euid: d.euid,
 				seasonscheduleid: d.seasonscheduleid,
+				map: {
+					name: d.map,
+					unfortunateid: d.unfortunateid
+				},
 				red: {
 					name: d.redname,
 					acronym: d.redacronym,
@@ -159,7 +165,6 @@ async function format(raw, filters) {
 				}
 			})
 		}
-
 	}
 
 	return schedule

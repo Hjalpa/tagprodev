@@ -551,61 +551,142 @@
 				&:hover
 					background rgba(black, .4)
 
-				.block
-					&.team
-						text-align center
+	.round
+		margin-bottom 2rem
+		background #0b0c0e
+		border-radius 6px 6px 0 0
+		position relative
+
+		h3
+			text-align center
+			font-size .8rem
+			font-weight 600
+			text-transform uppercase
+			padding .6rem 0
+			color #747474
+			background linear-gradient(to top right,#000000,#0b0c0e)
+			border-radius 6px 6px 0 0
+
+		h4
+			text-align center
+			font-size .8rem
+			font-weight 600
+			text-transform uppercase
+			padding .6rem 0
+			color #747474
+			background linear-gradient(to top right,#000000,#0b0c0e)
+			// background #030404
+			border-radius 6px 6px 0 0
 
 
-						.logo
-							justify-content center
-							align-items center
-							display flex
-							display none
+		.match
+			display inline-block
+			width 36%
+			vertical-align top
 
-							img
-								height 1.2rem
-								width 1.2rem
-								border-radius 10rem
-								box-shadow 0 0 10px var(--teamglow)
-								background var(--teamcolor)
+		&[data-games="2"]
+			.match:last-child
+				float right
 
-						.name
-							display inline-block
-							font-size .8rem
-							font-weight 600
-							text-transform uppercase
-							width 50px
-							text-shadow 0 0 10px var(--teamglow)
-							color var(--teamcolor)
-							// color #d3d3d3
+		&[data-games="1"]
+			.match
+				margin 0 auto
+				width 33.33%
+				display block
+				padding 0
 
-						&.red.team
-							.name
-								vertical-align right
+				.game
+					width 70%
 
-						&.blue.team
-							.name
-								vertical-align left
+				.map
+					width 30%
 
-					&.score
-						.red
-						.blue
-							display inline-block
-							width 30px
-							margin 0 .2rem
-							border-radius .3rem
-							font-size .9rem
-							text-align center
-							color white
-							background linear-gradient(to bottom right, rgba(#292b33, .5) 0%, rgba(#1f2026, .5) 100%)
+		.games
+			&:not(:last-child)
+				border-bottom 1px solid #131417
 
-							&.win
-								color lime
-								text-shadow 0 0 10px lime
+			.map
+				color white
+				height 100%
+				width 100%
+				font-size .8rem
+				display flex
+				justify-content left
+				align-items center
+				padding .2rem 0 .2rem 0
+				padding-left 1rem
+				display inline-flex
+				width 50%
 
-						.vs
-							display inline-block
-							color rgba(white, .2)
+				a
+					text-decoration none
+					color: #8b8b8b
+					box-shadow: 0 2px 0 #ffffff14
+
+					&:hover
+						box-shadow none
+
+
+			.game
+				display flex
+				justify-content center
+				align-items center
+				padding .5rem 0
+				text-decoration none
+				margin 0 auto
+				display inline-flex
+				width 50%
+
+				&:hover
+					background rgba(black, .4)
+
+
+
+
+
+
+
+	.block
+		&.team
+			text-align center
+
+			.name
+				display inline-block
+				font-size .8rem
+				font-weight 600
+				text-transform uppercase
+				width 50px
+				text-shadow 0 0 10px var(--teamglow)
+				color var(--teamcolor)
+
+			&.red.team
+				.name
+					vertical-align right
+
+			&.blue.team
+				.name
+					vertical-align left
+
+		&.score
+			.red
+			.blue
+				display inline-block
+				width 30px
+				margin 0 .2rem
+				border-radius .3rem
+				font-size .9rem
+				text-align center
+				color white
+				background linear-gradient(to bottom right, rgba(#292b33, .5) 0%, rgba(#1f2026, .5) 100%)
+
+				&.win
+					color lime
+					text-shadow 0 0 10px lime
+
+			.vs
+				display inline-block
+				color rgba(white, .2)
+
 
 
 
