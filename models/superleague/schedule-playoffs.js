@@ -33,6 +33,8 @@ let init = async (req, res) => {
 }
 
 async function getSchedule(filters) {
+	let orderby =  (filters.league) ? 'seasonschedule.date ASC, seasonschedule.order ASC' : 'seasonschedule.round ASC, seasonschedule.match ASC, seasonschedule.order ASC'
+
 	let raw = await db.select(`
 		SELECT
 			seasonschedule.id as seasonscheduleid,
@@ -55,7 +57,49 @@ async function getSchedule(filters) {
 
 			game.redcaps as redcaps,
 			game.bluecaps as bluecaps,
-			game.euid as euid
+			game.euid as euid,
+
+			-- time losing
+			(
+				SELECT jsonb_build_object(
+					-- team color
+					'color', team.color
+					-- team value
+					'percent', ROUND(
+						(
+							(
+								position_loss_time::DECIMAL
+							)
+							/
+							(
+								play_time::DECIMAL
+							)
+						)
+					* 100, 0)
+				)
+				FROM playergame
+				LEFT JOIN player ON player.id = playergame.playerid
+				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
+				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+				LEFT JOIN team ON seasonteam.teamid = team.id
+				WHERE playergame.gameid = game.id
+				ORDER BY position_win_time DESC
+				LIMIT 1
+			) as timelosing,
+
+			-- mvb
+			(SELECT player.name FROM playergame LEFT JOIN player ON player.id = playergame.playerid where playergame.gameid = game.id ORDER BY cap+assist DESC, takeover_good DESC, hold DESC limit 1) as mvb,
+			(
+				SELECT team.color
+				FROM playergame
+				LEFT JOIN player ON player.id = playergame.playerid
+				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
+				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+				LEFT JOIN team ON seasonteam.teamid = team.id
+				WHERE playergame.gameid = game.id
+				ORDER BY cap+assist DESC, takeover_good DESC, hold DESC
+				LIMIT 1
+			) as mvb_color
 
 		from seasonschedule
 
@@ -71,7 +115,7 @@ async function getSchedule(filters) {
 
 		where seasonschedule.seasonid = $1 AND seasonschedule.league = $2 AND seasonschedule.playoff = $3
 
-		order by seasonschedule.id asc, seasonschedule.order asc
+		order by ${orderby}
 	`, [filters.seasonid, filters.league, filters.playoff], 'all')
 
 	// return await raw
@@ -129,25 +173,32 @@ async function format(raw, filters) {
 
 			let date = util.displayDate(raw[k].date, 'weekday day month')
 
-			if(!schedule[date])
-				schedule[date] = {
-					round: {}
-				}
-
-			if(!schedule[date]['round'][d.round])
-				schedule[date]['round'][d.round] = {
+			if(!schedule[d.round])
+				schedule[d.round] = {
+					date,
 					match: {}
 				}
 
-			if(!schedule[date]['round'][d.round]['match'][d.match])
-				schedule[date]['round'][d.round]['match'][d.match] = []
+			if(!schedule[d.round]['match'][d.match])
+				schedule[d.round]['match'][d.match] = []
 
-			schedule[date]['round'][d.round]['match'][d.match].push({
+			schedule[d.round]['match'][d.match].push({
 				euid: d.euid,
 				seasonscheduleid: d.seasonscheduleid,
 				map: {
 					name: d.map,
 					unfortunateid: d.unfortunateid
+				},
+				stats: {
+					timewinning: d.timewinning,
+					timewinningcolor: d.timewinningcolor,
+
+					timelosing: d.timelosing,
+
+					mvb: {
+						name: d.mvb,
+						color: d.mvb_color
+					}
 				},
 				red: {
 					name: d.redname,
@@ -165,6 +216,9 @@ async function format(raw, filters) {
 				}
 			})
 		}
+
+		// reverse it
+		// return Object.keys(schedule).reverse().map(e => ({[e]: schedule[Number(e)]}) )
 	}
 
 	return schedule
