@@ -5,7 +5,7 @@ include template/superleague-nav.pug
 	.wrap.schedule
 
 		.nav-bar-tertiary
-			a(href="/superleague" class=(nav.tertiary === 'league' ? 'active' : '')) League
+			a(href="/superleague/matches" class=(nav.tertiary === 'league' ? 'active' : '')) League
 			a(href="/superleague/matches/playoffs" class=(nav.tertiary === 'playoffs' ? 'active' : '')) Playoffs
 
 		if nav.tertiary === 'league'

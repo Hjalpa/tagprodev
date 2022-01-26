@@ -21,7 +21,7 @@ let cacheMiddleware = (duration) => {
 	}
 }
 
-router.get('/', (req, res) => require('../models/superleague/matches').init(req, res))
+router.get('/', (req, res) => require('../models/superleague/overview').init(req, res))
 
 router.get('/matches/:id?', (req, res) => require('../models/superleague/matches').init(req, res))
 
