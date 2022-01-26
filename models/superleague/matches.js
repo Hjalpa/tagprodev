@@ -16,15 +16,15 @@ let init = async (req, res) => {
 		}
 
 		let data = {
-			title: 'Schedule',
+			title: 'Matches',
 			nav: {
 				primary: 'superleague',
-				secondary: 'schedule',
+				secondary: 'matches',
 				tertiary: (req.params.id != 'playoffs') ? 'league' : 'playoffs'
 			},
-			schedule: await getSchedule(filters),
+			schedule: await getFixtures(filters),
 		}
-		res.render('superleague-schedule', data)
+		res.render('superleague-matches', data)
 		// res.json(data)
 	}
 	catch(error) {
@@ -32,7 +32,7 @@ let init = async (req, res) => {
 	}
 }
 
-async function getSchedule(filters) {
+async function getFixtures(filters) {
 	let orderby =  (filters.league) ? 'seasonschedule.date ASC, seasonschedule.order ASC' : 'seasonschedule.round ASC, seasonschedule.match ASC, seasonschedule.order ASC'
 
 	let raw = await db.select(`
@@ -59,16 +59,68 @@ async function getSchedule(filters) {
 			game.bluecaps as bluecaps,
 			game.euid as euid,
 
-			-- time losing
+			-- time hold winning
 			(
 				SELECT jsonb_build_object(
-					-- team color
-					'color', team.color
-					-- team value
+					'color', team.color,
 					'percent', ROUND(
 						(
 							(
-								position_loss_time::DECIMAL
+								hold_team_for::DECIMAL
+							)
+							/
+							(
+								play_time::DECIMAL
+							)
+						)
+					* 100, 0)
+				)
+				FROM playergame
+				LEFT JOIN player ON player.id = playergame.playerid
+				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
+				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+				LEFT JOIN team ON seasonteam.teamid = team.id
+				WHERE playergame.gameid = game.id
+				ORDER BY hold_team_for DESC
+				LIMIT 1
+			) as holdwin,
+
+			-- time hold losing
+			(
+				SELECT jsonb_build_object(
+					'color', team.color,
+					'percent', ROUND(
+						(
+							(
+								hold_team_for::DECIMAL
+							)
+							/
+							(
+								play_time::DECIMAL
+							)
+						)
+					* 100, 0)
+				)
+				FROM playergame
+				LEFT JOIN player ON player.id = playergame.playerid
+				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
+				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+				LEFT JOIN team ON seasonteam.teamid = team.id
+				WHERE playergame.gameid = game.id
+				ORDER BY hold_team_against DESC
+				LIMIT 1
+			) as holdlost,
+
+
+
+			-- time winning
+			(
+				SELECT jsonb_build_object(
+					'color', team.color,
+					'percent', ROUND(
+						(
+							(
+								position_win_time::DECIMAL
 							)
 							/
 							(
@@ -85,21 +137,36 @@ async function getSchedule(filters) {
 				WHERE playergame.gameid = game.id
 				ORDER BY position_win_time DESC
 				LIMIT 1
-			) as timelosing,
+			) as timewinning,
 
-			-- mvb
-			(SELECT player.name FROM playergame LEFT JOIN player ON player.id = playergame.playerid where playergame.gameid = game.id ORDER BY cap+assist DESC, takeover_good DESC, hold DESC limit 1) as mvb,
+			-- time losing
 			(
-				SELECT team.color
+				SELECT jsonb_build_object(
+					'color', team.color,
+					'percent', ROUND(
+						(
+							(
+								position_win_time::DECIMAL
+							)
+							/
+							(
+								play_time::DECIMAL
+							)
+						)
+					* 100, 0)
+				)
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid
 				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
 				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
 				LEFT JOIN team ON seasonteam.teamid = team.id
 				WHERE playergame.gameid = game.id
-				ORDER BY cap+assist DESC, takeover_good DESC, hold DESC
+				ORDER BY position_loss_time DESC
 				LIMIT 1
-			) as mvb_color
+			) as timelosing,
+
+			-- mvb
+			(SELECT player.name FROM playergame LEFT JOIN player ON player.id = playergame.playerid where playergame.gameid = game.id ORDER BY cap+assist+(takeover_good/3) DESC, takeover_good DESC, hold DESC limit 1) as mvb
 
 		from seasonschedule
 
@@ -190,15 +257,13 @@ async function format(raw, filters) {
 					unfortunateid: d.unfortunateid
 				},
 				stats: {
-					timewinning: d.timewinning,
-					timewinningcolor: d.timewinningcolor,
+					holdwin: (d.holdwin && d.holdwin.color === d.redcolor ? d.holdwin : d.holdlost),
+					holdlost: (d.holdlost && d.holdlost.color === d.redcolor ? d.holdwin : d.holdlost),
 
-					timelosing: d.timelosing,
+					timewinning: (d.timewinning && d.timewinning.color === d.redcolor ? d.timewinning : d.timelosing),
+					timelosing: (d.timelosing && d.timelosing.color === d.redcolor ? d.timewinning : d.timelosing),
 
-					mvb: {
-						name: d.mvb,
-						color: d.mvb_color
-					}
+					mvb: d.mvb,
 				},
 				red: {
 					name: d.redname,

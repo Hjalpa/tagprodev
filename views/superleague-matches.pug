@@ -5,8 +5,8 @@ include template/superleague-nav.pug
 	.wrap.schedule
 
 		.nav-bar-tertiary
-			a(href="/superleague/schedule" class=(nav.tertiary === 'league' ? 'active' : '')) League
-			a(href="/superleague/schedule/playoffs" class=(nav.tertiary === 'playoffs' ? 'active' : '')) Playoffs
+			a(href="/superleague" class=(nav.tertiary === 'league' ? 'active' : '')) League
+			a(href="/superleague/matches/playoffs" class=(nav.tertiary === 'playoffs' ? 'active' : '')) Playoffs
 
 		if nav.tertiary === 'league'
 			.schedule-league
@@ -53,8 +53,8 @@ include template/superleague-nav.pug
 									.title
 										.top Round #{k}
 										.bot Match #{mk}
-									.stats
-									.stats.winning Time Leading
+									.stats.hold Hold
+									.stats.winning Leading
 									.stats.mvb
 										svg(viewBox="0 0 24 24")
 											path(d="M19.8,19.313L4.2,19.313C3.87,19.313 3.6,19.587 3.6,19.922L3.6,21.141C3.6,21.476 3.87,21.75 4.2,21.75L19.8,21.75C20.13,21.75 20.4,21.476 20.4,21.141L20.4,19.922C20.4,19.587 20.13,19.313 19.8,19.313ZM22.2,7.125C21.206,7.125 20.4,7.944 20.4,8.953C20.4,9.224 20.46,9.475 20.565,9.707L17.85,11.36C17.273,11.711 16.526,11.512 16.192,10.918L13.136,5.487C13.538,5.152 13.8,4.649 13.8,4.078C13.8,3.069 12.994,2.25 12,2.25C11.006,2.25 10.2,3.069 10.2,4.078C10.2,4.649 10.463,5.152 10.864,5.487L7.808,10.918C7.474,11.512 6.724,11.711 6.15,11.36L3.439,9.707C3.54,9.479 3.604,9.224 3.604,8.953C3.604,7.944 2.798,7.125 1.804,7.125C0.81,7.125 0,7.944 0,8.953C0,9.962 0.806,10.781 1.8,10.781C1.898,10.781 1.995,10.766 2.089,10.751L4.8,18.094L19.2,18.094L21.911,10.751C22.005,10.766 22.103,10.781 22.2,10.781C23.194,10.781 24,9.962 24,8.953C24,7.944 23.194,7.125 22.2,7.125Z")
@@ -90,25 +90,57 @@ include template/superleague-nav.pug
 												.name= f.blue.acronym
 
 
-										.stats.rate
-											.val= f.stats.dispossessed
+
+										.stats.rate.hold
+											if f.stats.timewinning
+
+												.block.val(
+													style="--teamcolor: " + f.stats.holdwin.color + "; --teamglow: " + f.stats.holdwin.color + "95"
+												)
+													if f.stats.holdwin.percent > 0
+														= f.stats.holdwin.percent + '%'
+
+												.block.bar
+													.inner1(
+														style="--teamcolor: " + f.stats.holdwin.color+ "; --teamglow: " + f.stats.holdwin.color+ "95; width: " + f.stats.holdwin.percent + "%"
+													)
+													.inner2(
+														style="--teamcolor: " + f.stats.holdlost.color+ "; --teamglow: " + f.stats.holdlost.color+ "95; width: " + f.stats.holdlost.percent + "%"
+													)
+
+												.block.val(
+													style="--teamcolor: " + f.stats.holdlost.color+ "; --teamglow: " + f.stats.holdlost.color+ "95;"
+												)
+													if f.stats.holdlost.percent > 0
+														= f.stats.holdlost.percent + '%'
+
+
 
 										.stats.rate.winning
 											if f.stats.timewinning
-												if f.stats.timewinning  > 0
-													.block.val(style="--teamcolor: " + f.stats.timewinningcolor + "; --teamglow: " + f.stats.timewinningcolor + "95;")= f.stats.timewinning + '%'
+
+												.block.val(
+													style="--teamcolor: " + f.stats.timewinning.color + "; --teamglow: " + f.stats.timewinning.color + "95"
+												)
+													if f.stats.timewinning.percent > 0
+														= f.stats.timewinning.percent + '%'
+
 												.block.bar
-													.inner1(style="--teamcolor: " + f.stats.timewinningcolor+ "; --teamglow: " + f.stats.timewinningcolor+ "95; width: " + f.stats.timewinning + "%")
-													.inner2(style="--teamcolor: " + f.stats.timelosingcolor+ "; --teamglow: " + f.stats.timelosingcolor+ "95; width: " + f.stats.timelosing + "%")
-												// if f.stats.timelosing > 0
-												.block.val(style="--teamcolor: " + f.stats.timelosingcolor+ "; --teamglow: " + f.stats.timelosingcolor+ "95;")= f.stats.timelosing + '%'
+													.inner1(
+														style="--teamcolor: " + f.stats.timewinning.color+ "; --teamglow: " + f.stats.timewinning.color+ "95; width: " + f.stats.timewinning.percent + "%"
+													)
+													.inner2(
+														style="--teamcolor: " + f.stats.timelosing.color+ "; --teamglow: " + f.stats.timelosing.color+ "95; width: " + f.stats.timelosing.percent + "%"
+													)
 
+												.block.val(
+													style="--teamcolor: " + f.stats.timelosing.color+ "; --teamglow: " + f.stats.timelosing.color+ "95;"
+												)
+													if f.stats.timelosing.percent > 0
+														= f.stats.timelosing.percent + '%'
 
-
-										.stats.mvb(
-											style="--teamcolor: " + f.stats.mvb.color + "; --teamglow: " + f.stats.mvb.color + "80"
-										)
-											a(href="#").value= f.stats.mvb.name
+										.stats.mvb
+											a(href="#").value= f.stats.mvb
 
 
 

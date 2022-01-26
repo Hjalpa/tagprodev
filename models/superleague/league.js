@@ -5,16 +5,15 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 
 	let data = {
-		title: 'Table',
+		title: 'League',
 		nav: {
 			primary: 'superleague',
-			secondary: 'standings',
-			tertiary: 'league',
+			secondary: 'league'
 		},
 		table: await getTable()
 	}
 
-	res.render('superleague-table', data)
+	res.render('superleague-league', data)
 }
 
 async function getTable() {
