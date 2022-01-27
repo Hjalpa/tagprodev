@@ -166,7 +166,16 @@ async function getFixtures(filters) {
 			) as timelosing,
 
 			-- mvb
-			(SELECT player.name FROM playergame LEFT JOIN player ON player.id = playergame.playerid where playergame.gameid = game.id ORDER BY cap+assist+(takeover_good/3) DESC, takeover_good DESC, hold DESC limit 1) as mvb
+			(SELECT player.name FROM playergame LEFT JOIN player ON player.id = playergame.playerid where playergame.gameid = game.id
+			ORDER BY
+			-- cap+assist+(takeover_good/3) DESC, takeover_good DESC, hold DESC
+
+			(cap*100) + (assist * 50) + (takeover_good * 20) + (tag * 5) + ((pup_jj+pup_rb)*10) + ((hold / grab) * 5) + (chain * 10) + (prevent / 3) + kept_flag DESC
+
+
+
+
+			limit 1) as mvb
 
 		from seasonschedule
 

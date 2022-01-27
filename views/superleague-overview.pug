@@ -3,31 +3,48 @@ include template/superleague-nav.pug
 
 .contain
 	.wrap
+		.overview
 
-		// .nav-bar-tertiary
-		// 	a(href="/superleague/leaders" class=(nav.tertiary === 'totals' ? 'active' : '')) Total
-		// 	a(href="/superleague/leaders/averages" class=(nav.tertiary === 'averages' ? 'active' : '')) Average
-		// 	a(href="/superleague/leaders/top" class=(nav.tertiary === 'top' ? 'active' : '')) Top
-		// 	a(href="/superleague/leaders/teampercent" class=(nav.tertiary === 'teampercent' ? 'active' : '')) Team %
+			.bar
+				.block.teams
+					.k Teams
+					.v
+						span= teams
 
-		// .stats.leaders
+				.block.players
+					.k Players
+					.v
+						span= players
 
-		// 	each raw in leaders
-		// 		if raw.data
-		// 			.stat
-		// 				h3= raw.title
+				.block.dates
+					.k Date
+					.v
+						span= date.start
+						em -
+						span= date.end
 
-		// 				each n, key in raw.data
-		// 					.row(class=(key === 0 ? 'top' : ''))
-		// 						.item.rank= n.rank
-		// 						.item.team(
-		// 							data-position= i
-		// 							style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
-		// 						)= n.acronym
-		// 						.item.player
-		// 							a(
-		// 								href='#'
-		// 							)= n.player
-		// 						.item.value= n.value
+			.best
+				.stat
+					h3 MVB
+
+					each n, key in mvb
+						.row(class=(key === 0 ? 'top' : ''))
+							.item.rank= n.rank
+							.item.team(
+								data-position= i
+								style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+							)= n.acronym
+							.item.player
+								// href= '/player/' + n.player
+								a(
+									href='#'
+								)= n.player
+
+							.item.value= n.value
+
+
+
+			.finals
+				p asda
 
 include template/foot.pug
