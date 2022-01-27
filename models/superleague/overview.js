@@ -85,7 +85,7 @@ async function getMVB(seasonid) {
 						(avg(chain) * 10) +
 						(avg(prevent) / 3) +
 						avg(kept_flag)
-					, 2) DESC
+					, 0) DESC
 			) rank,
 			player.name as player,
 			COALESCE(team.acronym, 'SUB') as acronym,
@@ -101,7 +101,7 @@ async function getMVB(seasonid) {
 				(avg(chain) * 10) +
 				(avg(prevent) / 3) +
 				avg(kept_flag)
-			, 2) as value
+			, 0) as value
 
 		from playergame
 		left join player on player.id = playergame.playerid
@@ -113,9 +113,12 @@ async function getMVB(seasonid) {
 		LEFT JOIN team ON seasonteam.teamid = team.id
 
 
-		where league = true and seasonschedule.seasonid = $1
-		group by player.name
-		having sum(play_time) > 5000
+		where seasonschedule.seasonid = $1
+		and league = true
+		group by player.name, team.acronym, team.color
+
+		having sum(play_time) > 8000
+		--having sum(play_time) > 2000
 		order by value DESC
 		limit 10
 	`, [seasonid], 'all')

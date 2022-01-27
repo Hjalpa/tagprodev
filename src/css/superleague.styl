@@ -1,11 +1,12 @@
 .overview
-	.bar
+
+	.info
 		display block
-		text-align right
+		margin-bottom 1rem
 
 		.block
 			display inline-block
-			margin-left 1rem
+			margin-right 1rem
 			font-size .8rem
 
 			.k
@@ -33,114 +34,148 @@
 					line-height .8rem
 					color #8b8b8b
 
-		.best
-			display grid
-			column-gap 1rem
+	.top10
+		display grid
+		column-gap 1rem
+		--grid-width calc(25% - (2rem / 4))
+		grid-template-columns var(--grid-width) calc(var(--grid-width) * 2) var(--grid-width)
 
-			&.leaders
-				--grid-width calc(25% - (3rem / 4))
-				grid-template-columns var(--grid-width) var(--grid-width) var(--grid-width) var(--grid-width)
+		.stat
+			margin-bottom 1rem
+			border-radius 6px 6px 0 0
+			background #0b0c0e
 
-			&.records
-				--grid-width calc(33.33% - (3rem / 4))
-				grid-template-columns var(--grid-width) var(--grid-width) var(--grid-width)
+			&.final
+				svg
+					height 3rem
+					width 3rem
+					fill url(#gold.mainGradient)
+					position relative
+					top .2rem
 
-			.stat
-				margin-bottom 1rem
-				border-radius 6px 6px 0 0
-				background #0b0c0e
-
+			&.mvb
+			&.champions
 				h3
-					padding .6rem 1rem
+					span
+						color #e5c661
+						display block
+
+					svg
+						width 16px
+						height 16px
+						fill url(#gold.mainGradient)
+						position relative
+						top .2rem
+
+			h3
+				padding .6rem 1rem
+				font-size .9rem
+				font-weight 600
+				color #a8a8a8
+				text-transform uppercase
+				background linear-gradient(to top right,#000000,#0b0c0e)
+				text-align center
+				border-radius inherit
+
+			&.mvb
+				h3
+
+			.row
+				display flex
+				flex-direction row
+				align-items stretch
+
+				&:nth-of-type(even)
+					background #08080a
+
+				.item
+					color white
 					font-size .9rem
-					font-weight 600
-					color #a8a8a8
-					text-transform uppercase
-					background linear-gradient(to top right,#000000,#0b0c0e)
-					text-align center
-					border-radius inherit
-
-				.row
+					flex 1
 					display flex
-					flex-direction row
-					align-items stretch
+					align-items center
+					padding .2rem 0
 
-					&:nth-of-type(even)
-						background #08080a
+					a
+						text-decoration none
+						color #b9b9b9
 
-					.item
-						color white
-						font-size .9rem
-						flex 1
-						display flex
-						align-items center
-						padding .2rem 0
+					&.rank
+						color rgba(white, .15)
+						background black
+						font-size .7rem
+						flex 0 0 24px
+						justify-content center
 
+					&.team
+						font-size .8rem
+						font-weight 600
+						text-transform uppercase
+						text-align left
+						padding-left .5rem
+						flex 0 0 52px
+						text-shadow 0 0 10px var(--teamglow)
+						color var(--teamcolor)
+						justify-content left
+
+					&.player
+						justify-content left
+
+					&.value
+						justify-content right
+						flex 0 0 75px
+						padding-right .5rem
+
+
+					&.test
+						justify-content right
+						flex 0 0 110px
+						padding-right .5rem
+
+						.v
+							font-size .8rem
+							display inline-block
+							width 90px
+							text-align center
+
+						.bar
+							display inline-block
+							width 100%
+							background #ffffff17
+							height 8px
+							border-radius 2px
+							// margin-right 1rem
+
+							.inner
+								display block
+								height inherit
+								border-radius inherit
+
+
+								// background #2acb4f
+								background #e5c762
+								// box-shadow 0 0 10px #2acb4f
+
+				&.top
+					.inner
+						box-shadow 0 0 10px #e5c762
+
+					.v
+						text-shadow: 0 0 10px #e5c762;
+						color: #e5c762;
+
+				&:hover
+					.rank
+						color #a8ff62
+
+					.date
+					.player
 						a
-							text-decoration none
-							color #b9b9b9
+							color #538cff
+							box-shadow inset 0 -2px 0 0 #538cff33
 
-						&.rank
-							color rgba(white, .15)
-							background black
-							font-size .7rem
-							flex 0 0 24px
-							justify-content center
-
-						&.team
-							font-size .8rem
-							font-weight 600
-							text-transform uppercase
-							text-align left
-							padding-left .5rem
-							flex 0 0 52px
-							text-shadow 0 0 10px var(--teamglow)
-							color var(--teamcolor)
-							justify-content left
-
-						&.player
-							justify-content left
-
-						&.date
-							justify-content right
-							text-align right
-							padding-right 1rem
-							font-size .8rem
-							flex 0 0 75px
-
-						&.map
-							color #b9b9b9
-							font-size .8rem
-
-						&.versus
-							justify-content right
-							font-size .7rem
-							flex 0 0 40px
-							padding-right .5rem
-
-							font-weight 600
-							text-transform uppercase
-							text-shadow 0 0 10px var(--teamglow)
-							color var(--teamcolor)
-							opacity .65
-
-						&.value
-							justify-content right
-							flex 0 0 75px
-							padding-right .5rem
-
-					&:hover
-						.rank
-							color #a8ff62
-
-						.date
-						.player
-							a
-								color #538cff
-								box-shadow inset 0 -2px 0 0 #538cff33
-
-								&:hover
-									box-shadow none
+							&:hover
+								box-shadow none
 
 
 

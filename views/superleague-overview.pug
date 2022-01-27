@@ -5,7 +5,14 @@ include template/superleague-nav.pug
 	.wrap
 		.overview
 
-			.bar
+			.info
+				.block.dates
+					.k Date
+					.v
+						span= date.start
+						em -
+						span= date.end
+
 				.block.teams
 					.k Teams
 					.v
@@ -16,17 +23,26 @@ include template/superleague-nav.pug
 					.v
 						span= players
 
-				.block.dates
-					.k Date
-					.v
-						span= date.start
-						em -
-						span= date.end
 
-			.best
-				.stat
-					h3 MVB
+			.top10
+				.stat.champions
+					h3
+						svg(viewBox="0 0 24 24")
+							path(d="M19.8,19.313L4.2,19.313C3.87,19.313 3.6,19.587 3.6,19.922L3.6,21.141C3.6,21.476 3.87,21.75 4.2,21.75L19.8,21.75C20.13,21.75 20.4,21.476 20.4,21.141L20.4,19.922C20.4,19.587 20.13,19.313 19.8,19.313ZM22.2,7.125C21.206,7.125 20.4,7.944 20.4,8.953C20.4,9.224 20.46,9.475 20.565,9.707L17.85,11.36C17.273,11.711 16.526,11.512 16.192,10.918L13.136,5.487C13.538,5.152 13.8,4.649 13.8,4.078C13.8,3.069 12.994,2.25 12,2.25C11.006,2.25 10.2,3.069 10.2,4.078C10.2,4.649 10.463,5.152 10.864,5.487L7.808,10.918C7.474,11.512 6.724,11.711 6.15,11.36L3.439,9.707C3.54,9.479 3.604,9.224 3.604,8.953C3.604,7.944 2.798,7.125 1.804,7.125C0.81,7.125 0,7.944 0,8.953C0,9.962 0.806,10.781 1.8,10.781C1.898,10.781 1.995,10.766 2.089,10.751L4.8,18.094L19.2,18.094L21.911,10.751C22.005,10.766 22.103,10.781 22.2,10.781C23.194,10.781 24,9.962 24,8.953C24,7.944 23.194,7.125 22.2,7.125Z")
+						span Champions
 
+				.stat.final
+					h3
+						span Playoff Final
+
+				.stat.mvb
+
+					h3
+						svg(viewBox="0 0 24 24")
+							path(d="M19.8,19.313L4.2,19.313C3.87,19.313 3.6,19.587 3.6,19.922L3.6,21.141C3.6,21.476 3.87,21.75 4.2,21.75L19.8,21.75C20.13,21.75 20.4,21.476 20.4,21.141L20.4,19.922C20.4,19.587 20.13,19.313 19.8,19.313ZM22.2,7.125C21.206,7.125 20.4,7.944 20.4,8.953C20.4,9.224 20.46,9.475 20.565,9.707L17.85,11.36C17.273,11.711 16.526,11.512 16.192,10.918L13.136,5.487C13.538,5.152 13.8,4.649 13.8,4.078C13.8,3.069 12.994,2.25 12,2.25C11.006,2.25 10.2,3.069 10.2,4.078C10.2,4.649 10.463,5.152 10.864,5.487L7.808,10.918C7.474,11.512 6.724,11.711 6.15,11.36L3.439,9.707C3.54,9.479 3.604,9.224 3.604,8.953C3.604,7.944 2.798,7.125 1.804,7.125C0.81,7.125 0,7.944 0,8.953C0,9.962 0.806,10.781 1.8,10.781C1.898,10.781 1.995,10.766 2.089,10.751L4.8,18.094L19.2,18.094L21.911,10.751C22.005,10.766 22.103,10.781 22.2,10.781C23.194,10.781 24,9.962 24,8.953C24,7.944 23.194,7.125 22.2,7.125Z")
+						span MVB
+
+					- let max = parseInt(mvb[0].value)
 					each n, key in mvb
 						.row(class=(key === 0 ? 'top' : ''))
 							.item.rank= n.rank
@@ -35,16 +51,28 @@ include template/superleague-nav.pug
 								style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
 							)= n.acronym
 							.item.player
-								// href= '/player/' + n.player
 								a(
 									href='#'
 								)= n.player
 
-							.item.value= n.value
+							// .item.value=  n.value
+							- let percent = ((n.value / max) * 100).toFixed(0)
+							.item.test
+								.v= percent
+								.bar
+									.inner(style="width:" + percent + "%")
 
 
 
-			.finals
-				p asda
+
+
+
+
+
+
+div(style="height:0;width:0;position:absolute")
+	svg
+		defs
+			| <linearGradient id="gold.mainGradient" x1="0" x2="25.4482" y1="0.5" y2="2.14888" gradientUnits="userSpaceOnUse"><stop stop-color="hsl(35,65%,48%)" offset="0"></stop><stop stop-color="hsl(47,73%,65%)" offset="0.5"></stop><stop stop-color="hsl(41,57.99999999999999%,49%)" offset="1"></stop></linearGradient>
 
 include template/foot.pug
