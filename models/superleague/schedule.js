@@ -25,6 +25,7 @@ async function getSchedule(seasonid) {
 			map.unfortunateid as unfortunateid,
 			seasonschedule.order as order,
 
+o
 			redteam.name as redname,
 			redteam.acronym as redacronym,
 			redteam.logo as redlogo,

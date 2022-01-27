@@ -16,6 +16,7 @@ let init = async (req, res) => {
 			teams: await getTeamCount(5),
 			players: await getPlayerCount(5),
 			mvb: await getMVB(5),
+			maps: await getMaps(5),
 		}
 		res.render('superleague-overview', data);
 		// res.json(data)
@@ -119,6 +120,42 @@ async function getMVB(seasonid) {
 
 		having sum(play_time) > 8000
 		--having sum(play_time) > 2000
+		order by value DESC
+		limit 10
+	`, [seasonid], 'all')
+	return raw
+}
+
+async function getMaps(seasonid) {
+	let raw = await db.select(`
+		select
+			RANK() OVER (
+				ORDER BY
+					map DESC
+			) rank,
+
+			map.name as mpa,
+
+			ROUND(
+				(avg(cap) * 100)  +
+				(avg(assist) * 50) +
+				(avg(takeover_good) * 20)+
+				(avg(tag)*5) +
+				(avg(pup_jj) + avg(pup_rb)) * 10 +
+				((avg(hold) / avg(grab) * 5)) +
+				(avg(chain) * 10) +
+				(avg(prevent) / 3) +
+				avg(kept_flag)
+			, 0) as value
+
+		FROM playerschedule
+		LEFT JOIN game on game.id = playerschedule.gameid
+		LEFT JOIN playergame ON game.id = playergame.gameid
+		left join map on map.id = playergame.mapid
+
+		where seasonschedule.seasonid = $1
+		group by map.name
+
 		order by value DESC
 		limit 10
 	`, [seasonid], 'all')
