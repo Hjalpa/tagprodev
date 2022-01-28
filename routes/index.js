@@ -13,16 +13,16 @@ let getSeason = async function (req, res, next) {
 	let season = false
 	try {
 
-		if(req.params.season) {
+		if(req.params.season && req.params.mode) {
 			season = await db.select(`
 				SELECT id
 				FROM season
 				WHERE mode = $1 AND number = $2
 				LIMIT 1
-			`, ['NF', req.params.season], 'id')
+			`, [req.params.mode, req.params.season], 'id')
 
 			if(!season)
-				throw 'invalid season. twat'
+				throw 'invalid season'
 		}
 
 	} catch(err) {
@@ -40,7 +40,7 @@ router.use(getSeason)
 router.get('/', (req, res) => res.redirect('./nf/1'))
 router.use('/api',  require('./api'))
 router.use('/leaderboards',  require('./leaderboards'))
-router.use('/nf/:season', getSeason, require('./nf'))
+router.use('/:mode/:season', getSeason, require('./nf'))
 router.use((req, res) => res.status(404).render('404'))
 
 module.exports = router
