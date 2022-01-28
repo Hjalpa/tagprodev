@@ -4,17 +4,16 @@ include template/superleague-nav.pug
 .contain
 	.wrap
 		.nav-bar-tertiary
-			a(href="/superleague/stats" class=(nav.tertiary === 'totals' ? 'active' : '')) Totals
+			a(href=config.path + "/stats" class=(config.nav.sub === 'totals' ? 'active' : '')) Totals
 			- i = 0
 			each n, key in rounds
 				- i++
 				a(
-					href="/superleague/stats/" + i
-					class= (nav.tertiary == i ? 'active' : '')
+					href=config.path + "/stats/" + i
+					class= (config.nav.sub == i ? 'active' : '')
 				) Round #{i}
 
 		.player-stats
-
 			.row.head
 				each n, key in stats
 					each v, k in n

@@ -3,20 +3,27 @@ const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
-
-	let data = {
-		title: 'League',
-		nav: {
-			primary: 'superleague',
-			secondary: 'league'
-		},
-		table: await getTable()
+	try {
+		let data = {
+			config: {
+				title: 'NF Season ' + req.season + ' League Table',
+				name: req.seasonname,
+				path: req.baseUrl,
+				season: req.season,
+				nav: {
+					cat: 'nf',
+					page: 'league',
+				}
+			},
+			table: await getTable(req.seasonid)
+		}
+		res.render('superleague-league', data)
+	} catch(error) {
+		res.status(404).render('404')
 	}
-
-	res.render('superleague-league', data)
 }
 
-async function getTable() {
+async function getTable(seasonid) {
 	let raw = await db.select(`
 		select
 			t.id,
@@ -170,9 +177,9 @@ async function getTable() {
 
 		from seasonteam st
 		left join team t on st.teamid = t.id
-		where st.seasonid = 5
+		where st.seasonid = $1
 		order by pts DESC, capdifference desc, name asc
-	`, [], 'all')
+	`, [seasonid], 'all')
 
 	return await raw
 }

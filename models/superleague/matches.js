@@ -10,17 +10,22 @@ let init = async (req, res) => {
 			if(req.params.id != 'playoffs')	throw 'invalid page'
 
 		let filters = {
-			seasonid: 5,
+			seasonid: req.seasonid,
 			league: (req.params.id) ? false : true,
 			playoff: (req.params.id) ? true : false
 		}
 
 		let data = {
-			title: 'Matches',
-			nav: {
-				primary: 'superleague',
-				secondary: 'matches',
-				tertiary: (req.params.id != 'playoffs') ? 'league' : 'playoffs'
+			config: {
+				title: 'NF Season ' + req.season + ' Matches',
+				name: req.seasonname,
+				path: req.baseUrl,
+				season: req.season,
+				nav: {
+					cat: 'nf',
+					page: 'matches',
+					sub: (req.params.id != 'playoffs') ? 'league' : 'playoffs'
+				}
 			},
 			schedule: await getFixtures(filters),
 		}
@@ -44,6 +49,7 @@ async function getFixtures(filters) {
 			seasonschedule.order as order,
 			seasonschedule.round as round,
 			seasonschedule.match as match,
+			seasonschedule.final as final,
 
 			redteam.name as redname,
 			redteam.acronym as redacronym,
@@ -248,17 +254,18 @@ async function format(raw, filters) {
 			let d = raw[k]
 
 			let date = util.displayDate(raw[k].date, 'weekday day month')
+			let round = (d.final) ? 'Final' : d.round
 
-			if(!schedule[d.round])
-				schedule[d.round] = {
+			if(!schedule[round])
+				schedule[round] = {
 					date,
 					match: {}
 				}
 
-			if(!schedule[d.round]['match'][d.match])
-				schedule[d.round]['match'][d.match] = []
+			if(!schedule[round]['match'][d.match])
+				schedule[round]['match'][d.match] = []
 
-			schedule[d.round]['match'][d.match].push({
+			schedule[round]['match'][d.match].push({
 				euid: d.euid,
 				seasonscheduleid: d.seasonscheduleid,
 				map: {

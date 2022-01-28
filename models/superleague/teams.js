@@ -4,16 +4,18 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
-
 		let data = {
-			title: 'Teams',
-			nav: {
-				primary: 'superleague',
-				secondary: 'teams',
+			config: {
+				title: 'NF Season ' + req.season + ' Teams',
+				name: req.seasonname,
+				path: req.baseUrl,
+				season: req.season,
+				nav: {
+					cat: 'nf',
+					page: 'teams'
+				}
 			},
-
-			teams: await getTeams(),
-
+			teams: await getTeams(req.seasonid),
 		}
 		res.render('superleague-teams', data);
 	} catch(e) {
@@ -21,7 +23,7 @@ let init = async (req, res) => {
 	}
 }
 
-async function getTeams() {
+async function getTeams(seasonid) {
 	let raw = await db.select(`
         SELECT
             t.id,
@@ -43,10 +45,10 @@ async function getTeams() {
         FROM seasonplayer as sp
         LEFT JOIN seasonteam as st on st.id = sp.seasonteamid
         LEFT JOIN team as t on t.id = st.teamid
-        WHERE st.seasonid = 5
+        WHERE st.seasonid = $1
         GROUP BY t.id, t.name, t.acronym, t.logo, t.color, st.id
         ORDER BY t.name ASC
-	`, [], 'all')
+	`, [seasonid], 'all')
 
 	return raw
 }

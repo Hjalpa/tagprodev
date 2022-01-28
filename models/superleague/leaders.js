@@ -11,12 +11,19 @@ let init = async (req, res) => {
 			percentage: false,
 		}
 
+
 		let data = {
-			title: 'Leaderboard',
-			nav: {
-				primary: 'superleague',
-				secondary: 'leaders',
-				tertiary: filters.mode.name,
+			config: {
+				title: 'NF Season ' + req.season + ' Leaders / ' + filters.mode.name,
+				name: req.seasonname,
+				path: req.baseUrl,
+				season: req.season,
+				nav: {
+					cat: 'nf',
+					page: 'leaders',
+					sub: filters.mode.name
+
+				}
 			},
 			leaders: {
 				points: {

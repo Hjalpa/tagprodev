@@ -5,10 +5,10 @@ include template/superleague-nav.pug
 	.wrap.schedule
 
 		.nav-bar-tertiary
-			a(href="/superleague/matches" class=(nav.tertiary === 'league' ? 'active' : '')) League
-			a(href="/superleague/matches/playoffs" class=(nav.tertiary === 'playoffs' ? 'active' : '')) Playoffs
+			a(href="/nf/1/matches" class=(config.nav.sub === 'league' ? 'active' : '')) League
+			a(href="/nf/1/matches/playoffs" class=(config.nav.sub === 'playoffs' ? 'active' : '')) Playoffs
 
-		if nav.tertiary === 'league'
+		if config.nav.sub === 'league'
 			.schedule-league
 				each n, date in schedule
 					.day
@@ -43,7 +43,7 @@ include template/superleague-nav.pug
 											.name= f.blue.acronym
 
 
-		else if nav.tertiary === 'playoffs'
+		else if config.nav.sub === 'playoffs'
 			.schedule-playoffs
 				each i, k in schedule
 					.round
@@ -51,8 +51,10 @@ include template/superleague-nav.pug
 							.round-group
 								.headline
 									.title
-										.top Round #{k}
-										.bot Match #{mk}
+										- let round_title = (k === 'Final') ? 'Playoff Final' : 'Round ' + k
+										- let match_title = (k === 'Final') ? i.date : 'Match ' + mk
+										.top= round_title
+										.bot= match_title
 									.stats.hold Hold
 									.stats.winning Leading
 									.stats.mvb

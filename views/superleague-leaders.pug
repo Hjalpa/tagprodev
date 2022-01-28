@@ -5,11 +5,11 @@ include template/superleague-nav.pug
 	.wrap
 
 		.nav-bar-tertiary
-			a(href="/superleague/leaders" class=(nav.tertiary === 'totals' ? 'active' : '')) Totals
-			a(href="/superleague/leaders/averages" class=(nav.tertiary === 'averages' ? 'active' : '')) Averages
-			a(href="/superleague/leaders/teampercent" class=(nav.tertiary === 'teampercent' ? 'active' : '')) Team %
-			a(href="/superleague/leaders/top" class=(nav.tertiary === 'top' ? 'active' : '')) Game Tops
-			a(href="/superleague/leaders/versus" class=(nav.tertiary === 'versus' ? 'active' : '')) Versus
+			a(href=config.path + "/leaders" class=(config.nav.sub === 'totals' ? 'active' : '')) Totals
+			a(href=config.path + "/leaders/averages" class=(config.nav.sub === 'averages' ? 'active' : '')) Averages
+			a(href=config.path + "/leaders/teampercent" class=(config.nav.sub === 'teampercent' ? 'active' : '')) Team %
+			a(href=config.path + "/leaders/top" class=(config.nav.sub === 'top' ? 'active' : '')) Game Tops
+			a(href=config.path + "/leaders/versus" class=(config.nav.sub === 'versus' ? 'active' : '')) Versus
 
 		.stats.leaders
 

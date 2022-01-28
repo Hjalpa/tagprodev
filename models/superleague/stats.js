@@ -3,25 +3,27 @@ const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
-
 	try {
-
 		let filters =  {
-			seasonid: 5,
+			seasonid: req.seasonid,
 			date: (req.params.id) ? await getRoundDate(req.params.id) : false,
 		}
 
 		let data = {
-			title: 'Stats',
-			nav: {
-				primary: 'superleague',
-				secondary: 'stats',
-				tertiary: (req.params.id) ? req.params.id: 'totals',
+			config: {
+				title: 'NF Season ' + req.season + ' Stats' + ((req.params.id) ? ' - Round ' + req.params.id : ''),
+				name: req.seasonname,
+				path: req.baseUrl,
+				season: req.season,
+				nav: {
+					cat: 'nf',
+					page: 'stats',
+					sub: (req.params.id) ? req.params.id: 'totals',
+				}
 			},
 			rounds: await getAllRounds(filters.seasonid),
 			stats: await getData(filters)
 		}
-
 		res.render('superleague-stats', data)
 	}
 	catch(error) {

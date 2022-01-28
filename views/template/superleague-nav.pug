@@ -10,10 +10,11 @@
 		h1 NF Super League
 
 		.nav-bar
-			a(href="/superleague" class=(nav.secondary === 'overview' ? 'active' : '')) Overview
-			a(href="/superleague/teams" class=(nav.secondary === 'teams' ? 'active' : '')) Teams
-			a(href="/superleague/matches" class=(nav.secondary === 'matches' ? 'active' : '')) Matches
-			a(href="/superleague/league" class=(nav.secondary === 'league' ? 'active' : '')) League
-			a(href="/superleague/stats" class=(nav.secondary === 'stats' ? 'active' : '')) Stats
-			a(href="/superleague/leaders" class=(nav.secondary === 'leaders' ? 'active' : '')) Leaders
-			a(href="/superleague/records" class=(nav.secondary === 'records' ? 'active' : '')) Records
+			a(href= config.path	class=(config.nav.page === 'overview' ? 'active' : '')
+			) Overview
+			a(href=config.path + "/teams" class=(config.nav.page === 'teams' ? 'active' : '')) Teams
+			a(href=config.path + "/matches" class=(config.nav.page === 'matches' ? 'active' : '')) Matches
+			a(href=config.path + "/league" class=(config.nav.page === 'league' ? 'active' : '')) League
+			a(href=config.path + "/stats" class=(config.nav.page === 'stats' ? 'active' : '')) Stats
+			a(href=config.path + "/leaders" class=(config.nav.page === 'leaders' ? 'active' : '')) Leaders
+			a(href=config.path + "/records" class=(config.nav.page === 'records' ? 'active' : '')) Records

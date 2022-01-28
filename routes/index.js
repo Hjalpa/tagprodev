@@ -28,11 +28,56 @@ let cacheMiddleware = (duration) => {
 	}
 }
 
-router.get('/', (req, res) => res.redirect('./superleague'))
+
+
+let getSeason = async function (req, res, next) {
+	let season = false
+
+	try {
+
+		if(req.params.season) {
+			season = await db.select(`
+				SELECT id
+				FROM season
+				WHERE mode = $1 AND number = $2
+				LIMIT 1
+			`, ['NF', req.params.season], 'id')
+
+			if(!season)
+				throw 'invalid season. twat'
+		}
+
+	} catch(err) {
+		next(err)
+	}
+
+	req.season = req.params.season
+	req.seasonname = 'NF Season req.params.season'
+	req.seasonid = season
+
+	next()
+}
+router.use(getSeason)
+
+
+
+
+
+
+
+
+
+router.get('/', (req, res) => res.redirect('./nf/1'))
+router.get('/superleague', (req, res) => res.redirect('./nf/1'))
 
 router.use('/api',  require('./api'))
 router.use('/leaderboards',  require('./leaderboards'))
-router.use('/superleague',  require('./superleague'))
+
+
+
+router.use('/nf/:season', getSeason, require('./nf'))
+
+
 
 router.use((req, res) => res.status(404).render('404'))
 

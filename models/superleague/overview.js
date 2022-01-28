@@ -4,19 +4,22 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
-
 		let data = {
-			title: 'Overview',
-			nav: {
-				primary: 'superleague',
-				secondary: 'overview',
+			config: {
+				title: 'NF Season ' + req.season,
+				name: req.seasonname,
+				path: req.baseUrl,
+				season: req.season,
+				nav: {
+					cat: 'nf',
+					page: 'overview'
+				}
 			},
-
-			date: await getSeasonDate(5),
-			teams: await getTeamCount(5),
-			players: await getPlayerCount(5),
-			mvb: await getMVB(5),
-			maps: await getMaps(5),
+			date: await getSeasonDate(req.seasonid),
+			teams: await getTeamCount(req.seasonid),
+			players: await getPlayerCount(req.seasonid),
+			mvb: await getMVB(req.seasonid),
+			maps: await getMaps(req.seasonid),
 		}
 		res.render('superleague-overview', data);
 		// res.json(data)
@@ -31,7 +34,6 @@ async function getSeasonDate(seasonid) {
 
 			TO_CHAR(MIN(date), 'Mon DD') as start,
 			TO_CHAR(MAX(date), 'Mon DD, YYYY') as end
-
 
 		FROM seasonschedule
 		WHERE SeasonID = $1

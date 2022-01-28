@@ -12,9 +12,9 @@ include template/head.pug
 		h1= title
 
 		.nav-bar
-			a(href="/leaderboards" class=(nav.secondary === 'players' ? 'active' : '')) Players
-			a(href="/leaderboards/teams" class=(nav.secondary === 'teams' ? 'active' : '')) Teams
-			a(href="/leaderboards/seasons" class=(nav.secondary === 'seasons' ? 'active' : '')) Seasons
+			a(href=config.path class=(nav.secondary === 'players' ? 'active' : '')) Players
+			a(href=config.path + "/teams" class=(nav.secondary === 'teams' ? 'active' : '')) Teams
+			a(href=config.path + "/seasons" class=(nav.secondary === 'seasons' ? 'active' : '')) Seasons
 			// a(href="/superleague/teams" class=(nav.secondary === 'teams' ? 'active' : '')) Teams
 			// a(href="/superleague/table" class=(nav.secondary === 'table' ? 'active' : '')) Table
 			// a(href="/superleague/leaders" class=(nav.secondary === 'leaders' ? 'active' : '')) Leaders

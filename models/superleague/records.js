@@ -5,16 +5,21 @@ module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
 		let filters =  {
-			seasonid: 5,
+			seasonid: req.seasonid,
 			ascending: false,
 			percentage: false,
 		}
 
 		let data = {
-			title: 'Records',
-			nav: {
-				primary: 'superleague',
-				secondary: 'records',
+			config: {
+				title: 'NF Season ' + req.season + ' Records',
+				name: req.seasonname,
+				path: req.baseUrl,
+				season: req.season,
+				nav: {
+					cat: 'nf',
+					page: 'records'
+				}
 			},
 			records: {
 				points: {
