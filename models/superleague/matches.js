@@ -4,7 +4,6 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
-
 		// check page exists
 		if(req.params.id)
 			if(req.params.id != 'playoffs')	throw 'invalid page'
@@ -17,7 +16,7 @@ let init = async (req, res) => {
 
 		let data = {
 			config: {
-				title: 'NF Season ' + req.season + ' Matches',
+				title: 'NF Season ' + req.season + ' ' + ((req.params.id) ? 'Playoff ' : '') + 'Matches',
 				name: req.seasonname,
 				path: req.baseUrl,
 				season: req.season,
@@ -30,7 +29,6 @@ let init = async (req, res) => {
 			schedule: await getFixtures(filters),
 		}
 		res.render('superleague-matches', data)
-		// res.json(data)
 	}
 	catch(error) {
 		res.status(404).render('404')
@@ -200,7 +198,6 @@ async function getFixtures(filters) {
 		order by ${orderby}
 	`, [filters.seasonid, filters.league, filters.playoff], 'all')
 
-	// return await raw
 	return await format(raw, filters)
 }
 
@@ -297,9 +294,6 @@ async function format(raw, filters) {
 				}
 			})
 		}
-
-		// reverse it
-		// return Object.keys(schedule).reverse().map(e => ({[e]: schedule[Number(e)]}) )
 	}
 
 	return schedule
