@@ -45,25 +45,94 @@
 			border-radius 6px 6px 0 0
 			background #0b0c0e
 
+			.hd
+				padding .8rem 0 .6rem 0
+				font-size .9rem
+				font-weight 600
+				color #a8a8a8
+				text-transform uppercase
+				background linear-gradient(to top right,#000000,#0b0c0e)
+				text-align center
+				border-radius 6px 6px 0 0
+				// box-shadow inset 0 1px 0 1px var(--teamcolor)
+
+
+
 			&.champions
 				display flex
 				flex-direction column
+				// box-shadow 0 0 10px 0 var(--teamglow), inset 0 0 0 1px var(--teamcolor)
+				border-radius 6px
+				border 2px solid var(--teamcolor)
+				box-shadow 0 0 10px var(--teamglow)
+
+				&.crowned
+					animation buzz 5s infinite
+
+
+				svg
+					fill url(#gold.mainGradient1)
 
 				.content
 					display flex
 					flex 1
 
+					ul
+						padding .6rem 0 1.4rem 0
+						width 100%
+						display block
+
+						li
+							display block
+							width 100%
+
+							&:hover
+								background rgba(black, .2)
+
+							.name
+								font-size .8rem
+								line-height 1.6rem
+								display inline-block
+								width 80%
+								color #dbdbdb
+								padding-left 1rem
+
+							.country
+								display inline-block
+								width 20%
+								text-align right
+								padding-right 1rem
+
+								img
+									display inline-block
+									height 12px
+									width 16px
+									border-radius 3px
+									box-shadow 0 0 10px rgba(black, .3)
+									position relative
+									top 1px
+
+
 				.winningteam
 					display flex
 					align-items center
 					justify-content center
-					flex .1
-					padding .5rem 0
-					color white
-					border-radius 0 0 6px 6px
+					padding .75rem 0
 					background linear-gradient(to top right,var(--teamglow),var(--teamcolor))
+					// background var(--teamcolor)
+					// box-shadow: inset 0 0 30px #000000a1, inset 0 0 5px #07080933;
+					// border-radius 6px
+
+					padding .5rem
+
+
+
+
 
 					.logo
+						justify-content center
+						border-radius 1rem
+
 						img
 							height 2rem
 							width 2rem
@@ -71,50 +140,37 @@
 							box-shadow 0 0 10px var(--teamglow)
 							background var(--teamcolor)
 
-				h5
+				.teamname
+					// background #08080a
 					text-shadow 0 0 10px var(--teamglow)
 					color var(--teamcolor)
-					font-size 1rem
+					font-size .9rem
 					font-weight 600
 					text-align center
+					// padding .5rem
+					text-transform uppercase
 
-
-			&.final
-				svg
-					height 3rem
-					width 3rem
-					fill url(#gold.mainGradient)
-					position relative
-					top .2rem
+					box-shadow: 0 2px 0 #a336af1c;
+					display: inline;
 
 
 
-			&.mvb
 			&.champions
-				h3
+			&.mvb
+				.hd
 					span
 						color #e5c661
 						display block
 
 					svg
-						width 16px
-						height 16px
-						fill url(#gold.mainGradient)
-						position relative
-						top .2rem
+						width 1.1rem
+						vertical-align text-bottom
 
-			h3
-				padding .6rem 1rem
-				font-size .9rem
-				font-weight 600
-				color #a8a8a8
-				text-transform uppercase
-				background linear-gradient(to top right,#000000,#0b0c0e)
-				text-align center
-				border-radius inherit
+
 
 			&.mvb
-				h3
+				svg
+					fill url(#gold.mainGradient)
 
 			.row
 				display flex
@@ -171,8 +227,9 @@
 						.v
 							font-size .8rem
 							display inline-block
-							width 90px
 							text-align center
+							// width 90px
+							width 30px
 
 						.bar
 							display inline-block
@@ -180,17 +237,13 @@
 							background #ffffff17
 							height 8px
 							border-radius 2px
-							// margin-right 1rem
+							display none
 
 							.inner
 								display block
 								height inherit
 								border-radius inherit
-
-
-								// background #2acb4f
 								background #e5c762
-								// box-shadow 0 0 10px #2acb4f
 
 				&.top
 					.inner
