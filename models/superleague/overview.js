@@ -79,15 +79,13 @@ async function getMVB(seasonid) {
 			RANK() OVER (
 				ORDER BY
 					ROUND(
-						(avg(cap) * 100) +
-						(avg(assist) * 50) +
+						(avg(cap) * 150) +
+						(avg(assist) * 75) +
 						(avg(takeover_good) * 20)+
-						(avg(tag)*5) +
-						(avg(pup_jj) + avg(pup_rb)) * 10 +
-						((avg(hold) / avg(grab) * 5)) +
+						(avg(tag)*10) +
+						(avg(pup_jj) + avg(pup_rb)) * 20 +
 						(avg(chain) * 10) +
-						(avg(prevent) / 3) +
-						avg(kept_flag)
+						(avg(hold) * 2)
 					, 0) DESC
 			) rank,
 			player.name as player,
@@ -95,15 +93,13 @@ async function getMVB(seasonid) {
 			COALESCE(team.color, '#404040') as color,
 
 			ROUND(
-				(avg(cap) * 100)  +
-				(avg(assist) * 50) +
+				(avg(cap) * 150)  +
+				(avg(assist) * 75) +
 				(avg(takeover_good) * 20)+
-				(avg(tag)*5) +
-				(avg(pup_jj) + avg(pup_rb)) * 10 +
-				((avg(hold) / avg(grab) * 5)) +
+				(avg(tag)*10) +
+				(avg(pup_jj) + avg(pup_rb)) * 20 +
 				(avg(chain) * 10) +
-				(avg(prevent) / 3) +
-				avg(kept_flag)
+				(avg(hold) * 2)
 			, 0) as value
 
 		from playergame
@@ -117,11 +113,10 @@ async function getMVB(seasonid) {
 
 
 		where seasonschedule.seasonid = $1
-		and league = true
+		-- and playoff = true
 		group by player.name, team.acronym, team.color
 
 		having sum(play_time) > 8000
-		--having sum(play_time) > 2000
 		order by value DESC
 		limit 10
 	`, [seasonid], 'all')

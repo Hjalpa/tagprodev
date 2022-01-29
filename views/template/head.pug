@@ -13,11 +13,13 @@ html
 		.background
 
 		.nav-bar-primary
-			a(href="/")
-				include ../../public/favicon.svg
+			// a(href="/")
+			// 	include ../../public/favicon.svg
 
-			// a(href="/ctf/1" class=(config.nav.cat === 'ctf' ? 'active' : ''))
-			// 	span CTF
+
+
+			a(href="/ctf/1" class=(config.nav.cat === 'ctf' ? 'active' : ''))
+				span CTF
 
 			a(href="/nf/1" class=(config.nav.cat === 'nf' ? 'active' : ''))
 				span NF
@@ -30,3 +32,6 @@ html
 
 			.right
 				input(type="text", placeholder="Search", name="tagpro.dev search")
+
+				a(href="/login" class=(config.nav.cat === 'ctf' ? 'active' : ''))
+					span Login
