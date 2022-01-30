@@ -69,7 +69,7 @@
 						box-shadow 0 0 20px rgba(white, .1)
 
 					svg
-						fill url(#gold.mainGradient1)
+						fill url(#gold.trophy)
 						width 1.1rem
 						height 1.1rem
 						vertical-align text-bottom
@@ -594,6 +594,19 @@
 				width 2rem
 				border-radius 10rem
 				box-shadow 0 0 10px var(--teamcolor)
+
+			svg
+				width 1rem
+				height 1rem
+				position absolute
+				left calc(50% - (1rem /2))
+				bottom .6rem
+
+				&.winner
+					fill url(#gold.trophy)
+				&.runnerup
+					fill url(#silver.trophy)
+
 
 		.info
 			background linear-gradient(to bottom right, rgba(#292b33, .5) 0%, rgba(#1f2026, .5) 100%)

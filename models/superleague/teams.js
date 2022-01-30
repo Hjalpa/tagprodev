@@ -32,6 +32,8 @@ async function getTeams(seasonid) {
             t.logo,
             t.color,
             st.id,
+			st.winner,
+			st.runnerup,
 
             ARRAY(
 				select json_build_object('name', name, 'country', LOWER(country), 'captain', seasonplayer.captain)
@@ -46,7 +48,7 @@ async function getTeams(seasonid) {
         LEFT JOIN seasonteam as st on st.id = sp.seasonteamid
         LEFT JOIN team as t on t.id = st.teamid
         WHERE st.seasonid = $1
-        GROUP BY t.id, t.name, t.acronym, t.logo, t.color, st.id
+        GROUP BY t.id, t.name, t.acronym, t.logo, t.color, st.id, st.winner, st.runnerup
         ORDER BY t.name ASC
 	`, [seasonid], 'all')
 

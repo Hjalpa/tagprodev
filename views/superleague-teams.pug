@@ -13,6 +13,14 @@ include template/superleague-nav.pug
 						img(
 							src= n.logo
 						)
+
+						if n.winner
+							svg.winner
+								use(xlink:href="#trophy")
+						if n.runnerup
+							svg.runnerup
+								use(xlink:href="#trophy")
+
 					.info
 						h3.acronym= n.acronym
 						h2.teamname= n.name
