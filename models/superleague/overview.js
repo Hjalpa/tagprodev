@@ -19,6 +19,7 @@ let init = async (req, res) => {
 			teams: await getTeamCount(req.seasonid),
 			players: await getPlayerCount(req.seasonid),
 			mvb: await getMVB(req.seasonid),
+			champions: await getChampions(req.seasonid),
 			maps: await getMaps(req.seasonid),
 		}
 		res.render('superleague-overview', data);
@@ -74,33 +75,60 @@ async function getPlayerCount(seasonid) {
 }
 
 async function getMVB(seasonid) {
+	let mvb = `
+		Round(
+                Round(
+                        sum(cap)
+                        * 100
+                , 0)
+                +
+                Round(
+                        count(*) filter (where cap >= 3)
+                        * 100
+                , 0)
+                +
+                    Round(sum(cap_from_tapin) * 25, 0)
+                +
+
+                    Round(sum(cap_whilst_having_active_pup) * 25, 0)
+                +
+                    Round((sum(pup_rb) + sum(pup_jj) * 25), 0)
+                +
+                    Round(sum(assist) * 50, 0)
+                +
+                    (
+                        (count(*) filter (where assist >= 3) * 100)
+                    )
+                +
+                    Round(sum(tapin_from_my_chain) * 50, 0)
+                +
+                    Round(sum(takeover_good) * 5, 0)
+                +
+                    Round(sum(tag) * 2, 0)
+                +
+                    Round(sum(hold) / 2, 0)
+                +
+                    Round(sum(flag_carry_distance) / 10, 0)
+                +
+                    (sum(prevent) / 4)
+                +
+                    Round(sum(long_hold) * 50, 0)
+                +
+                    Round((sum(hold_before_cap)::DECIMAL / sum(cap)::DECIMAL) * 150, 0)
+                +
+                    Round(sum(chain) * 15, 0)
+		, 0)
+	`
+
 	let raw = await db.select(`
 		select
 			RANK() OVER (
-				ORDER BY
-					ROUND(
-						(avg(cap) * 150) +
-						(avg(assist) * 75) +
-						(avg(takeover_good) * 20)+
-						(avg(tag)*10) +
-						(avg(pup_jj) + avg(pup_rb)) * 20 +
-						(avg(chain) * 10) +
-						(avg(hold) * 2)
-					, 0) DESC
+				ORDER BY ${mvb} DESC
 			) rank,
 			player.name as player,
 			COALESCE(team.acronym, 'SUB') as acronym,
 			COALESCE(team.color, '#404040') as color,
-
-			ROUND(
-				(avg(cap) * 150)  +
-				(avg(assist) * 75) +
-				(avg(takeover_good) * 20)+
-				(avg(tag)*10) +
-				(avg(pup_jj) + avg(pup_rb)) * 20 +
-				(avg(chain) * 10) +
-				(avg(hold) * 2)
-			, 0) as value
+			${mvb} as value
 
 		from playergame
 		left join player on player.id = playergame.playerid
@@ -111,9 +139,7 @@ async function getMVB(seasonid) {
 		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
 		LEFT JOIN team ON seasonteam.teamid = team.id
 
-
-		where seasonschedule.seasonid = $1
-		-- and playoff = true
+		where seasonschedule.seasonid = $1 AND league = true -- OR (seasonschedule.playoff = TRUE AND seasonschedule.final = FALSE)
 		group by player.name, team.acronym, team.color
 
 		having sum(play_time) > 8000
@@ -156,5 +182,35 @@ async function getMaps(seasonid) {
 		order by value DESC
 		limit 10
 	`, [seasonid], 'all')
+	return raw
+}
+
+async function getChampions(seasonid) {
+	let raw = await db.select(`
+		SELECT
+            t.id,
+            t.name,
+            t.acronym,
+            t.logo,
+            t.color,
+            st.id,
+			st.winner,
+
+            ARRAY(
+				select json_build_object('name', name, 'country', LOWER(country), 'captain', seasonplayer.captain)
+                from player
+                left join seasonplayer on seasonplayer.playerid = player.id
+                left join seasonteam on seasonplayer.seasonteamid = seasonteam.id
+                where seasonteam.id = st.id
+                ORDER BY captain DESC, name ASC
+            ) AS players
+
+        FROM seasonplayer as sp
+        LEFT JOIN seasonteam as st on st.id = sp.seasonteamid
+        LEFT JOIN team as t on t.id = st.teamid
+        WHERE st.seasonid = $1 AND st.winner = true
+        GROUP BY t.id, t.name, t.acronym, t.logo, t.color, st.id, st.winner
+        ORDER BY t.name ASC
+	`, [seasonid], 'row')
 	return raw
 }

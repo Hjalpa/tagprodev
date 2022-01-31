@@ -38,6 +38,63 @@ let init = async (req, res) => {
 async function getFixtures(filters) {
 	let orderby =  (filters.league) ? 'seasonschedule.date ASC, seasonschedule.order ASC' : 'seasonschedule.round ASC, seasonschedule.match ASC, seasonschedule.order ASC'
 
+	let mvb = `
+		Round(
+
+			Round(cap * 100, 0)
+			+
+			-- hattrick: 3 caps in a game
+			(
+				case
+					when cap >= 3 then 300
+				end
+			)
+			+
+				Round((cap_from_tapin) * 25, 0)
+			+
+
+				Round((cap_whilst_having_active_pup) * 25, 0)
+			+
+				Round(((pup_rb) + (pup_jj) * 25), 0)
+			+
+				Round((assist) * 50, 0)
+			+
+				-- playmaker: 3 assists in a game
+				(
+					case
+						when assist >= 3 then 300
+					end
+				)
+				+
+				Round((tapin_from_my_chain) * 50, 0)
+			+
+				Round((takeover_good) * 5, 0)
+			+
+				Round((tag) * 2, 0)
+			+
+				Round((hold) / 2, 0)
+			+
+				Round((flag_carry_distance) / 10, 0)
+			+
+				((prevent) / 4)
+			+
+				Round((long_hold) * 50, 0)
+			+
+			(
+				NULLIF(
+					hold_before_cap::DECIMAL
+				, 0)
+				/
+				NULLIF(
+					cap::DECIMAL * 150
+				,  0)
+			)
+			+
+				Round((chain) * 15, 0)
+
+		, 0)
+	`
+
 	let raw = await db.select(`
 		SELECT
 			seasonschedule.id as seasonscheduleid,
@@ -170,16 +227,14 @@ async function getFixtures(filters) {
 			) as timelosing,
 
 			-- mvb
-			(SELECT player.name FROM playergame LEFT JOIN player ON player.id = playergame.playerid where playergame.gameid = game.id
-			ORDER BY
-			-- cap+assist+(takeover_good/3) DESC, takeover_good DESC, hold DESC
-
-			(cap*100) + (assist * 50) + (takeover_good * 20) + (tag * 5) + ((pup_jj+pup_rb)*10) + ((hold / grab) * 5) + (chain * 10) + (prevent / 3) + kept_flag DESC
-
-
-
-
-			limit 1) as mvb
+			(
+				SELECT player.name
+				FROM playergame
+				LEFT JOIN player ON player.id = playergame.playerid
+				WHERE playergame.gameid = game.id
+				ORDER BY cap DESC
+				LIMIT 1
+			) as mvb
 
 		from seasonschedule
 

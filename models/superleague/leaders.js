@@ -6,11 +6,10 @@ let init = async (req, res) => {
 	try {
 		let filters =  {
 			mode: getMode(req.params.id),
-			seasonid: 5,
+			seasonid: req.seasonid,
 			ascending: false,
 			percentage: false,
 		}
-
 
 		let data = {
 			config: {
@@ -434,7 +433,7 @@ async function getData(filters, sql) {
 		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN seasonschedule ON game.id = seasonschedule.gameid
 
-		WHERE ${where} AND seasonschedule.league = TRUE
+		WHERE ${where} AND seasonschedule.league = TRUE and seasonschedule.seasonid = $1
 
 		-- removes SUBS
 		AND seasonteam IS NOT NULL

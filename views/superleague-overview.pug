@@ -49,8 +49,8 @@ include template/superleague-nav.pug
 							// .item.value=  n.value
 							- let percent = ((n.value / max) * 100).toFixed(0)
 							.item.test
-								.v= n.value
-								// .v= percent
+								// .v= n.value
+								.v= percent
 								.bar
 									.inner(style="width:" + percent + "%")
 
@@ -67,32 +67,27 @@ include template/superleague-nav.pug
 
 				// playoff champions
 				.pane.champions(
-					style="--teamcolor: #f586ff; --teamglow: #f586ff80"
+					style="--teamcolor: " + champions.color + "; --teamglow: " + champions.color + "80"
 				)
 					.container.crowned
 						.headline
 							svg
 								use(xlink:href="#trophy")
 							.text Champions
-							.team Carrot Bunny Hops
+							.team= champions.name
 
 						ul.players
-							li
-								.captain
-									svg
-										use(xlink:href="#captain")
-								.name nevermore
-								.country
-									img(src='https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/us.svg')
-							li
-								.captain
-								.name nevermind
-								.country
-									img(src='https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/de.svg')
-							li
-								.name neversea.
-								.country
-									img(src='https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/gb.svg')
+							each p, k in champions.players
+								li
+									if p.captain
+										.captain
+											svg
+												use(xlink:href="#captain")
+									.name= p.name
+									.country
+										img(
+											src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + p.country + ".svg"
+										)
 
 
 			.upcoming
