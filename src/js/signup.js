@@ -85,9 +85,11 @@ document.querySelector('.verification button').addEventListener('click', async (
 		else if(data.success) {
 			screen.classList.add('success')
 
-			screen.querySelector('h2').innerText = 'Wohoo... you did it!'
+			screen.querySelector('h2').innerText = 'Yowie Wowie'
 			screen.querySelector('h5').classList.add('hide')
-			screen.querySelector('p').innerText = `Good stuff. You're verified, and will be placed into the auction pool for the upcoming season.`
+			screen.querySelector('p').innerText = `Congrats. You're verified, and will be placed into the auction pool for the upcoming season!`
+
+			screen.querySelector('.discord').classList.remove('hide')
 
 			screen.querySelector('button').classList.add('hide')
 			document.body.classList.remove('loading')

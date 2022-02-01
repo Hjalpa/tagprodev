@@ -18,7 +18,7 @@ let init = async (req, res) => {
 					page: 'league',
 				}
 			},
-			// table: await getTable(req.seasonid)
+			signups: await getSignups(req.seasonid)
 		}
 		res.render('signup', data)
 	} catch(error) {
@@ -26,9 +26,10 @@ let init = async (req, res) => {
 	}
 }
 
-
-
-
+async function getSignups(seasonid) {
+	let raw = db.select('SELECT username, profile FROM signup WHERE seasonid = $1 AND verified = $2', [seasonid, true], 'all')
+	return raw
+}
 
 async function getProfile(profile) {
 	let raw = await axios.get(profile)
@@ -36,8 +37,6 @@ async function getProfile(profile) {
 
 	return await new jsdom.JSDOM(raw.data)
 }
-
-
 
 module.exports.signup = async (req, res) => await signup(req, res)
 let signup = async (req, res) => {
@@ -115,8 +114,22 @@ let signup = async (req, res) => {
 			let flair_raw  = dom.window.document.querySelector('#owned-flair .flair-available.selected .flair-header')
 			let flair = flair_raw.textContent.trim()
 
+
+			if(data.step1 & data.step2) {
+				data = {
+					id: data.id,
+					username: data.username,
+					step: 1,
+					error: {
+						msg: 'incorrect flair',
+						current: flair,
+						awaiting: 'Remove Flair'
+					}
+				}
+			}
+
 			// step 1
-			if(!data.step1) {
+			else if(!data.step1) {
 				data.step1 = (flair === 'Remove Flair') ? true : false
 
 				if(data.step1) {
