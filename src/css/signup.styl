@@ -1,221 +1,552 @@
-// :root
-// 	font-size 17px
-// 	font-family 'Montserrat', sans-serif
+:root
+	font-size 17px
+	font-family 'Montserrat', sans-serif
 
-// html
-// body
-// 	background black
-// 	height 100%
-// 	width 100%
-// 	display block
+html
+body
+	background black
+	height 100%
+	width 100%
+	display block
 
-// .signup
-// 	z-index 2
-// 	display flex
-// 	align-items center
-// 	justify-content center
-// 	height 100%
-// 	position relative
-
-// 	form
-// 		backdrop-filter: blur(10px);
-// 		background rgba(#0f1837, .9)
-// 		--color #0039ff
-
-// 		--blur: 1rem;
-// 		--box-blur: calc(0.5 * var(--blur));
-// 		--glow: var(--color);
-// 		--size: 12rem;
-// 		align-items: center;
-
-// 		border: 2px solid currentColor;
-// 		box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.15), inset 0 0 var(--box-blur) var(--glow), 0 0 var(--box-blur) var(--glow);
-// 		color: var(--color, white);
-// 		width 950px
-// 		border-radius .6rem
-
-// 		.left
-// 		.right
-// 			display inline-block
-// 			vertical-align top
-
-// 		.left
-// 			width 65%
-// 			padding: 3rem;
-// 			border-right 2px solid currentColor
-
-// 			h1
-// 				color white
-// 				font-size 2rem
-// 				font-weight 600
-// 				text-transform uppercase
+	&.loading
+		cursor wait
+		*
+			cursor wait !important
 
 
-// 			p.details
-// 				color #4a6ba3
-// 				margin 0 0 1rem
-// 				font-size 1rem
-// 				line-height 1.4rem
+.hide
+	display none !important
 
-// 				span
-// 					color #1adbd4
-// 					box-shadow 0 2px 0 0 rgba(#1adbd4, .1)
-
-// 			h2
-// 				font-weight 600
-// 				font-size 1.2rem
-// 				color rgba(#f6d616, .85)
-// 				text-shadow 0 0 15px #ff5210
-// 				text-transform uppercase
-// 				margin-bottom .2rem
-// 				padding-top 1rem
-// 				display block
-
-// 			h3
-// 				font-weight 600
-// 				font-size 1rem
-// 				color rgba(#27ed27d9, .85)
-// 				text-shadow 0 0 15px #27ed27d9
-// 				text-transform uppercase
-// 				display block
-// 				line-height 1rem
-// 				padding-top .3rem
+.signup
+	z-index 2
+	display flex
+	align-items center
+	justify-content center
+	height 100%
+	position relative
 
 
-// 			input[type=text]
-// 				background #131f36
-// 				border none
-// 				box-shadow none
-// 				display block
-// 				margin-bottom 1rem
-// 				padding .8rem
-// 				font-size 1rem
-// 				color white
-// 				background #040d2e
-// 				width 100%
-// 				border-radius .4rem
+	.new
+		backdrop-filter: blur(10px);
+		background rgba(#0f1837, .9)
+		--color #0039ff
 
-// 				&:focus
-// 					outline 2px solid #f6d616
+		--blur: 1rem;
+		--box-blur: calc(0.5 * var(--blur));
+		--glow: var(--color);
+		--size: 12rem;
+		align-items: center;
 
-// 				&::placeholder
-// 					color #3e529b
+		border: 2px solid currentColor;
+		box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.15), inset 0 0 var(--box-blur) var(--glow), 0 0 var(--box-blur) var(--glow);
+		color: var(--color, white);
+		width 950px
+		border-radius .6rem
 
-// 				&:valid + button
-// 					transition all .2s linear
-// 					opacity 1
-// 					z-index 8
+		&.error
+			animation error ease-in-out .2s 6, buzz ease-in-out 1s 1
 
-// 			.form
-// 				position relative
+			.left
+				animation error-left ease-in-out .2s 6 !important
 
-// 			button
-// 				opacity 0
-// 				background red
-// 				position absolute
-// 				top 3.4rem
-// 				right .4rem
-// 				height 2.3rem
-// 				border none
-// 				border-radius .4rem
-// 				cursor pointer
-// 				background #f6d616
-// 				padding 0 .8rem
-// 				display block
-// 				z-index -1
-// 				background linear-gradient(to bottom right, #f6d616, #ba8410)
-// 				font-weight 600
-// 				color #543e0c
+				input::placeholder
+					color red !important
+					text-shadow 0 0 10px red
+					font-weight 600
+					text-align right
 
-// 				&:hover
-// 					opacity .75 !important
+		.left
+		.right
+			display inline-block
+			vertical-align top
+
+		.left
+			width 65%
+			padding: 3rem;
+			border-right 2px solid currentColor
+
+			h1
+				color white
+				font-size 2rem
+				font-weight 600
+				text-transform uppercase
+
+
+			p.details
+				color #4a6ba3
+				margin 0 0 1rem
+				font-size 1rem
+				line-height 1.4rem
+
+				span
+					color #1adbd4
+					box-shadow 0 2px 0 0 rgba(#1adbd4, .1)
+
+			h2
+				font-weight 600
+				font-size 1.2rem
+				color rgba(#f6d616, .85)
+				text-shadow 0 0 15px #ff5210
+				text-transform uppercase
+				margin-bottom .2rem
+				padding-top 1rem
+				display block
+
+			input[type=text]
+				border none
+				box-shadow none
+				display block
+				margin-bottom 1rem
+				padding .8rem
+				font-size 1rem
+				color white
+				background #040d2e
+				width 100%
+				border-radius .4rem
+				caret-color #f6d616
+
+				&:focus
+					outline 2px solid #f6d616
+
+				&::placeholder
+					color #3e529b
 
 
 
-// 			.info
-// 				font-size .9rem
-// 				line-height 1.1rem
-// 				margin-top 1rem
-// 				color rgba(#4a6ba3, .5)
+			.form
+				position relative
 
 
-// 		.right
-// 			width 35%
-// 			padding 3rem
+			.info
+				font-size .9rem
+				line-height 1.1rem
+				margin-top 1rem
+				color rgba(#4a6ba3, .5)
 
-// 			h2
-// 				font-weight 600
-// 				display block
-// 				font-size 1rem
-// 				text-transform uppercase
-// 				// color #1a63d1
-// 				color white
-// 				// text-shadow 0 0 15px #1a63d1
-// 				padding-left .2rem
-// 				padding-bottom .3rem
 
-// 			.bar
-// 				border-radius .4rem
-// 				background rgba(black, .2)
-// 				height 2.4rem
-// 				display block
-// 				width 100%
-// 				margin-bottom 1.6rem
-// 				position relative
+		.right
+			width 35%
+			padding 3rem
 
-// 				.progress
-// 					display block
-// 					height inherit
-// 					border-radius inherit
-// 					background linear-gradient(to bottom right, #fae624, #ff7715)
-// 					background: linear-gradient(to bottom right,#35ae61,#4aff00);
-// 					box-shadow 0 0 10px 0 #35ae61
-// 					position relative
-// 					overflow hidden
+			h2
+				font-weight 600
+				display block
+				font-size 1rem
+				text-transform uppercase
+				// color #1a63d1
+				color white
+				// text-shadow 0 0 15px #1a63d1
+				padding-left .2rem
+				padding-bottom .3rem
 
-// 					.strip
-// 						background-image linear-gradient(-45deg, rgba(black, .1) 25%, transparent 25%, transparent 50%, rgba(black, .1) 50%, rgba(black, .1) 75%, transparent 75%, transparent);
-// 						background-size 3.2rem 3.2rem
-// 						position absolute
-// 						display block
-// 						width inherit
-// 						height inherit
-// 						width 100%
-// 						border-radius inherit
+			.bar
+				border-radius .4rem
+				background rgba(black, .2)
+				height 2.4rem
+				display block
+				width 100%
+				margin-bottom 1.6rem
+				position relative
 
-// 					.count
-// 						color white
-// 						font-weight 600
-// 						line-height 2.4rem
-// 						font-size .85rem
-// 						padding-left .8rem
-// 						position absolute
-// 						z-index 99
-// 						top 0
-// 						text-shadow 0 0 10px white
+				.progress
+					display block
+					height inherit
+					border-radius inherit
+					background linear-gradient(to bottom right, #fae624, #ff7715)
+					background: linear-gradient(to bottom right,#35ae61,#4aff00);
+					box-shadow 0 0 10px 0 #35ae61
+					position relative
+					overflow hidden
 
-// 				> .count
-// 					color white
-// 					font-weight 600
-// 					line-height 2.4rem
-// 					font-size .85rem
-// 					padding-left .8rem
-// 					position absolute
-// 					z-index 99
-// 					top 0
-// 					right 1rem
+					.strip
+						background-image linear-gradient(-45deg, rgba(black, .1) 25%, transparent 25%, transparent 50%, rgba(black, .1) 50%, rgba(black, .1) 75%, transparent 75%, transparent);
+						background-size 3.2rem 3.2rem
+						position absolute
+						display block
+						width inherit
+						height inherit
+						width 100%
+						border-radius inherit
 
-// 			p
-// 				color #4a6ba3
+					.count
+						color white
+						font-weight 600
+						line-height 2.4rem
+						font-size .85rem
+						padding-left .8rem
+						position absolute
+						z-index 99
+						top 0
+						text-shadow 0 0 10px white
 
-// 			svg
-// 				height: 2.4rem;
-// 				width: auto;
-// 				fill: #0039ff94;
-// 				position: absolute;
-// 				bottom: 2rem;
-// 				right: 2rem;
-// 				cursor pointer
+				> .count
+					color white
+					font-weight 600
+					line-height 2.4rem
+					font-size .85rem
+					padding-left .8rem
+					position absolute
+					z-index 99
+					top 0
+					right 1rem
 
-// 				&:hover
-// 					fill rgb(219 26 145);
+			p
+				color #4a6ba3
+
+			svg
+				height: 2.4rem;
+				width: auto;
+				fill: #0039ff94;
+				position: absolute;
+				bottom: 2rem;
+				right: 2rem;
+				cursor pointer
+
+				&:hover
+					fill rgb(219 26 145);
+
+
+// verification setup
+.verification
+	backdrop-filter: blur(10px);
+	background rgba(#0f1837, .9)
+	--color #0039ff
+	--blur: 1rem;
+	--box-blur: calc(0.5 * var(--blur));
+	--glow: var(--color);
+	--size: 12rem;
+	align-items: center;
+	border: 2px solid currentColor;
+	box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.15), inset 0 0 var(--box-blur) var(--glow), 0 0 var(--box-blur) var(--glow);
+	color: var(--color, white);
+	width 450px
+	border-radius .6rem
+
+	padding 1.5rem 3rem
+	animation buzz ease-in-out 4s infinite
+
+	&.success
+		--color #4efe50 !important
+		background #17451bbf !important
+
+		p
+			margin-bottom 0
+
+	&.error
+		animation error ease-in-out .2s 6, buzz ease-in-out 4s infinite
+
+	h2
+		font-weight 600
+		font-size 1.2rem
+		color rgba(#f6d616, .85)
+		text-shadow 0 0 15px #ff5210
+		text-transform uppercase
+		margin-bottom .5rem
+		display block
+		text-align center
+
+	h5
+		color white
+		font-size 1.2rem
+		font-weight 600
+		text-align center
+		display block
+		margin 0 0 1rem 0
+
+	&:not(.success)
+		img
+			display none
+
+	img
+		width 70px
+		margin .5rem auto 1rem auto
+
+	p
+		color #4a6ba3
+		margin 0 0 1rem
+		font-size 1rem
+		line-height 1.4rem
+		color white
+		text-align center
+
+		span
+			color #1adbd4
+			box-shadow 0 2px 0 0 rgba(#1adbd4, .1)
+
+
+
+
+
+	button
+		height 2.3rem
+		border none
+		border-radius .4rem
+		cursor pointer
+		padding 0 .8rem
+		display block
+		background linear-gradient(to bottom right, #f6d616, #ba8410)
+		font-weight 600
+		color #543e0c
+		margin 0 auto
+		margin-top 2rem
+
+		&:hover
+			background linear-gradient(to bottom right, darken(#f6d616, 15%), darken(#ba8410, 15%))
+
+
+
+
+
+
+
+
+
+
+// background
+.background
+	height auto
+	width 2600px
+	position fixed
+	z-index 0
+
+	img
+		width 100%
+		height auto
+		display block
+		filter grayscale(30%)
+		position absolute
+
+	._1
+		animation move1 80s linear infinite,fadeOut1 80s linear infinite
+	._2
+		animation move2 80s linear infinite,fadeOut2 80s linear infinite
+	._3
+		animation move3 80s linear infinite,fadeOut3 80s linear infinite
+	._4
+		animation move4 80s linear infinite,fadeOut4 80s linear infinite
+
+@-webkit-keyframes move1{
+	from{
+		transform:translate(-700px,-200px) rotate(4deg)
+	}
+	to{
+		transform:translate(1500px,-800px) rotate(45deg)
+	}
+}
+@-webkit-keyframes move2{
+	from{
+		transform:translate(0,-200px) rotate(0)
+	}
+	to{
+		transform:translate(-1700px,-200px) rotate(10deg)
+	}
+}
+@-webkit-keyframes move3{
+	from{
+		transform:translate(800px,-400px)
+	}
+	to{
+		transform:translate(-1000px,0)
+	}
+}
+@-webkit-keyframes move4{
+	from{
+		transform:translate(-200px,1000px)
+	}
+	to{
+		transform:translate(-250px,-400px)
+	}
+}
+@-webkit-keyframes fadeOut1{
+	0%{
+		opacity:0
+	}
+	1%{
+		opacity:.8
+	}
+	24%{
+		opacity:.8
+	}
+	26%{
+		opacity:0
+	}
+	100%{
+		opacity:0
+	}
+}
+@-webkit-keyframes fadeOut2{
+	0%{
+		opacity:0
+	}
+	24%{
+		opacity:0
+	}
+	26%{
+		opacity:.8
+	}
+	49%{
+		opacity:.8
+	}
+	51%{
+		opacity:0
+	}
+	100%{
+		opacity:0
+	}
+}
+@-webkit-keyframes fadeOut3{
+	0%{
+		opacity:0
+	}
+	49%{
+		opacity:0
+	}
+	51%{
+		opacity:.8
+	}
+	74%{
+		opacity:.8
+	}
+	76%{
+		opacity:0
+	}
+	100%{
+		opacity:0
+	}
+}
+@-webkit-keyframes fadeOut4{
+	0%{
+		opacity:0
+	}
+	74%{
+		opacity:0
+	}
+	76%{
+		opacity:.8
+	}
+	99%{
+		opacity:.8
+	}
+	100%{
+		opacity:0
+	}
+}
+
+
+
+
+@keyframes buzz
+	10%
+		transform translateY(3px)
+
+	20%
+		transform translateY(-3px)
+
+	30%
+		transform translateY(3px)
+
+	40%
+		transform translateY(-3px)
+
+	50%
+		transform translateY(2px)
+
+	60%
+		transform translateY(-2px)
+
+	70%
+		transform translateY(2px)
+
+	80%
+		transform translateY(-2px)
+
+	90%
+		transform translateY(1px)
+
+	100%
+		transform translateY(-1px)
+
+
+@keyframes error
+	0%
+		border: 2px solid #0039ff;
+		box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.15), inset 0 0 var(--box-blur) #0039ff, 0 0 var(--box-blur) #0039ff;
+		background-color rgba(#0f1837, .9)
+	50%
+		border: 2px solid #ff0000;
+		box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.15), inset 0 0 var(--box-blur) #ff0000, 0 0 var(--box-blur) #ff0000;
+		background-color #ff03032e
+	100%
+		border: 2px solid #0039ff;
+		box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.15), inset 0 0 var(--box-blur) #0039ff, 0 0 var(--box-blur) #0039ff;
+		background-color rgba(#0f1837, .9)
+
+
+@keyframes error-left
+	0%
+		border-right-color #0039ff
+	50%
+		border-right-color #ff0000
+	100%
+		border-right-color #0039ff
+
+
+
+button:not(:disabled)
+	.spinner
+		display none
+
+button:disabled
+	.enabled
+		display none
+	.spinner
+		display block
+		animation container 1568ms linear infinite
+		width 2rem
+		height 2rem
+
+		svg
+			width 100%
+			height 100%
+			animation svg-spin 5332ms cubic-bezier(.4,0,.2,1) infinite
+			stroke #a3810f
+
+			*
+				fill transparent
+				stroke-width 4px
+				animation circle-spin 1333ms cubic-bezier(.4,0,.2,1) infinite
+				transition stroke 133ms linear
+
+@keyframes container
+	100%
+		transform: rotate(360deg);
+
+@keyframes svg-spin
+	12.5%
+		transform rotate(135deg)
+	25%
+		transform: rotate(270deg)
+	37.5%
+		transform: rotate(405deg)
+	50%
+		transform: rotate(540deg)
+	62.5%
+		transform: rotate(675deg)
+	75%
+		transform: rotate(810deg)
+	87.5%
+		transform: rotate(945deg)
+	100%
+		transform: rotate(1080deg)
+
+@keyframes circle-spin
+	0%
+		stroke-dasharray 5 120
+		stroke-dashoffset 5
+	50%
+		stroke-dasharray 100 25
+		stroke-dashoffset 50
+	100%
+		stroke-dasharray 5 120
+		stroke-dashoffset 5

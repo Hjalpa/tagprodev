@@ -47,7 +47,8 @@ gulp.task('js', gulp.series(function(done) {
 			'./src/js/util.js',
 			'./src/js/vendors/*.js',
 			'./src/js/init.js',
-			'./src/js/*.js'
+			'./src/js/*.js',
+			'!./src/js/signup.js'
 		])
 		.pipe(concat('init.js'))
 		.pipe(uglify())
@@ -63,7 +64,7 @@ gulp.task('js', gulp.series(function(done) {
 //  css minification
 // --------------------------------------------------------------------------
 gulp.task('css', gulp.series(function(done) {
-	gulp.src(['./src/css/reset.styl', './src/css/*.styl'])
+	gulp.src(['./src/css/reset.styl', './src/css/*.styl', '!./src/css/signup.styl'])
 		.pipe(stylus())
 		.pipe(concat('init.css'))
 		.pipe(autoprefix('last 1 versions'))
@@ -77,11 +78,44 @@ gulp.task('css', gulp.series(function(done) {
 	done()
 }))
 
+//  signup css
+// --------------------------------------------------------------------------
+gulp.task('signup_css', gulp.series(function(done) {
+	gulp.src(['./src/css/reset.styl', './src/css/signup.styl'])
+		.pipe(stylus())
+		.pipe(concat('signup.css'))
+		.pipe(autoprefix('last 1 versions'))
+	    .pipe(cleanCSS())
+		.pipe(size(
+			{'title':'signup.css'}
+		))
+		.pipe(gulp.dest('./public/'))
+		// .pipe(reload({stream:true}))
+
+	done()
+}))
+
+gulp.task('signup_js', gulp.series(function(done) {
+	gulp.src(['./src/js/signup.js'])
+		.pipe(concat('signup.js'))
+		// .pipe(uglify())
+		.pipe(size(
+			{'title':'signup.js'}
+		))
+		.pipe(gulp.dest('./public/'))
+		.pipe(reload({stream:true}))
+
+	done()
+}))
+
 //  watch for edits
 // --------------------------------------------------------------------------
 gulp.task('watch', gulp.series(gulp.parallel('browser-sync'), function(done) {
-	gulp.watch(['./src/css/*/*.styl', './src/css/*.styl'], gulp.series('css'))
-	gulp.watch(['./src/js/*.js', './src/js/vendors/*.js'], gulp.series('js'))
+	gulp.watch(['./src/css/*/*.styl', './src/css/*.styl', '!./src/css/signup.styl'], gulp.series('css'))
+	gulp.watch(['./src/js/*.js', './src/js/vendors/*.js', '!./src/js/signup.js'], gulp.series('js'))
+
+	gulp.watch(['./src/css/signup.styl'], gulp.series('signup_css'))
+	gulp.watch(['./src/js/signup.js'], gulp.series('signup_js'))
 
 	gulp.watch('./views/*.pug').on('change', browserSync.reload)
 	gulp.watch('./public/*.js').on('change', browserSync.reload)

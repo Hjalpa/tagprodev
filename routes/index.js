@@ -38,9 +38,11 @@ let getSeason = async function (req, res, next) {
 router.use(getSeason)
 
 router.get('/', (req, res) => res.redirect('./nf/1'))
+
 router.use('/api',  require('./api'))
 router.use('/leaderboards',  require('./leaderboards'))
 router.use('/:mode/:season', getSeason, require('./nf'))
 router.use((req, res) => res.status(404).render('404'))
+
 
 module.exports = router

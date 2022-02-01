@@ -1,0 +1,55 @@
+doctype html
+html
+	head
+		title= config.title
+		meta(charset='utf-8')
+		link(rel='stylesheet', href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap")
+		link(rel='stylesheet', href='/signup.css')
+		link(rel='icon', href='/favicon.svg', type='image/svg+xml')
+		script(src='/signup.js', async)
+		| <script defer type="text/javascript" src="https://api.pirsch.io/pirsch.js" id="pirschjs" data-code="rCf3zbJZfR6JWanXlrObtEsAvLrlZLHS"></script>
+
+	body
+		.background
+			img(src='https://i.imgur.com/76Nzkgm.png')._1
+			img(src='https://i.imgur.com/1ZWMzQn.png')._2
+			img(src='https://i.imgur.com/5NgLxbF.png')._3
+			img(src='https://i.imgur.com/APTMlFc.png')._4
+
+		.signup
+
+			.verification.hide
+				h2 Verification Required
+				h5 Step <span class="step"></span> of 2
+				img(src="https://i.imgur.com/wWyeptj.gif")
+
+				p Hi <span class="name"></span>. Please verify your signup by switching your Tagpro flair to: <span class="flair">No Flair</span>
+
+				button
+					.enabled Done. Verify me! 👌
+					.disabled.spinner
+						svg
+							use(xlink:href="#loader")
+
+			.new
+				.left
+					h1 CTF Season Signup
+					p.details Season 1 of the <span>CTF Super League</span> will run for <span>3 weeks</span> throughout <span>February</span>, with games played <span>Monday</span> and <span>Thursday</span> 7:30 BST.
+
+					h2 Paste in your Profile URL
+					.form
+						input(type="text" placeholder="https://tagpro.koalabeast.com/profile/52fb8f2e2c955cb762a572fd" required pattern="http(s?)(:\/\/)((www.)?)(([^.]+)\.)?([a-zA-z0-9\-_]+)(.com|.net|.gov|.org|.in)(\/[^\s]*)?")
+
+					.info Please DO NOT sign up unless you're able to make all available dates. You don't need to be the best player. You do need to be committed.
+
+				.right
+					h2 Signup Count
+					.bar
+						.progress(style="width:36%")
+							.strip
+							.count 36%
+
+		svg.hide
+			defs
+				symbol#loader(viewBox="0 0 50 50")
+					circle(cx="25", cy="25", r="20")
