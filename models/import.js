@@ -14,7 +14,7 @@ let game = async (req, res) => {
 async function makeGame(param, res) {
 	let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [param.euid], 'id')
 	if(!gameExists)
-		exec(`php ../tagpro-stats/index.php ${param.euid}`, async (error, raw) => {
+		exec(`php ../tagpro/stats-gen/index.php ${param.euid}`, async (error, raw) => {
 
 			if(error)
 				res.status(400).send(error)

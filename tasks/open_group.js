@@ -15,7 +15,6 @@ const createGroup = async () => {
     const page = await browser.newPage();
 	const navigationPromise = page.waitForNavigation()
 
-	// await page.goto('https://tagpro-maptest-paris.koalabeast.com/groups')
 	// await page.goto('https://tagpro.koalabeast.com/groups/mywgodnm')
 	await page.goto('https://tagpro.koalabeast.com/groups')
 
@@ -24,7 +23,7 @@ const createGroup = async () => {
 
 	// enter group name
 	await page.waitForSelector('input[name="name"]')
-	await page.type('input[name="name"]', 'Super League Game')
+	await page.type('input[name="name"]', 'S1 Super League')
 
 	// create group
 	await page.click('#create-group-btn')
@@ -38,9 +37,7 @@ const createGroup = async () => {
 	await page.waitForSelector('#pug-btn')
 	await page.click('#pug-btn')
 
-
 	await navigationPromise
-
 
 	await page.waitForSelector('.js-private-game')
 
@@ -68,6 +65,13 @@ const createGroup = async () => {
 	await page.type('input[name="blueTeamName"]', 'COO')
 	await page.keyboard.press('Enter');
 
+	// remove self assignment
+	await page.evaluate(() => {
+		document.querySelector('input[name="selfAssignment"]').checked = false
+
+		let event = new Event('change');
+		document.querySelector('input[name="selfAssignment"]').dispatchEvent(event)
+	})
 
 	// set comp mode
 	await page.evaluate(() => {
@@ -76,7 +80,6 @@ const createGroup = async () => {
 		let event = new Event('change');
 		document.querySelector('input[name="competitiveSettings"]').dispatchEvent(event)
 	})
-
 
 	// set server
 	await page.evaluate(() => {
@@ -99,27 +102,26 @@ const createGroup = async () => {
 	})
 
 	// select map
-	await page.evaluate(() => {
-		document.querySelector('select[name="map"]').value = 'um_id/'
+	// await page.evaluate(() => {
+	// 	document.querySelector('select[name="map"]').value = 'um_id/'
 
-		let event = new Event('change');
-		document.querySelector('select[name="map"]').dispatchEvent(event)
+	// 	let event = new Event('change');
+	// 	document.querySelector('select[name="map"]').dispatchEvent(event)
 
 
-	})
-	await page.on('dialog', async dialog => {
+	// })
+	// await page.on('dialog', async dialog => {
 
-        console.log( dialog.type() );
+        // console.log( dialog.type() );
 
-        console.log( dialog.message() );
+        // console.log( dialog.message() );
 
-        await dialog.accept( "85836" );
+        // await dialog.accept( "85836" );
 
-		// await page.dialog.type('prompt', '85836')
+	// 	// await page.dialog.type('prompt', '85836')
 
-	})
-
-	await page.keypress('enter')
+	// })
+	// await page.keypress('enter')
 
 	// disable tagpros
 	await page.evaluate(() => {
@@ -129,10 +131,12 @@ const createGroup = async () => {
 		let event = new Event('change');
 		document.querySelector('input[name="powerupTagPro"]').dispatchEvent(event)
 	})
-
-
-
 	await page.waitForSelector('.non-default[name="powerupTagPro"]')
+
+
+
+
+	console.log(tagpro)
 
 
 	// screenshot

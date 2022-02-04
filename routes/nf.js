@@ -30,6 +30,8 @@ router.get('/', async (req, res) => {
 		require('../models/signup').init(req, res)
 })
 
+router.get('/draftpacket', (req, res) => require('../models/signup').draftpacket(req, res))
+
 router.get('/matches/:id?', cacheMiddleware(3600), (req, res) => require('../models/superleague/matches').init(req, res))
 router.get('/leaders/:id?', cacheMiddleware(3600), (req, res) => require('../models/superleague/leaders').init(req, res))
 router.get('/records', cacheMiddleware(3600), (req, res) => require('../models/superleague/records').init(req, res))

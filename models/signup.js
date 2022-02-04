@@ -182,3 +182,13 @@ let signup = async (req, res) => {
 
 	res.json(data)
 }
+
+module.exports.draftpacket = async (req, res) => await draftpacket(req, res)
+let draftpacket = async (req, res) => {
+	try {
+		const data = await db.select('SELECT username, profile, captain, notes FROM signup WHERE seasonid = $1 AND verified = $2 ORDER BY date DESC', [req.seasonid, true], 'all')
+		res.json(data)
+	} catch(error) {
+		res.status(404).render('404')
+	}
+}

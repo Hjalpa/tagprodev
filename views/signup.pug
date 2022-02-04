@@ -37,18 +37,18 @@ html
 			.new
 				.left
 					h1= config.title
-					p.details Season 1 of the <span>CTF Super League</span> will run for <span>3 weeks</span> throughout <span>February</span>, with games played <span>Monday</span> and <span>Thursday</span> 7:30 BST.
+					p.details Season 1 of the <span>CTF Super League</span> will run for <span>3 weeks</span> throughout <span>February</span>, with games played <span>Monday</span> and <span>Thursday</span> 7:30pm BST.
 
 					h2 Paste in your Profile URL
 					.form
 						input(type="text" placeholder="https://tagpro.koalabeast.com/profile/52fb8f2e2c955cb762a572fd" required pattern="http(s?)(:\/\/)((www.)?)(([^.]+)\.)?([a-zA-z0-9\-_]+)(.com|.net|.gov|.org|.in)(\/[^\s]*)?")
 
-					.info Please DO NOT sign up unless you're able to make all available dates. You don't need to be the best player. You do need to be committed.
+					.info Please DO NOT sign up unless you're able to make the majority of dates. You don't need to be the best player. You do need to be committed.
 
 				.right
-					h2 Signup Count
+					h2 Signup Quota
 					.bar
-						- signups = ((signups.length + 12) / 40) * 100
+						- signups = Math.round((signups.length / 24) * 100)
 						- signups_text = signups + '%'
 						.progress(style="width:"+signups+"%")
 							.strip
