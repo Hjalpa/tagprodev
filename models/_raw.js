@@ -11,7 +11,7 @@ let game = async (req, res) => {
 	}
 
 	if(isNumeric(req.query.euid))
-		exec(`php ../tagpro-stats/index.php ${euid}`, async (error, raw) => {
+		exec(`php stat-gen/index.php ${euid}`, async (error, raw) => {
 			if(error)
 				res.status(400).send(error)
 
