@@ -121,7 +121,7 @@ async function getMVB(seasonid) {
 	`
 
 	let raw = await db.select(`
-		select
+		SELECT
 			RANK() OVER (
 				ORDER BY ${mvb} DESC
 			) rank,
@@ -130,17 +130,21 @@ async function getMVB(seasonid) {
 			COALESCE(team.color, '#404040') as color,
 			${mvb} as value
 
-		from playergame
-		left join player on player.id = playergame.playerid
+		FROM playergame
 		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN seasonschedule ON game.id = seasonschedule.gameid
+		LEFT JOIN player ON player.id = playergame.playerid
 
 		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
 		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
 		LEFT JOIN team ON seasonteam.teamid = team.id
 
-		where seasonschedule.seasonid = $1 AND league = true -- OR (seasonschedule.playoff = TRUE AND seasonschedule.final = FALSE)
-		group by player.name, team.acronym, team.color
+		-- WHERE seasonschedule.seasonid = $1 AND league = true AND seasonteam.seasonid = $1
+		WHERE seasonteam.seasonid = $1 AND league = true
+
+		-- OR (seasonschedule.playoff = TRUE AND seasonschedule.final = FALSE)
+
+		GROUP BY player.name, team.acronym, team.color
 
 		having sum(play_time) > 8000
 		order by value DESC
