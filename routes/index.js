@@ -32,6 +32,7 @@ let getSeason = async function (req, res, next) {
 	req.season = req.params.season
 	req.seasonname = 'NF Season req.params.season'
 	req.seasonid = season
+	req.mode = req.params.mode
 
 	next()
 }

@@ -6,12 +6,12 @@ let init = async (req, res) => {
 	try {
 		let data = {
 			config: {
-				title: 'NF Season ' + req.season + ' League Table',
+				title: req.mode.toUpperCase() + ' Season ' + req.season + ' League Table',
 				name: req.seasonname,
 				path: req.baseUrl,
 				season: req.season,
 				nav: {
-					cat: 'nf',
+					cat: req.mode,
 					page: 'league',
 				}
 			},

@@ -11,12 +11,12 @@ let init = async (req, res) => {
 
 		let data = {
 			config: {
-				title: 'NF Season ' + req.season + ' Stats' + ((req.params.id) ? ' - Round ' + req.params.id : ''),
+				title: req.mode.toUpperCase() + ' Season ' + req.season + ' Stats' + ((req.params.id) ? ' - Round ' + req.params.id : ''),
 				name: req.seasonname,
 				path: req.baseUrl,
 				season: req.season,
 				nav: {
-					cat: 'nf',
+					cat: req.mode,
 					page: 'stats',
 					sub: (req.params.id) ? req.params.id: 'totals',
 				}

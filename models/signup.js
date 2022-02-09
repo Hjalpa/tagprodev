@@ -186,8 +186,11 @@ let signup = async (req, res) => {
 module.exports.draftpacket = async (req, res) => await draftpacket(req, res)
 let draftpacket = async (req, res) => {
 	try {
-		const data = await db.select('SELECT username, profile, captain, notes FROM signup WHERE seasonid = $1 AND verified = $2 ORDER BY captain ASC, date DESC', [req.seasonid, true], 'all')
-		res.json(data)
+		let signups = await db.select('SELECT username as player, profile, notes FROM signup WHERE seasonid = $1 AND verified = $2 ORDER BY captain DESC, username ASC, date DESC', [req.seasonid, true], 'all')
+		let data = {
+			signups
+		}
+		res.render('signups', data)
 	} catch(error) {
 		res.status(404).render('404')
 	}

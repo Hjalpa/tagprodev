@@ -37,7 +37,7 @@ html
 			.new
 				.left
 					h1= config.title
-					p.details Season 1 of the <span>CTF Super League</span> will run for <span>3 weeks</span> throughout <span>February</span>, with games played <span>Monday</span> and <span>Thursday</span> 7:30pm BST.
+					p.details Season 1 of the <span>CTF Super League</span> will run for <span>3 weeks</span> throughout <span>February</span>, with games played <span>Monday</span> and <span>Thursday</span> 7:30pm GMT.
 
 					h2 Paste in your Profile URL
 					.form
@@ -48,7 +48,7 @@ html
 				.right
 					h2 Signup Quota
 					.bar
-						- signups = Math.round(((signups.length+2) / 24) * 100)
+						- signups = Math.round((signups.length / 24) * 100)
 						- if(signups >= 100) signups = 100
 						- signups_text = signups + '%'
 						.progress(style="width:"+signups+"%")

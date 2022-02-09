@@ -1,0 +1,34 @@
+table(style="width:400px")
+		thead
+			each n, key in signups
+				tr
+					each v, k in n
+						if(k === 'player')
+							th.item.player(style="text-align:left") Player
+
+						else if(k === 'profile')
+							- continue
+
+						else
+							th
+
+					- break
+
+		tbody
+		each n, key in signups
+			tr
+				each v, k in n
+					if(k === 'player')
+						td(style="padding:5px 0;border-top:1px solid #eee")
+							a(
+								href= n.profile
+							)= v
+
+					else if(k === 'profile')
+						- continue
+
+					else
+						td(style="padding:5px 0;border-top:1px solid #eee;text-align:center")= v
+
+
+| <script defer type="text/javascript" src="https://api.pirsch.io/pirsch.js" id="pirschjs" data-code="rCf3zbJZfR6JWanXlrObtEsAvLrlZLHS"></script>
