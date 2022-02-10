@@ -1,34 +1,81 @@
-table(style="width:400px")
-		thead
-			each n, key in signups
-				tr
-					each v, k in n
-						if(k === 'player')
-							th.item.player(style="text-align:left") Player
+doctype html
+html
+	head
+		title= config.title
+		meta(charset='utf-8')
+		link(rel='stylesheet', href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap")
+		link(rel='stylesheet', href='/signup.css')
+		link(rel='icon', href='/favicon.svg', type='image/svg+xml')
+		// script(src='/signup.js', async)
+		| <script defer type="text/javascript" src="https://api.pirsch.io/pirsch.js" id="pirschjs" data-code="rCf3zbJZfR6JWanXlrObtEsAvLrlZLHS"></script>
 
-						else if(k === 'profile')
-							- continue
+	body
+		.background
+			img(src='https://i.imgur.com/76Nzkgm.png')._1
+			img(src='https://i.imgur.com/1ZWMzQn.png')._2
+			img(src='https://i.imgur.com/5NgLxbF.png')._3
+			img(src='https://i.imgur.com/APTMlFc.png')._4
 
-						else
-							th
+		.draftpacket
+			.inner
+				h1= config.title
+				table
+						thead
+							each n, key in signups
+								tr
+									each v, k in n
+										if(k === 'country')
+											th.country
 
-					- break
+										else if(k === 'player')
+											th.player Player
 
-		tbody
-		each n, key in signups
-			tr
-				each v, k in n
-					if(k === 'player')
-						td(style="padding:5px 0;border-top:1px solid #eee")
-							a(
-								href= n.profile
-							)= v
+										else if(k === 'profile' || k === 'captain')
+											- continue
 
-					else if(k === 'profile')
-						- continue
+										else if(k === 'avgcost')
+											th.avgcost Avg Cost
 
-					else
-						td(style="padding:5px 0;border-top:1px solid #eee;text-align:center")= v
+										else if(k === 'notes')
+											th.notes Availability
+
+										else
+											th= k
+
+									- break
+
+						tbody
+						each n, key in signups
+							tr
+								each v, k in n
+									if(k === 'country')
+										td.country
+											img(
+												src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + v + ".svg"
+											)
+
+									else if(k === 'player')
+										td.player
+											a(
+												href= n.profile
+											)= v
+
+									else if(k === 'profile' || k === 'captain')
+										- continue
+
+									else if(k === 'avgcost')
+										td.avgcost= v
+
+									else if(k === 'notes')
+										td.notes= v
+
+									else
+										td= v
 
 
-| <script defer type="text/javascript" src="https://api.pirsch.io/pirsch.js" id="pirschjs" data-code="rCf3zbJZfR6JWanXlrObtEsAvLrlZLHS"></script>
+
+
+svg.hide
+		//- captain
+		svg(viewBox="0 0 512 512")#captain
+			path(d="M263.961 512c188.706 0 215.53-170.501 218.774-175.814l-123.75-37.764c-4.301 9.081-7.124 102.466-96.006 102.466-68.613 0-103.403-49.702-103.403-147.744 0-94.248 35.449-142.031 105.381-142.031 83.037 0 88.405 77.18 90.483 80.845l126.401-29.077C478.582 157.906 454.266 0 269.879 0 121.461 0 29.264 100.287 29.264 260.116 29.264 410.175 123.585 512 263.961 512z")

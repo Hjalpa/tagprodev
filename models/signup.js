@@ -186,8 +186,35 @@ let signup = async (req, res) => {
 module.exports.draftpacket = async (req, res) => await draftpacket(req, res)
 let draftpacket = async (req, res) => {
 	try {
-		let signups = await db.select('SELECT username as player, profile, notes FROM signup WHERE seasonid = $1 AND verified = $2 ORDER BY captain DESC, username ASC, date DESC', [req.seasonid, true], 'all')
+		// last went for
+		// 	super league NF euroll amount
+		// 	eltp amount
+		let signups = await db.select(`
+			SELECT
+				-- RANK() OVER ( ORDER BY date DESC ) rank,
+				LOWER(player.country) as country,
+				player.name as player,
+				signup.profile,
+				-- (SELECT (sum(cost) / count(*)) FROM seasonplayer WHERE seasonplayer.playerid = signup.playerid GROUP BY seasonplayer.playerid) as avgcost,
+				signup.notes
+
+			FROM signup
+			LEFT JOIN player on signup.playerid = player.id
+			WHERE signup.seasonid = $1 AND signup.verified = $2 AND captain = FALSE
+			ORDER BY signup.captain DESC, signup.rating DESC
+		`, [req.seasonid, true], 'all')
+
 		let data = {
+			config: {
+				title: req.mode.toUpperCase() + ' Season ' + req.season + ' Draft Packet',
+				name: req.seasonname,
+				path: req.baseUrl,
+				season: req.season,
+				nav: {
+					cat: req.mode,
+					page: 'league',
+				}
+			},
 			signups
 		}
 		res.render('signups', data)

@@ -26,7 +26,6 @@ body
 	height 100%
 	position relative
 
-
 	.new
 		backdrop-filter: blur(10px);
 		background rgba(#0f1837, .9)
@@ -555,3 +554,91 @@ button:disabled
 	100%
 		stroke-dasharray 5 120
 		stroke-dashoffset 5
+
+
+.draftpacket
+	z-index 2
+	display flex
+	justify-content center
+	padding-top 5rem
+	padding-bottom 5rem
+
+	.inner
+		backdrop-filter: blur(10px);
+		background rgba(#0f1837, .9)
+		--color #0039ff
+
+		--blur: 1rem;
+		--box-blur: calc(0.5 * var(--blur));
+		--glow: var(--color);
+		--size: 12rem;
+		align-items: center;
+
+		border: 2px solid currentColor;
+		box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.15), 0 0 0 2px rgba(0, 0, 0, 0.15), inset 0 0 var(--box-blur) var(--glow), 0 0 var(--box-blur) var(--glow);
+		color: var(--color, white);
+		width 500px
+		border-radius .6rem
+		padding 1rem
+
+		h1
+			font-weight 600
+			font-size 1.2rem
+			color rgba(#f6d616, .85)
+			text-shadow 0 0 15px #ff5210
+			text-transform uppercase
+			margin-bottom .5rem
+			display block
+			text-align center
+			margin .5rem 0 1rem 0
+
+		table
+			width 100%
+			padding 0
+			border-collapse collapse
+
+			thead
+				th
+					text-align left
+					color white
+					padding .5rem
+					text-transform: uppercase;
+					font-weight: 600;
+					font-size: .8rem;
+
+					&.country
+						width calc(30px + .5rem)
+
+					&.player
+						width 50%
+
+					&.notes
+						text-align left
+
+			tbody
+				tr
+
+					&:nth-of-type(odd)
+						background #00000017
+
+					td
+						padding .5rem
+						color #4a6ba3
+
+						a
+							color #1adbd4
+							box-shadow 0 2px 0 0 #1adbd41a
+							text-decoration none
+
+							&:hover
+								box-shadow none
+
+						&.country
+							padding-left .75rem
+							img
+								height 12px
+								width 16px
+
+						&.notes
+							text-align left
+							font-size .85rem
