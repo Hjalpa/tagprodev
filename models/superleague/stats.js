@@ -75,7 +75,7 @@ async function getData(filters) {
 		LEFT JOIN team ON seasonteam.teamid = team.id
 		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN seasonschedule ON seasonschedule.gameid = game.id
-		WHERE seasonschedule.date <= now() AND seasonschedule.league = TRUE AND ${query.where.join(' AND ')}
+		WHERE seasonschedule.date <= now() AND seasonschedule.league = TRUE AND seasonteam.seasonid = $1 AND ${query.where.join(' AND ')}
 		GROUP BY player.name, team.color, team.acronym
 		ORDER BY team.acronym ASC, caps DESC
 	`

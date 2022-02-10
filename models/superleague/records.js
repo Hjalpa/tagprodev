@@ -166,7 +166,7 @@ async function getData(filters, select) {
 			FROM game
 			LEFT JOIN seasonschedule ON seasonschedule.gameid = game.id
 			WHERE gameid = game.id AND game.seasonid = $1 AND league = TRUE
-		)
+		) AND seasonteam.seasonid = $1
 		ORDER BY rank ASC, game.date ASC
 		LIMIT 10
 	`, [filters.seasonid], 'all')

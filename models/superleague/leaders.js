@@ -433,7 +433,7 @@ async function getData(filters, sql) {
 		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN seasonschedule ON game.id = seasonschedule.gameid
 
-		WHERE ${where} AND seasonschedule.league = TRUE and seasonschedule.seasonid = $1
+		WHERE ${where} AND seasonschedule.league = TRUE and seasonschedule.seasonid = $1 AND seasonteam.seasonid = $1
 
 		-- removes SUBS
 		AND seasonteam IS NOT NULL
@@ -474,7 +474,7 @@ async function getData(filters, sql) {
 			left join seasonteam on seasonteam.id = seasonplayer.seasonteamid
 			left join team as t on seasonplayer.seasonteamid = t.id
 
-			WHERE seasonschedule.seasonid = $1 AND seasonschedule.league = TRUE
+			WHERE seasonschedule.seasonid = $1 AND seasonschedule.league = TRUE AND seasonteam.seasonid = $1
 
 			-- removes SUBS
 			AND seasonteam IS NOT NULL
