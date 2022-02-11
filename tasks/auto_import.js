@@ -54,7 +54,7 @@ init.call = async () => {
 
 				LEFT JOIN map ON map.id = seasonschedule.mapid
 
-				WHERE seasonschedule.seasonid = 5 AND map.name = $1 AND rt.acronym = $2 AND bt.acronym = $3 AND gameid IS NULL
+				WHERE seasonschedule.seasonid = 6 AND map.name = $1 AND rt.acronym = $2 AND bt.acronym = $3 AND gameid IS NULL
 
 				LIMIT 1
 			`, [data.map, data.red, data.blue], 'row')
