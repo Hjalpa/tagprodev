@@ -41,7 +41,7 @@ async function getTeams(seasonid) {
                 left join seasonplayer on seasonplayer.playerid = player.id
                 left join seasonteam on seasonplayer.seasonteamid = seasonteam.id
                 where seasonteam.id = st.id
-                ORDER BY captain DESC, name ASC
+                ORDER BY captain DESC, st.id DESC
             ) AS players
 
         FROM seasonplayer as sp

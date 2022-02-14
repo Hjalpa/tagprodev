@@ -200,7 +200,7 @@ let draftpacket = async (req, res) => {
 
 			FROM signup
 			LEFT JOIN player on signup.playerid = player.id
-			WHERE signup.seasonid = $1 AND signup.verified = $2 -- AND captain = FALSE
+			WHERE signup.seasonid = $1 AND signup.verified = $2 AND captain = FALSE
 			ORDER BY signup.captain DESC, signup.rating DESC
 		`, [req.seasonid, true], 'all')
 

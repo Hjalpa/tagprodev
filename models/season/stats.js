@@ -22,7 +22,7 @@ let init = async (req, res) => {
 				}
 			},
 			rounds: await getAllRounds(filters.seasonid),
-			stats: await getData(filters)
+			stats: await getData(filters, req.mode)
 		}
 		res.render('superleague-stats', data)
 	}
@@ -31,7 +31,8 @@ let init = async (req, res) => {
 	}
 }
 
-async function getData(filters) {
+
+async function getData(filters, mode) {
 	let query = {
 		where: ['game.seasonid = $1'],
 		data: [filters.seasonid],
@@ -42,47 +43,27 @@ async function getData(filters) {
 		query.data.push(filters.date)
 	}
 
+	let selects = await getSelects(mode)
 	let sql = `
-		SELECT
-			COALESCE(team.acronym, 'SUB') as acronym,
-			COALESCE(team.color, '#404040') as color,
-			player.name as player,
+				SELECT
+					COALESCE(team.acronym, 'SUB') as acronym,
+					COALESCE(team.color, '#404040') as color,
+					player.name as player,
+					ROUND( sum(play_time) / 60, 0) as mins,
+					${selects}
+				FROM playergame
+				LEFT JOIN player ON player.id = playergame.playerid
+				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
+				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+				LEFT JOIN team ON seasonteam.teamid = team.id
+				LEFT JOIN game ON game.id = playergame.gameid
+				LEFT JOIN seasonschedule ON seasonschedule.gameid = game.id
+				WHERE seasonschedule.date <= now() AND seasonschedule.league = TRUE AND seasonteam.seasonid = $1 AND ${query.where.join(' AND ')}
+				GROUP BY player.name, team.color, team.acronym
+				ORDER BY team.acronym ASC, caps DESC
+			`
 
-			ROUND( sum(play_time) / 60, 0) as mins,
-
-			SUM(cap) as caps,
-			SUM(assist) as assists,
-
-			ROUND((
-					sum(hold)::DECIMAL / (
-						sum(hold_team_for)::DECIMAL + sum(hold_team_against)::DECIMAL
-					)
-			) * 100, 0) || '%' as poss,
-
-			SUM(tag) as tags,
-			SUM(takeover) as takeovers,
-			SUM(grab) as grabs,
-			TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss') as hold,
-			SUM(chain) as chains,
-			TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss') as prevent,
-			TO_CHAR( sum(block) * interval '1 sec', 'hh24:mi:ss') as block,
-			SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups
-
-		FROM playergame
-		LEFT JOIN player ON player.id = playergame.playerid
-		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
-		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
-		LEFT JOIN team ON seasonteam.teamid = team.id
-		LEFT JOIN game ON game.id = playergame.gameid
-		LEFT JOIN seasonschedule ON seasonschedule.gameid = game.id
-		WHERE seasonschedule.date <= now() AND seasonschedule.league = TRUE AND seasonteam.seasonid = $1 AND ${query.where.join(' AND ')}
-		GROUP BY player.name, team.color, team.acronym
-		ORDER BY team.acronym ASC, caps DESC
-	`
-
-	let data = await db.select(sql, query.data, 'all')
-
-	return data
+	return await db.select(sql, query.data, 'all')
 }
 
 async function getRoundDate(id) {
@@ -114,4 +95,42 @@ async function getAllRounds(seasonid) {
 	`
 	let data = await db.select(sql, [seasonid], 'all')
 	return data
+}
+
+async function getSelects(mode) {
+	switch(mode) {
+		case 'ctf':
+			return `
+					SUM(cap) as caps,
+					SUM(assist) as assists,
+					SUM(tag) as tags,
+					SUM(pops) as pops,
+					SUM(grab) as grabs,
+					SUM(drop) as drops,
+					TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss') as hold,
+					TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss') as prevent,
+					SUM(return) as returns,
+					SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups
+			`
+			break;
+		case 'nf':
+			return `
+					SUM(cap) as caps,
+					SUM(assist) as assists,
+					ROUND((
+							sum(hold)::DECIMAL / (
+								sum(hold_team_for)::DECIMAL + sum(hold_team_against)::DECIMAL
+							)
+					) * 100, 0) || '%' as poss,
+					SUM(tag) as tags,
+					SUM(takeover) as takeovers,
+					SUM(grab) as grabs,
+					TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss') as hold,
+					SUM(chain) as chains,
+					TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss') as prevent,
+					TO_CHAR( sum(block) * interval '1 sec', 'hh24:mi:ss') as block,
+					SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups
+			`
+			break;
+	}
 }

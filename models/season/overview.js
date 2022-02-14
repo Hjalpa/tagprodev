@@ -140,7 +140,7 @@ async function getMVB(seasonid) {
 		LEFT JOIN team ON seasonteam.teamid = team.id
 
 		-- WHERE seasonschedule.seasonid = $1 AND league = true AND seasonteam.seasonid = $1
-		WHERE seasonteam.seasonid = $1 AND league = true
+		WHERE seasonteam.seasonid = $1 AND league = true AND game.seasonid = $1
 
 		-- OR (seasonschedule.playoff = TRUE AND seasonschedule.final = FALSE)
 
@@ -178,9 +178,9 @@ async function getMaps(seasonid) {
 		FROM playerschedule
 		LEFT JOIN game on game.id = playerschedule.gameid
 		LEFT JOIN playergame ON game.id = playergame.gameid
-		left join map on map.id = playergame.mapid
+		LEFT JOIN map on map.id = playergame.mapid
 
-		where seasonschedule.seasonid = $1
+		where seasonschedule.seasonid = $1 AND game.seasonid = $1
 		group by map.name
 
 		order by value DESC

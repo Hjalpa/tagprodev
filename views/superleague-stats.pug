@@ -13,46 +13,47 @@ include template/superleague-nav.pug
 					class= (config.nav.sub == i ? 'active' : '')
 				) Round #{i}
 
-		.player-stats
-			.row.head
+		if stats
+			.player-stats
+				.row.head
+					each n, key in stats
+						each v, k in n
+							if(k === 'color')
+								- continue
+
+							else if(k === 'player')
+								.item.player
+
+							else if(k === 'acronym')
+								.item.acronym
+
+							else
+								.item(
+									data-column= k
+								)= k
+
+						- break
+
 				each n, key in stats
-					each v, k in n
-						if(k === 'color')
-							- continue
+					.row.entry(
+							style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80; --teambg: " + n.color + "30"
+						)
+						each v, k in n
+							if(k === 'color')
+								- continue
 
-						else if(k === 'player')
-							.item.player
+							else if(k === 'player')
+								.item.player
+									a(
+										href='#'
+									)= n.player
 
-						else if(k === 'acronym')
-							.item.acronym
+							else if(k === 'acronym')
+								.item.acronym= n.acronym
 
-						else
-							.item(
-								data-column= k
-							)= k
-
-					- break
-
-			each n, key in stats
-				.row.entry(
-						style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80; --teambg: " + n.color + "30"
-					)
-					each v, k in n
-						if(k === 'color')
-							- continue
-
-						else if(k === 'player')
-							.item.player
-								a(
-									href='#'
-								)= n.player
-
-						else if(k === 'acronym')
-							.item.acronym= n.acronym
-
-						else
-							.item(
-								data-column= k
-							)= v
+							else
+								.item(
+									data-column= k
+								)= v
 
 include template/foot.pug

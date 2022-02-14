@@ -12,7 +12,7 @@ include template/superleague-nav.pug
 			.schedule-league
 				each n, date in schedule
 					.day
-						h3!= date
+						h3 #{date} 7:30PM GMT
 
 						each i, k in n.round
 							.games

@@ -27,70 +27,73 @@ include template/superleague-nav.pug
 
 			.playoff_results
 				// most valuable ball
-				.pane.mvb
-					.headline
-						svg
-							use(xlink:href="#mvb")
-						.text MVB
+				if mvb[0]
+					.pane.mvb
+						.headline
+							svg
+								use(xlink:href="#mvb")
+							.text MVB
 
-					- let max = parseInt(mvb[0].value)
-					each n, key in mvb
-						.row(class=(key === 0 ? 'top' : ''))
-							.item.rank= n.rank
-							.item.team(
-								data-position= i
-								style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
-							)= n.acronym
-							.item.player
-								a(
-									href='#'
-								)= n.player
+						- let max = parseInt(mvb[0].value)
+						each n, key in mvb
+							.row(class=(key === 0 ? 'top' : ''))
+								.item.rank= n.rank
+								.item.team(
+									data-position= i
+									style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+								)= n.acronym
+								.item.player
+									a(
+										href='#'
+									)= n.player
 
-							// .item.value=  n.value
-							- let percent = ((n.value / max) * 100).toFixed(0)
-							.item.test
-								// .v= n.value
-								.v= percent
-								.bar
-									.inner(style="width:" + percent + "%")
+								// .item.value=  n.value
+								- let percent = ((n.value / max) * 100).toFixed(0)
+								.item.test
+									// .v= n.value
+									.v= percent
+									.bar
+										.inner(style="width:" + percent + "%")
 
 
 				// playoff final stats?
-				.pane.final
-					.headline
-						.text Playoff Final
+				if mvb[0]
+					.pane.final
+						.headline
+							.text Playoff Final
 
-					.content
+						.content
 
-					a(href="https://www.youtube.com/watch?v=hios5eKr0-E").watchfinal Watch Final
+						a(href="https://www.youtube.com/watch?v=hios5eKr0-E").watchfinal Watch Final
 
 
 				// playoff champions
-				.pane.champions(
-					style="--teamcolor: " + champions.color + "; --teamglow: " + champions.color + "80"
-				)
-					.container.crowned
-						.headline
-							svg
-								use(xlink:href="#trophy")
-							.text Champions
-							.team= champions.name
+				if champions
+					.pane.champions(
+						style="--teamcolor: " + champions.color + "; --teamglow: " + champions.color + "80"
+					)
+						.container.crowned
+							.headline
+								svg
+									use(xlink:href="#trophy")
+								.text Champions
+								.team= champions.name
 
-						ul.players
-							each p, k in champions.players
-								li
-									if p.captain
-										.captain
-											svg
-												use(xlink:href="#captain")
-									.name= p.name
-									.country
-										img(
-											src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + p.country + ".svg"
-										)
+							ul.players
+								each p, k in champions.players
+									li
+										if p.captain
+											.captain
+												svg
+													use(xlink:href="#captain")
+										.name= p.name
+										.country
+											img(
+												src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + p.country + ".svg"
+											)
 
 
-			.upcoming
+				.upcoming
 
 
 
