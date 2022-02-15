@@ -49,19 +49,18 @@ async function getData(filters, select) {
 			${select} ${percentage} as value
 
 		FROM playergame
+		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN player ON player.id = playergame.playerid
-		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
+		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid AND seasonplayer.seasonteamid IN (SELECT id FROM seasonteam WHERE seasonid = $1)
 		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
 		LEFT JOIN team ON seasonteam.teamid = team.id
-		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN map ON map.id = game.mapid
 
 		WHERE gameid in (
 			SELECT game.id
 			FROM game
 			LEFT JOIN seasonschedule ON seasonschedule.gameid = game.id
-			WHERE gameid = game.id AND game.seasonid = $1 AND league = TRUE
-		) AND seasonteam.seasonid = $1
+		) AND game.seasonid = $1
 		ORDER BY rank ASC, game.date ASC
 		LIMIT 10
 	`, [filters.seasonid], 'all')
