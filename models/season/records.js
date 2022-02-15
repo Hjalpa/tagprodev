@@ -96,21 +96,21 @@ async function getRecords(filters, mode) {
 					title: 'Tags',
 					data: await getData(filters, 'tag'),
 				},
-				grabs: {
-					title: 'Grabs',
-					data: await getData(filters, 'grab'),
-				},
-				hold: {
-					title: 'Hold',
-					data: await getData(filters, `TO_CHAR(hold * interval '1 sec', 'mi:ss')`),
+				returns: {
+					title: 'Returns',
+					data: await getData(filters, 'return'),
 				},
 				prevent: {
 					title: 'Prevent',
 					data: await getData(filters, `TO_CHAR(prevent * interval '1 sec', 'mi:ss')`),
 				},
-				returns: {
-					title: 'Returns',
-					data: await getData(filters, 'return'),
+				hold: {
+					title: 'Hold',
+					data: await getData(filters, `TO_CHAR(hold * interval '1 sec', 'mi:ss')`),
+				},
+				grabs: {
+					title: 'Grabs',
+					data: await getData(filters, 'grab'),
 				},
 				quickreturns: {
 					title: 'Quick Returns',
@@ -119,6 +119,10 @@ async function getRecords(filters, mode) {
 				keyreturns: {
 					title: 'Key Returns',
 					data: await getData(filters, 'key_return'),
+				},
+				saves: {
+					title: 'Saves',
+					data: await getData(filters, 'return_within_5_tiles_from_opponents_base'),
 				},
 				grabpercap: {
 					title: 'Cap / Grab',
@@ -150,9 +154,25 @@ async function getRecords(filters, mode) {
 					title: 'Long Hold',
 					data: await getData(filters, 'long_hold'),
 				},
-				tagpop: {
-					title: 'Tag / Pop',
-					data: await getData(filters, 'tag - pop'),
+				resets: {
+					title: 'Resets',
+					data: await getData(filters, 'reset_from_my_prevent + reset_from_my_return'),
+				},
+				handoffs: {
+					title: 'Handoffs',
+					data: await getData(filters, 'handoff_drop + handoff_pickup'),
+				},
+				tagstreak: {
+					title: 'Tag Streak',
+					data: await getData(filters, 'tag_streak'),
+				},
+				returnstreak: {
+					title: 'Return Streak',
+					data: await getData(filters, 'return_streak'),
+				},
+				score: {
+					title: 'Score',
+					data: await getData(filters, 'score'),
 				},
 				timedead: {
 					title: 'Time Dead',
@@ -160,9 +180,13 @@ async function getRecords(filters, mode) {
 						TO_CHAR((pop * 3) * interval '1 sec', 'mi:ss')
 					`),
 				},
-				score: {
-					title: 'Score',
-					data: await getData(filters, 'score'),
+				killdeath: {
+					title: 'Kill / Death',
+					data: await getData(filters, 'tag - pop'),
+				},
+				flaccids: {
+					title: 'Flaccids',
+					data: await getData(filters, 'flaccid'),
 				},
 			}
 		break;
