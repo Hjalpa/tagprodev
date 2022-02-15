@@ -6,7 +6,7 @@ let init = async (req, res) => {
 	try {
 		let filters =  {
 			seasonid: req.seasonid,
-			date: (req.params.id) ? await getRoundDate(req.params.id) : false,
+			date: (req.params.id) ? await getRoundDate(req.params.id, req.seasonid) : false,
 		}
 
 		let data = {
@@ -30,7 +30,6 @@ let init = async (req, res) => {
 		res.status(404).render('404')
 	}
 }
-
 
 async function getData(filters, mode) {
 	let query = {
@@ -66,17 +65,17 @@ async function getData(filters, mode) {
 	return await db.select(sql, query.data, 'all')
 }
 
-async function getRoundDate(id) {
+async function getRoundDate(id, seasonid) {
 	let sql = `
 		select
 			to_char(date, 'YYYY-MM-DD') as date
 		FROM seasonschedule
-		WHERE date <= NOW()
+		WHERE date <= NOW() AND seasonid = $2
 		GROUP BY date
 		ORDER BY date ASC
 		LIMIT 1 OFFSET $1
 	`
-	let data = await db.select(sql, [id - 1], 'date')
+	let data = await db.select(sql, [id - 1, seasonid], 'date')
 
 	if(!data)
 		throw 'invalid day'
@@ -102,14 +101,13 @@ async function getSelects(mode) {
 		case 'ctf':
 			return `
 					SUM(cap) as caps,
-					SUM(assist) as assists,
-					SUM(tag) as tags,
-					SUM(pops) as pops,
-					SUM(grab) as grabs,
-					SUM(drop) as drops,
 					TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss') as hold,
+					SUM(grab) as grabs,
+					SUM(assist) as assists,
 					TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss') as prevent,
 					SUM(return) as returns,
+					SUM(tag) as tags,
+					SUM(tag) - SUM(pop) as KD,
 					SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups
 			`
 			break;

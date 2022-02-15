@@ -15,8 +15,8 @@ init.call = async () => {
 			team.acronym
 		FROM seasonteam
 		LEFT JOIN team on team.id = seasonteam.teamid
-		WHERE seasonid = 5`,
-		[], 'all')
+		WHERE seasonid = $1`,
+		[6], 'all')
 
 	for await (let name of teamnames) {
 
@@ -61,13 +61,16 @@ init.call = async () => {
 
 			if(game) {
 				let euid = data.euid
+				console.log(euid)
 				if(euid) {
 					let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [euid], 'id')
 					if(!gameExists) {
-						await axios.post(`https://tagpro.dev/api/superleague/import`, {
+						console.log('wat')
+						await axios.post(`https://tagpro.dev/api/import`, {
 							euid: euid,
-							seasonid: 5 // adjust this for new seasons and create db entry within season table
+							seasonid: 6 // adjust this for new seasons and create db entry within season table
 						})
+						console.log('wat after')
 						console.log('imported:' + euid)
 					}
 

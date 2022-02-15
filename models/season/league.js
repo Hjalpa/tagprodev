@@ -112,7 +112,7 @@ async function getTable(seasonid) {
 				)
 				FROM seasonschedule
 				LEFT JOIN game ON seasonschedule.gameid = game.id
-				WHERE seasonschedule.seasonid = 5 AND seasonschedule.league IS TRUE AND seasonschedule.gameid IS NOT null -- AND (seasonschedule.teamredid = 3 OR seasonschedule.teamblueid = 3)
+				WHERE seasonschedule.seasonid = $1 AND seasonschedule.league IS TRUE AND seasonschedule.gameid IS NOT null -- AND (seasonschedule.teamredid = 3 OR seasonschedule.teamblueid = 3)
 			) as data,
 
 			(
@@ -128,7 +128,7 @@ async function getTable(seasonid) {
 
 				FROM seasonschedule
 				LEFT JOIN game ON seasonschedule.gameid = game.id
-				WHERE seasonschedule.seasonid = 5 AND seasonschedule.league IS TRUE AND seasonschedule.gameid IS NOT null -- AND (seasonschedule.teamredid = 3 OR seasonschedule.teamblueid = 3)
+				WHERE seasonschedule.seasonid = $1 AND seasonschedule.league IS TRUE AND seasonschedule.gameid IS NOT null -- AND (seasonschedule.teamredid = 3 OR seasonschedule.teamblueid = 3)
 			) as pts,
 
 			(
@@ -150,7 +150,7 @@ async function getTable(seasonid) {
 
 				FROM seasonschedule
 				LEFT JOIN game ON seasonschedule.gameid = game.id
-				WHERE seasonschedule.seasonid = 5 AND seasonschedule.league IS TRUE AND seasonschedule.gameid IS NOT null -- AND (seasonschedule.teamredid = 3 OR seasonschedule.teamblueid = 3)
+				WHERE seasonschedule.seasonid = $1 AND seasonschedule.league IS TRUE AND seasonschedule.gameid IS NOT null -- AND (seasonschedule.teamredid = 3 OR seasonschedule.teamblueid = 3)
 			) as capdifference,
 
 			array(
@@ -171,7 +171,7 @@ async function getTable(seasonid) {
 				FROM seasonschedule
 				LEFT JOIN game on game.id = seasonschedule.gameid
 				LEFT JOIN map on game.mapid = map.id
-				WHERE (seasonschedule.teamredid = t.id OR seasonschedule.teamblueid = t.id) AND gameid IS NOT NULL AND seasonschedule.seasonid = 5 AND league IS true
+				WHERE (seasonschedule.teamredid = t.id OR seasonschedule.teamblueid = t.id) AND gameid IS NOT NULL AND seasonschedule.seasonid = $1 AND league IS true
 				ORDER BY seasonschedule.date ASC, seasonschedule.order ASC
 			) as form
 

@@ -250,8 +250,6 @@ let init = async (req, res) => {
 				pupcaps: {
 					title: 'Pup Caps',
 					data: await getData(filters, {
-						// sum: 'sum(cap_whilst_having_active_pup)',
-						// avg: 'ROUND(avg(cap_whilst_having_active_pup), 2)',
 						sum: 'sum(cap_whilst_team_have_active_pup)',
 						avg: 'ROUND(avg(cap_whilst_team_have_active_pup), 2)',
 						teampercent: 'ROUND((sum(cap_whilst_team_have_active_pup)::DECIMAL / sum(cap_whilst_team_have_active_pup_team_for)::DECIMAL) * 100, 0)',
