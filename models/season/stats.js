@@ -103,12 +103,16 @@ async function getSelects(mode) {
 					SUM(cap) as caps,
 					TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss') as hold,
 					SUM(grab) as grabs,
+					SUM(handoff_drop) + SUM(handoff_pickup) as handoffs,
 					SUM(assist) as assists,
 					TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss') as prevent,
 					SUM(return) as returns,
+					SUM(return_within_5_tiles_from_opponents_base) as saves,
 					SUM(tag) as tags,
-					SUM(tag) - SUM(pop) as KD,
-					SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups
+					SUM(reset_from_my_prevent) + SUM(reset_from_my_return) as resets,
+					SUM(kiss) as kisses,
+					SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups,
+					SUM(pup_tp) as tps
 			`
 			break;
 		case 'nf':
