@@ -24,7 +24,524 @@ let init = async (req, res) => {
 
 				}
 			},
-			leaders: {
+			leaders: await getLeaders(filters, req.mode)
+		}
+
+		res.render('superleague-leaders', data);
+	} catch(e) {
+		res.status(400).json({error: e})
+	}
+}
+
+async function getData(filters, sql) {
+	let where = 'playergame.gameid in (SELECT id FROM game WHERE playergame.gameid = game.id AND seasonid = $1)'
+	let select = sql[filters.mode.get] || sql['sum']
+	let ascending = (filters.ascending === true) ? 'ASC' : 'DESC'
+	let having = (filters.having) ? ' AND ' + select + ' > 0' : ''
+	let percentage = (filters.percentage) ? " || '%' " : ''
+
+	if(filters.mode.get === 'teampercent')
+		percentage = " || '%' ";
+
+	else if(filters.mode.get === 'top') {
+		where = sql[filters.mode.get] + ' as score FROM playergame WHERE gameid = game.id AND playerid = playergame.playerid AND game.seasonid = $1 ORDER BY score DESC limit 1)'
+		select = 'count(*)'
+		having = ''
+		ascending = 'DESC'
+		percentage = ''
+	}
+
+	if(!select) return false
+
+	// default
+	let raw = `
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					${select} ${ascending}
+			) rank,
+			player.name as player,
+			COALESCE(team.acronym, 'SUB') as acronym,
+			COALESCE(team.color, '#404040') as color,
+			${select} ${percentage} as value
+
+		FROM playergame
+		LEFT JOIN player ON player.id = playergame.playerid
+		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
+		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+		LEFT JOIN team ON seasonteam.teamid = team.id
+		LEFT JOIN game ON game.id = playergame.gameid
+		LEFT JOIN seasonschedule ON game.id = seasonschedule.gameid
+
+		WHERE ${where} AND seasonschedule.league = TRUE and seasonschedule.seasonid = $1 AND seasonteam.seasonid = $1
+
+		-- removes SUBS
+		AND seasonteam IS NOT NULL
+
+		GROUP BY player.name, team.color, team.acronym
+		HAVING COUNT(*) >= 1 ${having}
+		ORDER BY rank ASC, player.name ASC
+		LIMIT 10
+	`
+
+	// versus
+	if(filters.mode.get === 'versus') {
+		raw = `
+			select
+				RANK() OVER (
+					ORDER BY
+						${select} ${ascending}
+				) rank,
+
+
+				COALESCE(team.color, '#404040') as versuscolor,
+				team.acronym as versus,
+
+				COALESCE(t.acronym, 'SUB') as acronym,
+				COALESCE(t.color, '#404040') as color,
+
+				player.name as player,
+				${select} ${percentage} as value
+
+			from playergame
+			left join game on playergame.gameid = game.id
+			left join seasonschedule on playergame.gameid = seasonschedule.gameid
+			left join team on
+				(seasonschedule.teamredid = team.id AND playergame.team = 2) OR (seasonschedule.teamblueid = team.id AND playergame.team = 1)
+			left join player on playergame.playerid = player.id
+
+			left join seasonplayer on seasonplayer.playerid = player.id
+			left join seasonteam on seasonteam.id = seasonplayer.seasonteamid
+			left join team as t on seasonplayer.seasonteamid = t.id
+
+			WHERE seasonschedule.seasonid = $1 AND seasonschedule.league = TRUE AND seasonteam.seasonid = $1
+
+			-- removes SUBS
+			AND seasonteam IS NOT NULL
+
+			group by team.acronym, team.color, player.name, t.acronym, t.color
+			HAVING COUNT(*) >= 1 ${having}
+			order by rank ASC, player.name ASC
+			limit 10
+		`
+	}
+
+	let data = await db.select(raw, [filters.seasonid], 'all')
+
+	return data
+}
+
+function getMode(id) {
+	let mode = {}
+	switch(id) {
+		case 'averages':
+			mode = {
+				name: 'averages',
+				get: 'avg',
+			}
+			break;
+		case 'teampercent':
+			mode = {
+				name: 'teampercent',
+				get: 'teampercent',
+			}
+			break;
+		case 'top':
+			mode = {
+				name: 'top',
+				get: 'top',
+			}
+			break;
+		case 'versus':
+			mode = {
+				name: 'versus',
+				get: 'versus',
+			}
+			break;
+		default:
+			mode = {
+				name: 'totals',
+				get: 'sum',
+			}
+	}
+	return mode
+}
+
+
+async function getLeaders(filters, mode) {
+	switch(mode) {
+		case 'ctf':
+			return {
+				points: {
+					title: 'Points',
+					data: await getData(filters, {
+						sum: 'sum(cap) + sum(assist)',
+						avg: 'ROUND(avg(cap) + avg(assist), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+										sum(cap)::DECIMAL + sum(assist)::DECIMAL
+									)
+									/
+									(
+										sum(cap_team_for)::DECIMAL + sum(assist_team_for)::DECIMAL
+									)
+								)
+							* 100, 0)`,
+						top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
+					}),
+				},
+				caps: {
+					title: 'Caps',
+					data: await getData(filters, {
+						sum: 'sum(cap)',
+						avg: 'ROUND(avg(cap), 2)',
+						teampercent: 'ROUND((sum(cap)::DECIMAL / sum(cap_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.hold = (SELECT hold',
+					})
+				},
+				assists: {
+					title: 'Assists',
+					data: await getData(filters, {
+						sum: 'sum(assist)',
+						avg: 'ROUND(avg(assist), 2)',
+						teampercent: 'ROUND((sum(assist)::DECIMAL / sum(assist_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.assist = (SELECT assist',
+					})
+				},
+
+				pups: {
+					title: 'Pups',
+					data: await getData(filters, {
+						sum: 'sum(pup_tp) + sum(pup_rb) + sum(pup_jj)',
+						avg: 'ROUND(avg(pup_tp) + avg(pup_rb) + avg(pup_jj), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+										sum(pup_tp)::DECIMAL + sum(pup_rb)::DECIMAL + sum(pup_jj)::DECIMAL
+									)
+									/
+									(
+										sum(pup_tp_team_for)::DECIMAL + sum(pup_rb_team_for)::DECIMAL + sum(pup_jj_team_for)::DECIMAL
+									)
+								)
+							* 100, 0)`,
+						top: '(playergame.pup_jj + playergame.pup_rb + playergame.pup_tp) = (SELECT (pup_jj + pup_rb + pup_tp)',
+					})
+				},
+				tagpros: {
+					title: 'Tagpros',
+					data: await getData(filters, {
+						sum: 'sum(pup_tp)',
+						avg: 'ROUND(avg(pup_tp), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+										sum(pup_tp)::DECIMAL
+									)
+									/
+									(
+										sum(pup_tp_team_for)::DECIMAL
+									)
+								)
+							* 100, 0)`,
+						top: '(playergame.pup_tp) = (SELECT (pup_tp)',
+					})
+				},
+				tags: {
+					title: 'Tags',
+					data: await getData(filters, {
+						sum: 'sum(tag)',
+						avg: 'ROUND(avg(tag), 2)',
+						teampercent: 'ROUND((sum(tag)::DECIMAL / sum(tag_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.tag = (SELECT tag',
+					}),
+				},
+				returns: {
+					title: 'Returns',
+					data: await getData(filters, {
+						sum: 'sum(return)',
+						avg: 'ROUND(avg(return), 2)',
+						teampercent: 'ROUND((sum(return)::DECIMAL / sum(return_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.return = (SELECT return',
+					}),
+				},
+				prevent: {
+					title: 'Prevent',
+					data: await getData(filters, {
+						sum: `TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss')`,
+						avg: `TO_CHAR( avg(prevent) * interval '1 sec', 'mi:ss')`,
+						teampercent: 'ROUND((sum(prevent)::DECIMAL / sum(prevent_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.prevent = (SELECT prevent',
+					}),
+				},
+				hold: {
+					title: 'Hold',
+					data: await getData(filters, {
+						sum: `TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss')`,
+						avg: `TO_CHAR( avg(hold) * interval '1 sec', 'mi:ss')`,
+						teampercent: 'ROUND((sum(hold)::DECIMAL / sum(hold_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.hold = (SELECT hold',
+					}),
+				},
+				grabs: {
+					title: 'Grabs',
+					data: await getData(filters, {
+						sum: 'sum(grab)',
+						avg: 'ROUND(avg(grab), 2)',
+						teampercent: 'ROUND((sum(grab)::DECIMAL / sum(grab_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.grab = (SELECT grab',
+					}),
+				},
+				quickreturn: {
+					title: 'Quick Returns',
+					data: await getData(filters, {
+						sum: 'sum(quick_return)',
+						avg: 'ROUND(avg(quick_return), 2)',
+						teampercent: 'ROUND((sum(quick_return)::DECIMAL / sum(quick_return_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.quick_return = (SELECT quick_return',
+					})
+				},
+				keyreturns: {
+					title: 'Key Returns',
+					data: await getData(filters, {
+						sum: 'sum(key_return)',
+						avg: 'ROUND(avg(key_return), 2)',
+						teampercent: 'ROUND((sum(key_return)::DECIMAL / sum(key_return_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.key_return = (SELECT key_return',
+					})
+				},
+				saves: {
+					title: 'Saves',
+					data: await getData(filters, {
+						sum: 'sum(return_within_5_tiles_from_opponents_base)',
+						avg: 'ROUND(avg(return_within_5_tiles_from_opponents_base), 2)',
+						teampercent: 'ROUND((sum(return_within_5_tiles_from_opponents_base)::DECIMAL / sum(return_within_5_tiles_from_opponents_base_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.return_within_5_tiles_from_opponents_base = (SELECT return_within_5_tiles_from_opponents_base',
+					})
+				},
+				grabpercap: {
+					title: 'Cap / Grab',
+					data: await getData({...filters, ...{percentage: true}}, {
+						sum: `
+							COALESCE(
+								ROUND(
+									(NULLIF(sum(cap)::DECIMAL, 0) / sum(grab)::DECIMAL) * 100
+								, 2)
+							, 0)
+						`,
+						avg: `
+							COALESCE(
+								ROUND(
+									(NULLIF(avg(cap)::DECIMAL, 0) / avg(grab)::DECIMAL) * 100
+								, 2)
+							, 0)
+						`,
+						teampercent: false,
+						top: `(playergame.cap::DECIMAL / playergame.grab::DECIMAL) = (SELECT (cap::DECIMAL / grab::DECIMAL)`,
+					})
+				},
+				holdpergrab: {
+					title: 'Hold / Grab',
+					data: await getData(filters, {
+						sum: 'ROUND(sum(hold) / sum(grab)::numeric, 2)',
+						avg: 'ROUND(avg(hold) / avg(grab)::numeric, 2)',
+						teampercent: false,
+						top: 'ROUND(playergame.hold / playergame.grab, 2) = (SELECT ROUND(hold / grab, 2)',
+					}),
+				},
+				holdpercap: {
+					title: 'Hold / Cap',
+					data: await getData({...filters, ...{having: true, ascending: true}}, {
+						sum: `
+							COALESCE(
+								ROUND(
+									(sum(hold)::DECIMAL / NULLIF(sum(cap)::DECIMAL, 0))
+								, 2)
+							, 0)
+						`,
+						avg: `
+							COALESCE(
+								ROUND(
+									(avg(hold)::DECIMAL / NULLIF(avg(cap)::DECIMAL, 0))
+								, 2)
+							, 0)
+						`,
+						teampercent: false,
+						top: `COALESCE(playergame.hold / NULLIF(playergame.cap, 0), 0) = (SELECT COALESCE(hold / NULLIF(cap, 0), 0)`
+					})
+				},
+				pupcaps: {
+					title: 'Pup Caps',
+					data: await getData(filters, {
+						sum: 'sum(cap_whilst_team_have_active_pup)',
+						avg: 'ROUND(avg(cap_whilst_team_have_active_pup), 2)',
+						teampercent: 'ROUND((sum(cap_whilst_team_have_active_pup)::DECIMAL / sum(cap_whilst_team_have_active_pup_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.cap_whilst_team_have_active_pup = (SELECT cap_whilst_team_have_active_pup',
+					})
+				},
+				capfrommyregrab: {
+					title: 'Cap from regrab',
+					data: await getData(filters, {
+						sum: 'sum(cap_from_my_regrab)',
+						avg: 'ROUND(avg(cap_from_my_regrab), 2)',
+						top: '(cap_from_my_regrab) = (SELECT (cap_from_my_regrab)'
+					}),
+				},
+				capfromprevent: {
+					title: 'Cap from Prevent',
+					data: await getData(filters, {
+						sum: 'sum(cap_from_prevent)',
+						avg: 'ROUND(avg(cap_from_prevent), 2)',
+						teampercent: 'ROUND((sum(cap_from_prevent)::DECIMAL / sum(cap_from_prevent_team_for)::DECIMAL) * 100, 0)',
+					}),
+				},
+				capfromblock: {
+					title: 'Cap from Block',
+					data: await getData(filters, {
+						sum: 'sum(cap_from_block)',
+						avg: 'ROUND(avg(cap_from_block), 2)',
+						teampercent: 'ROUND((sum(cap_from_block)::DECIMAL / sum(cap_from_block_team_for)::DECIMAL) * 100, 0)',
+					}),
+				},
+
+				kisses: {
+					title: 'Kisses',
+					data: await getData(filters, {
+						sum: 'sum(kiss)',
+						avg: 'ROUND(avg(kiss), 2)',
+						teampercent: 'ROUND((sum(kiss)::DECIMAL / sum(kiss_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.kiss = (SELECT kiss',
+					})
+				},
+				longhold: {
+					title: 'Long Holds',
+					data: await getData(filters, {
+						sum: 'sum(long_hold)',
+						avg: 'ROUND(avg(long_hold), 2)',
+						teampercent: `
+						    ROUND(
+								(
+									COALESCE(
+										NULLIF(sum(long_hold)::DECIMAL, 0)
+										/
+										NULLIF(sum(long_hold_team_for)::DECIMAL, 0)
+									, 0)
+								* 100)
+							, 0)
+						`,
+						top: 'playergame.long_hold = (SELECT long_hold',
+					}),
+				},
+				resets: {
+					title: 'Resets',
+					data: await getData(filters, {
+						sum: 'sum(reset_from_my_prevent) + sum(reset_from_my_return)',
+						avg: 'ROUND(avg(reset_from_my_prevent) + avg(reset_from_my_return), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+										sum(reset_from_my_prevent)::DECIMAL + sum(reset_from_my_return)::DECIMAL
+									)
+									/
+									(
+										sum(reset_from_my_prevent_team_for)::DECIMAL + sum(reset_from_my_return_team_for)::DECIMAL
+									)
+								)
+							* 100, 0)`,
+						top: '(playergame.reset_from_my_prevent + playergame.reset_from_my_return) = (SELECT (reset_from_my_prevent + reset_from_my_return)'
+					})
+				},
+				handoffs: {
+					title: 'Handoffs',
+					data: await getData(filters, {
+						sum: 'sum(handoff_drop) + sum(handoff_pickup)',
+						avg: 'ROUND(avg(handoff_drop) + avg(handoff_pickup), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+										sum(handoff_drop)::DECIMAL + sum(handoff_pickup)::DECIMAL
+									)
+									/
+									(
+										sum(handoff_drop_team_for)::DECIMAL + sum(handoff_pickup_team_for)::DECIMAL
+									)
+								)
+							* 100, 0)`,
+						top: '(playergame.handoff_drop + playergame.handoff_pickup) = (SELECT (handoff_drop + handoff_pickup)'
+					})
+				},
+
+				nontakeoverturns: {
+					title: 'Non-Takeover Returns',
+					data: await getData(filters, {
+						sum: 'sum(tag) - sum(return)',
+						avg: 'ROUND(avg(tag) - avg(return), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+										sum(tag)::DECIMAL - sum(return)::DECIMAL
+									)
+									/
+									(
+										sum(tag_team_for)::DECIMAL - sum(return_team_for)::DECIMAL
+									)
+								)
+							* 100, 0)`,
+						top: '(playergame.tag - playergame.return) = (SELECT (tag - return)',
+					}),
+				},
+				timedead: {
+					title: 'Time Dead',
+					data: await getData({...filters, ...{ascending: true}}, {
+						sum: `TO_CHAR( (sum(pop) * 3) * interval '1 sec', 'mi:ss')`,
+						avg: `TO_CHAR( (avg(pop) * 3) * interval '1 sec', 'mi:ss')`,
+						teampercent: 'ROUND((sum(pop)::DECIMAL / sum(pop_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.pop = (SELECT MAX(pop)',
+					})
+				},
+				tagpop: {
+					title: 'Tag / Pop',
+					data: await getData(filters, {
+						sum: 'sum(tag) - sum(pop)',
+						avg: 'ROUND(avg(tag) - avg(pop), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+				 						sum(tag) - sum(pop)
+									)::DECIMAL
+									/
+									(
+										sum(tag_team_for) - sum(pop_team_for)
+									)::DECIMAL
+								)
+								* 100
+							, 0)
+						`,
+						top: '(playergame.tag - playergame.pop) = (SELECT (tag - pop)'
+					}),
+				},
+				score: {
+					title: 'Score',
+					data: await getData(filters, {
+						sum: 'sum(score)',
+						avg: 'ROUND(avg(score), 2)',
+						teampercent: 'ROUND((sum(score)::DECIMAL / sum(score_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.score = (SELECT score',
+					})
+				},
+			}
+			break;
+
+		case 'nf':
+			return {
 				points: {
 					title: 'Points',
 					data: await getData(filters, {
@@ -357,170 +874,7 @@ let init = async (req, res) => {
 						top: 'playergame.pop = (SELECT MAX(pop)',
 					})
 				},
-
-// 				capfrommyregrab: {
-// 					title: 'Cap from regrab',
-// 					data: await getData(filters, {
-// 						sum: 'sum(cap_from_my_regrab)',
-// 						avg: 'ROUND(avg(cap_from_my_regrab), 2)',
-// 						top: '(cap_from_my_regrab) = (SELECT (cap_from_my_regrab)'
-// 					}),
-// 				},
-// 				capfromprevent: {
-// 					title: 'Cap from Prevent',
-// 					data: await getData(filters, {
-// 						sum: 'sum(cap_from_prevent)',
-// 						avg: 'ROUND(avg(cap_from_prevent), 2)',
-// 						teampercent: 'ROUND((sum(cap_from_prevent)::DECIMAL / sum(cap_from_prevent_team_for)::DECIMAL) * 100, 0)',
-// 					}),
-// 				},
-// 				capfromblock: {
-// 					title: 'Cap from Block',
-// 					data: await getData(filters, {
-// 						sum: 'sum(cap_from_block)',
-// 						avg: 'ROUND(avg(cap_from_block), 2)',
-// 						teampercent: 'ROUND((sum(cap_from_block)::DECIMAL / sum(cap_from_block_team_for)::DECIMAL) * 100, 0)',
-// 					}),
-// 				},
-			}
-		}
-
-		res.render('superleague-leaders', data);
-	} catch(e) {
-		res.status(400).json({error: e})
-	}
-}
-
-async function getData(filters, sql) {
-	let where = 'playergame.gameid in (SELECT id FROM game WHERE playergame.gameid = game.id AND seasonid = $1)'
-	let select = sql[filters.mode.get] || sql['sum']
-	let ascending = (filters.ascending === true) ? 'ASC' : 'DESC'
-	let having = (filters.having) ? ' AND ' + select + ' > 0' : ''
-	let percentage = (filters.percentage) ? " || '%' " : ''
-
-	if(filters.mode.get === 'teampercent')
-		percentage = " || '%' ";
-
-	else if(filters.mode.get === 'top') {
-		where = sql[filters.mode.get] + ' as score FROM playergame WHERE gameid = game.id AND playerid = playergame.playerid AND game.seasonid = $1 ORDER BY score DESC limit 1)'
-		select = 'count(*)'
-		having = ''
-		ascending = 'DESC'
-		percentage = ''
-	}
-
-	if(!select) return false
-
-	// default
-	let raw = `
-		SELECT
-			RANK() OVER (
-				ORDER BY
-					${select} ${ascending}
-			) rank,
-			player.name as player,
-			COALESCE(team.acronym, 'SUB') as acronym,
-			COALESCE(team.color, '#404040') as color,
-			${select} ${percentage} as value
-
-		FROM playergame
-		LEFT JOIN player ON player.id = playergame.playerid
-		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
-		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
-		LEFT JOIN team ON seasonteam.teamid = team.id
-		LEFT JOIN game ON game.id = playergame.gameid
-		LEFT JOIN seasonschedule ON game.id = seasonschedule.gameid
-
-		WHERE ${where} AND seasonschedule.league = TRUE and seasonschedule.seasonid = $1 AND seasonteam.seasonid = $1
-
-		-- removes SUBS
-		AND seasonteam IS NOT NULL
-
-		GROUP BY player.name, team.color, team.acronym
-		HAVING COUNT(*) >= 1 ${having}
-		ORDER BY rank ASC, player.name ASC
-		LIMIT 10
-	`
-
-	// versus
-	if(filters.mode.get === 'versus') {
-		raw = `
-			select
-				RANK() OVER (
-					ORDER BY
-						${select} ${ascending}
-				) rank,
-
-
-				COALESCE(team.color, '#404040') as versuscolor,
-				team.acronym as versus,
-
-				COALESCE(t.acronym, 'SUB') as acronym,
-				COALESCE(t.color, '#404040') as color,
-
-				player.name as player,
-				${select} ${percentage} as value
-
-			from playergame
-			left join game on playergame.gameid = game.id
-			left join seasonschedule on playergame.gameid = seasonschedule.gameid
-			left join team on
-				(seasonschedule.teamredid = team.id AND playergame.team = 2) OR (seasonschedule.teamblueid = team.id AND playergame.team = 1)
-			left join player on playergame.playerid = player.id
-
-			left join seasonplayer on seasonplayer.playerid = player.id
-			left join seasonteam on seasonteam.id = seasonplayer.seasonteamid
-			left join team as t on seasonplayer.seasonteamid = t.id
-
-			WHERE seasonschedule.seasonid = $1 AND seasonschedule.league = TRUE AND seasonteam.seasonid = $1
-
-			-- removes SUBS
-			AND seasonteam IS NOT NULL
-
-			group by team.acronym, team.color, player.name, t.acronym, t.color
-			HAVING COUNT(*) >= 1 ${having}
-			order by rank ASC, player.name ASC
-			limit 10
-		`
-	}
-
-	let data = await db.select(raw, [filters.seasonid], 'all')
-
-	return data
-}
-
-function getMode(id) {
-	let mode = {}
-	switch(id) {
-		case 'averages':
-			mode = {
-				name: 'averages',
-				get: 'avg',
 			}
 			break;
-		case 'teampercent':
-			mode = {
-				name: 'teampercent',
-				get: 'teampercent',
-			}
-			break;
-		case 'top':
-			mode = {
-				name: 'top',
-				get: 'top',
-			}
-			break;
-		case 'versus':
-			mode = {
-				name: 'versus',
-				get: 'versus',
-			}
-			break;
-		default:
-			mode = {
-				name: 'totals',
-				get: 'sum',
-			}
 	}
-	return mode
 }

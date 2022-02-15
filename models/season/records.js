@@ -180,8 +180,8 @@ async function getRecords(filters, mode) {
 						TO_CHAR((pop * 3) * interval '1 sec', 'mi:ss')
 					`),
 				},
-				killdeath: {
-					title: 'Kill / Death',
+				tagpop: {
+					title: 'Tag / Pop',
 					data: await getData(filters, 'tag - pop'),
 				},
 				flaccids: {
