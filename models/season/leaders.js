@@ -400,7 +400,7 @@ async function getLeaders(filters, mode) {
 					data: await getData(filters, {
 						sum: 'sum(drop_within_2_tiles_from_my_base)',
 						avg: 'ROUND(avg(drop_within_2_tiles_from_my_base), 2)',
-						teampercent: 'ROUND((sum(drop_within_2_tiles_from_my_base)::DECIMAL / sum(drop_within_2_tiles_from_my_base_team_for)::DECIMAL) * 100, 0)',
+						teampercent: 'ROUND((sum(drop_within_2_tiles_from_my_base)::DECIMAL / sum(return_within_2_tiles_from_opponents_base_team_against)::DECIMAL) * 100, 0)',
 						top: 'playergame.drop_within_2_tiles_from_my_base = (SELECT drop_within_2_tiles_from_my_base',
 					})
 				},
