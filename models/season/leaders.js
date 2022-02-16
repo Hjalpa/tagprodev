@@ -40,6 +40,8 @@ async function getData(filters, sql) {
 	let having = (filters.having) ? ' AND ' + select + ' > 0' : ''
 	let percentage = (filters.percentage) ? " || '%' " : ''
 
+	if(!sql[filters.mode.get] && filters.mode.get != 'versus') return false
+
 	if(filters.mode.get === 'teampercent')
 		percentage = " || '%' ";
 
@@ -50,8 +52,6 @@ async function getData(filters, sql) {
 		ascending = 'DESC'
 		percentage = ''
 	}
-
-	if(!select) return false
 
 	// default
 	let raw = `
@@ -167,7 +167,6 @@ function getMode(id) {
 	return mode
 }
 
-
 async function getLeaders(filters, mode) {
 	switch(mode) {
 		case 'ctf':
@@ -208,6 +207,24 @@ async function getLeaders(filters, mode) {
 						avg: 'ROUND(avg(assist), 2)',
 						teampercent: 'ROUND((sum(assist)::DECIMAL / sum(assist_team_for)::DECIMAL) * 100, 0)',
 						top: 'playergame.assist = (SELECT assist',
+					})
+				},
+				timeleading: {
+					title: 'Time Leading',
+					data: await getData(filters, {
+						sum: `TO_CHAR( sum(position_win_time) * interval '1 sec', 'mi:ss')`,
+						avg: `TO_CHAR( avg(position_win_time) * interval '1 sec', 'mi:ss')`,
+						teampercent: 'ROUND((sum(position_win_time)::DECIMAL / sum(play_time)::DECIMAL) * 100, 0)',
+						top: 'playergame.position_win_time = (SELECT MAX(position_win_time)',
+					})
+				},
+				capdifference: {
+					title: 'Cap Difference',
+					data: await getData(filters, {
+						sum: 'sum(cap_team_for) - sum(cap_team_against)',
+						avg: 'ROUND(avg(cap_team_for) - avg(cap_team_against), 2)',
+						teampercent: false,
+						top: false,
 					})
 				},
 				pups: {
@@ -288,6 +305,24 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.return = (SELECT return',
 					}),
 				},
+				returnswithinownhalf: {
+					title: 'Returns Within Own Half',
+					data: await getData(filters, {
+						sum: 'sum(return_within_my_half)',
+						avg: 'ROUND(avg(return_within_my_half), 2)',
+						teampercent: 'ROUND((sum(return_within_my_half)::DECIMAL / sum(return_within_my_half_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.return_within_my_half = (SELECT return_within_my_half',
+					}),
+				},
+				returnswithinopphalf: {
+					title: 'Returns Witin Opp Half',
+					data: await getData(filters, {
+						sum: 'sum(return) - sum(return_within_my_half)',
+						avg: 'ROUND(avg(return) - avg(return_within_my_half), 2)',
+						teampercent: 'ROUND(((sum(return) - sum(return_within_my_half)::DECIMAL) / (sum(return_team_for) - sum(return_within_my_half_team_for)::DECIMAL)) * 100, 0)',
+						top: 'playergame.return - playergame.return_within_my_half = (SELECT return - return_within_my_half',
+					}),
+				},
 				prevent: {
 					title: 'Prevent',
 					data: await getData(filters, {
@@ -347,7 +382,7 @@ async function getLeaders(filters, mode) {
 					data: await getData(filters, {
 						sum: 'sum(grab_whilst_opponents_prevent)',
 						avg: 'ROUND(avg(grab_whilst_opponents_prevent), 2)',
-						teampercent: 'ROUND((sum(grab_whilst_opponents_prevent)::DECIMAL / sum(grab_whilst_opponents_prevent)::DECIMAL) * 100, 0)',
+						teampercent: 'ROUND((sum(grab_whilst_opponents_prevent)::DECIMAL / sum(grab_whilst_opponents_prevent_team_for)::DECIMAL) * 100, 0)',
 						top: 'playergame.grab_whilst_opponents_prevent = (SELECT grab_whilst_opponents_prevent',
 					})
 				},
@@ -356,7 +391,7 @@ async function getLeaders(filters, mode) {
 					data: await getData(filters, {
 						sum: 'sum(grab_whilst_opponents_hold)',
 						avg: 'ROUND(avg(grab_whilst_opponents_hold), 2)',
-						teampercent: 'ROUND((sum(grab_whilst_opponents_hold)::DECIMAL / sum(grab_whilst_opponents_hold)::DECIMAL) * 100, 0)',
+						teampercent: 'ROUND((sum(grab_whilst_opponents_hold)::DECIMAL / sum(grab_whilst_opponents_hold_team_for)::DECIMAL) * 100, 0)',
 						top: 'playergame.grab_whilst_opponents_hold = (SELECT grab_whilst_opponents_hold',
 					})
 				},
@@ -435,6 +470,26 @@ async function getLeaders(filters, mode) {
 						teampercent: 'ROUND((sum(kiss)::DECIMAL / sum(kiss_team_for)::DECIMAL) * 100, 0)',
 						top: 'playergame.kiss = (SELECT kiss',
 					})
+				},
+				nondroppops: {
+					title: 'Non-Drop Pops',
+					data: await getData({...filters, ...{having: true, ascending: true}}, {
+						sum: 'sum(pop) - sum(drop)',
+						avg: 'ROUND(avg(pop) - avg(drop), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+										sum(pop)::DECIMAL - sum(drop)::DECIMAL
+									)
+									/
+									(
+										sum(pop_team_for)::DECIMAL - sum(drop_team_for)::DECIMAL
+									)
+								)
+							* 100, 0)`,
+						top: '(playergame.pop - playergame.drop) = (SELECT (pop - drop)',
+					}),
 				},
 				tagpop: {
 					title: 'Tag / Pop',
@@ -582,7 +637,6 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.long_hold = (SELECT long_hold',
 					}),
 				},
-
 				timedead: {
 					title: 'Time Dead',
 					data: await getData({...filters, ...{ascending: true}}, {
@@ -592,17 +646,8 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.pop = (SELECT MAX(pop)',
 					})
 				},
-				timeleading: {
-					title: 'Time Leading',
-					data: await getData(filters, {
-						sum: `TO_CHAR( sum(position_win_time) * interval '1 sec', 'mi:ss')`,
-						avg: `TO_CHAR( avg(position_win_time) * interval '1 sec', 'mi:ss')`,
-						teampercent: 'ROUND((sum(position_win_time)::DECIMAL / sum(play_time)::DECIMAL) * 100, 0)',
-						top: 'playergame.position_win_time = (SELECT MAX(position_win_time)',
-					})
-				},
 				flaccid: {
-					title: 'Flaccid',
+					title: 'Flaccids',
 					data: await getData(filters, {
 						sum: 'sum(flaccid)',
 						avg: 'ROUND(avg(flaccid), 2)',
@@ -610,16 +655,6 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.flaccid = (SELECT flaccid',
 					})
 				},
-				score: {
-					title: 'Score',
-					data: await getData(filters, {
-						sum: 'sum(score)',
-						avg: 'ROUND(avg(score), 2)',
-						teampercent: 'ROUND((sum(score)::DECIMAL / sum(score_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.score = (SELECT score',
-					})
-				},
-
 			}
 			break;
 
