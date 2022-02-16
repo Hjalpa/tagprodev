@@ -259,6 +259,26 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.tag = (SELECT tag',
 					}),
 				},
+				nonreturntags: {
+					title: 'Non-Return Tags',
+					data: await getData(filters, {
+						sum: 'sum(tag) - sum(return)',
+						avg: 'ROUND(avg(tag) - avg(return), 2)',
+						teampercent: `
+							ROUND(
+								(
+									(
+										sum(tag)::DECIMAL - sum(return)::DECIMAL
+									)
+									/
+									(
+										sum(tag_team_for)::DECIMAL - sum(return_team_for)::DECIMAL
+									)
+								)
+							* 100, 0)`,
+						top: '(playergame.tag - playergame.return) = (SELECT (tag - return)',
+					}),
+				},
 				returns: {
 					title: 'Returns',
 					data: await getData(filters, {
@@ -516,14 +536,6 @@ async function getLeaders(filters, mode) {
 						top: '(cap_from_prevent) = (SELECT (cap_from_prevent)'
 					}),
 				},
-				capfromblock: {
-					title: 'Cap from Block',
-					data: await getData(filters, {
-						sum: 'sum(cap_from_block)',
-						avg: 'ROUND(avg(cap_from_block), 2)',
-						teampercent: 'ROUND((sum(cap_from_block)::DECIMAL / sum(cap_from_block_team_for)::DECIMAL) * 100, 0)',
-					}),
-				},
 				capfromhandoff: {
 					title: 'Cap from Handoff',
 					data: await getData(filters, {
@@ -540,15 +552,6 @@ async function getLeaders(filters, mode) {
 						avg: 'ROUND(avg(cap_from_my_prevent), 2)',
 						teampercent: 'ROUND((sum(cap_from_my_prevent)::DECIMAL / sum(cap_from_prevent_team_for)::DECIMAL) * 100, 0)',
 						top: 'playergame.cap_from_my_prevent = (SELECT cap_from_my_prevent',
-					}),
-				},
-				assistfromblock: {
-					title: 'Assist from Block',
-					data: await getData(filters, {
-						sum: 'sum(cap_from_my_block)',
-						avg: 'ROUND(avg(cap_from_my_block), 2)',
-						teampercent: 'ROUND((sum(cap_from_my_block)::DECIMAL / sum(cap_from_block_team_for)::DECIMAL) * 100, 0)',
-						top: 'playergame.cap_from_my_block = (SELECT cap_from_my_block',
 					}),
 				},
 				assistfromhandoff: {
@@ -580,26 +583,6 @@ async function getLeaders(filters, mode) {
 					}),
 				},
 
-				nontakeoverturns: {
-					title: 'Non-Takeover Returns',
-					data: await getData(filters, {
-						sum: 'sum(tag) - sum(return)',
-						avg: 'ROUND(avg(tag) - avg(return), 2)',
-						teampercent: `
-							ROUND(
-								(
-									(
-										sum(tag)::DECIMAL - sum(return)::DECIMAL
-									)
-									/
-									(
-										sum(tag_team_for)::DECIMAL - sum(return_team_for)::DECIMAL
-									)
-								)
-							* 100, 0)`,
-						top: '(playergame.tag - playergame.return) = (SELECT (tag - return)',
-					}),
-				},
 				timedead: {
 					title: 'Time Dead',
 					data: await getData({...filters, ...{ascending: true}}, {
@@ -607,6 +590,24 @@ async function getLeaders(filters, mode) {
 						avg: `TO_CHAR( (avg(pop) * 3) * interval '1 sec', 'mi:ss')`,
 						teampercent: 'ROUND((sum(pop)::DECIMAL / sum(pop_team_for)::DECIMAL) * 100, 0)',
 						top: 'playergame.pop = (SELECT MAX(pop)',
+					})
+				},
+				timeleading: {
+					title: 'Time Leading',
+					data: await getData(filters, {
+						sum: `TO_CHAR( sum(position_win_time) * interval '1 sec', 'mi:ss')`,
+						avg: `TO_CHAR( avg(position_win_time) * interval '1 sec', 'mi:ss')`,
+						teampercent: 'ROUND((sum(position_win_time)::DECIMAL / sum(play_time)::DECIMAL) * 100, 0)',
+						top: 'playergame.position_win_time = (SELECT MAX(position_win_time)',
+					})
+				},
+				flaccid: {
+					title: 'Flaccid',
+					data: await getData(filters, {
+						sum: 'sum(flaccid)',
+						avg: 'ROUND(avg(flaccid), 2)',
+						teampercent: 'ROUND((sum(flaccid)::DECIMAL / sum(flaccid_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.flaccid = (SELECT flaccid',
 					})
 				},
 				score: {
@@ -618,6 +619,7 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.score = (SELECT score',
 					})
 				},
+
 			}
 			break;
 
@@ -661,18 +663,6 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.assist = (SELECT assist',
 					})
 				},
-				// possession: {
-				// 	title: 'Possession',
-				// 	data: await getData({...filters, ...{percentage: true}}, {
-				// 		sum: `
-				// 			ROUND((
-				// 					sum(hold)::DECIMAL / (
-				// 						sum(hold_team_for)::DECIMAL + sum(hold_team_against)::DECIMAL
-				// 					)
-				// 			) * 100, 0)
-				// 		`,
-				// 	}),
-				// },
 				tags: {
 					title: 'Tags',
 					data: await getData(filters, {
