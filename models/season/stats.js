@@ -107,7 +107,7 @@ async function getSelects(mode) {
 					SUM(assist) as assists,
 					TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss') as prevent,
 					SUM(return) as returns,
-					SUM(return_within_5_tiles_from_opponents_base) as saves,
+					SUM(return_within_2_tiles_from_opponents_base) as saves,
 					SUM(tag) as tags,
 					SUM(reset_from_my_prevent) + SUM(reset_from_my_return) as resets,
 					SUM(kiss) as kisses,

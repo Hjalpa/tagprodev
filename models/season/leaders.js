@@ -315,7 +315,7 @@ async function getLeaders(filters, mode) {
 					}),
 				},
 				returnswithinopphalf: {
-					title: 'Returns Witin Opp Half',
+					title: 'Returns Within Opp Half',
 					data: await getData(filters, {
 						sum: 'sum(return) - sum(return_within_my_half)',
 						avg: 'ROUND(avg(return) - avg(return_within_my_half), 2)',
@@ -395,6 +395,15 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.grab_whilst_opponents_hold = (SELECT grab_whilst_opponents_hold',
 					})
 				},
+				failedcaps: {
+					title: 'Failed Caps',
+					data: await getData(filters, {
+						sum: 'sum(drop_within_2_tiles_from_my_base)',
+						avg: 'ROUND(avg(drop_within_2_tiles_from_my_base), 2)',
+						teampercent: 'ROUND((sum(drop_within_2_tiles_from_my_base)::DECIMAL / sum(drop_within_2_tiles_from_my_base_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.drop_within_2_tiles_from_my_base = (SELECT drop_within_2_tiles_from_my_base',
+					})
+				},
 				quickreturn: {
 					title: 'Quick Returns',
 					data: await getData(filters, {
@@ -415,6 +424,15 @@ async function getLeaders(filters, mode) {
 				},
 				saves: {
 					title: 'Saves',
+					data: await getData(filters, {
+						sum: 'sum(return_within_2_tiles_from_opponents_base)',
+						avg: 'ROUND(avg(return_within_2_tiles_from_opponents_base), 2)',
+						teampercent: 'ROUND((sum(return_within_2_tiles_from_opponents_base)::DECIMAL / sum(return_within_2_tiles_from_opponents_base_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.return_within_2_tiles_from_opponents_base = (SELECT return_within_2_tiles_from_opponents_base',
+					})
+				},
+				clearances: {
+					title: 'Clearances',
 					data: await getData(filters, {
 						sum: 'sum(return_within_5_tiles_from_opponents_base)',
 						avg: 'ROUND(avg(return_within_5_tiles_from_opponents_base), 2)',
@@ -565,7 +583,7 @@ async function getLeaders(filters, mode) {
 					})
 				},
 				capfrompup: {
-					title: 'Cap form Pup',
+					title: 'Cap from Pup',
 					data: await getData(filters, {
 						sum: 'sum(cap_whilst_team_have_active_pup)',
 						avg: 'ROUND(avg(cap_whilst_team_have_active_pup), 2)',
@@ -636,6 +654,15 @@ async function getLeaders(filters, mode) {
 						`,
 						top: 'playergame.long_hold = (SELECT long_hold',
 					}),
+				},
+				buttoning: {
+					title: 'Buttoning',
+					data: await getData(filters, {
+						sum: `TO_CHAR(sum(button) * interval '1 sec', 'mi:ss')`,
+						avg: `TO_CHAR(avg(button) * interval '1 sec', 'mi:ss')`,
+						teampercent: 'ROUND((sum(button)::DECIMAL / sum(button_team_for)::DECIMAL) * 100, 0)',
+						top: 'playergame.button = (SELECT MAX(button)',
+					})
 				},
 				timedead: {
 					title: 'Time Dead',
