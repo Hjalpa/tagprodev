@@ -131,7 +131,7 @@ async function getMVB(seasonid) {
 			${mvb} as value
 
 		FROM playergame
-		LEFT JOIN game ON game.id = playergame.gameid
+		LEFT JOIN game ON game.id = playergame.gameid AND game.seasonid = $1
 		LEFT JOIN seasonschedule ON game.id = seasonschedule.gameid
 		LEFT JOIN player ON player.id = playergame.playerid
 
