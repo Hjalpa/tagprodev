@@ -679,11 +679,11 @@ async function getLeaders(filters, mode) {
 				},
 				capfromhandoff: {
 					title: 'Cap from Handoff',
-					data: await getData(filters, {
+					data: await getData({...filters, ...{having: true}}, {
 						sum: 'sum(cap_from_handoff)',
 						avg: 'ROUND(avg(cap_from_handoff), 2)',
-						teampercent: 'ROUND((sum(cap_from_handoff)::DECIMAL / sum(cap_from_handoff_team_for)::DECIMAL) * 100, 0)',
-						gamepercent: 'ROUND((sum(cap_from_handoff)::DECIMAL / sum(cap_from_handoff_team_for  + cap_from_handoff_team_against)::DECIMAL) * 100, 0)',
+						teampercent: 'ROUND((sum(cap_from_handoff)::DECIMAL / sum(nullif(cap_from_handoff_team_for, 0))::DECIMAL) * 100, 0)',
+						gamepercent: 'ROUND((sum(cap_from_handoff)::DECIMAL / sum(nullif(cap_from_handoff_team_for + cap_from_handoff_team_against, 0))::DECIMAL) * 100, 0)',
 						top: 'playergame.cap_from_handoff = (SELECT cap_from_handoff',
 					}),
 				},
@@ -699,11 +699,11 @@ async function getLeaders(filters, mode) {
 				},
 				assistfromhandoff: {
 					title: 'Assist from Handoff',
-					data: await getData(filters, {
+					data: await getData({...filters, ...{having: true}}, {
 						sum: 'sum(cap_from_my_handoff)',
 						avg: 'ROUND(avg(cap_from_my_handoff), 2)',
-						teampercent: 'ROUND((sum(cap_from_my_handoff)::DECIMAL / sum(cap_from_handoff_team_for)::DECIMAL) * 100, 0)',
-						gamepercent: 'ROUND((sum(cap_from_my_handoff)::DECIMAL / sum(cap_from_handoff_team_for + cap_from_handoff_team_against)::DECIMAL) * 100, 0)',
+						teampercent: 'ROUND((sum(cap_from_my_handoff)::DECIMAL / sum(nullif(cap_from_handoff_team_for, 0))::DECIMAL) * 100, 0)',
+						gamepercent: 'ROUND((sum(cap_from_my_handoff)::DECIMAL / sum(nullif(cap_from_handoff_team_for + cap_from_handoff_team_against, 0))::DECIMAL) * 100, 0)',
 						top: 'playergame.cap_from_my_handoff = (SELECT cap_from_my_handoff',
 					}),
 				},
