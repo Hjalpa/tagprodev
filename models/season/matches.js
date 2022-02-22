@@ -43,6 +43,7 @@ async function getFixtures(filters) {
 
 			Round(cap * 100, 0)
 			+
+
 			-- hattrick: 3 caps in a game
 			(
 				case

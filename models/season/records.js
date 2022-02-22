@@ -1,5 +1,6 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
+const mvb = require ('../../lib/mvb')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -68,10 +69,16 @@ async function getData(filters, select) {
 	return raw
 }
 
-async function getRecords(filters, mode) {
-	switch(mode) {
+async function getRecords(filters, gamemode) {
+	let mvb_select = mvb.getSelectSingle(gamemode)
+
+	switch(gamemode) {
 		case 'ctf':
 			return {
+				mvb: {
+					title: 'MVB',
+					data: await getData(filters, mvb_select),
+				},
 				points: {
 					title: 'Points',
 					data: await getData(filters, 'cap + assist'),
@@ -126,14 +133,14 @@ async function getRecords(filters, mode) {
 				},
 				grabpercap: {
 					title: 'Cap / Grab',
-					data: await getData({...filters, ...{percentage: true}}, `
-						Round((cap::DECIMAL / grab::DECIMAL) * 100, 0)
+					data: await getData({...filters, ...{having:true, percentage: true}}, `
+						CASE WHEN grab = 0 THEN 0 ELSE Round((cap::DECIMAL / grab::DECIMAL) * 100, 0) END
 					`)
 				},
 				holdpergrab: {
 					title: 'Hold / Grab',
 					data: await getData(filters, `
-						Round(hold::DECIMAL / grab::DECIMAL, 2)
+						CASE WHEN grab = 0 THEN 0 ELSE Round(hold::DECIMAL / grab::DECIMAL, 2) END
 					`)
 				},
 				holdpercap: {

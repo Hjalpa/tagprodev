@@ -54,7 +54,7 @@ init.call = async () => {
 
 				LEFT JOIN map ON map.id = seasonschedule.mapid
 
-				WHERE seasonschedule.seasonid = 6 AND map.name = $1 AND rt.acronym = $2 AND bt.acronym = $3 AND gameid IS NULL
+				WHERE seasonschedule.seasonid = 6 AND map.name = $1 AND rt.acronym = $2 AND bt.acronym = $3 AND gameid IS NULL AND seasonschedule.date = CURRENT_DATE
 
 				LIMIT 1
 			`, [data.map, data.red, data.blue], 'row')
@@ -65,12 +65,10 @@ init.call = async () => {
 				if(euid) {
 					let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [euid], 'id')
 					if(!gameExists) {
-						console.log('wat')
 						await axios.post(`https://tagpro.dev/api/import`, {
 							euid: euid,
 							seasonid: 6 // adjust this for new seasons and create db entry within season table
 						})
-						console.log('wat after')
 						console.log('imported:' + euid)
 					}
 
@@ -89,6 +87,13 @@ init.call = async () => {
 		}
 
 	}
+
+	await axios.get(`https://tagpro.dev/ctf/1/`)
+	await axios.get(`https://tagpro.dev/ctf/1/stats`)
+	await axios.get(`https://tagpro.dev/ctf/1/stats/4`)
+	await axios.get(`https://tagpro.dev/ctf/1/leaders`)
+	await axios.get(`https://tagpro.dev/ctf/1/records`)
+	await axios.get(`https://tagpro.dev/ctf/1/matches`)
 
 	process.kill(process.pid)
 }

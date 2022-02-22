@@ -1,5 +1,6 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
+const mvb = require ('../../lib/mvb')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -31,7 +32,7 @@ let init = async (req, res) => {
 	}
 }
 
-async function getData(filters, mode) {
+async function getData(filters, gamemode) {
 	let query = {
 		where: ['game.seasonid = $1'],
 		data: [filters.seasonid],
@@ -42,7 +43,7 @@ async function getData(filters, mode) {
 		query.data.push(filters.date)
 	}
 
-	let selects = await getSelects(mode)
+	let selects = await getSelects(gamemode)
 	let sql = `
 				SELECT
 					COALESCE(team.acronym, 'SUB') as acronym,
@@ -96,10 +97,12 @@ async function getAllRounds(seasonid) {
 	return data
 }
 
-async function getSelects(mode) {
-	switch(mode) {
+async function getSelects(gamemode) {
+	let mvb_select = mvb.getSelect(gamemode)
+	switch(gamemode) {
 		case 'ctf':
 			return `
+					${mvb_select} as mvb,
 					SUM(cap) as caps,
 					TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss') as hold,
 					SUM(grab) as grabs,
@@ -117,6 +120,7 @@ async function getSelects(mode) {
 			break;
 		case 'nf':
 			return `
+					${mvb_select} as mvb,
 					SUM(cap) as caps,
 					SUM(assist) as assists,
 					ROUND((
