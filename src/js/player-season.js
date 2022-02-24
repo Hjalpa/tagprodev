@@ -50,22 +50,21 @@ function makeRadar(raw) {
 				"count": (raw.radar.hold > 20) ? 20 : raw.radar.hold
 			},
 			{
-				"skill": "Tags",
-				"count": (raw.radar.tag > 20) ? 20 : raw.radar.tag
+				"skill": raw.gamemode === 'ctf' ? 'Tags' : 'Grabs',
+				"count": raw.gamemode === 'ctf' ? raw.radar.tag : raw.radar.grab,
 			},
 			{
 				"skill": "Pups",
 				"count": (raw.radar.pup < 0 ? 0 : (raw.radar.pup > 20 ? 20 : raw.radar.pup))
 			},
 			{
-				"skill": "Returns",
-				"count": (raw.radar.return > 20) ? 20 : raw.radar.return
+				"skill": raw.gamemode === 'ctf' ? 'Returns' : 'Takeovers',
+				"count": raw.gamemode === 'ctf' ? raw.radar.return : raw.radar.takeover,
 			},
 			{
 				"skill": "Prevent",
 				"count": (raw.radar.prevent > 20) ? 20 : raw.radar.prevent
 			},
-
 			{
 				"skill": "Assists",
 				"count": (raw.radar.assist < 0 ? 0 : (raw.radar.assist > 20 ? 20 : raw.radar.assist))
@@ -88,16 +87,16 @@ function makeRadar(raw) {
 				"count": (raw.radaravg.hold > 20) ? 20 : raw.radaravg.hold
 			},
 			{
-				"skill": "Tags",
-				"count": (raw.radaravg.tag > 20) ? 20 : raw.radaravg.tag
+				"skill": raw.gamemode === 'ctf' ? 'Tags' : 'Grabs',
+				"count": raw.gamemode === 'ctf' ? raw.radaravg.tag: raw.radaravg.grab,
 			},
 			{
 				"skill": "Pups",
 				"count": (raw.radaravg.pup < 0 ? 0 : (raw.radaravg.pup > 20 ? 20 : raw.radaravg.pup))
 			},
 			{
-				"skill": "Returns",
-				"count": (raw.radaravg.return > 20) ? 20 : raw.radaravg.return
+				"skill": raw.gamemode === 'ctf' ? 'Returns' : 'Takeovers',
+				"count": raw.gamemode === 'ctf' ? raw.radaravg.return : raw.radaravg.takeover,
 			},
 			{
 				"skill": "Prevent",

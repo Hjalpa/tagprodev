@@ -26,13 +26,23 @@ include template/player-nav.pug
 							.lab Assists
 							.pos= n.radar.assist
 
-						li
-							.lab Returning
-							.pos= n.radar.return
+						if n.gamemode == 'ctf'
+							li
+								.lab Returning
+								.pos= n.radar.return
 
-						li
-							.lab Tagging
-							.pos= n.radar.tag
+							li
+								.lab Tagging
+								.pos= n.radar.tag
+
+						if n.gamemode == 'nf'
+							li
+								.lab Takeovers
+								.pos= n.radar.takeover
+
+							li
+								.lab Grabs
+								.pos= n.radar.grab
 
 						li
 							.lab Preventing
@@ -49,6 +59,7 @@ include template/player-nav.pug
 						li
 							.lab Capping
 							.pos= n.radar.cap
+
 
 				.block_right
 					.radar

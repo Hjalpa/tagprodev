@@ -16,9 +16,7 @@ let init = async (req, res) => {
 		return Math.round(v.toFixed(2))
 	}
 
-	const calc_win = (current, max) => {
-		let min = 35
-
+	const calc_win = (current, max, min) => {
 		if(current < min)
 			current = min
 
@@ -39,12 +37,12 @@ let init = async (req, res) => {
 	try {
 		let data = {
 			config: {
-				title: req.player.name,
+				title: req.player.name + ' seasons',
 				player: req.player.name,
 				path: req.baseUrl,
 				nav: {
-					cat: 'player',
-					page: 'league',
+					cat: 'players',
+					page: 'seasons',
 				}
 			},
 			seasons: [],
@@ -56,6 +54,7 @@ let init = async (req, res) => {
 			let raw = {
 				seasonid: s.seasonid,
 				seasonname: s.mode.toUpperCase() + ' Season ' + s.number,
+				gamemode: s.mode,
 				real: await getDataReal(req.player.id, s.seasonid, s.mode),
 				avg: await getDataRealAvg(req.player.id, s.seasonid, s.mode),
 				max: {
@@ -65,8 +64,12 @@ let init = async (req, res) => {
 					tag: await getMaxTag(s.seasonid),
 					hold: await getMaxHold(s.seasonid),
 					prevent: await getMaxPrevent(s.seasonid),
+
 					pup: await getMaxPup(s.seasonid),
 					mvb: await getMaxMVB(s.seasonid, s.mode),
+
+					takeover: await getMaxTakeover(s.seasonid),
+					grab: await getMaxGrab(s.seasonid),
 				},
 				radar: {},
 				radaravg: {}
@@ -76,19 +79,25 @@ let init = async (req, res) => {
 			raw.radar.assist = calc(raw.real.assist, raw.max.assist)
 			raw.radar.pup = calc(raw.real.pup, raw.max.pup)
 			raw.radar.return = calc(raw.real.return, raw.max.return)
-			raw.radar.tag = calc(raw.real.tag, raw.max.tag)
-			raw.radar.prevent = calc(raw.real.prevent, raw.max.prevent)
+			raw.radar.tag = calc_win(raw.real.tag, raw.max.tag, 0)
+			raw.radar.prevent = calc_win(raw.real.prevent, raw.max.prevent, 0)
 			raw.radar.hold = calc(raw.real.hold, raw.max.hold)
-			raw.radar.mvb = calc_win(raw.real.mvb, raw.max.mvb)
+			raw.radar.mvb = calc(raw.real.mvb, raw.max.mvb)
+			//
+			raw.radar.takeover = calc(raw.real.takeover, raw.max.takeover)
+			raw.radar.grab = calc(raw.real.grab, raw.max.grab)
 
 			raw.radaravg.cap = calc(raw.avg.cap, raw.max.cap)
 			raw.radaravg.assist = calc(raw.avg.assist, raw.max.assist)
 			raw.radaravg.pup = calc(raw.avg.pup, raw.max.pup)
 			raw.radaravg.return = calc(raw.avg.return, raw.max.return)
-			raw.radaravg.tag = calc(raw.avg.tag, raw.max.tag)
-			raw.radaravg.prevent = calc(raw.avg.prevent, raw.max.prevent)
+			raw.radaravg.tag = calc_win(raw.avg.tag, raw.max.tag, 0)
+			raw.radaravg.prevent = calc_win(raw.avg.prevent, raw.max.prevent, 0)
 			raw.radaravg.hold = calc(raw.avg.hold, raw.max.hold)
-			raw.radaravg.mvb = calc_win(raw.avg.mvb, raw.max.mvb)
+			raw.radaravg.mvb = calc(raw.avg.mvb, raw.max.mvb)
+			//
+			raw.radaravg.takeover = calc(raw.avg.takeover, raw.max.takeover)
+			raw.radaravg.grab = calc(raw.avg.grab, raw.max.grab)
 
 			data.seasons.push(raw)
 		}
@@ -122,7 +131,7 @@ async function getMaxCap(seasonid) {
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
 		WHERE seasonid = $1 AND seasonschedule.league = TRUE
 		GROUP BY playerid, seasonid
-		HAVING count(*) > 5
+		HAVING count(*) > 7
 		ORDER BY cap DESC
 	`, [seasonid], 'cap')
 }
@@ -135,7 +144,7 @@ async function getMaxAssist(seasonid) {
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
 		WHERE seasonid = $1 AND seasonschedule.league = TRUE
 		GROUP BY playerid, seasonid
-		HAVING count(*) > 5
+		HAVING count(*) > 7
 		ORDER BY assist DESC
 	`, [seasonid], 'assist')
 }
@@ -148,7 +157,7 @@ async function getMaxReturn(seasonid) {
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
 		WHERE seasonid = $1 AND seasonschedule.league = TRUE
 		GROUP BY playerid, seasonid
-		HAVING count(*) > 5
+		HAVING count(*) > 7
 		ORDER BY return DESC
 	`, [seasonid], 'return')
 }
@@ -161,7 +170,7 @@ async function getMaxTag(seasonid) {
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
 		WHERE seasonid = $1 AND seasonschedule.league = TRUE
 		GROUP BY playerid, seasonid
-		HAVING count(*) > 5
+		HAVING count(*) > 7
 		ORDER BY tag DESC
 	`, [seasonid], 'tag')
 }
@@ -175,7 +184,7 @@ async function getMaxHold(seasonid) {
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
 		WHERE seasonid = $1 AND seasonschedule.league = TRUE
 		GROUP BY playerid, seasonid
-		HAVING count(*) > 5
+		HAVING count(*) > 7
 		ORDER BY hold DESC
 	`, [seasonid], 'hold')
 }
@@ -188,7 +197,7 @@ async function getMaxPrevent(seasonid) {
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
 		WHERE seasonid = $1 AND seasonschedule.league = TRUE
 		GROUP BY playerid, seasonid
-		HAVING count(*) > 5
+		HAVING count(*) > 7
 		ORDER BY prevent DESC
 	`, [seasonid], 'prevent')
 }
@@ -201,9 +210,35 @@ async function getMaxPup(seasonid) {
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
 		WHERE seasonid = $1 AND seasonschedule.league = TRUE
 		GROUP BY playerid, seasonid
-		HAVING count(*) > 5
+		HAVING count(*) > 7
 		ORDER BY pup DESC
 	`, [seasonid], 'pup')
+}
+
+async function getMaxTakeover(seasonid) {
+	return await db.select(`
+		SELECT
+			avg(takeover) as takeover
+		FROM playergame
+		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
+		WHERE seasonid = $1 AND seasonschedule.league = TRUE
+		GROUP BY playerid, seasonid
+		HAVING count(*) > 7
+		ORDER BY takeover DESC
+	`, [seasonid], 'takeover')
+}
+
+async function getMaxGrab(seasonid) {
+	return await db.select(`
+		SELECT
+			avg(grab) as grab
+		FROM playergame
+		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
+		WHERE seasonid = $1 AND seasonschedule.league = TRUE
+		GROUP BY playerid, seasonid
+		HAVING count(*) > 7
+		ORDER BY grab DESC
+	`, [seasonid], 'grab')
 }
 
 async function getMaxMVB(seasonid, gamemode) {
@@ -215,7 +250,7 @@ async function getMaxMVB(seasonid, gamemode) {
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
 		WHERE seasonid = $1 AND seasonschedule.league = TRUE
 		GROUP BY playerid, seasonid
-		HAVING count(*) > 5
+		HAVING count(*) > 7
 		ORDER BY mvb DESC
 		LIMIT 1
 	`, [seasonid], 'mvb')
@@ -233,6 +268,8 @@ async function getDataReal(player, seasonid, gamemode) {
 			avg(prevent) as prevent,
 			avg(return) as return,
 			avg(tag) as tag,
+			avg(takeover) as takeover,
+			avg(grab) as grab,
 			${mvb_select} / count(*) as mvb
 		FROM playergame
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
@@ -253,6 +290,8 @@ async function getDataRealAvg(player, seasonid, gamemode) {
 			avg(prevent) as prevent,
 			avg(return) as return,
 			avg(tag) as tag,
+			avg(takeover) as takeover,
+			avg(grab) as grab,
 			${mvb_select} / count(*) as mvb
 		FROM playergame
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid

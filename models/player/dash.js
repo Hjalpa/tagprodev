@@ -7,12 +7,12 @@ let init = async (req, res) => {
 	try {
 		let data = {
 			config: {
-				title: req.player.name,
+				title: req.player.name + ' profile',
 				player: req.player.name,
 				path: req.baseUrl,
 				nav: {
-					cat: 'player',
-					page: 'league',
+					cat: 'players',
+					page: 'overview',
 				}
 			},
 			// star ratings

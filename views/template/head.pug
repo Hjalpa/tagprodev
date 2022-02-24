@@ -7,7 +7,7 @@ html
 		link(rel='stylesheet', href='/init.css')
 		link(rel='icon', href='/favicon.svg', type='image/svg+xml')
 		script(src='/init.js', async)
-
+		// script(defer, type="text/javascript", src="https://api.pirsch.io/pirsch.js", id="pirschjs", data-code="rCf3zbJZfR6JWanXlrObtEsAvLrlZLHS")
 	body
 		.background
 
@@ -22,8 +22,8 @@ html
 			a(href="/nf/1" class=(config.nav.cat === 'nf' ? 'active' : ''))
 				span NF
 
-			// a(href="#" class=(config.nav.cat === 'players' ? 'active' : ''))
-			// 	span Players
+			a(href="#" class=(config.nav.cat === 'players' ? 'active' : ''))
+				span Players
 
 			// a(href="/leaderboards" class=(config.nav.cat === 'leaderboards' ? 'active' : ''))
 			// 	span Leaderboard

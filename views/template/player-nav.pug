@@ -3,7 +3,5 @@
 		h1= config.player
 
 		.nav-bar
-			a(href='#').active Overview
-			a(href='#') Matches
-			a(href='#') Seasons
-			a(href='#') Breakdown
+			a(href=config.path + "" class=(config.nav.page === 'overview' ? 'active' : '')) Overview
+			a(href=config.path + "/seasons" class=(config.nav.page === 'seasons' ? 'active' : '')) Seasons
