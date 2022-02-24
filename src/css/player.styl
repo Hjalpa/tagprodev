@@ -4,67 +4,62 @@
 		margin-bottom 1rem
 
 	.season
-		min-height 350px
 		background #0b0c0e
 		border-radius 6px
+		display flex
 
-		h1
-			display flex
+		.main
 			padding: 0.8rem 0 0.6rem 0;
-			font-size: .9rem;
-			font-weight: 600;
-			text-transform: uppercase;
 			background: linear-gradient(to top right,#000,#0b0c0e);
 			border-radius: 6px 6px 0 0;
-			color: #a8a8a8;
-			color: #747474;
+
 			justify-content: center;
 			align-items: center;
+			flex 0 100%
+
+			h1
+				font-size: .9rem;
+				font-weight: 600;
+				text-transform: uppercase;
+				color: #747474;
+				padding 0 0 0 1rem
 
 		.block_left
-			display inline-block
-			width 30%
-			vertical-align top
-
-			.title
-				font-size 1rem
-				font-weight 700
-				padding 0 0 0.5rem 0
+			display flex
+			justify-content: center;
 
 			ul.stats
-				display block
 				list-style none
 				margin 0
-				margin-bottom 1.5rem
 
 				li
-					display block
+					display flex
 					width 10rem
 					padding .2rem 0
-					font-size .9rem
+					font-size .8rem
 					color #8b8b8b
+					align-items center
+					padding-left .5rem
+					padding-right .5rem
 
 					&:not(:last-child)
 						border-bottom 1px solid #131417
 
 					.lab
-						display inline-block
 						color #8b8b8b
-						width 70%
+						width calc(100% - 30px)
+						justify-content center
+						align-items center
 
 					.pos
-						display: inline-block;
-						text-align right
-
-						display: inline-block;
-						width: 30px;
-						margin: 0 0.2rem;
-						border-radius: 0.3rem;
-						font-size: .9rem;
-						text-align: center;
-						color: #fff;
-						background: linear-gradient(to bottom right,rgba(41,43,51,.5) 0,rgba(31,32,38,.5) 100%);
-
+						width 30px
+						margin 0 0.2rem
+						border-radius 0.3rem
+						color white
+						background linear-gradient(to bottom right,rgba(41,43,51,.5) 0,rgba(31,32,38,.5) 100%)
+						display flex
+						justify-content center
+						align-items center
 
 						&.high
 							color #1dbf38
@@ -73,27 +68,22 @@
 							color #a9b132
 							font-weight 700
 
-
 		.block_right
-			display inline-block
-			width 30%
-			min-width 300px
-			vertical-align top
-			text-align center
+			display flex
+			justify-content center
+			align-items center
 
 		.radar
-			display inline-block
-			vertical-align top
+			padding-top .75rem
+			position relative
 
 			.names
-				font-size .75rem
-				fill #8b8b8b
+				font-size .7rem
+				fill #ffffff66
 
 			.real
-				// stroke rgba(black, .75)
-				// fill rgba(black, .2)
-				stroke: rgb(255 200 0);
-				fill: #dcb14e91;
+				stroke rgb(255 200 0)
+				fill #dcb14e91
 
 			.avg
 				stroke rgba(white, .75)

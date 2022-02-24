@@ -15,14 +15,12 @@ let init = async (req, res) => {
 					page: 'overview',
 				}
 			},
-			// star ratings
 			maps: await getMaps(req.player.id),
 			goodteam: await getGodlyTeammates(req.player.id),
 			badteam: await getShitTeammates(req.player.id),
 			monthly: await getMonthData(req.player.id),
 		}
 
-		// res.json(data)
 		res.render('player-dash', data)
 	}
 	catch(e) {

@@ -11,20 +11,35 @@ include template/player-nav.pug
 
 		each n, key in seasons
 			.season(data-seasonid= n.seasonid)
-				h1= n.seasonname
-
+				.main
+					h1= n.seasonname
 
 				.block_left
-					.title Attributes
 					ul.stats
-
 						li
 							.lab MVB
 							.pos= n.radar.mvb
 
 						li
+							.lab Capping
+							.pos= n.radar.cap
+
+						li
+							.lab Holding
+							.pos= n.radar.hold
+
+						if n.gamemode == 'nf'
+							li
+								.lab Grabs
+								.pos= n.radar.grab
+
+						li
 							.lab Assists
 							.pos= n.radar.assist
+
+						li
+							.lab Preventing
+							.pos= n.radar.prevent
 
 						if n.gamemode == 'ctf'
 							li
@@ -40,26 +55,9 @@ include template/player-nav.pug
 								.lab Takeovers
 								.pos= n.radar.takeover
 
-							li
-								.lab Grabs
-								.pos= n.radar.grab
-
-						li
-							.lab Preventing
-							.pos= n.radar.prevent
-
 						li
 							.lab Pups
 							.pos= n.radar.pup
-
-						li
-							.lab Holding
-							.pos= n.radar.hold
-
-						li
-							.lab Capping
-							.pos= n.radar.cap
-
 
 				.block_right
 					.radar
