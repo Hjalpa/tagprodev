@@ -1,0 +1,53 @@
+include template/head.pug
+include template/player-nav.pug
+
+.contain
+	.wrap
+
+		.player-stats
+			.row.head
+				each n, key in matches
+					each v, k in n
+
+						if(k === 'color')
+						else if(k === 'euid')
+							- continue
+
+						else if(k === 'result')
+							.item.result
+
+						else if(k === 'acronym')
+							.item.acronym
+
+						else
+							.item(
+								data-column= k
+							)= k
+
+					- break
+
+			each n, key in matches
+				.row.entry(
+						style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80; --teambg: " + n.color + "30"
+					)
+					each v, k in n
+						if(k === 'euid')
+						else if(k === 'color')
+							- continue
+
+						else if(k === 'result')
+							.item.result
+								a(
+									href='https://tagpro.eu/?match=' + n.euid
+									class= n.result
+								)= n.result
+
+						else if(k === 'acronym')
+							.item.acronym= n.acronym
+
+						else
+							.item(
+								data-column= k
+							)= v
+
+include template/foot.pug
