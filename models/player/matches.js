@@ -62,7 +62,7 @@ async function getMatches(playerid) {
 		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
 		LEFT JOIN team ON seasonteam.teamid = team.id
 		WHERE playergame.playerid = $1 -- AND season.mode = 'ctf'
-		ORDER BY game.date DESC
+		ORDER BY game.datetime DESC
 	`, [playerid], 'all')
 	return raw
 }
