@@ -55,6 +55,7 @@ let init = async (req, res) => {
 				seasonid: s.seasonid,
 				seasonname: s.mode.toUpperCase() + ' Season ' + s.number,
 				gamemode: s.mode,
+				team: await getTeam(req.player.id, s.seasonid),
 				real: await getDataReal(req.player.id, s.seasonid, s.mode),
 				avg: await getDataRealAvg(req.player.id, s.seasonid, s.mode),
 				max: {
@@ -297,5 +298,37 @@ async function getDataRealAvg(player, seasonid, gamemode) {
 		left join seasonschedule ON seasonschedule.gameid = playergame.gameid
 		WHERE playerid != $1 AND seasonid = $2 AND seasonschedule.league = TRUE
 	`, [player, seasonid], 'row')
+	return raw
+}
+
+async function getTeam(player, seasonid) {
+	let raw = await db.select(`
+        SELECT
+            t.id,
+            t.name,
+            t.acronym,
+            t.logo,
+            t.color,
+            st.id,
+			st.winner,
+			st.runnerup,
+
+            ARRAY(
+				select json_build_object('name', name, 'country', LOWER(country), 'captain', seasonplayer.captain)
+                from player
+                left join seasonplayer on seasonplayer.playerid = player.id
+                left join seasonteam on seasonplayer.seasonteamid = seasonteam.id
+                where seasonteam.id = st.id
+                ORDER BY captain DESC, st.id DESC
+            ) AS players
+
+        FROM seasonplayer as sp
+        LEFT JOIN seasonteam as st on st.id = sp.seasonteamid
+        LEFT JOIN team as t on t.id = st.teamid
+        WHERE st.seasonid = $2 AND sp.playerid = $1
+        GROUP BY t.id, t.name, t.acronym, t.logo, t.color, st.id, st.winner, st.runnerup
+        ORDER BY t.name ASC
+	`, [player, seasonid], 'row')
+
 	return raw
 }

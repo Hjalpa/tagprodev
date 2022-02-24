@@ -13,6 +13,11 @@ include template/player-nav.pug
 			.season(data-seasonid= n.seasonid)
 				.main
 					h1= n.seasonname
+					if n.team
+						.acronym(
+							style="--teamcolor: " + n.team.color + "; --teamglow: " + n.team.color + "80"
+						)= n.team.acronym
+						.team= n.team.name
 
 				.block_left
 					ul.stats
