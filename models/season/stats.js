@@ -60,7 +60,7 @@ async function getData(filters, gamemode) {
 				LEFT JOIN team ON seasonteam.teamid = team.id
 				WHERE seasonschedule.date <= now() AND seasonschedule.league = TRUE AND ${query.where.join(' AND ')}
 				GROUP BY player.name, team.color, team.acronym
-				ORDER BY team.acronym ASC, caps DESC
+				ORDER BY mvb DESC
 			`
 
 	return await db.select(sql, query.data, 'all')

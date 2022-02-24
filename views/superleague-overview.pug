@@ -42,11 +42,11 @@ include template/superleague-nav.pug
 								)= n.acronym
 								.item.player
 									a(
-										href='#'
+										href='/player/' + n.player
 									)= n.player
 
 								// .item.value=  n.value
-								- let percent = ((n.value / max) * 100).toFixed(0)
+								- let percent = ((n.value / max) * 100).toFixed(2)
 								.item.test
 									// .v= n.value
 									.v= percent
@@ -55,7 +55,7 @@ include template/superleague-nav.pug
 
 
 				// playoff final stats?
-				if mvb[0]
+				if champions
 					.pane.final
 						.headline
 							.text Playoff Final

@@ -23,16 +23,27 @@ let getSeason = async function (req, res, next) {
 
 			if(!season)
 				throw 'invalid season'
+
+			req.season = req.params.season
+			req.seasonid = season
+			req.mode = req.params.mode
+			req.seasonname = req.mode + ' Season ' + req.season
+
+		}
+		if(req.params.player) {
+			req.player = {
+				id: await db.select(`SELECT id from player WHERE name = $1`, [req.params.player], 'id'),
+				name: req.params.player
+			}
+
+			if(!req.player.id)
+				throw 'cannot find player: ' + req.params.player
+
 		}
 
 	} catch(err) {
 		next(err)
 	}
-
-	req.season = req.params.season
-	req.seasonid = season
-	req.mode = req.params.mode
-	req.seasonname = req.mode + ' Season ' + req.season
 
 	next()
 }
@@ -45,7 +56,10 @@ router.get('/ctf/2/signup', (req, res) => res.redirect('https://www.youtube.com/
 
 router.use('/api',  require('./api'))
 router.use('/leaderboards',  require('./leaderboards'))
+router.use('/player/:player', getSeason, require('./player'))
 router.use('/:mode/:season', getSeason, require('./season'))
+
+router.use('/rules', (req, res) => res.render('rules'))
 router.use((req, res) => res.status(404).render('404'))
 
 module.exports = router

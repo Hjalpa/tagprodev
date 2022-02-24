@@ -27,9 +27,8 @@ include template/superleague-nav.pug
 									style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
 								)= n.acronym
 								.item.player
-									// href= '/player/' + n.player
 									a(
-										href='#'
+										href= '/player/' + n.player
 									)= n.player
 
 								.item.value= n.value

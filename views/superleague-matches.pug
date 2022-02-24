@@ -142,7 +142,9 @@ include template/superleague-nav.pug
 														= f.stats.timelosing.percent + '%'
 
 										.stats.mvb
-											a(href="#").value= f.stats.mvb
+											a(
+												href="/player/" + f.stats.mvb
+											).value= f.stats.mvb
 
 
 include template/foot.pug

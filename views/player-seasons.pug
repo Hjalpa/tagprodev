@@ -1,0 +1,54 @@
+include template/head.pug
+include template/player-nav.pug
+
+| <script src="https://d3js.org/d3.v3.min.js"></script>
+
+.contain.playerseasons
+	.wrap
+
+		script.
+			const seasons = !{JSON.stringify(seasons)}
+
+		each n, key in seasons
+			.season(data-seasonid= n.seasonid)
+				h1= n.seasonname
+
+
+				.block_left
+					.title Attributes
+					ul.stats
+
+						li
+							.lab MVB
+							.pos= n.radar.mvb
+
+						li
+							.lab Assists
+							.pos= n.radar.assist
+
+						li
+							.lab Returning
+							.pos= n.radar.return
+
+						li
+							.lab Tagging
+							.pos= n.radar.tag
+
+						li
+							.lab Preventing
+							.pos= n.radar.prevent
+
+						li
+							.lab Pups
+							.pos= n.radar.pup
+
+						li
+							.lab Holding
+							.pos= n.radar.hold
+
+						li
+							.lab Capping
+							.pos= n.radar.cap
+
+				.block_right
+					.radar
