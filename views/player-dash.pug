@@ -16,73 +16,44 @@ include template/player-nav.pug
 						span= winratio
 
 		.stats.leaders
-			if bestseasons
+			if topseasons
 				.stat
-					h3 Best Seasons
+					h3 Top Seasons
+					each n, key in topseasons
+						.row
+							.item.rank= n.rank
+							.item.team(
+								style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+							)= n.acronym
+							.item.player
+								a(
+									href= '/' + n.mode + '/' + n.number
+								)= n.mode + ' season ' + n.number
+							.item.value= n.winrate
 
-				each n, key in bestseasons
-					.row(class=(key === 0 ? 'top' : ''))
-						.item.rank= n.rank
-						.item.team(
-							data-position= i
-							style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
-						)= n.acronym
-						.item.player
-							a(
-								href= '/season/' + n.player
-							)= n.season
+			if topmaps
+				.stat
+					h3 Top Maps
+					each n, key in topmaps
+						.row(class=(key === 0 ? 'top' : ''))
+							.item.rank= n.rank
+							.item.name
+								a(
+									href="https://unfortunate-maps.jukejuice.com/show/" + n.unfortunateid
+								)= n.map
+							.item.value= n.winrate
 
-						.item.value= n.winrate
+			if topteammates
+				.stat
+					h3 Top Teammates
+					each n, key in topteammates
+						.row(class=(key === 0 ? 'top' : ''))
+							.item.rank= n.rank
+							.item.name
+								a(
+									href= '/player/' + n.player
+								)= n.player
 
-
-
-
-
-			// .stat
-			// 	h3 Maps
-			// 	each n, key in maps
-			// 		.row(class=(key === 0 ? 'top' : ''))
-			// 			.item.rank= n.rank
-			// 			.item.team(
-			// 				data-position= i
-			// 				style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
-			// 			)= n.acronym
-			// 			.item.player
-			// 				a(
-			// 					href= '/player/' + n.player
-			// 				)= n.map
-
-			// 			.item.value= n.winrate
-
-			// 			if n.versus
-			// 				.item.versus(
-			// 					style="--teamcolor: " + n.versuscolor + "; --teamglow: " + n.versuscolor + "80"
-			// 				)= n.versus
-
-			// .stat
-			// 	h3 Best Teammates
-			// 	each n, key in goodteam
-			// 		.row(class=(key === 0 ? 'top' : ''))
-			// 			.item.rank= n.rank
-			// 			.item.team(
-			// 				data-position= i
-			// 				style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
-			// 			)= n.acronym
-			// 			.item.player
-			// 				a(
-			// 					href= '/player/' + n.player
-			// 				)= n.player
-
-			// 			.item.value= n.winrate
-
-			// 			if n.versus
-			// 				.item.versus(
-			// 					style="--teamcolor: " + n.versuscolor + "; --teamglow: " + n.versuscolor + "80"
-			// 				)= n.versus
-
-
-
-
-
+							.item.value= n.winrate
 
 include template/foot.pug

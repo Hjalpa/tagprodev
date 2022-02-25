@@ -17,11 +17,10 @@ let init = async (req, res) => {
 			},
 			seasons: await getSeasonCount(req.player.id),
 			winratio: await getWinRatio(req.player.id),
-
-			bestseasons: await getBestSeasons(req.player.id),
-
-			// maps: await getMaps(req.player.id),
-			// goodteam: await getGodlyTeammates(req.player.id),
+			///////////
+			topseasons: await getTopSeasons(req.player.id),
+			topmaps: await getTopMaps(req.player.id),
+			topteammates: await getTopTeammates(req.player.id),
 		}
 
 		res.render('player-dash', data)
@@ -52,7 +51,7 @@ async function getWinRatio(playerid) {
 				count(*)::DECIMAL
 			)
 			* 100
-		,2 ) || '%' as winrate
+		, 0) || '%' as winrate
 		FROM playergame
 		WHERE playerid = $1
 		GROUP BY playerid
@@ -60,7 +59,7 @@ async function getWinRatio(playerid) {
 	return raw
 }
 
-async function getMaps(player) {
+async function getTopMaps(player) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -80,6 +79,7 @@ async function getMaps(player) {
 			) rank,
 
 			map.name as map,
+			unfortunateid,
 			count(*) as played,
 			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
 			ROUND(
@@ -93,7 +93,7 @@ async function getMaps(player) {
 					/
 					count(*)::DECIMAL
 				) * 100
-			, 2) as winrate
+			, 0) || '%' as winrate
 
 		FROM playergame
 		LEFT JOIN player on player.id = playergame.playerid
@@ -102,16 +102,16 @@ async function getMaps(player) {
 
 		WHERE
 			player.id = $1
-		GROUP BY map.name
+		GROUP BY map.name, unfortunateid
 		HAVING count(*) >= 2
-		ORDER BY winrate DESC
+		ORDER BY rank ASC
 		LIMIT 6
 	`, [player], 'all')
 
 	return raw
 }
 
-async function getGodlyTeammates(player) {
+async function getTopTeammates(player) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -133,7 +133,7 @@ async function getGodlyTeammates(player) {
 					/
 					count(*)::DECIMAL
 				) * 100
-			, 2) as winrate
+			, 0) || '%' as winrate
 
 		FROM playergame
 		LEFT JOIN player on player.id = playergame.playerid
@@ -152,67 +152,45 @@ async function getGodlyTeammates(player) {
 				)
 
 		GROUP BY name
-		HAVING count(*) >= 15 AND
-
-			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) > 50
-
-		ORDER BY winrate DESC
+		ORDER BY rank ASC
 		LIMIT 6
 	`, [player, player], 'all')
 
 	return raw
 }
 
-async function getBestSeasons(player) {
+async function getTopSeasons(player) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
 				ORDER BY
 				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
 			) rank,
-
 			t.acronym,
 			t.color,
-
-
+			season.mode,
+			season.number,
 			ROUND(
 				(
 					count(*) filter (WHERE result_half_win = 1)
 					/
 					count(*)::DECIMAL
 				) * 100
-			, 2) as winrate
+			, 0) || '%' as winrate
 
 		FROM playergame
-		LEFT JOIN player on player.id = playergame.playerid
 		LEFT JOIN game on game.id = playergame.gameid
-		LEFT JOIN playerseason on game.id = playergame.gameid
-		LEFT JOIN team as t on t.id = playerseason.teamid
+		LEFT JOIN player on player.id = playergame.playerid
+		LEFT JOIN seasonplayer on seasonplayer.playerid = player.id
+		LEFT JOIN seasonteam on seasonteam.id = seasonplayer.seasonteamid
+		LEFT JOIN season on season.id = game.seasonid AND seasonteam.seasonid = season.id
+		LEFT JOIN team as t on t.id = seasonteam.teamid
 
-		WHERE
-			playerid != $1 AND
-
-			gameid IN (
-					SELECT
-						gameid
-					FROM
-						playergame as pg
-					INNER JOIN player ON player.id = pg.playerid
-					WHERE playerid = $1 AND gameid = playergame.gameid AND pg.team = playergame.team
-				)
-
-		GROUP BY t.acronym, seasonid
-		HAVING count(*) >= 5
-		ORDER BY winrate ASC
-		LIMIT 6
+		WHERE playergame.playerid = $1 AND mode IS NOT NULL
+		GROUP BY game.seasonid, t.acronym, t.color, season.mode, season.number
+		ORDER BY rank ASC
+		LIMIT 10
 	`, [player], 'all')
 
-	console.log(raw)
 	return raw
 }
