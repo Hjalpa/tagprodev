@@ -3,3 +3,86 @@ include template/player-nav.pug
 
 .contain
 	.wrap
+		.player-overview
+			.info
+				.block.seasons
+					.k Seasons
+					.v
+						span= seasons
+
+				.block.winrate
+					.k Winrate
+					.v
+						span= winratio
+
+		.stats.leaders
+			if bestseasons
+				.stat
+					h3 Best Seasons
+
+				each n, key in bestseasons
+					.row(class=(key === 0 ? 'top' : ''))
+						.item.rank= n.rank
+						.item.team(
+							data-position= i
+							style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+						)= n.acronym
+						.item.player
+							a(
+								href= '/season/' + n.player
+							)= n.season
+
+						.item.value= n.winrate
+
+
+
+
+
+			// .stat
+			// 	h3 Maps
+			// 	each n, key in maps
+			// 		.row(class=(key === 0 ? 'top' : ''))
+			// 			.item.rank= n.rank
+			// 			.item.team(
+			// 				data-position= i
+			// 				style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+			// 			)= n.acronym
+			// 			.item.player
+			// 				a(
+			// 					href= '/player/' + n.player
+			// 				)= n.map
+
+			// 			.item.value= n.winrate
+
+			// 			if n.versus
+			// 				.item.versus(
+			// 					style="--teamcolor: " + n.versuscolor + "; --teamglow: " + n.versuscolor + "80"
+			// 				)= n.versus
+
+			// .stat
+			// 	h3 Best Teammates
+			// 	each n, key in goodteam
+			// 		.row(class=(key === 0 ? 'top' : ''))
+			// 			.item.rank= n.rank
+			// 			.item.team(
+			// 				data-position= i
+			// 				style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+			// 			)= n.acronym
+			// 			.item.player
+			// 				a(
+			// 					href= '/player/' + n.player
+			// 				)= n.player
+
+			// 			.item.value= n.winrate
+
+			// 			if n.versus
+			// 				.item.versus(
+			// 					style="--teamcolor: " + n.versuscolor + "; --teamglow: " + n.versuscolor + "80"
+			// 				)= n.versus
+
+
+
+
+
+
+include template/foot.pug

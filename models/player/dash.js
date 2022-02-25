@@ -15,10 +15,13 @@ let init = async (req, res) => {
 					page: 'overview',
 				}
 			},
-			maps: await getMaps(req.player.id),
-			goodteam: await getGodlyTeammates(req.player.id),
-			badteam: await getShitTeammates(req.player.id),
-			monthly: await getMonthData(req.player.id),
+			seasons: await getSeasonCount(req.player.id),
+			winratio: await getWinRatio(req.player.id),
+
+			bestseasons: await getBestSeasons(req.player.id),
+
+			// maps: await getMaps(req.player.id),
+			// goodteam: await getGodlyTeammates(req.player.id),
 		}
 
 		res.render('player-dash', data)
@@ -26,6 +29,35 @@ let init = async (req, res) => {
 	catch(e) {
 		res.status(400).json({error: e})
 	}
+}
+
+async function getSeasonCount(playerid) {
+	let raw = await db.select(`
+		SELECT
+			count(*) as total
+		FROM seasonplayer
+		WHERE playerid = $1
+		GROUP BY playerid
+	`, [playerid], 'total')
+	return raw
+}
+
+async function getWinRatio(playerid) {
+	let raw = await db.select(`
+		SELECT
+		ROUND(
+			(
+				count(*) filter (WHERE result_half_win = 1)
+				/
+				count(*)::DECIMAL
+			)
+			* 100
+		,2 ) || '%' as winrate
+		FROM playergame
+		WHERE playerid = $1
+		GROUP BY playerid
+	`, [playerid], 'winrate')
+	return raw
 }
 
 async function getMaps(player) {
@@ -137,7 +169,7 @@ async function getGodlyTeammates(player) {
 	return raw
 }
 
-async function getShitTeammates(player) {
+async function getBestSeasons(player) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -145,14 +177,10 @@ async function getShitTeammates(player) {
 				(count(*) filter (WHERE result_half_win = 1) / count(*)::DECIMAL) * 100 DESC
 			) rank,
 
-			name as player,
-			count(*) as played,
-			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
-			ROUND(
-				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
-			, 3) as cap_diff_per_min,
-			count(*) filter (WHERE result_half_win = 1) as won,
-			count(*) filter (WHERE result_half_win = 0) as lost,
+			t.acronym,
+			t.color,
+
+
 			ROUND(
 				(
 					count(*) filter (WHERE result_half_win = 1)
@@ -164,6 +192,8 @@ async function getShitTeammates(player) {
 		FROM playergame
 		LEFT JOIN player on player.id = playergame.playerid
 		LEFT JOIN game on game.id = playergame.gameid
+		LEFT JOIN playerseason on game.id = playergame.gameid
+		LEFT JOIN team as t on t.id = playerseason.teamid
 
 		WHERE
 			playerid != $1 AND
@@ -174,70 +204,15 @@ async function getShitTeammates(player) {
 					FROM
 						playergame as pg
 					INNER JOIN player ON player.id = pg.playerid
-					WHERE playerid = $2 AND gameid = playergame.gameid AND pg.team = playergame.team
+					WHERE playerid = $1 AND gameid = playergame.gameid AND pg.team = playergame.team
 				)
 
-		GROUP BY name
-		HAVING count(*) >= 15 AND
-
-			ROUND(
-				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) < 50
-
-
-
+		GROUP BY t.acronym, seasonid
+		HAVING count(*) >= 5
 		ORDER BY winrate ASC
 		LIMIT 6
-	`, [player, player], 'all')
-
-	return raw
-}
-
-async function getMonthData(player) {
-
-	let raw = await db.select(`
-		SELECT
-			CONCAT(
-				TO_CHAR(DATE_TRUNC('month', date), 'Mon')
-				,' ',
-				extract(year from date)
-			) AS monthyear,
-			date_trunc('month', date) as dates,
-
-			count(*) games,
-			ROUND((sum(game.elo)::FLOAT / count(*))::numeric , 2) as elo,
-
-			ROUND(sum(tag) / (sum(play_time)::numeric / 60), 2) as tags,
-			ROUND(sum(pop) / (sum(play_time)::numeric / 60), 2) as pops,
-			ROUND(sum(grab) / (sum(play_time)::numeric / 60), 2) as grabs,
-			-- ROUND(sum(drop) / (sum(play_time)::numeric / 60), 2) as drops,
-			ROUND(sum(flaccid) / (sum(play_time) / 60)::numeric, 2) as flaccids,
-			ROUND(sum(hold) / (sum(play_time)::numeric / 60), 2) as hold,
-			ROUND(sum(cap) / (sum(play_time)::numeric / 60), 2) as caps,
-			ROUND(sum(prevent) / (sum(play_time)::numeric / 60), 2) as prevent,
-			ROUND(sum(playergame.return) / (sum(play_time)::numeric / 60), 2) as returns,
-			ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2) as pups,
-
-			-- ROUND(sum(hold) / sum(grab)::numeric, 2) as holdpergrab,
-			ROUND(
-				(
-					(ROUND((sum(pup_tp)+sum(pup_rb)+sum(pup_jj)) / (sum(play_time) / 60)::numeric, 2))
-					/
-					(ROUND((sum(pup_tp_team_for)+sum(pup_rb_team_for)+sum(pup_jj_team_for)) / (sum(play_time) / 60)::numeric, 2))
-				) * 100
-			, 2) || '%' as pup_share
-
-		FROM playergame
-		-- LEFT JOIN player on playergame.playerid = player.id
-		LEFT JOIN game on game.id = playergame.gameid
-		WHERE playerid = $1
-		GROUP BY monthyear, dates
-		ORDER BY dates DESC
 	`, [player], 'all')
 
+	console.log(raw)
 	return raw
 }
