@@ -7,7 +7,6 @@ const express = require('express')
 const https = require('https')
 const app = express()
 
-
 const server = https.createServer({
  	key: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/privkey.pem'),
  	cert: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/cert.pem'),

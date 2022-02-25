@@ -4,6 +4,10 @@ include template/player-nav.pug
 .contain
 	.wrap
 
+		.nav-bar-tertiary
+			a(href=config.path + "/matches" class=(config.nav.sub === 'ctf' ? 'active' : '')) CTF
+			a(href=config.path + "/matches/nf" class=(config.nav.sub === 'nf' ? 'active' : '')) NF
+
 		.player-stats
 			.row.head
 				each n, key in matches
