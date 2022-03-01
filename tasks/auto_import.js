@@ -90,7 +90,11 @@ init.call = async () => {
 
 	await axios.get(`https://tagpro.dev/ctf/1/`)
 	await axios.get(`https://tagpro.dev/ctf/1/stats`)
+	await axios.get(`https://tagpro.dev/ctf/1/stats/1`)
+	await axios.get(`https://tagpro.dev/ctf/1/stats/2`)
 	await axios.get(`https://tagpro.dev/ctf/1/stats/4`)
+	await axios.get(`https://tagpro.dev/ctf/1/stats/4`)
+	await axios.get(`https://tagpro.dev/ctf/1/stats/5`)
 	await axios.get(`https://tagpro.dev/ctf/1/leaders`)
 	await axios.get(`https://tagpro.dev/ctf/1/records`)
 	await axios.get(`https://tagpro.dev/ctf/1/matches`)

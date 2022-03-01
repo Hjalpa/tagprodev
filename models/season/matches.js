@@ -1,5 +1,6 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
+const mvb = require ('../../lib/mvb')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -26,7 +27,7 @@ let init = async (req, res) => {
 					sub: (req.params.id != 'playoffs') ? 'league' : 'playoffs'
 				}
 			},
-			schedule: await getFixtures(filters),
+			schedule: await getFixtures(filters, req.mode),
 		}
 		res.render('superleague-matches', data)
 	}
@@ -35,66 +36,9 @@ let init = async (req, res) => {
 	}
 }
 
-async function getFixtures(filters) {
+async function getFixtures(filters, gamemode) {
 	let orderby =  (filters.league) ? 'seasonschedule.date ASC, seasonschedule.order ASC' : 'seasonschedule.round ASC, seasonschedule.match ASC, seasonschedule.order ASC'
-
-	let mvb = `
-		Round(
-
-			Round(cap * 100, 0)
-			+
-
-			-- hattrick: 3 caps in a game
-			(
-				case
-					when cap >= 3 then 300
-				end
-			)
-			+
-				Round((cap_from_tapin) * 25, 0)
-			+
-
-				Round((cap_whilst_having_active_pup) * 25, 0)
-			+
-				Round(((pup_rb) + (pup_jj) * 25), 0)
-			+
-				Round((assist) * 50, 0)
-			+
-				-- playmaker: 3 assists in a game
-				(
-					case
-						when assist >= 3 then 300
-					end
-				)
-				+
-				Round((tapin_from_my_chain) * 50, 0)
-			+
-				Round((takeover_good) * 5, 0)
-			+
-				Round((tag) * 2, 0)
-			+
-				Round((hold) / 2, 0)
-			+
-				Round((flag_carry_distance) / 10, 0)
-			+
-				((prevent) / 4)
-			+
-				Round((long_hold) * 50, 0)
-			+
-			(
-				NULLIF(
-					hold_before_cap::DECIMAL
-				, 0)
-				/
-				NULLIF(
-					cap::DECIMAL * 150
-				,  0)
-			)
-			+
-				Round((chain) * 15, 0)
-
-		, 0)
-	`
+	let mvb_select = mvb.getSelectSingle(gamemode)
 
 	let raw = await db.select(`
 		SELECT
@@ -140,9 +84,9 @@ async function getFixtures(filters) {
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid
 				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
-				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid AND seasonteam.seasonid = $1
 				LEFT JOIN team ON seasonteam.teamid = team.id
-				WHERE playergame.gameid = game.id
+				WHERE playergame.gameid = game.id AND seasonschedule.seasonid = $1 AND seasonteam.seasonid = $1
 				ORDER BY hold_team_for DESC
 				LIMIT 1
 			) as holdwin,
@@ -166,9 +110,9 @@ async function getFixtures(filters) {
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid
 				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
-				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid AND seasonteam.seasonid = $1
 				LEFT JOIN team ON seasonteam.teamid = team.id
-				WHERE playergame.gameid = game.id
+				WHERE playergame.gameid = game.id AND seasonschedule.seasonid = $1 AND seasonteam.seasonid = $1
 				ORDER BY hold_team_against DESC
 				LIMIT 1
 			) as holdlost,
@@ -194,9 +138,9 @@ async function getFixtures(filters) {
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid
 				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
-				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid AND seasonteam.seasonid = $1
 				LEFT JOIN team ON seasonteam.teamid = team.id
-				WHERE playergame.gameid = game.id
+				WHERE playergame.gameid = game.id AND seasonschedule.seasonid = $1 AND seasonteam.seasonid = $1
 				ORDER BY position_win_time DESC
 				LIMIT 1
 			) as timewinning,
@@ -220,16 +164,17 @@ async function getFixtures(filters) {
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid
 				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
-				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid AND seasonteam.seasonid = $1
 				LEFT JOIN team ON seasonteam.teamid = team.id
-				WHERE playergame.gameid = game.id
+				WHERE playergame.gameid = game.id AND seasonschedule.seasonid = $1 AND seasonteam.seasonid = $1
 				ORDER BY position_loss_time DESC
 				LIMIT 1
 			) as timelosing,
 
 			-- mvb
 			(
-				SELECT player.name
+				SELECT
+					player.name
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid
 				WHERE playergame.gameid = game.id
@@ -238,19 +183,13 @@ async function getFixtures(filters) {
 			) as mvb
 
 		from seasonschedule
-
-		left join seasonteam rst on rst.id = seasonschedule.teamredid
+		left join seasonteam rst on rst.id = seasonschedule.teamredid AND seasonschedule.seasonid = $1
 		left join team as redteam on redteam.id = rst.id
-
-		left join seasonteam bst on bst.id = seasonschedule.teamblueid
+		left join seasonteam bst on bst.id = seasonschedule.teamblueid AND seasonschedule.seasonid = $1
 		left join team as blueteam on blueteam.id = bst.id
-
 		left join map on map.id = seasonschedule.mapid
-
 		left join game on game.id = seasonschedule.gameid
-
 		where seasonschedule.seasonid = $1 AND seasonschedule.league = $2 AND seasonschedule.playoff = $3
-
 		order by ${orderby}
 	`, [filters.seasonid, filters.league, filters.playoff], 'all')
 

@@ -892,6 +892,9 @@
 		.round-group
 			margin-bottom 1rem
 
+			.map
+				flex 1
+
 		.round
 			.headline
 				border-radius 6px 6px 0 0
@@ -904,7 +907,7 @@
 					font-weight 600
 					text-transform uppercase
 					color #747474
-					flex 0 0 40%
+					flex 40
 					padding-left 1rem
 
 					.top
@@ -931,20 +934,19 @@
 			.match
 				background #0b0c0e
 				margin 0
-
 				flex 1
 				display flex
-				justify-content: center;
-				align-items: center;
+				justify-content center
+				align-items center
 
 				&:not(:last-child)
 					border-bottom 1px solid #131417
 
 				.game
-					flex 0 0 25%
+					flex 3.4
 
 				.stats
-					flex 0 0 calc(60% / 3)
+					flex 10%
 					justify-content center
 					align-items center
 
@@ -954,15 +956,10 @@
 
 						a
 							color #b9b9b9
-							// color #e5c661
 							display inline-block
 							text-decoration none
-							// color var(--teamcolor)
-							// text-shadow 0 0 10px var(--teamcolor)
-
 
 					&.rate
-
 						&.winning
 						&.hold
 							display flex
