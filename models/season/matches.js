@@ -117,8 +117,6 @@ async function getFixtures(filters, gamemode) {
 				LIMIT 1
 			) as holdlost,
 
-
-
 			-- time winning
 			(
 				SELECT jsonb_build_object(

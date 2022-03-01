@@ -18,7 +18,7 @@ include template/superleague-nav.pug
 							.games
 								.map
 									a(href=
-										href="https://unfortunate-maps.jukejuice.com/show/" + i.map.unfortunateid
+										href="https://fortunatemaps.herokuapp.com/map/" + i.map.unfortunateid
 									)!= i.map.name
 
 								each f, fkey in i.fixtures
@@ -67,7 +67,7 @@ include template/superleague-nav.pug
 										// map
 										.map
 											a(href=
-												href="https://unfortunate-maps.jukejuice.com/show/" + f.map.unfortunateid
+												href="https://fortunatemaps.herokuapp.com/map/" + f.map.unfortunateid
 											)!= f.map.name
 
 										// game
