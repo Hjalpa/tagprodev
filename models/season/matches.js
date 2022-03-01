@@ -72,7 +72,12 @@ async function getFixtures(filters, gamemode) {
 					'percent', ROUND(
 						(
 							(
-								hold_team_for::DECIMAL
+								CASE WHEN hold_team_for = hold_team_against
+								THEN
+									hold_team_for::DECIMAL - hold_whilst_opponents_dont_team_for::DECIMAL
+								ELSE
+									hold_team_for::DECIMAL
+								END
 							)
 							/
 							(
@@ -98,7 +103,12 @@ async function getFixtures(filters, gamemode) {
 					'percent', ROUND(
 						(
 							(
-								hold_team_for::DECIMAL
+								CASE WHEN hold_team_for = hold_team_against
+								THEN
+									hold_team_for::DECIMAL - hold_whilst_opponents_dont_team_for::DECIMAL
+								ELSE
+									hold_team_for::DECIMAL
+								END
 							)
 							/
 							(

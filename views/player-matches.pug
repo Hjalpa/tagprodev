@@ -24,7 +24,9 @@ include template/player-nav.pug
 							.item.acronym
 
 						else if(k === 'versus')
-							.item.acronym.versus Versus
+							.item.acronym.versus(
+								data-column="versus"
+							) Versus
 
 						else
 							.item(
@@ -55,6 +57,7 @@ include template/player-nav.pug
 						else if(k === 'versus')
 							.item.acronym.versus(
 								style="--teamcolor: " + n.versus.color+ "; --teamglow: " + n.versus.color + "80; --teambg: " + n.versus.color + "30"
+								data-column="versus"
 							)= n.versus.acronym
 
 						else
