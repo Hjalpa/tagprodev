@@ -178,7 +178,7 @@ async function getFixtures(filters, gamemode) {
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid
 				WHERE playergame.gameid = game.id
-				ORDER BY cap DESC
+				ORDER BY ${mvb_select} DESC
 				LIMIT 1
 			) as mvb
 
