@@ -43,6 +43,21 @@ async function getMatches(playerid, gamemode) {
 				WHEN result_half_lose = 1 THEN 'l'
 				ELSE 't'
 			END as result,
+            (
+                SELECT jsonb_build_object(
+                    'color', team.color,
+                    'acronym', team.acronym
+                )
+                FROM seasonschedule as ss
+                LEFT JOIN seasonteam ON (
+                    (ss.teamredid = seasonteam.id AND ss.teamredid != team.id)
+                    OR
+                    (ss.teamblueid = seasonteam.id AND ss.teamblueid != team.id)
+                )
+                LEFT JOIN team ON seasonteam.teamid = team.id
+                WHERE ss.gameid = game.id AND seasonteam.seasonid = season.id
+                LIMIT 1
+            ) as versus,
 			${select}
 
 		FROM playergame
