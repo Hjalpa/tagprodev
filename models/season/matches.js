@@ -67,6 +67,7 @@ async function getFixtures(filters, gamemode) {
 
 			-- time hold winning
 			(
+
 				SELECT jsonb_build_object(
 					'color', team.color,
 					'percent', ROUND(
@@ -84,7 +85,7 @@ async function getFixtures(filters, gamemode) {
 								play_time::DECIMAL
 							)
 						)
-					* 100, 0)
+					* 100, 0) - 10
 				)
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid
@@ -107,6 +108,7 @@ async function getFixtures(filters, gamemode) {
 								THEN
 									hold_team_for::DECIMAL - hold_whilst_opponents_dont_team_for::DECIMAL
 								ELSE
+
 									hold_team_for::DECIMAL
 								END
 							)
@@ -115,7 +117,7 @@ async function getFixtures(filters, gamemode) {
 								play_time::DECIMAL
 							)
 						)
-					* 100, 0)
+					* 100, 0) - 10
 				)
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid

@@ -6,7 +6,7 @@ const db = require('../lib/db')
 const exec = require('child_process').exec
 
 // STOP APACHE IF THE PORT ERROR 80 exists AND RESTART AFTER CERT DONE
-// router.get('/.well-known/acme-challenge/xEnQIF270N03wZzphl0IPqUkPkMaZOWxo_ZGlh0iipM', async (req, res) => res.send('xEnQIF270N03wZzphl0IPqUkPkMaZOWxo_ZGlh0iipM.hYRGI90GO3NsQmmnTO1Uwp7jwf_HnYCV7HPC3UrthtQ'))
+// router.get('/.well-known/acme-challenge/GTWiab8GBwme6EreIWCa7wPJOpvlRdJIwLEqEAIQrdI', async (req, res) => res.send('GTWiab8GBwme6EreIWCa7wPJOpvlRdJIwLEqEAIQrdI.hYRGI90GO3NsQmmnTO1Uwp7jwf_HnYCV7HPC3UrthtQ'))
 
 // find season
 let getSeason = async function (req, res, next) {

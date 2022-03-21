@@ -9,12 +9,12 @@ let init = async (req, res) => {
 	try {
 		let data = {
 			config: {
-				title: 'CTF Season Signup',
+				title: req.mode.toUpperCase() + ' Season ' + req.season + ' Signup',
 				name: req.seasonname,
 				path: req.baseUrl,
 				season: req.season,
 				nav: {
-					cat: 'ctf',
+					cat: req.mode,
 					page: 'league',
 				}
 			},
@@ -27,8 +27,7 @@ let init = async (req, res) => {
 }
 
 async function getSignups(seasonid) {
-	let raw = db.select('SELECT username, profile FROM signup WHERE seasonid = $1 AND verified = $2', [seasonid, true], 'all')
-	return raw
+	return db.select('SELECT username, profile FROM signup WHERE seasonid = $1 AND verified = $2', [seasonid, true], 'all')
 }
 
 async function getProfile(profile) {

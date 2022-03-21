@@ -11,10 +11,14 @@ html
 
 	body
 		.background
-			img(src='https://i.imgur.com/76Nzkgm.png')._1
-			img(src='https://i.imgur.com/1ZWMzQn.png')._2
-			img(src='https://i.imgur.com/5NgLxbF.png')._3
-			img(src='https://i.imgur.com/APTMlFc.png')._4
+			img(src='https://i.imgur.com/AQcPr7L.png')._1
+			img(src='https://i.imgur.com/vKTc7wB.png')._2
+			img(src='https://i.imgur.com/2bzwcTQ.png')._3
+			img(src='https://i.imgur.com/MU65gg5.png')._4
+			// img(src='https://i.imgur.com/76Nzkgm.png')._1
+			// img(src='https://i.imgur.com/1ZWMzQn.png')._2
+			// img(src='https://i.imgur.com/5NgLxbF.png')._3
+			// img(src='https://i.imgur.com/APTMlFc.png')._4
 
 		.signup
 
@@ -37,7 +41,7 @@ html
 			.new
 				.left
 					h1= config.title
-					p.details Season 1 of the <span>CTF Super League</span> will run for <span>3 weeks</span> throughout <span>February</span>, with games played <span>Monday</span> and <span>Thursday</span> 7:30pm GMT.
+					p.details Season 1 of the <span>Egg Ball Super League</span> will run for <span>2 weeks</span> throughout <span>April</span>, with games played <span>Monday</span> and <span>Wednesday</span> 7:30pm GMT.
 
 					h2 Paste in your Profile URL
 					.form
@@ -48,7 +52,7 @@ html
 				.right
 					h2 Signup Quota
 					.bar
-						- signups = Math.round((signups.length / 32) * 100)
+						- signups = Math.round((signups.length / 24) * 100)
 						- if(signups >= 100) signups = 100
 						- signups_text = signups + '%'
 						.progress(style="width:"+signups+"%")
