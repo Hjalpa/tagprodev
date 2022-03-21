@@ -97,7 +97,6 @@ async function getData(filters, sql) {
 						${select} ${ascending}
 				) rank,
 
-
 				COALESCE(team.color, '#404040') as versuscolor,
 				team.acronym as versus,
 
@@ -110,13 +109,15 @@ async function getData(filters, sql) {
 			from playergame
 			left join game on playergame.gameid = game.id
 			left join seasonschedule on playergame.gameid = seasonschedule.gameid
-			left join team on
-				(seasonschedule.teamredid = team.id AND playergame.team = 2) OR (seasonschedule.teamblueid = team.id AND playergame.team = 1)
 			left join player on playergame.playerid = player.id
 
 			left join seasonplayer on seasonplayer.playerid = player.id
 			left join seasonteam on seasonteam.id = seasonplayer.seasonteamid
-			left join team as t on seasonplayer.seasonteamid = t.id
+			left join team as t on seasonteam.teamid = t.id
+
+			left join seasonteam vst ON
+				(seasonschedule.teamredid = vst.id AND playergame.team = 2) OR (seasonschedule.teamblueid = vst.id AND playergame.team = 1)
+			left join team ON vst.teamid = team.id
 
 			WHERE seasonschedule.seasonid = $1 AND seasonschedule.league = TRUE AND seasonteam.seasonid = $1
 
@@ -181,6 +182,7 @@ async function getLeaders(filters, mode) {
 	let mvb_select = mvb.getSelect(mode)
 	switch(mode) {
 		case 'ctf':
+		case 'eltp':
 			return {
 				mvb: {
 					title: 'MVB',
@@ -816,6 +818,7 @@ async function getLeaders(filters, mode) {
 			break;
 
 		case 'nf':
+		case 'ecltp':
 			return {
 				mvb: {
 					title: 'MVB',

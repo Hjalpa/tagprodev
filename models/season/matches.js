@@ -194,9 +194,9 @@ async function getFixtures(filters, gamemode) {
 
 		from seasonschedule
 		left join seasonteam rst on rst.id = seasonschedule.teamredid AND seasonschedule.seasonid = $1
-		left join team as redteam on redteam.id = rst.id
+		left join team as redteam on redteam.id = rst.teamid
 		left join seasonteam bst on bst.id = seasonschedule.teamblueid AND seasonschedule.seasonid = $1
-		left join team as blueteam on blueteam.id = bst.id
+		left join team as blueteam on blueteam.id = bst.teamid
 		left join map on map.id = seasonschedule.mapid
 		left join game on game.id = seasonschedule.gameid
 		where seasonschedule.seasonid = $1 AND seasonschedule.league = $2 AND seasonschedule.playoff = $3

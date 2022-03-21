@@ -159,11 +159,11 @@ async function getTable(seasonid) {
 				'result',
 					CASE
 						WHEN
-							(seasonschedule.teamredid = t.id AND redcaps > bluecaps) OR (seasonschedule.teamblueid = t.id AND bluecaps > redcaps) THEN 'w'
+							(seasonschedule.teamredid = st.id AND redcaps > bluecaps) OR (seasonschedule.teamblueid = st.id AND bluecaps > redcaps) THEN 'w'
 						WHEN
-							(seasonschedule.teamredid = t.id AND redcaps = bluecaps) OR (seasonschedule.teamblueid = t.id AND bluecaps = redcaps) THEN 't'
+							(seasonschedule.teamredid = st.id AND redcaps = bluecaps) OR (seasonschedule.teamblueid = st.id AND bluecaps = redcaps) THEN 't'
 						WHEN
-							(seasonschedule.teamredid = t.id AND redcaps < bluecaps) OR (seasonschedule.teamblueid = t.id AND bluecaps < redcaps) THEN 'l'
+							(seasonschedule.teamredid = st.id AND redcaps < bluecaps) OR (seasonschedule.teamblueid = st.id AND bluecaps < redcaps) THEN 'l'
 					END
 				,
 				'map', map.name
@@ -171,7 +171,7 @@ async function getTable(seasonid) {
 				FROM seasonschedule
 				LEFT JOIN game on game.id = seasonschedule.gameid
 				LEFT JOIN map on game.mapid = map.id
-				WHERE (seasonschedule.teamredid = t.id OR seasonschedule.teamblueid = t.id) AND gameid IS NOT NULL AND seasonschedule.seasonid = $1 AND league IS true
+				WHERE (seasonschedule.teamredid = st.id OR seasonschedule.teamblueid = st.id) AND gameid IS NOT NULL AND seasonschedule.seasonid = $1 AND league IS true
 				ORDER BY seasonschedule.date ASC, seasonschedule.order ASC
 			) as form
 

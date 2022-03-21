@@ -7,7 +7,10 @@
 			// .crumb ›
 			.current Season #{config.season}
 
-		h1 #{config.nav.cat.toUpperCase()} Super League
+		if config.nav.cat === 'ecltp'
+			h1 #{config.nav.cat.toUpperCase()}
+		else
+			h1 #{config.nav.cat.toUpperCase()} Super League
 
 		.nav-bar
 			a(href=config.path	class=(config.nav.page === 'overview' ? 'active' : '')

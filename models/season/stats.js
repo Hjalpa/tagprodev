@@ -101,6 +101,7 @@ async function getSelects(gamemode) {
 	let mvb_select = mvb.getSelect(gamemode)
 	switch(gamemode) {
 		case 'ctf':
+		case 'eltp':
 			return `
 					${mvb_select} as mvb,
 					SUM(cap) as caps,
@@ -119,6 +120,7 @@ async function getSelects(gamemode) {
 			`
 			break;
 		case 'nf':
+		case 'ecltp':
 			return `
 					${mvb_select} as mvb,
 					SUM(cap) as caps,

@@ -74,6 +74,7 @@ async function getRecords(filters, gamemode) {
 
 	switch(gamemode) {
 		case 'ctf':
+		case 'eltp':
 			return {
 				mvb: {
 					title: 'MVB',
@@ -198,6 +199,7 @@ async function getRecords(filters, gamemode) {
 			}
 		break;
 		case 'nf':
+		case 'ecltp':
 			return {
 				points: {
 					title: 'Points',

@@ -7,7 +7,7 @@ let init = async (req, res) => {
 	try {
 
 		let gamemode = (req.params.gamemode) ? req.params.gamemode : 'ctf'
-		if(gamemode != 'ctf' && gamemode != 'nf')
+		if(gamemode != 'ctf' && gamemode != 'nf' && gamemode != 'ecltp')
 			throw 'wrong gamemode'
 
 		let data = {
@@ -50,11 +50,11 @@ async function getMatches(playerid, gamemode) {
                 )
                 FROM seasonschedule as ss
                 LEFT JOIN seasonteam ON (
-                    (ss.teamredid = seasonteam.id AND ss.teamredid != team.id)
+                    (ss.teamredid = seasonteam.id)
                     OR
-                    (ss.teamblueid = seasonteam.id AND ss.teamblueid != team.id)
-                )
-                LEFT JOIN team ON seasonteam.teamid = team.id
+                    (ss.teamblueid = seasonteam.id)
+                ) AND seasonteam.seasonid = seasonschedule.seasonid AND seasonteam.teamid != team.id
+                LEFT JOIN team ON seasonteam.teamid = team.id AND seasonteam.seasonid = seasonschedule.seasonid
                 WHERE ss.gameid = game.id AND seasonteam.seasonid = season.id
                 LIMIT 1
             ) as versus,
@@ -64,9 +64,13 @@ async function getMatches(playerid, gamemode) {
 		LEFT JOIN game ON playergame.gameid = game.id
 		LEFT JOIN player ON playergame.playerid = player.id
 		LEFT JOIN season ON game.seasonid = season.id
-
+		LEFT JOIN seasonschedule on playergame.gameid = seasonschedule.gameid
 		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid AND seasonplayer.seasonteamid IN (SELECT id FROM seasonteam WHERE seasonid = game.seasonid)
-		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+		LEFT JOIN seasonteam ON (
+			(seasonschedule.teamredid = seasonteam.id AND playergame.team = 1)
+			OR
+			(seasonschedule.teamblueid = seasonteam.id AND playergame.team = 2)
+		)
 		LEFT JOIN team ON seasonteam.teamid = team.id
 		WHERE playergame.playerid = $1 AND season.mode = $2
 		ORDER BY game.datetime DESC
@@ -80,6 +84,7 @@ async function getSelect(gamemode) {
 	let mvb_select = mvb.getSelectSingle(gamemode)
 	switch(gamemode) {
 		case 'ctf':
+		case 'eltp':
 			raw = `
 				${mvb_select} as mvb,
 				cap as caps,
@@ -98,6 +103,7 @@ async function getSelect(gamemode) {
 			`
 			break;
 		case 'nf':
+		case 'ecltp':
 			raw = `
 				${mvb_select} as mvb,
 				cap as caps,

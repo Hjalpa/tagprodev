@@ -56,18 +56,7 @@ async function getPlayerCount(seasonid) {
 		SELECT count(*) as total
 		FROM seasonplayer
 		LEFT JOIN seasonteam ON seasonplayer.seasonteamid = seasonteam.id
-		WHERE seasonid = $1
-	`, [seasonid], 'total')
-
-	return raw
-}
-
-async function getPlayerCount(seasonid) {
-	let raw = await db.select(`
-		SELECT count(*) as total
-		FROM seasonplayer
-		LEFT JOIN seasonteam ON seasonplayer.seasonteamid = seasonteam.id
-		WHERE seasonid = $1
+		WHERE seasonteam.seasonid = $1
 	`, [seasonid], 'total')
 
 	return raw
