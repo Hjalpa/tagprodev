@@ -17,6 +17,7 @@ let init = async (req, res) => {
 			},
 			seasons: await getSeasonCount(req.player.id),
 			winratio: await getWinRatio(req.player.id),
+			cost: await getAverageCost(req.player.id),
 			///////////
 			topseasons: await getTopSeasons(req.player.id),
 			topmaps: await getTopMaps(req.player.id),
@@ -28,6 +29,17 @@ let init = async (req, res) => {
 	catch(e) {
 		res.status(400).json({error: e})
 	}
+}
+
+async function getAverageCost(playerid) {
+	let raw = await db.select(`
+		SELECT
+			Round(avg(cost), 2) as cost
+		FROM seasonplayer
+		WHERE playerid = $1 AND captain = FALSE
+		GROUP BY playerid
+	`, [playerid], 'cost')
+	return raw
 }
 
 async function getSeasonCount(playerid) {

@@ -1,0 +1,59 @@
+include template/head.pug
+
+.contain.players-list
+	.wrap
+
+		.player-stats
+			.row.head
+				each n, key in players
+					each v, k in n
+
+						if(k === 'country')
+							.item.country
+
+						else if(k === 'player')
+							.item.player
+
+						else
+							.item(
+								data-column= k
+							)= k
+
+					- break
+
+			each n, key in players
+				.row.entry(
+					style="--teamcolor: #ffc800; --teamglow: #ffc80080; --teambg: #ffc80030"
+				)
+					each v, k in n
+						if(k === 'euid')
+							- continue
+
+						else if(k === 'country')
+							.item.country
+								img(
+									src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + v + ".svg"
+								)
+
+						else if(k === 'player')
+							.item.player
+								a(
+									href='/player/' + v
+								)= v
+
+						else if(k === 'win rate')
+							.item.winrate
+								.val= v+'%'
+								if(v >= 50)
+									.bar.good
+										.inner(style="width: " + v + "%")
+								else
+									.bar.bad
+										.inner(style="width: " + v + "%")
+
+						else
+							.item(
+								data-column= k
+							)= v
+
+include template/foot.pug

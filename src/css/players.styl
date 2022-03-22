@@ -1,0 +1,47 @@
+.players-list
+	.player-stats
+		.row
+			.item.country
+				text-align right
+				flex 0 0 4%
+
+				img
+					display inline-block
+					height 12px
+					width 16px
+					border-radius 3px
+					box-shadow 0 0 10px rgba(black, .3)
+					position relative
+					top 1px
+
+			.winrate
+				.val
+					color white
+					font-size .8rem
+					font-weight 600
+					text-align right
+					display inline-block
+					width 30%
+					padding-right .5rem
+				.bar
+					display inline-block
+					width 30%
+					background #ffffff17
+					height 8px
+					border-radius 2px
+					margin-right 1rem
+
+					.inner
+						display block
+						height inherit
+						border-radius inherit
+
+					&.good
+						.inner
+							background #2acb4f
+							box-shadow 0 0 10px #2acb4f
+
+					&.bad
+						.inner
+							background #ec041f
+							box-shadow 0 0 10px #ec041f

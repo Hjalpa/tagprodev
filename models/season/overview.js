@@ -86,7 +86,7 @@ async function getMVB(gamemode, seasonid) {
 		WHERE seasonteam.seasonid = $1 AND league = true AND game.seasonid = $1
 		GROUP BY player.name, team.acronym, team.color
 
-		HAVING sum(play_time) > 8000
+		HAVING sum(play_time) > 7000
 		ORDER BY value DESC
 		LIMIT 10
 	`, [seasonid], 'all')
