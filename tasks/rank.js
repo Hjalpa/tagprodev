@@ -12,7 +12,7 @@ score.call = async () => {
 		let players = await db.select('SELECT * FROM playerskill', [], 'all')
 		for await (const p of players) {
 			let rank = ordinal({mu: p.mu, sigma: p.sigma})
-			await db.update('playerskill', {rank:rank}, {playerid: p.playerid, seasonid: p.seasonid})
+			await db.update('playerskill', {rank:rank}, {playerid: p.playerid})
 			console.log(p.playerid)
 		}
 

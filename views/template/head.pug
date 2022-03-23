@@ -7,8 +7,12 @@ html
 		link(rel='stylesheet', href='/init.css')
 		link(rel='icon', href='/favicon.svg', type='image/svg+xml')
 		script(src='/init.js', async)
-		//script(defer, type="text/javascript", src="https://api.pirsch.io/pirsch.js", id="pirschjs", data-code="rCf3zbJZfR6JWanXlrObtEsAvLrlZLHS")
-	body
+		// script(defer, type="text/javascript", src="https://api.pirsch.io/pirsch.js", id="pirschjs", data-code="rCf3zbJZfR6JWanXlrObtEsAvLrlZLHS")
+
+	//-- used for player page, hiding border
+	body(
+		class= config.nav.cat
+	)
 		.background
 
 		.nav-bar-primary

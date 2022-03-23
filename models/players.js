@@ -59,6 +59,12 @@ async function getPlayers() {
 				GROUP BY playerid
 				LIMIT 1
 			) as "cap diff",
+			Round(playerskill.rank::DECIMAL, 2) as OpenSkill,
+			count(*) as seasons,
+			count(*) filter (where seasonteam.winner) as championships,
+			count(*) filter (where seasonteam.runnerup) as runnerups,
+			Round(COALESCE(avg(cost) filter (where captain = false), 0), 2) as "avg cost",
+			count(*) filter (where captain = true) as captaincies,
 			(
 				SELECT
 					ROUND(
@@ -73,17 +79,13 @@ async function getPlayers() {
 				WHERE playerid = player.id
 				GROUP BY playerid
 				LIMIT 1
-			) as "win rate",
-
-			count(*) as seasons,
-			Round(COALESCE(avg(cost) filter (where captain = false), 0), 2) as "avg cost",
-			count(*) filter (where seasonteam.winner) as championships,
-			count(*) filter (where captain = true) as captaincies
+			) as "win rate"
 
 		FROM seasonplayer
 		LEFT JOIN player ON player.id = seasonplayer.playerid
 		LEFT JOIN seasonteam ON seasonplayer.seasonteamid = seasonteam.id
-		GROUP BY player.name, player.country, player.id, games
+		LEFT JOIN playerskill ON playerskill.playerid = player.id
+		GROUP BY player.name, player.country, player.id, games, rank
 		HAVING (
 			SELECT
 				count(*)::DECIMAL as games
@@ -92,7 +94,7 @@ async function getPlayers() {
 			GROUP BY playerid
 			LIMIT 1
 		) > 0
-		ORDER BY championships DESC, "win rate" DESC, games DESC, "avg cost" DESC
+		ORDER BY ppg DESC, championships DESC, "win rate" DESC, games DESC, "avg cost" DESC
 	`, [], 'all')
 	return raw
 }

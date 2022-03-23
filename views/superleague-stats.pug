@@ -8,10 +8,18 @@ include template/superleague-nav.pug
 			- i = 0
 			each n, key in rounds
 				- i++
-				a(
-					href=config.path + "/stats/" + i
-					class= (config.nav.sub == i ? 'active' : '')
-				) Round #{i}
+
+				if(n.league === true)
+					a(
+						href=config.path + "/stats/" + i
+						class= (config.nav.sub == i ? 'active' : '')
+					).league Round #{i}
+
+				else if(n.final === true)
+					a(
+						href=config.path + "/stats/final"
+						class= (config.nav.sub == 'final' ? 'active' : '')
+					).playoff Playoff Final
 
 		if stats
 			.player-stats

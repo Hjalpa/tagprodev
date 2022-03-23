@@ -52,13 +52,10 @@ router.use(getSeason)
 // router.get('/', (req, res) => require('../models/home').init(req, res))
 router.get('/', (req, res) => res.redirect('./ecltp/8'))
 
-router.get('/ctf/2/signup', (req, res) => res.redirect('https://www.youtube.com/watch?v=dQw4w9WgXcQ'))
-
 router.use('/api',  require('./api'))
 // router.use('/leaderboards',  require('./leaderboards'))
 
 router.get('/player', (req, res) => require('../models/players').init(req, res))
-
 router.use('/player/:player', getSeason, require('./player'))
 router.use('/:mode/:season', getSeason, require('./season'))
 

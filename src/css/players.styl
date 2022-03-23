@@ -1,3 +1,8 @@
+body.players
+	.nav-bar-primary
+		box-shadow none
+		border-bottom none
+
 .players-list
 	.player-stats
 		.row
@@ -45,3 +50,49 @@
 						.inner
 							background #ec041f
 							box-shadow 0 0 10px #ec041f
+
+			.item[data-column="games"]
+			.item[data-column="ppg"]
+			.item[data-column="cap diff"]
+			.item[data-column="seasons"]
+			.item[data-column="avg cost"]
+			.item[data-column="captaincies"]
+			.item[data-column="championships"]
+			.item[data-column="runnerups"]
+			.item[data-column="openskill"]
+				flex 0 0 7.5%
+
+			&.head .item.captaincies
+				svg
+					height .6rem
+					width .6rem
+					fill white
+					vertical-align -2px
+
+				&.active
+				&:hover
+					box-shadow 0 2px 0 #1adbd4
+					svg
+						fill #1adbd4
+
+			&.head .item.championships
+				svg
+					fill url(#gold.trophy)
+					width 1.1rem
+					height 1.1rem
+					vertical-align text-bottom
+
+				&.active
+				&:hover
+					box-shadow 0 2px 0 #1adbd4
+
+			&.head .item.runnerups
+				svg
+					fill url(#silver.trophy)
+					width 1.1rem
+					height 1.1rem
+					vertical-align text-bottom
+
+				&.active
+				&:hover
+					box-shadow 0 2px 0 #1adbd4

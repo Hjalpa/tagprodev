@@ -8,8 +8,8 @@ let init = async (req, res) => {
 		let filters =  {
 			seasonid: req.seasonid,
 			date: (req.params.id) ? await getRoundDate(req.params.id, req.seasonid) : false,
+			league: (req.params.id === 'final') ? false : true,
 		}
-
 		let data = {
 			config: {
 				title: req.mode.toUpperCase() + ' Season ' + req.season + ' Stats' + ((req.params.id) ? ' - Round ' + req.params.id : ''),
@@ -38,8 +38,16 @@ async function getData(filters, gamemode) {
 		data: [filters.seasonid],
 	}
 
+	if(filters.league) {
+		query.where.push('seasonschedule.league = $2')
+		query.data.push(true)
+	} else {
+		query.where.push('seasonschedule.final = $2')
+		query.data.push(true)
+	}
+
 	if(filters.date) {
-		query.where.push('seasonschedule.date = $2')
+		query.where.push('seasonschedule.date = $3')
 		query.data.push(filters.date)
 	}
 
@@ -58,7 +66,7 @@ async function getData(filters, gamemode) {
 				LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid AND seasonplayer.seasonteamid IN (SELECT id FROM seasonteam WHERE seasonid = $1)
 				LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
 				LEFT JOIN team ON seasonteam.teamid = team.id
-				WHERE seasonschedule.date <= now() AND seasonschedule.league = TRUE AND ${query.where.join(' AND ')}
+				WHERE seasonschedule.date <= now() AND ${query.where.join(' AND ')}
 				GROUP BY player.name, team.color, team.acronym
 				ORDER BY mvb DESC
 			`
@@ -67,16 +75,18 @@ async function getData(filters, gamemode) {
 }
 
 async function getRoundDate(id, seasonid) {
-	let sql = `
-		select
+	let where = (id === 'final') ? 'final = true AND seasonid = $1' : 'date <= NOW() AND seasonid = $2'
+	let limit = (id === 'final') ? '' : 'LIMIT 1 OFFSET $1'
+	let condition = (id === 'final') ? [seasonid] : [id - 1, seasonid]
+	let data = await db.select(`
+		SELECT
 			to_char(date, 'YYYY-MM-DD') as date
 		FROM seasonschedule
-		WHERE date <= NOW() AND seasonid = $2
+		WHERE ${where}
 		GROUP BY date
 		ORDER BY date ASC
-		LIMIT 1 OFFSET $1
-	`
-	let data = await db.select(sql, [id - 1, seasonid], 'date')
+		${limit}
+	`, condition, 'date')
 
 	if(!data)
 		throw 'invalid day'
@@ -87,10 +97,14 @@ async function getRoundDate(id, seasonid) {
 async function getAllRounds(seasonid) {
 	let sql = `
 		select
-			to_char(date, 'YYYY-MM-DD') as date
+			to_char(date, 'YYYY-MM-DD') as date,
+			league,
+			playoff,
+			final,
+			round
 		FROM seasonschedule
-		WHERE seasonid = $1 AND date <= NOW() AND league = TRUE
-		GROUP BY date
+		WHERE seasonid = $1 AND date <= NOW()
+		GROUP BY date, final, round, league, playoff
 		ORDER BY date ASC
 	`
 	let data = await db.select(sql, [seasonid], 'all')
