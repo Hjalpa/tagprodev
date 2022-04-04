@@ -275,14 +275,14 @@ async function getRecords(filters, gamemode) {
 				},
 				grabpercap: {
 					title: 'Cap / Grab',
-					data: await getData({...filters, ...{percentage: true}}, `
-						Round((cap::DECIMAL / grab::DECIMAL) * 100, 0)
+					data: await getData({...filters, ...{having:true, percentage: true}}, `
+						CASE WHEN grab = 0 THEN 0 ELSE Round((cap::DECIMAL / grab::DECIMAL) * 100, 0) END
 					`)
 				},
 				holdpergrab: {
 					title: 'Hold / Grab',
 					data: await getData(filters, `
-						Round(hold::DECIMAL / grab::DECIMAL, 2)
+						CASE WHEN grab = 0 THEN 0 ELSE Round(hold::DECIMAL / grab::DECIMAL, 2) END
 					`)
 				},
 				holdpercap: {
