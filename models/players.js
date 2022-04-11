@@ -61,8 +61,8 @@ async function getPlayers() {
 			) as "cap diff",
 			Round(playerskill.rank::DECIMAL, 2) as OpenSkill,
 			count(*) as seasons,
-			count(*) filter (where seasonteam.winner) as championships,
-			count(*) filter (where seasonteam.runnerup) as runnerups,
+			count(*) filter (where seasonteam.winner) as playoffwinner,
+			count(*) filter (where seasonteam.leaguewinner) as leaguewinner,
 			Round(COALESCE(avg(cost) filter (where captain = false), 0), 2) as "avg cost",
 			count(*) filter (where captain = true) as captaincies,
 			(
@@ -94,7 +94,7 @@ async function getPlayers() {
 			GROUP BY playerid
 			LIMIT 1
 		) > 0
-		ORDER BY ppg DESC, championships DESC, "win rate" DESC, games DESC, "avg cost" DESC
+		ORDER BY playoffwinner DESC, leaguewinner DESC, ppg DESC
 	`, [], 'all')
 	return raw
 }

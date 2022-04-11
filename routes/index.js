@@ -49,13 +49,17 @@ let getSeason = async function (req, res, next) {
 }
 router.use(getSeason)
 
+// pause this
+router.get('/egg/1', (req, res) => res.redirect('../ctf/2'))
+
+router.get('/', (req, res) => require('../models/players').init(req, res))
 // router.get('/', (req, res) => require('../models/home').init(req, res))
-router.get('/', (req, res) => res.redirect('./ecltp/8'))
+// router.get('/', (req, res) => res.redirect('./ecltp/8'))
 
 router.use('/api',  require('./api'))
 // router.use('/leaderboards',  require('./leaderboards'))
 
-router.get('/player', (req, res) => require('../models/players').init(req, res))
+// router.get('/player', (req, res) => require('../models/players').init(req, res))
 router.use('/player/:player', getSeason, require('./player'))
 router.use('/:mode/:season', getSeason, require('./season'))
 

@@ -1,9 +1,7 @@
-body.players
-	.nav-bar-primary
-		box-shadow none
-		border-bottom none
-
 .players-list
+	box-shadow none
+	border-top none
+
 	.player-stats
 		.row
 			.item.country
@@ -57,8 +55,8 @@ body.players
 			.item[data-column="seasons"]
 			.item[data-column="avg cost"]
 			.item[data-column="captaincies"]
-			.item[data-column="championships"]
-			.item[data-column="runnerups"]
+			.item[data-column="playoffwinner"]
+			.item[data-column="leaguewinner"]
 			.item[data-column="openskill"]
 				flex 0 0 7.5%
 
@@ -75,7 +73,7 @@ body.players
 					svg
 						fill #1adbd4
 
-			&.head .item.championships
+			&.head .item.playoffwinner
 				svg
 					fill url(#gold.trophy)
 					width 1.1rem
@@ -86,7 +84,7 @@ body.players
 				&:hover
 					box-shadow 0 2px 0 #1adbd4
 
-			&.head .item.runnerups
+			&.head .item.leaguewinner
 				svg
 					fill url(#silver.trophy)
 					width 1.1rem

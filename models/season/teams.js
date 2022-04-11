@@ -33,7 +33,6 @@ async function getTeams(seasonid) {
             t.color,
             st.id,
 			st.winner,
-			st.runnerup,
 
             ARRAY(
 				select json_build_object('name', name, 'country', LOWER(country), 'captain', seasonplayer.captain)

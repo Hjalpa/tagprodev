@@ -13,7 +13,7 @@ document.querySelector('.new input').addEventListener('paste', async (e) => {
 
 	let profile = (event.clipboardData || window.clipboardData).getData('text')
 
-	let raw = await fetch('/egg/1/signup', {
+	let raw = await fetch('/ctf/2/signup', {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -61,7 +61,7 @@ document.querySelector('.verification button').addEventListener('click', async (
 	if(screen.classList.contains('error'))
 		screen.classList.remove('error')
 
-	let raw = await fetch('/egg/1/signup', {
+	let raw = await fetch('/ctf/2/signup', {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',

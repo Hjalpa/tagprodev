@@ -2,8 +2,7 @@
 	font-size 17px
 	font-family 'Montserrat', sans-serif
 	--width 1450px
-	--color #004aff
-	--glow var(--color)
+
 
 body
 	background #131417
@@ -17,6 +16,13 @@ body
 	align-items stretch
 	align-content stretch
 
+	--color #004aff
+	--glow var(--color)
+
+	&.nf
+		--color #ff0044
+	&.ecltp
+		--color #ff0044
 
 .background
 	background black url('https://i.imgur.com/ycymETc.png')
@@ -43,7 +49,7 @@ body
 	width 100%
 	display flex
 	flex-flow nowrap
-	// display none
+	display none
 
 	a
 		color #4a6ba3
@@ -67,7 +73,7 @@ body
 		&:hover
 			color white
 
-		&:first-child
+		&[href="/"]
 			padding-left 1.5rem
 
 			svg
@@ -93,7 +99,6 @@ body
 			color white !important
 			box-shadow 0 2px 0 0 #ffffff24
 			text-shadow 0 0 20px #ffffff
-			display none
 
 		input
 			font-size .85rem

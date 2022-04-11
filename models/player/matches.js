@@ -33,6 +33,20 @@ let init = async (req, res) => {
 
 async function getMatches(playerid, gamemode) {
 	let select = await getSelect(gamemode)
+
+ 	gamemode_where = ''
+	switch(gamemode) {
+		case 'ctf':
+		case 'eltp':
+			gamemode_where = `(season.mode = 'ctf' OR season.mode = 'eltp')`
+			break;
+		case 'nf':
+		case 'ecltp':
+			gamemode_where = `(season.mode = 'nf' OR season.mode = 'ecltp')`
+			break;
+	}
+
+
 	let raw = await db.select(`
 		SELECT
 			COALESCE(team.acronym, 'SUB') as acronym,
@@ -72,9 +86,9 @@ async function getMatches(playerid, gamemode) {
 			(seasonschedule.teamblueid = seasonteam.id AND playergame.team = 2)
 		)
 		LEFT JOIN team ON seasonteam.teamid = team.id
-		WHERE playergame.playerid = $1 AND season.mode = $2
+		WHERE playergame.playerid = $1 AND ${gamemode_where}
 		ORDER BY game.datetime DESC
-	`, [playerid, gamemode], 'all')
+	`, [playerid], 'all')
 
 	return raw
 }

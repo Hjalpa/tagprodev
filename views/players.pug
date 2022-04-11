@@ -14,16 +14,16 @@ include template/head.pug
 						else if(k === 'player')
 							.item.player
 
-						else if(k === 'championships')
-							.item.championships(
-								data-column="championships"
+						else if(k === 'playoffwinner')
+							.item.playoffwinner(
+								data-column="playoffwinner"
 							)
 								svg
 									use(xlink:href="#trophy")
 
-						else if(k === 'runnerups')
-							.item.runnerups(
-								data-column="runnerups"
+						else if(k === 'leaguewinner')
+							.item.leaguewinner(
+								data-column="leaguewinner"
 							)
 								svg
 									use(xlink:href="#trophy")
@@ -72,13 +72,13 @@ include template/head.pug
 									.bar.bad
 										.inner(style="width: " + v + "%")
 
-						else if(k === 'championships')
-							.item.championships(
-								data-column="championships"
+						else if(k === 'playoffwinner')
+							.item.playoffwinner(
+								data-column="playoffwinner"
 							)= v
-						else if(k === 'runnerups')
-							.item.runnerups(
-								data-column="runnerups"
+						else if(k === 'leaguewinner')
+							.item.leaguewinner(
+								data-column="leaguewinner"
 							)= v
 
 						else if(k === 'captaincies')
