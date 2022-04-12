@@ -146,6 +146,30 @@
 					text-align center
 					height calc(100% - (.9rem + .6rem))
 
+				iframe
+					width 100%
+					height 100%
+
+				.content {
+					overflow: hidden;
+					position: relative;
+					width:100%;
+				}
+
+				.content::after {
+					padding-top: 56.25%;
+					display: block;
+					content: '';
+				}
+
+				.contentiframe {
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+				}
+
 				.watchfinal
 					display block
 					background var(--color)

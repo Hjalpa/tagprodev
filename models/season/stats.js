@@ -5,11 +5,18 @@ const mvb = require ('../../lib/mvb')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
+		let rounds = await getAllRounds(req.seasonid)
+		let r = rounds[req.params.id]
 		let filters =  {
 			seasonid: req.seasonid,
 			date: (req.params.id) ? await getRoundDate(req.params.id, req.seasonid) : false,
-			league: (req.params.id === 'final') ? false : true,
+			final: (req.params.id === 'final') ? true : false,
+			league: false
 		}
+
+		if(req.params.id === undefined || (r && r.league))
+			filters.league = true
+
 		let data = {
 			config: {
 				title: req.mode.toUpperCase() + ' Season ' + req.season + ' Stats' + ((req.params.id) ? ' - Round ' + req.params.id : ''),
@@ -22,7 +29,7 @@ let init = async (req, res) => {
 					sub: (req.params.id) ? req.params.id: 'totals',
 				}
 			},
-			rounds: await getAllRounds(filters.seasonid),
+			rounds,
 			stats: await getData(filters, req.mode)
 		}
 		res.render('superleague-stats', data)
@@ -33,22 +40,28 @@ let init = async (req, res) => {
 }
 
 async function getData(filters, gamemode) {
+	let i = 1
 	let query = {
-		where: ['game.seasonid = $1'],
+		where: ['game.seasonid = $' + i],
 		data: [filters.seasonid],
 	}
 
+	if(filters.date) {
+		i++
+		query.where.push('seasonschedule.date = $' + i)
+		query.data.push(filters.date)
+	}
+
 	if(filters.league) {
-		query.where.push('seasonschedule.league = $2')
-		query.data.push(true)
-	} else {
-		query.where.push('seasonschedule.final = $2')
+		i++
+		query.where.push('seasonschedule.league = $' + i)
 		query.data.push(true)
 	}
 
-	if(filters.date) {
-		query.where.push('seasonschedule.date = $3')
-		query.data.push(filters.date)
+	else if(filters.final) {
+		i++
+		query.where.push('seasonschedule.final = $' + i)
+		query.data.push(true)
 	}
 
 	let selects = await getSelects(gamemode)
@@ -100,11 +113,10 @@ async function getAllRounds(seasonid) {
 			to_char(date, 'YYYY-MM-DD') as date,
 			league,
 			playoff,
-			final,
-			round
+			final
 		FROM seasonschedule
 		WHERE seasonid = $1 AND date <= NOW()
-		GROUP BY date, final, round, league, playoff
+		GROUP BY date, final, league, playoff
 		ORDER BY date ASC
 	`
 	let data = await db.select(sql, [seasonid], 'all')

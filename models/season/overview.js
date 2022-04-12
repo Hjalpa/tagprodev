@@ -21,6 +21,7 @@ let init = async (req, res) => {
 			players: await getPlayerCount(req.seasonid),
 			mvb: await getMVB(req.mode, req.seasonid),
 			champions: await getChampions(req.seasonid),
+			playofffinalstream: await getPlayoffFinalStream(req.seasonid)
 		}
 		res.render('superleague-overview', data);
 	} catch(e) {
@@ -62,6 +63,16 @@ async function getPlayerCount(seasonid) {
 	return raw
 }
 
+async function getPlayoffFinalStream(seasonid) {
+	let raw = await db.select(`
+		SELECT finalstream
+		FROM season
+		WHERE id = $1
+	`, [seasonid], 'finalstream')
+
+	return raw
+}
+
 async function getMVB(gamemode, seasonid) {
 	let select = mvb.getSelect(gamemode)
 	let raw = await db.select(`
@@ -86,9 +97,9 @@ async function getMVB(gamemode, seasonid) {
 		WHERE seasonteam.seasonid = $1 AND league = true AND game.seasonid = $1
 		GROUP BY player.name, team.acronym, team.color
 
-		HAVING sum(play_time) > 7000
+		HAVING sum(play_time) > 10
 		ORDER BY value DESC
-		LIMIT 10
+		LIMIT 19
 	`, [seasonid], 'all')
 	return raw
 }

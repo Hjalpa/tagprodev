@@ -55,15 +55,20 @@ include template/superleague-nav.pug
 
 
 				// playoff final stats?
-				if champions
+				if playofffinalstream
 					.pane.final
 						.headline
 							.text Playoff Final
 
 						.content
+							iframe(
+								src= playofffinalstream
+								frameborder="0",
+								allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
+								allowfullscreen
+							)
 
-						// a(href="https://www.youtube.com/watch?v=hios5eKr0-E").watchfinal Watch Final
-						a(href="#").watchfinal ???
+						// a(href="#").watchfinal ???
 
 
 				// playoff champions

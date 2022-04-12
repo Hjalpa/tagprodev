@@ -19,7 +19,13 @@ include template/superleague-nav.pug
 					a(
 						href=config.path + "/stats/final"
 						class= (config.nav.sub == 'final' ? 'active' : '')
-					).playoff Playoff Final
+					).playoff Final
+
+				else if(n.playoff === true)
+					a(
+						href=config.path + "/stats/" + i
+						class= (config.nav.sub == i ? 'active' : '')
+					).playoff Semi-Final
 
 		if stats
 			.player-stats
