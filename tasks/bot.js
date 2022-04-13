@@ -4,7 +4,6 @@ const config = {
     args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-		'--use-gl=egl',
     ],
 	headless: true,
     devtools: false,
@@ -16,25 +15,24 @@ const createGroup = async () => {
     const page = await browser.newPage();
 	const navigationPromise = page.waitForNavigation()
 
+	// page.on('console', msg => {
+	// 	for (let i = 0; i < msg.args().length; i++) {
+	// 		console.log(msg.args()[i]);
+	// 	}
+	// })
+
 	// defualt timeout
 	page.setDefaultTimeout(0)
 	page.setDefaultNavigationTimeout(0)
 
-	// await page.goto('https://tagpro.koalabeast.com/groups/mywgodnm')
 	await page.goto('https://tagpro.koalabeast.com/groups')
 
 	await page.setViewport({ width: 1920, height: 1580 })
 	await navigationPromise
 
-	// enter group name
-	await page.waitForSelector('input[name="name"]')
-	await page.type('input[name="name"]', 'CTF S2W1')
-
 	// create group
+	await page.waitForSelector('#create-group-btn')
 	await page.click('#create-group-btn')
-
-	await page.waitForSelector('input[name="redTeamName"]')
-	await page.type('input[name="redTeamName"]', 'wat')
 
 	await navigationPromise
 
@@ -54,16 +52,6 @@ const createGroup = async () => {
 		let event = new Event('dblclick');
 		document.querySelector('#spectators .player-list').dispatchEvent(event)
 	})
-
-	// set red team name
-	await page.evaluate( () => document.querySelector('input[name="redTeamName"]').value = "")
-	await page.type('input[name="redTeamName"]', 'Bot')
-	await page.keyboard.press('Enter');
-
-	// set blue team name
-	await page.evaluate( () => document.querySelector('input[name="blueTeamName"]').value = "")
-	await page.type('input[name="blueTeamName"]', 'Test')
-	await page.keyboard.press('Enter');
 
 	// remove self assignment
 	await page.evaluate(() => {
@@ -94,23 +82,38 @@ const createGroup = async () => {
 		document.querySelector('select[name="server"]').dispatchEvent(event)
 	})
 
-	// time
+	// game settings
 	await page.evaluate(() => {
-		document.querySelector('select[name="time"]').value = '7'
-
-		let event = new Event('change');
-		document.querySelector('select[name="time"]').dispatchEvent(event)
-	})
-
-	// select map
-	await page.on('dialog', async dialog => {
-		await dialog.accept('74565')
-	})
-	await page.evaluate(() => {
-		document.querySelector('select[name="map"]').value = 'fm_id/'
-
-		let event = new Event('change');
-		document.querySelector('select[name="map"]').dispatchEvent(event)
+		// group name
+		tagpro.group.socket.emit('setting', {
+			name: 'groupName',
+			value: 'Super League'
+		})
+		// red team name
+		tagpro.group.socket.emit('setting', {
+			name: 'redTeamName',
+			value: 'anom'
+		})
+		// blue team name
+		tagpro.group.socket.emit('setting', {
+			name: 'blueTeamName',
+			value: 'nom'
+		})
+		// time
+		tagpro.group.socket.emit('setting', {
+			name: 'time',
+			value: '7'
+		})
+		// select map
+		tagpro.group.socket.emit('setting', {
+			name: 'map',
+			value: 'fm_id/74604',
+		})
+		// self assignment
+		// tagpro.group.socket.emit('setting', {
+		// 	name: 'selfAssignment',
+		// 	value: false,
+		// })
 	})
 
 	// disable tagpros
@@ -123,48 +126,51 @@ const createGroup = async () => {
 	})
 	await page.waitForSelector('.non-default[name="powerupTagPro"]')
 
-	// hand over leader
-	await page.waitForFunction(
-		'document.querySelector("body").innerText.includes("anom")',
-	)
-	console.log('anom here')
-
-	await page.waitForSelector('.js-chat-input')
-	await page.type('.js-chat-input', '==================')
-	await page.keyboard.press('Enter');
-	await page.type('.js-chat-input', 'https://tagpro.dev bot')
-	await page.keyboard.press('Enter');
-	await page.type('.js-chat-input', 'injecting tagpro-vcr.js...')
-	await page.keyboard.press('Enter');
-	await page.type('.js-chat-input', '==================')
-	await page.keyboard.press('Enter');
-	await page.type('.js-chat-input', 'anom... you the leader now')
-	await page.keyboard.press('Enter');
-
-	// give leader
+	// wait for players
 	await page.evaluate(() => {
-		document.querySelector('#waiting .player-item').click()
-		document.querySelector('#waiting [data-action="leader"]').click()
-		// document.querySelector('#launch-private-btn').click()
+		tagpro.group.socket.on('member', (arg) => {
+			if(arg.team === 4) {
+
+				if(arg.name === 'anom') {
+
+					// set team
+					tagpro.group.socket.emit('team', {
+						id: arg.id,
+						team: 1
+					})
+
+					// set leader
+					tagpro.group.socket.emit('leader', arg.id)
+					tagpro.group.socket.emit('chat', `setting new leader: ${arg.name}`)
+					tagpro.group.socket.emit('chat', `please ensure players are using their proper name!`)
+					tagpro.group.socket.emit('chat', '=====================')
+					tagpro.group.socket.emit('chat', `injecting tagpro-vcr.js...`)
+					tagpro.group.socket.emit('chat', '=====================')
+					tagpro.group.socket.emit('chat', 'gl hf!')
+				}
+				// tagpro.group.socket.emit('chat', `waiting for players ...`)
+			}
+
+			// if 4 players
+			// tagpro.group.socket.emit('groupPlay')
+		})
+
 	})
 
+	// wait for game URl
 	await page.waitForFunction("window.location.pathname == '/game'")
 
 	// await navigationPromise
 	console.log('game loaded')
 
 	// import tagpro-vcr.js script
-	await page.addScriptTag({ path: 'tagpro-vcr.js' })
-	console.log('tagpro-vcr.js injected')
-
-
-
-	await page.waitForSelector('#viewport')
-
-	await page.waitForFunction(() => typeof gObject === tagproConfig);
-
-	console.log(await page.evaluate(() => tagproConfig))
-
+	page.evaluate(() => {
+		// await page.addScriptTag({ path: 'tagpro-vcr.js' })
+		var script = document.createElement('script');
+		script.setAttribute('src', 'tagpro-vcr.js');
+		script.setAttribute('type', 'text/javascript');
+		document.getElementsByTagName('head')[0].appendChild(script)
+	})
 
 	// screenshot
 	await page.screenshot({ path: '../public/tagpro.png' });
