@@ -4,6 +4,7 @@ const config = {
     args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
+		'--use-gl=egl',
     ],
 	headless: true,
     devtools: false,
@@ -147,7 +148,6 @@ const createGroup = async () => {
 		// document.querySelector('#launch-private-btn').click()
 	})
 
-
 	await page.waitForFunction("window.location.pathname == '/game'")
 
 	// await navigationPromise
@@ -155,6 +155,16 @@ const createGroup = async () => {
 
 	// import tagpro-vcr.js script
 	await page.addScriptTag({ path: 'tagpro-vcr.js' })
+	console.log('tagpro-vcr.js injected')
+
+
+
+	await page.waitForSelector('#viewport')
+
+	await page.waitForFunction(() => typeof gObject === tagproConfig);
+
+	console.log(await page.evaluate(() => tagproConfig))
+
 
 	// screenshot
 	await page.screenshot({ path: '../public/tagpro.png' });
