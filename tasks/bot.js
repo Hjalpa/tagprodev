@@ -15,6 +15,10 @@ const createGroup = async () => {
     const page = await browser.newPage();
 	const navigationPromise = page.waitForNavigation()
 
+	// defualt timeout
+	page.setDefaultTimeout(0)
+	page.setDefaultNavigationTimeout(0)
+
 	// await page.goto('https://tagpro.koalabeast.com/groups/mywgodnm')
 	await page.goto('https://tagpro.koalabeast.com/groups')
 
@@ -52,12 +56,12 @@ const createGroup = async () => {
 
 	// set red team name
 	await page.evaluate( () => document.querySelector('input[name="redTeamName"]').value = "")
-	await page.type('input[name="redTeamName"]', 'TAG')
+	await page.type('input[name="redTeamName"]', 'Bot')
 	await page.keyboard.press('Enter');
 
 	// set blue team name
 	await page.evaluate( () => document.querySelector('input[name="blueTeamName"]').value = "")
-	await page.type('input[name="blueTeamName"]', 'COO')
+	await page.type('input[name="blueTeamName"]', 'Test')
 	await page.keyboard.press('Enter');
 
 	// remove self assignment
@@ -140,10 +144,17 @@ const createGroup = async () => {
 	await page.evaluate(() => {
 		document.querySelector('#waiting .player-item').click()
 		document.querySelector('#waiting [data-action="leader"]').click()
+		// document.querySelector('#launch-private-btn').click()
 	})
 
+
+	await page.waitForFunction("window.location.pathname == '/game'")
+
+	// await navigationPromise
+	console.log('game loaded')
+
 	// import tagpro-vcr.js script
-	page.addScriptTag({ url: 'tagpro-vcr.js' })
+	await page.addScriptTag({ path: 'tagpro-vcr.js' })
 
 	// screenshot
 	await page.screenshot({ path: '../public/tagpro.png' });

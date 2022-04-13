@@ -1,20 +1,3 @@
-// ==UserScript==
-// @name          TagPro VCR
-// @description   Record TagPro socket data
-// @version       1.1.1
-// @author        Kera, bash#
-// @icon          https://bash-tp.github.io/tagpro-vcr/images/vhs.png
-// @namespace     https://github.com/bash-tp/
-// @downloadUrl   https://bash-tp.github.io/tagpro-vcr/tagpro-vcr.user.js
-// @updateUrl     https://bash-tp.github.io/tagpro-vcr/tagpro-vcr.meta.js
-// @match         *://*.koalabeast.com/*
-// @match         *://*.jukejuice.com/*
-// @match         *://*.newcompte.fr/*
-// @require       https://unpkg.com/idb@7/build/umd.js
-// @require       https://unpkg.com/penpal@6/dist/penpal.min.js
-// ==/UserScript==
-
-(function (tagpro, idb, tagproConfig, Penpal) {
 	'use strict';
 
 	function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -602,8 +585,11 @@
 	        else {
 	            game.data = data;
 	            storage.saveGame(game.timestamp, game);
+				console.log(game.timestamp)
+
 	        }
+
+			const timestamp = dateToString(start, true);
+			saveFile(data, `tagpro-recording-${timestamp}.ndjson`);
 	    });
 	}
-
-}(tagpro, idb, tagproConfig, Penpal));
