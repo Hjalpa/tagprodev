@@ -18,6 +18,7 @@ let init = async (req, res) => {
 			seasons: await getSeasonCount(req.player.id),
 			winratio: await getWinRatio(req.player.id),
 			cost: await getAverageCost(req.player.id),
+			openskill: await getOpenSkill(req.player.id),
 			///////////
 			topseasons: await getTopSeasons(req.player.id),
 			topmaps: await getTopMaps(req.player.id),
@@ -31,6 +32,16 @@ let init = async (req, res) => {
 	}
 }
 
+async function getOpenSkill(playerid) {
+	let raw = await db.select(`
+		SELECT
+			rank
+		FROM playerskill
+		WHERE playerid = $1
+	`, [playerid], 'rank')
+	return parseFloat(raw).toFixed(2)
+}
+
 async function getAverageCost(playerid) {
 	let raw = await db.select(`
 		SELECT
@@ -39,6 +50,10 @@ async function getAverageCost(playerid) {
 		WHERE playerid = $1 AND captain = FALSE
 		GROUP BY playerid
 	`, [playerid], 'cost')
+
+	// if only played as a captain
+	if(!raw) raw = '-'
+
 	return raw
 }
 

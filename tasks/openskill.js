@@ -78,6 +78,14 @@ score.call = async () => {
 			console.log(game.id + 'ended')
 		}
 
+		// set score
+		let players = await db.select('SELECT * FROM playerskill', [], 'all')
+		for await (const p of players) {
+			let rank = ordinal({mu: p.mu, sigma: p.sigma})
+			await db.update('playerskill', {rank:rank}, {playerid: p.playerid})
+			console.log(p.playerid)
+		}
+
 		process.kill(process.pid)
 
 	} catch(e) {

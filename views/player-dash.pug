@@ -15,6 +15,11 @@ include template/player-nav.pug
 					.v
 						span= winratio
 
+				.block.openskill
+					.k Open Skill
+					.v
+						span= openskill
+
 				.block.cost
 					.k Avg Cost
 					.v
@@ -60,5 +65,18 @@ include template/player-nav.pug
 								)= n.player
 
 							.item.value= n.winrate
+
+				.stat
+					h3 Trophy Cabinet
+					if trophies
+						each n, key in trophies
+							.row
+								.item.rank= n.rank
+								.item.name
+									a(
+										href= '/player/' + n.player
+									)= n.player
+
+								.item.value= n.winrate
 
 include template/foot.pug
