@@ -19,10 +19,42 @@ body
 	--color #004aff
 	--glow var(--color)
 
-	&.nf
+	&.nf1
+		// redo this color to green?
 		--color #ff0044
+
+		.nav-bar-primary
+			background #5f0b21bd
+
+			a
+				color #c75555
+
+				&.active
+					span
+						color: #ff9e00;
+						box-shadow: 0 2px 0 0 #fb9b0024;
+
+
+				&:hover
+					color white
+
 	&.ecltp
 		--color #ff0044
+
+		.nav-bar-primary
+			background #5f0b21bd
+
+			a
+				color #c75555
+
+				&.active
+					span
+						color: #ff9e00;
+						box-shadow: 0 2px 0 0 #fb9b0024;
+
+
+				&:hover
+					color white
 
 .background
 	background black url('https://i.imgur.com/ycymETc.png')
@@ -49,7 +81,6 @@ body
 	width 100%
 	display flex
 	flex-flow nowrap
-	display none
 
 	a
 		color #4a6ba3
@@ -236,3 +267,70 @@ body
 		padding 0 1.5rem
 		max-width var(--width)
 		margin 0 auto
+
+
+.footer_bottom
+	position relative
+	padding-top 6rem
+	background #131417
+	margin-top -1rem
+	overflow hidden
+	display none
+
+	footer
+		background #0b0c0e
+
+	.wrap
+		column-count 4
+		column-gap 2rem
+		max-width var(--width)
+		width 100%
+		margin 0 auto
+		padding 1rem 2rem 0 2rem
+
+	.title
+		font-size .9rem
+		font-weight 600
+		// color #a8a8a8
+		text-transform uppercase
+		text-shadow 0 0 15px rgba(#e4c7616b, .25)
+		color: #e4c761;
+
+	.hd
+		text-transform uppercase
+		font-weight 500
+		font-size .9rem
+		color #485077
+		letter-spacing .05rem
+		padding-left .5rem
+		color #9f9f9f96
+
+	.col
+		display block
+		height 200px
+		line-height 2rem
+
+		a
+			display block
+			color white
+			padding-left .5rem
+			font-size .9rem
+			text-decoration none
+			color #b9b9b9
+
+			&:not(:last-child)
+				box-shadow 0 1px 0 0 rgba(white, .03)
+
+			&:hover
+				color #538cff
+
+	.socialmedia
+		display none
+
+		a
+			display inline-block
+			box-shadow none !important
+			margin-right .8rem
+
+			svg
+				height 1.5rem
