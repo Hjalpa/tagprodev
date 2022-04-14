@@ -13,9 +13,7 @@ include template/player-nav.pug
 			.row.head
 				each n, key in matches
 					each v, k in n
-
-						if(k === 'color')
-						else if(k === 'euid')
+						if(k === 'euid' || k === 'fortunateid' || k === 'color')
 							- continue
 
 						if(k === 'country')
@@ -23,6 +21,23 @@ include template/player-nav.pug
 
 						else if(k === 'player')
 							.item.player
+
+						else if(k === 'map')
+							.item.map
+
+						else if(k === 'playoffwinner')
+							.item.playoffwinner(
+								data-column="playoffwinner"
+							)
+								svg
+									use(xlink:href="#trophy")
+
+						else if(k === 'leaguewinner')
+							.item.leaguewinner(
+								data-column="leaguewinner"
+							)
+								svg
+									use(xlink:href="#trophy")
 
 						else if(k === 'map')
 							.item.map
@@ -50,8 +65,7 @@ include template/player-nav.pug
 						style="--teamcolor: #ffc800; --teamglow: #ffc80080; --teambg: #ffc80030"
 					)
 					each v, k in n
-						if(k === 'euid')
-						else if(k === 'color')
+						if(k === 'euid' || k === 'fortunateid' || k === 'color')
 							- continue
 
 						else if(k === 'country')
@@ -65,6 +79,12 @@ include template/player-nav.pug
 								a(
 									href='/player/' + v
 								)= v
+
+						else if(k === 'map')
+							.item.map
+								a(href=
+									href="https://fortunatemaps.herokuapp.com/map/" + n.fortunateid
+								)!= v
 
 						else if(k === 'map')
 							.item.map= n.map
@@ -84,6 +104,15 @@ include template/player-nav.pug
 								style="--teamcolor: " + n.versus.color+ "; --teamglow: " + n.versus.color + "80; --teambg: " + n.versus.color + "30"
 								data-column="versus"
 							)= n.versus.acronym
+
+						else if(k === 'playoffwinner')
+							.item.playoffwinner(
+								data-column="playoffwinner"
+							)= v
+						else if(k === 'leaguewinner')
+							.item.leaguewinner(
+								data-column="leaguewinner"
+							)= v
 
 						else if(k === 'win rate')
 							.item.winrate

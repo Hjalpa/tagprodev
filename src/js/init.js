@@ -37,10 +37,10 @@ app.tablesort= (async () => {
 				let value = util.getValue(pv.innerText)
 				let label = pv.dataset.column
 
-
 				if(!Object.keys(data).includes(label)) {
 					data[label] = value
-					pv.classList.add('highlight')
+					if(value > 0)
+						pv.classList.add('highlight')
 				}
 
 				else if(value >= data[label]) {
@@ -48,7 +48,8 @@ app.tablesort= (async () => {
 					if(value > data[label])
 						document.querySelectorAll('[data-column="'+label+'"].highlight').forEach(e => e.classList.remove('highlight'))
 
-					pv.classList.add('highlight')
+					if(value > 0)
+						pv.classList.add('highlight')
 
 					data[label] = value
 				}

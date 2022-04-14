@@ -16,7 +16,6 @@ let init = async (req, res) => {
 			},
 			matches: await getAllies(req.player.id)
 		}
-		console.log(data)
 		res.render('player-allies', data)
 	}
 	catch(e) {
@@ -50,7 +49,31 @@ async function getAllies(playerid) {
 						LIMIT 1
 					)
 				LIMIT 1
-			) as seasons
+			) as seasons,
+			(
+				SELECT count(*) as playoffwinner
+				FROM seasonplayer as sp
+				LEFT JOIN seasonteam ON seasonteam.id = sp.seasonteamid
+				WHERE playerid = player.id AND seasonteamid = (
+						SELECT seasonteamid
+						FROM seasonplayer
+						WHERE playerid = $1 AND sp.seasonteamid = seasonteamid
+						LIMIT 1
+					) AND winner = true
+				LIMIT 1
+			) as playoffwinner,
+			(
+				SELECT count(*) as leaguewinner
+				FROM seasonplayer as sp
+				LEFT JOIN seasonteam ON seasonteam.id = sp.seasonteamid
+				WHERE playerid = player.id AND seasonteamid = (
+						SELECT seasonteamid
+						FROM seasonplayer
+						WHERE playerid = $1 AND sp.seasonteamid = seasonteamid
+						LIMIT 1
+					) AND leaguewinner = true
+				LIMIT 1
+			) as leaguewinner
 
 		FROM playergame
 		LEFT JOIN player on player.id = playergame.playerid
@@ -69,7 +92,7 @@ async function getAllies(playerid) {
 				)
 
 		GROUP BY name, player.id, country
-		order by ppg DESC
+		ORDER BY games DESC
 	`, [playerid], 'all')
 
 	return raw

@@ -16,7 +16,6 @@ let init = async (req, res) => {
 			},
 			matches: await getAllies(req.player.id)
 		}
-		console.log(data)
 		res.render('player-allies', data)
 	}
 	catch(e) {
@@ -32,26 +31,76 @@ async function getAllies(playerid) {
 			count(*) as games,
 			Round(
 				(
-					(count(*) filter (WHERE result_half_win = 1) * 3)
+					(count(*) filter (WHERE result_half_lose = 1) * 3)
 					+
 					(count(*) filter (WHERE result_half_win = 0 AND result_half_lose = 0))
 				)::DECIMAL / count(*)
 			, 2) as ppg,
-			sum(cap_team_for - cap_team_against) as "Cap Diff",
-
-			ROUND(avg(pup_tp + pup_rb + pup_jj), 2) as "their pups",
-			ROUND(avg(cap), 2) as "their caps",
-			ROUND(avg(assist), 2) as "their assist",
-
-			count(*) as seasons,
-
-			ROUND(
+			sum(cap_team_against - cap_team_for) as "Cap Diff",
+			sum(pup_tp_team_against + pup_rb_team_against + pup_jj_team_against) - sum(pup_jj_team_for + pup_tp_team_for + pup_rb_team_for) as "Pup Diff",
+			COALESCE(
 				(
-					count(*) filter (WHERE result_half_win = 1)
-					/
-					count(*)::DECIMAL
-				) * 100
-			, 2) as "win rate"
+					SELECT count(*)
+					FROM seasonplayer as sp
+					LEFT JOIN seasonteam as st ON st.id = sp.seasonteamid
+					WHERE
+						sp.playerid = player.id
+						AND sp.seasonteamid NOT IN (
+							SELECT seasonteamid
+							FROM seasonplayer
+							WHERE playerid = $1 AND seasonplayer.seasonteamid = sp.seasonteamid
+						)
+						AND st.seasonid IN (
+							SELECT seasonid
+							FROM seasonplayer
+							LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+							WHERE playerid = $1 AND seasonteam.seasonid = st.seasonid
+						)
+					GROUP BY sp.playerid
+				)
+			, 0) as seasons,
+			COALESCE(
+				(
+					SELECT count(*) as playoffwinner
+					FROM seasonplayer as sp
+					LEFT JOIN seasonteam as st ON st.id = sp.seasonteamid
+					WHERE
+						sp.playerid = player.id
+						AND sp.seasonteamid NOT IN (
+							SELECT seasonteamid
+							FROM seasonplayer
+							WHERE playerid = $1 AND seasonplayer.seasonteamid = sp.seasonteamid
+						)
+						AND st.seasonid IN (
+							SELECT seasonid
+							FROM seasonplayer
+							LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+							WHERE playerid = $1 AND seasonteam.seasonid = st.seasonid
+						) AND winner = true
+					GROUP BY sp.playerid
+				)
+			, 0) as playoffwinner,
+			COALESCE(
+				(
+					SELECT count(*) as leaguewinner
+					FROM seasonplayer as sp
+					LEFT JOIN seasonteam as st ON st.id = sp.seasonteamid
+					WHERE
+						sp.playerid = player.id
+						AND sp.seasonteamid NOT IN (
+							SELECT seasonteamid
+							FROM seasonplayer
+							WHERE playerid = $1 AND seasonplayer.seasonteamid = sp.seasonteamid
+						)
+						AND st.seasonid IN (
+							SELECT seasonid
+							FROM seasonplayer
+							LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+							WHERE playerid = $1 AND seasonteam.seasonid = st.seasonid
+						) AND leaguewinner = true
+					GROUP BY sp.playerid
+				)
+			, 0) as leaguewinner
 
 		FROM playergame
 		LEFT JOIN player on player.id = playergame.playerid
@@ -69,10 +118,9 @@ async function getAllies(playerid) {
 					WHERE playerid = $1 AND gameid = playergame.gameid AND pg.team != playergame.team
 				)
 
-		GROUP BY name, country
-		order by "win rate" DESC
+		GROUP BY name, player.id, country
+		ORDER BY games DESC
 	`, [playerid], 'all')
 
 	return raw
-
 }

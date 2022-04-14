@@ -156,6 +156,28 @@
 
 .player-stats
 	.row
+		&.head .item.playoffwinner
+			svg
+				fill url(#gold.trophy)
+				width 1.1rem
+				height 1.1rem
+				vertical-align text-bottom
+
+			&.active
+			&:hover
+				box-shadow 0 2px 0 #1adbd4
+
+		&.head .item.leaguewinner
+			svg
+				fill url(#silver.trophy)
+				width 1.1rem
+				height 1.1rem
+				vertical-align text-bottom
+
+			&.active
+			&:hover
+				box-shadow 0 2px 0 #1adbd4
+
 		.item.country
 			text-align right
 			flex 0 0 4%
@@ -201,3 +223,8 @@
 					.inner
 						background #ec041f
 						box-shadow 0 0 10px #ec041f
+
+		.item.map
+			flex 8%
+			justify-content left
+			padding-left 1rem
