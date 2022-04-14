@@ -167,12 +167,12 @@ const createGroup = async () => {
 
 	console.log('tagpro-vcr.js injected')
 
-	// screenshot
-	await page.screenshot({ path: '../public/tagpro.png' });
-
 	await page.evaluate(() => {
 		tagpro.group.socket.emit('chat', `test 123 cat dog`)
 	})
+
+	// screenshot
+	await page.screenshot({ path: '../public/tagpro.png' });
 
 	// await browser.close();
 }
