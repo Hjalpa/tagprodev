@@ -47,20 +47,6 @@ const createGroup = async () => {
 	// write url to console
 	console.log(await page.url())
 
-	// move Some Ball to spectators
-	await page.evaluate(() => {
-		let event = new Event('dblclick');
-		document.querySelector('#spectators .player-list').dispatchEvent(event)
-	})
-
-	// remove self assignment
-	await page.evaluate(() => {
-		document.querySelector('input[name="selfAssignment"]').checked = false
-
-		let event = new Event('change');
-		document.querySelector('input[name="selfAssignment"]').dispatchEvent(event)
-	})
-
 	// set comp mode
 	await page.evaluate(() => {
 		document.querySelector('input[name="competitiveSettings"]').checked = true
@@ -107,24 +93,19 @@ const createGroup = async () => {
 		// select map
 		tagpro.group.socket.emit('setting', {
 			name: 'map',
-			value: 'fm_id/74604',
+			value: 'fm_id/74606',
 		})
 		// self assignment
-		// tagpro.group.socket.emit('setting', {
-		// 	name: 'selfAssignment',
-		// 	value: false,
-		// })
+		tagpro.group.socket.emit('setting', {
+			name: 'selfAssignment',
+			value: 'false',
+		})
+		// disable tagpros
+		tagpro.group.socket.emit('setting', {
+			name: 'powerupTagPro',
+			value: 'false',
+		})
 	})
-
-	// disable tagpros
-	await page.evaluate(() => {
-		document.querySelector('.js-customize').value = 'powerupTagPro'
-		document.querySelector('input[name="powerupTagPro"]').checked = false
-
-		let event = new Event('change');
-		document.querySelector('input[name="powerupTagPro"]').dispatchEvent(event)
-	})
-	await page.waitForSelector('.non-default[name="powerupTagPro"]')
 
 	// wait for players
 	await page.evaluate(() => {
@@ -132,7 +113,6 @@ const createGroup = async () => {
 			if(arg.team === 4) {
 
 				if(arg.name === 'anom') {
-
 					// set team
 					tagpro.group.socket.emit('team', {
 						id: arg.id,
@@ -142,11 +122,18 @@ const createGroup = async () => {
 					// set leader
 					tagpro.group.socket.emit('leader', arg.id)
 					tagpro.group.socket.emit('chat', `setting new leader: ${arg.name}`)
-					tagpro.group.socket.emit('chat', `please ensure players are using their proper name!`)
+					tagpro.group.socket.emit('chat', `please ensure players use their proper name!`)
 					tagpro.group.socket.emit('chat', '=====================')
 					tagpro.group.socket.emit('chat', `injecting tagpro-vcr.js...`)
 					tagpro.group.socket.emit('chat', '=====================')
 					tagpro.group.socket.emit('chat', 'gl hf!')
+				}
+				else {
+					// move to spectators
+					tagpro.group.socket.emit('team', {
+						id: arg.id,
+						team: 3
+					})
 				}
 				// tagpro.group.socket.emit('chat', `waiting for players ...`)
 			}
@@ -157,23 +144,35 @@ const createGroup = async () => {
 
 	})
 
-	// wait for game URl
-	await page.waitForFunction("window.location.pathname == '/game'")
+	// force join game
+	await page.waitForSelector('.js-game-in-progress')
+	console.log('joining game in progress')
+	await page.click('#join-game-btn')
+	await navigationPromise
 
-	// await navigationPromise
+	// wait for game to load
+	await page.waitForFunction("window.location.pathname == '/game'")
+	await navigationPromise
+
 	console.log('game loaded')
 
 	// import tagpro-vcr.js script
-	page.evaluate(() => {
-		// await page.addScriptTag({ path: 'tagpro-vcr.js' })
+	// await page.addScriptTag({ path: 'tagpro-vcr.js' })
+	await page.evaluate(() => {
 		var script = document.createElement('script');
 		script.setAttribute('src', 'tagpro-vcr.js');
 		script.setAttribute('type', 'text/javascript');
 		document.getElementsByTagName('head')[0].appendChild(script)
 	})
 
+	console.log('tagpro-vcr.js injected')
+
 	// screenshot
 	await page.screenshot({ path: '../public/tagpro.png' });
+
+	await page.evaluate(() => {
+		tagpro.group.socket.emit('chat', `test 123 cat dog`)
+	})
 
 	// await browser.close();
 }
