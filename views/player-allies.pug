@@ -1,0 +1,103 @@
+include template/head.pug
+include template/player-nav.pug
+
+.contain
+	.wrap
+
+		// .nav-bar-tertiary
+		// 	a(href='#') Total
+		// 	a(href=config.path + "/matches" class=(config.nav.sub === 'ctf' ? 'active' : '')) CTF
+		// 	a(href=config.path + "/matches/nf" class=(config.nav.sub === 'nf' ? 'active' : '')) NF
+
+		.player-stats
+			.row.head
+				each n, key in matches
+					each v, k in n
+
+						if(k === 'color')
+						else if(k === 'euid')
+							- continue
+
+						if(k === 'country')
+							.item.country
+
+						else if(k === 'player')
+							.item.player
+
+						else if(k === 'map')
+							.item.map
+
+						else if(k === 'result')
+							.item.result
+
+						else if(k === 'acronym')
+							.item.acronym
+
+						else if(k === 'versus')
+							.item.acronym.versus(
+								data-column="versus"
+							) Versus
+
+						else
+							.item(
+								data-column= k
+							)= k
+
+					- break
+
+			each n, key in matches
+				.row.entry(
+						style="--teamcolor: #ffc800; --teamglow: #ffc80080; --teambg: #ffc80030"
+					)
+					each v, k in n
+						if(k === 'euid')
+						else if(k === 'color')
+							- continue
+
+						else if(k === 'country')
+							.item.country
+								img(
+									src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + v + ".svg"
+								)
+
+						else if(k === 'player')
+							.item.player
+								a(
+									href='/player/' + v
+								)= v
+
+						else if(k === 'map')
+							.item.map= n.map
+
+						else if(k === 'result')
+							.item.result
+								a(
+									href='https://tagpro.eu/?match=' + n.euid
+									class= n.result
+								)= n.result
+
+						else if(k === 'acronym')
+							.item.acronym= n.acronym
+
+						else if(k === 'versus')
+							.item.acronym.versus(
+								style="--teamcolor: " + n.versus.color+ "; --teamglow: " + n.versus.color + "80; --teambg: " + n.versus.color + "30"
+								data-column="versus"
+							)= n.versus.acronym
+
+						else if(k === 'win rate')
+							.item.winrate
+								.val= v+'%'
+								if(v >= 50)
+									.bar.good
+										.inner(style="width: " + v + "%")
+								else
+									.bar.bad
+										.inner(style="width: " + v + "%")
+
+						else
+							.item(
+								data-column= k
+							)= v
+
+include template/foot.pug
