@@ -21,7 +21,8 @@ let init = async (req, res) => {
 			players: await getPlayerCount(req.seasonid),
 			mvb: await getMVB(req.mode, req.seasonid),
 			champions: await getChampions(req.seasonid),
-			playofffinalstream: await getPlayoffFinalStream(req.seasonid)
+			leaguewinner: await getLeagueWinner(req.seasonid),
+			playofffinalstream: await getPlayoffFinalStream(req.seasonid),
 		}
 		res.render('superleague-overview', data);
 	} catch(e) {
@@ -99,7 +100,7 @@ async function getMVB(gamemode, seasonid) {
 
 		HAVING sum(play_time) > 10
 		ORDER BY value DESC
-		LIMIT 19
+		LIMIT 8
 	`, [seasonid], 'all')
 	return raw
 }
@@ -129,7 +130,39 @@ async function getChampions(seasonid) {
         LEFT JOIN team as t on t.id = st.teamid
         WHERE st.seasonid = $1 AND st.winner = true
         GROUP BY t.id, t.name, t.acronym, t.logo, t.color, st.id, st.winner
-        ORDER BY t.name ASC
+        ORDER BY st.winner, t.name ASC
 	`, [seasonid], 'row')
+
+	return raw
+}
+
+async function getLeagueWinner(seasonid) {
+	let raw = await db.select(`
+		SELECT
+            t.id,
+            t.name,
+            t.acronym,
+            t.logo,
+            t.color,
+            st.id,
+			st.leaguewinner,
+
+            ARRAY(
+				select json_build_object('name', name, 'country', LOWER(country), 'captain', seasonplayer.captain)
+                from player
+                left join seasonplayer on seasonplayer.playerid = player.id
+                left join seasonteam on seasonplayer.seasonteamid = seasonteam.id
+                where seasonteam.id = st.id
+                ORDER BY captain DESC, name ASC
+            ) AS players
+
+        FROM seasonplayer as sp
+        LEFT JOIN seasonteam as st on st.id = sp.seasonteamid
+        LEFT JOIN team as t on t.id = st.teamid
+        WHERE st.seasonid = $1 AND st.leaguewinner = true
+        GROUP BY t.id, t.name, t.acronym, t.logo, t.color, st.id, st.leaguewinner
+        ORDER BY st.leaguewinner, t.name ASC
+	`, [seasonid], 'row')
+
 	return raw
 }

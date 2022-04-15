@@ -27,79 +27,79 @@ include template/superleague-nav.pug
 				// most valuable ball
 				if mvb[0]
 					.pane.mvb
-						.headline
-							svg
-								use(xlink:href="#mvb")
-							.text MVB
+						.container
+							.headline
+								svg
+									use(xlink:href="#mvb")
+								.text MVB
 
-						- let max = parseInt(mvb[0].value)
-						each n, key in mvb
-							.row(class=(key === 0 ? 'top' : ''))
-								.item.rank= n.rank
-								.item.team(
-									data-position= i
-									style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
-								)= n.acronym
-								.item.player
-									a(
-										href='/player/' + n.player
-									)= n.player
+							- let max = parseInt(mvb[0].value)
+							each n, key in mvb
+								.row(class=(key === 0 ? 'top' : ''))
+									.item.rank= n.rank
+									.item.team(
+										data-position= i
+										style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+									)= n.acronym
+									.item.player
+										a(
+											href='/player/' + n.player
+										)= n.player
 
-								// .item.value=  n.value
-								- let percent = ((n.value / max) * 100).toFixed(2)
-								.item.test
-									// .v= n.value
-									.v= percent
-									.bar
-										.inner(style="width:" + percent + "%")
+									- let percent = ((n.value / max) * 100).toFixed(2)
+									.item.test
+										.v= percent
 
-
-				// playoff final stats?
-				if playofffinalstream
 					.pane.final
 						.headline
 							.text Playoff Final
 
 						.content
-							iframe(
-								src= playofffinalstream
-								frameborder="0",
-								allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
-								allowfullscreen
-							)
+							if playofffinalstream
+								iframe(
+									src= playofffinalstream
+									frameborder="0",
+									allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
+									allowfullscreen
+								)
 
 						// a(href="#").watchfinal ???
 
 
 				// playoff champions
-				if champions
-					.pane.champions(
-						style="--teamcolor: " + champions.color + "; --teamglow: " + champions.color + "80"
-					)
-						.container.crowned
+				if leaguewinner
+					.pane.champions
+						if champions
+							.container.crowned(
+								style="--teamcolor: " + champions.color + "; --teamglow: " + champions.color + "80"
+							)
+								.headline
+									svg
+										use(xlink:href="#trophy")
+									.text Champions
+									.team= champions.name
+
+								ul.players
+									each p, k in champions.players
+										li
+											if p.captain
+												.captain
+													svg
+														use(xlink:href="#captain")
+											.name= p.name
+											.country
+												img(
+													src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + p.country + ".svg"
+												)
+
+
+						.container.league(
+							style="--teamcolor: " + leaguewinner.color + "; --teamglow: " + leaguewinner.color + "80"
+						)
 							.headline
 								svg
 									use(xlink:href="#trophy")
-								.text Champions
-								.team= champions.name
-
-							ul.players
-								each p, k in champions.players
-									li
-										if p.captain
-											.captain
-												svg
-													use(xlink:href="#captain")
-										.name= p.name
-										.country
-											img(
-												src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + p.country + ".svg"
-											)
-
-
-				.upcoming
-
-
-
+								.text League Winners
+								.team= leaguewinner.name
 
 include template/foot.pug
