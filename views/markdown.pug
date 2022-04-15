@@ -2,8 +2,6 @@ include template/head.pug
 
 .contain.misc-contain
 	.wrap
-		.rules
-			h2= config.name
-			.content= content
+		.rules!= content
 
 include template/foot.pug

@@ -1,3 +1,9 @@
+---
+title: Super League Rules
+---
+
+# Rules
+
 * All games must be 7 minutes
 * No overtime
 * No halves
