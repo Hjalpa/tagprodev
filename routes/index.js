@@ -60,7 +60,8 @@ router.get('/player', (req, res) => require('../models/players').init(req, res))
 router.use('/player/:player', getSeason, require('./player'))
 router.use('/:mode/:season', getSeason, require('./season'))
 
-router.get('/rules', (req, res) => require('../models/rules').init(req, res))
+router.get('/rules', (req, res) => require('../models/misc').rules(req, res))
+router.get('/faq', (req, res) => require('../models/misc').faq(req, res))
 router.use((req, res) => res.status(404).render('404'))
 
 module.exports = router
