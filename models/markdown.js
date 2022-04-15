@@ -8,7 +8,6 @@ module.exports.init = async (req, res, filename) => {
 		let data = {
 			config: {
 				title: markdown.data.title,
-				name:  markdown.data.title,
 				path: req.baseUrl,
 				nav: {
 					cat: 'misc',
