@@ -100,7 +100,7 @@ async function getMVB(gamemode, seasonid) {
 
 		HAVING sum(play_time) > 10
 		ORDER BY value DESC
-		LIMIT 8
+		LIMIT 6
 	`, [seasonid], 'all')
 	return raw
 }

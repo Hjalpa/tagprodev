@@ -12,9 +12,8 @@ const exec = require('child_process').exec
 let getSeason = async function (req, res, next) {
 	let season = false
 	try {
-
-		if(req.params.season && req.params.mode) {
-			season = await db.select(`
+		if(['ctf','nf','egg','eltp','ecltp'].includes(req.params.mode) && req.params.season) {
+			let season = await db.select(`
 				SELECT id
 				FROM season
 				WHERE mode = $1 AND number = $2
@@ -28,7 +27,6 @@ let getSeason = async function (req, res, next) {
 			req.seasonid = season
 			req.mode = req.params.mode
 			req.seasonname = req.mode + ' Season ' + req.season
-
 		}
 		if(req.params.player) {
 			req.player = {
@@ -62,7 +60,7 @@ router.get('/player', (req, res) => require('../models/players').init(req, res))
 router.use('/player/:player', getSeason, require('./player'))
 router.use('/:mode/:season', getSeason, require('./season'))
 
-router.use('/rules', (req, res) => res.render('rules'))
+router.get('/rules', (req, res) => require('../models/rules').init(req, res))
 router.use((req, res) => res.status(404).render('404'))
 
 module.exports = router
