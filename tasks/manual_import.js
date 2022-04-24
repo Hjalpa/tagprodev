@@ -13,7 +13,7 @@ init.call = async () => {
 		if(!gameExists) {
 			await axios.post(`https://tagpro.dev/api/import`, {
 				euid: euid,
-				seasonid: 6 // adjust this for new seasons and create db entry within season table
+				seasonid: 8 // adjust this for new seasons and create db entry within season table
 			})
 			console.log('added ' + euid)
 		}

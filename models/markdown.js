@@ -1,6 +1,6 @@
 const matter = require('gray-matter')
 const MarkdownIt = require('markdown-it')
-const md = new MarkdownIt();
+const md = new MarkdownIt({html:true})
 
 module.exports.init = async (req, res, filename) => {
 	try {

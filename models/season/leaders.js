@@ -1198,6 +1198,17 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.long_hold = (SELECT long_hold',
 					}),
 				},
+				flagcarrydistance: {
+					title: 'Flag Carry Distance',
+					data: await getData(filters, {
+						sum: 'sum(flag_carry_distance)',
+						avg: 'ROUND(avg(flag_carry_distance), 2)',
+						teampercent: 'ROUND((sum(flag_carry_distance)::DECIMAL / sum(flag_carry_distance_team_for)::DECIMAL) * 100, 0)',
+						gamepercent: 'ROUND((sum(flag_carry_distance)::DECIMAL / sum(flag_carry_distance_team_for + flag_carry_distance_team_against)::DECIMAL) * 100, 0)',
+						top: 'playergame.flag_carry_distance = (SELECT flag_carry_distance',
+					})
+				},
+
 				tagpop: {
 					title: 'Tag / Pop',
 					data: await getData({...filters, ...{ascending: false}}, {

@@ -1,0 +1,52 @@
+v0.1.0 	15th April 2022
+* Added footer
+* Added footer pages: faq, changelog.txt
+* Added profile pages: maps
+* Added league winner to season overview
+* Fixed bot.js
+* Fixed 404 error: "invalid season" lookup
+
+v0.0.13 14th April 2022
+* Added profile pages: allies, opponents
+* Fixed column order bug when clicking sort
+
+v0.0.12 13th April 2022
+* Changed colour scheme for ECLTP seasons
+* Added playoff final video to season overview
+
+v0.0.11 12th April 2022
+* Refactored manual_import.js, and auto_import.js
+* Added Open Skill to player profile
+
+v0.0.10 1st April 2022
+* Created players list
+
+v0.0.9 	28th March 2022
+* Added ECLTP games to player profile matches NF tab
+
+v0.0.8 	26th March 2022
+* Added playoff tabs to season stats
+
+v0.0.7 	11th March 2022
+* Added auction cost to player profile
+
+v0.0.6 	3rd March 2022
+* Adjusted CTF MVB formula
+
+v0.0.5 	25th February 2022
+* Added pirsch.io tracking
+* Added player profile
+
+v0.0.4 	23rd February 2022
+* Added playoff winner trophy to season teams page
+
+v0.0.3 	22nd January 2022
+* Created MVB formula
+* Simplified season signup, and draft packet
+
+v0.0.2 	14th January 2022
+* Added season matches playoffs tab
+* Created auto_import.js, and manual_import.js
+
+v0.0.1	12th January 2022
+* Added season pages: league, teams, matches, stats, records
