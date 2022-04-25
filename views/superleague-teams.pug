@@ -27,7 +27,19 @@ include template/superleague-nav.pug
 						ul.players
 							each p, pkey in n.players
 								li
-									.name= p.name
+
+									.name
+										a(
+											href='/player/' + p.name
+										)= p.name
+
+									if p.captain
+										.extra.captain
+											svg
+												use(xlink:href="#captain")
+									else
+										.extra.cost= p.cost
+
 									.country
 										img(
 											src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + p.country + ".svg"
