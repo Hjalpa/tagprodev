@@ -48,7 +48,7 @@ let getSeason = async function (req, res, next) {
 router.use(getSeason)
 
 // router.get('/', (req, res) => require('../models/home').init(req, res))
-router.get('/', (req, res) => res.redirect('../ctf/2'))
+router.get('/', (req, res) => res.redirect('../player'))
 
 // pause this
 router.get('/egg/1', (req, res) => res.redirect('../ctf/2'))

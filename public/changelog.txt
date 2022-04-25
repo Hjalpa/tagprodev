@@ -1,6 +1,7 @@
 v0.1.1 	25th April 2022
 * Added player cost, and captain indicator to teams
 * Added player profile link to teams
+* Added sticky table header
 
 v0.1.0 	15th April 2022
 * Added footer
