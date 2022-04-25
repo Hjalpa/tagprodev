@@ -201,6 +201,10 @@ async function getRecords(filters, gamemode) {
 		case 'nf':
 		case 'ecltp':
 			return {
+				mvb: {
+					title: 'MVB',
+					data: await getData(filters, mvb_select),
+				},
 				points: {
 					title: 'Points',
 					data: await getData(filters, 'cap + assist'),
