@@ -63,6 +63,9 @@ router.use('/:mode/:season', getSeason, require('./season'))
 router.get('/rules', (req, res) => require('../models/markdown').init(req, res, 'rules'))
 router.get('/faq', (req, res) => require('../models/markdown').init(req, res, 'faq'))
 
+// who has played?
+router.get('/r300', (req, res) => require('../models/r300').init(req, res))
+
 router.use((req, res) => res.status(404).render('404'))
 
 module.exports = router
