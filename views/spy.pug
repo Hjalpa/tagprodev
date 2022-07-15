@@ -1,0 +1,85 @@
+include template/head.pug
+
+.contain.players-list.spy
+	.wrap
+
+		.player-stats
+			.row.head
+				each n, key in players
+					each v, k in n
+						if(k === 'tpid' || k === 'online')
+							- continue
+
+						else if(k === 'flair')
+							.item.flair
+
+						else if(k === 'name')
+							.item.player Player
+
+						else if(k === 'degrees')
+							.item(data-column="degrees") Degree°
+
+						else if(k === 'r300')
+							.item(data-column= k)= k + '%'
+
+						else if(k === 'age')
+							.item.age Account Age
+
+						else if(k === 'last seen')
+							.item.lastseen Last Seen
+
+						else
+							.item(
+								data-column= k
+							)= k
+
+					- break
+
+			each n, key in players
+				.row.entry(
+					style="--teamcolor: #bfff00; --teamglow: #bfff0080; --teambg: #bfff0030"
+				)
+					each v, k in n
+						if(k === 'tpid' || k === 'online')
+							- continue
+
+						else if(k === 'flair')
+							.item.flair
+								span(data-flair= v)
+
+						else if(k === 'name')
+							.item.player
+								a(
+									href='https://tagpro.gg/profile/' + n.tpid
+								)= v
+
+						else if(k === 'r300')
+							.item(data-column="r300")
+								.val= v
+
+						else if(k === 'last seen')
+							.item.lastseen(data-online= n.online)= v
+
+						else if(k === 'age')
+							.item.age
+								.val= v
+
+						else if(k === 'F.WR')
+							.item(data-column="F.WR")
+								.item.flair.winrate
+									if v === 3
+										span(data-flair="Insane Win Rate") 3
+									else if v === 2
+										span(data-flair="Awesome Win Rate") 2
+									else if v === 1
+										span(data-flair="Good Win Rate") 1
+									else
+										span 0
+
+
+						else
+							.item(
+								data-column= k
+							)= v
+
+include template/foot.pug
