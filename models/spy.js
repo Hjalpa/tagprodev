@@ -15,7 +15,7 @@ module.exports.list = async (req, res) => {
 				path: req.baseUrl,
 				season: req.season,
 				nav: {
-					cat: 'players',
+					cat: 'spy',
 					page: 'overview'
 				}
 			},
