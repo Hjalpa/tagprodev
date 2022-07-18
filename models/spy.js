@@ -38,7 +38,7 @@ async function getPlayers() {
 			r300,
 			degrees,
 
-			CASE WHEN ( (EXTRACT(EPOCH FROM current_timestamp) - EXTRACT(EPOCH FROM lastseendate))/3600) < 0.1 THEN 'true' ELSE 'false' END as online,
+			CASE WHEN ( (EXTRACT(EPOCH FROM current_timestamp) - EXTRACT(EPOCH FROM lastseendate))/3600) < 0.01 THEN 'true' ELSE 'false' END as online,
 
 			gamestoday as "2day.g",
 			winratetoday as "2day.wr%",
@@ -122,7 +122,7 @@ module.exports.update = async (req, res) => {
 }
 
 async function updatePlayer(tpid) {
-	let playerExists = await db.select('SELECT id FROM spy WHERE tpid = $1', [tpid], 'id')
+	let playerExists = await db.select('SELECT id, name FROM spy WHERE tpid = $1', [tpid], 'row')
 	if(playerExists) {
 		try {
 			const dom = await getProfile(`https://tagpro.koalabeast.com/profile/${tpid}`)
@@ -156,6 +156,17 @@ async function updatePlayer(tpid) {
 
 			await db.update('spy', player, {tpid: player.tpid})
 			console.log(`spy updated ${player.tpid}`)
+
+			// add entry into spysmurf if name doesn't match
+			let smurf = {
+				spyid: playerExists.id,
+				name: await getName(dom),
+				flair: player.flair,
+			}
+			if(smurf.name != playerExists.name) {
+				console.log(`new name found for ${playerExists.name}: ${smurf.name}`)
+				await db.insertUpdate('spysmurf', smurf, ['spyid', 'name'])
+			}
 		}
 		catch(error) {
 			console.log(error)

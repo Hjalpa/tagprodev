@@ -9,7 +9,7 @@ const util = require('../lib/util')
 
 init = (() => {})
 init.call = async () => {
-	let spies = await db.query("SELECT tpid, name FROM spy", 'all')
+	let spies = await db.query("SELECT tpid, name FROM spy ORDER BY lastseendate DESC", 'all')
 	for(let player in spies) {
 		let p = spies[player]
 		await axios.post(`https://tagpro.dev/api/spy/update`, {
