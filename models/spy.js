@@ -38,7 +38,7 @@ async function getPlayers() {
 			r300,
 			degrees,
 
-			CASE WHEN ( (EXTRACT(EPOCH FROM current_timestamp) - EXTRACT(EPOCH FROM lastseendate))/3600) < 0.01 THEN 'true' ELSE 'false' END as online,
+			CASE WHEN ( (EXTRACT(EPOCH FROM current_timestamp) - EXTRACT(EPOCH FROM lastseendate))/3600) < 0.35 THEN 'true' ELSE 'false' END as online,
 
 			gamestoday as "2day.g",
 			winratetoday as "2day.wr%",
@@ -57,7 +57,7 @@ async function getPlayers() {
 			accountage as age
 
 		FROM spy
-		ORDER BY lastseendate DESC
+		ORDER BY lastseendate DESC, gamestoday DESC
 	`, [], 'all')
 	return raw
 }

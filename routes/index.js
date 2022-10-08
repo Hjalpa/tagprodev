@@ -6,7 +6,7 @@ const db = require('../lib/db')
 const exec = require('child_process').exec
 
 // STOP APACHE IF THE PORT ERROR 80 exists AND RESTART AFTER CERT DONE
-router.get('/.well-known/acme-challenge/0BRh39YTuJ2DikKLiwrugYeqcML9CfDoWjWdBPd2B5k', async (req, res) => res.send('0BRh39YTuJ2DikKLiwrugYeqcML9CfDoWjWdBPd2B5k.hYRGI90GO3NsQmmnTO1Uwp7jwf_HnYCV7HPC3UrthtQ'))
+// router.get('/.well-known/acme-challenge/kMuQwP5pMf89ccthmb7_UVsA9oZLy9R3i-amWDeQRrA', async (req, res) => res.send('kMuQwP5pMf89ccthmb7_UVsA9oZLy9R3i-amWDeQRrA.hYRGI90GO3NsQmmnTO1Uwp7jwf_HnYCV7HPC3UrthtQ'))
 
 // find season
 let getSeason = async function (req, res, next) {
@@ -46,6 +46,10 @@ let getSeason = async function (req, res, next) {
 	next()
 }
 router.use(getSeason)
+
+router.use((req, res, next) => req.secure ? next() : res.redirect('https://' + req.headers.host + req.url))
+
+
 
 // router.get('/', (req, res) => require('../models/home').init(req, res))
 router.get('/', (req, res) => res.redirect('../player'))

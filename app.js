@@ -13,6 +13,8 @@ const server = https.createServer({
  	ca: fs.readFileSync('/etc/letsencrypt/live/tagpro.dev/chain.pem')
 }, app).listen(443)
 
+// app.listen(80)
+
 // const ipfilter = require('express-ipfilter').IpFilter
 // const ips = ['::ffff:86.172.91.64']
 // app.use(ipfilter(ips, { mode: 'allow' }))

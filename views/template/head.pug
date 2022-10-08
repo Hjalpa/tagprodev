@@ -17,7 +17,10 @@ html
 		.nav-bar-primary
 			a(href="/")
 				include ../../public/favicon.svg
-				span Super League
+				span Tagpro.dev
+
+			a(href="/player" class=(config.nav.cat === 'players' ? 'active' : ''))
+				span Players
 
 			a(href="/ctf/1" class=(config.nav.cat === 'ctf' ? 'active' : ''))
 				span CTF
@@ -31,8 +34,6 @@ html
 			// a(href="/egg/1" class=(config.nav.cat === 'egg' ? 'active' : ''))
 			// 	span EGG
 
-			a(href="/player" class=(config.nav.cat === 'players' ? 'active' : ''))
-				span Players
 
 			// a(href="/leaderboards" class=(config.nav.cat === 'leaderboards' ? 'active' : ''))
 			// 	span Leaders
