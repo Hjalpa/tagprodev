@@ -53,9 +53,5 @@
     "gulp-watch": "^5.0.1",
     "rsyncwrapper": "^3.0.1",
     "run-sequence": "^2.2.1"
-  },
+  }
 }
-
-
-
-
