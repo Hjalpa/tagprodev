@@ -119,11 +119,11 @@ gulp.task('watch', gulp.series(gulp.parallel('browser-sync'), function(done) {
 
 //  font gen
 // --------------------------------------------------------------------------
-gulp.task('fonts', function(){
+gulp.task('fonts', gulp.series(function(done) {
 	gulp.src(['public/*.ttf'])
 		.pipe(ttf2woff2())
 		.pipe(gulp.dest('public/'));
 	done()
-});
+}))
 
 gulp.task('build', gulp.series(['signup_css', 'signup_js', 'css', 'js', 'fonts']))
