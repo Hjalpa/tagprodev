@@ -13,10 +13,6 @@ const app = express()
 
 app.listen(80)
 
-// const ipfilter = require('express-ipfilter').IpFilter
-// const ips = ['::ffff:86.172.91.64']
-// app.use(ipfilter(ips, { mode: 'allow' }))
-
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')
 
