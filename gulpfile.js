@@ -124,3 +124,5 @@ gulp.task('fonts', function(){
 	.pipe(ttf2woff2())
 	.pipe(gulp.dest('public/'));
 });
+
+gulp.task('build', gulp.series(['signup_css', 'signup_js', 'css', 'js', 'fonts']))
