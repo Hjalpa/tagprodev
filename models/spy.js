@@ -59,6 +59,10 @@ async function getPlayers() {
 		FROM spy
 		ORDER BY lastseendate DESC, gamestoday DESC
 	`, [], 'all')
+
+	for(id in raw)
+		raw[id].age = util.displayDate(raw[id].age)
+
 	return raw
 }
 
@@ -104,6 +108,7 @@ async function grabPlayer(tpid) {
 			}
 
 			player.lastSeenDate = chrono.parseDate(player.lastSeen)
+			player.accountAge = chrono.parseDate(player.accountAge)
 
 			await db.insert('spy', player)
 			console.log(`spying on ${player.name}`)
@@ -136,8 +141,6 @@ async function updatePlayer(tpid) {
 				flair: await getFlair(dom),
 				flairCount: await getFlairCount(dom),
 				flairWinrate: await getFlairWinrate(dom),
-
-				accountAge: await getAccountAge(dom),
 
 				gamesToday: await getGamesToday(dom),
 				winrateToday: await getWinrateToday(dom),
@@ -204,8 +207,8 @@ async function getR300(dom) {
 }
 
 async function getAccountAge(dom) {
-	let raw = dom.window.document.querySelector('.profile-detail table tbody tr:first-child td:nth-of-type(2)')
-	return raw.getAttribute('title').trim()
+	let raw = dom.window.document.querySelector('.profile-detail table tbody tr:first-child td:nth-of-type(2) span')
+	return new Date(raw.getAttribute('title').trim()).toISOString()
 }
 
 async function getLastSeen(dom) {
