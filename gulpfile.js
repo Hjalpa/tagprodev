@@ -16,12 +16,7 @@ const ttf2woff2 		= require('gulp-ttf2woff2')
 // --------------------------------------------------------------------------
 gulp.task('browser-sync', gulp.series(function(done) {
 	browserSync({
-		// proxy: "http://localhost:3000",
 		port: 8000,
-		https: {
-			key: '/etc/letsencrypt/live/tagpro.dev/privkey.pem',
-			cert: '/etc/letsencrypt/live/tagpro.dev/cert.pem',
-		},
 		ui: {
 			port: 8081,
 		},
