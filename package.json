@@ -4,32 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app",
+    "build": "gulp build",
+    "dev": "nodemon app & gulp watch"
   },
   "repository": {
     "type": "git",
     "url": "git+https://gitlab.com/anom/tagpro.git"
   },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://gitlab.com/anom/tagpro/issues"
-  },
-  "homepage": "https://gitlab.com/anom/tagpro#readme",
-  "devDependencies": {
-    "browser-sync": "^2.26.14",
-    "gulp-autoprefixer": "^6.1.0",
-    "gulp-clean-css": "^4.3.0",
-    "gulp-concat": "^2.6.1",
-    "gulp-size": "^3.0.0",
-    "gulp-strip-debug": "^3.0.0",
-    "gulp-stylus": "^2.7.0",
-    "gulp-ttf2woff2": "^4.0.1",
-    "gulp-uglify-es": "^1.0.4",
-    "gulp-watch": "^5.0.1",
-    "rsyncwrapper": "^3.0.1",
-    "run-sequence": "^2.2.1"
-  },
+  "author": "Daniel <@anom>",
   "dependencies": {
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
@@ -56,5 +39,23 @@
     "request": "^2.88.2",
     "trueskill": "0.0.2",
     "ts-trueskill": "^3.2.2"
-  }
+  },
+  "devDependencies": {
+    "browser-sync": "^2.26.14",
+    "gulp-autoprefixer": "^6.1.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-size": "^3.0.0",
+    "gulp-strip-debug": "^3.0.0",
+    "gulp-stylus": "^2.7.0",
+    "gulp-ttf2woff2": "^4.0.1",
+    "gulp-uglify-es": "^1.0.4",
+    "gulp-watch": "^5.0.1",
+    "rsyncwrapper": "^3.0.1",
+    "run-sequence": "^2.2.1"
+  },
 }
+
+
+
+
