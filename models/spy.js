@@ -137,6 +137,8 @@ async function updatePlayer(tpid) {
 				flairCount: await getFlairCount(dom),
 				flairWinrate: await getFlairWinrate(dom),
 
+				accountAge: await getAccountAge(dom),
+
 				gamesToday: await getGamesToday(dom),
 				winrateToday: await getWinrateToday(dom),
 
@@ -203,7 +205,7 @@ async function getR300(dom) {
 
 async function getAccountAge(dom) {
 	let raw = dom.window.document.querySelector('.profile-detail table tbody tr:first-child td:nth-of-type(2)')
-	return raw.textContent.trim()
+	return raw.getAttribute('title').trim()
 }
 
 async function getLastSeen(dom) {
