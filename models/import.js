@@ -1,5 +1,3 @@
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
-
 const exec = require('child_process').exec
 const db = require ('../lib/db')
 const util = require ('../lib/util')

@@ -5,7 +5,6 @@ const cleanCSS 			= require('gulp-clean-css')
 const autoprefix		= require('gulp-autoprefixer')
 const concat 			= require('gulp-concat')
 const uglify 			= require('gulp-uglify-es').default
-const stripDebug 		= require('gulp-strip-debug')
 const size 				= require('gulp-size')
 const browserSync		= require('browser-sync')
 const reload 			= browserSync.reload

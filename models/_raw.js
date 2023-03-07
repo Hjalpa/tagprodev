@@ -1,5 +1,3 @@
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
-
 const exec = require('child_process').exec
 
 module.exports.game = async (req, res) => await game(req, res)

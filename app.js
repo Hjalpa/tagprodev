@@ -1,7 +1,7 @@
 if(process.env.ENV != 'production')
 	require('dotenv').config()
 
-process.env['URL'] = (process.env.ENV === 'production' ? 'https://default.app' : 'http://localhost')
+// process.env['URL'] = (process.env.ENV === 'production' ? 'https://default.app' : 'http://localhost')
 
 const fs = require('fs')
 const compression = require('compression');
