@@ -46,6 +46,14 @@ util = {
 			let a = value.split('%')
 			return a[0]
 		}
+		else if (value.match(/^(\d{1,2})\s(\w{3})\s(\d{4})$/)) {
+			const matchResult = value.match(/^(\d{1,2})\s(\w{3})\s(\d{4})$/)
+			const day = matchResult[1];
+			const month = matchResult[2];
+			const year = matchResult[3];
+			let dt = new Date(`${day}/${month}/${year}`)
+			return dt.getTime()
+		}
 		else
 			return parseFloat(value)
 	}
