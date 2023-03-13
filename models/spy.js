@@ -16,7 +16,7 @@ module.exports.generate = async (req, res) => {
 			})
 			console.log(`spying on ${p.name}`)
 		}
-		res.send('test')
+		res.send('spy complete')
 	} catch(e) {
 		res.status(400).json({error: e})
 	}
