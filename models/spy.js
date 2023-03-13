@@ -6,6 +6,22 @@ const exec = require('child_process').exec
 const db = require ('../lib/db')
 const util = require ('../lib/util')
 
+module.exports.generate = async (req, res) => {
+	try {
+		let spies = await db.query("SELECT tpid, name FROM spy WHERE lastseendate > now() - interval '100' day ORDER BY lastseendate DESC", 'all')
+		for(let player in spies) {
+			let p = spies[player]
+			await axios.post(`https://tagpro.dev/api/spy/update`, {
+				tpid: p.tpid
+			})
+			console.log(`spying on ${p.name}`)
+		}
+		res.send('test')
+	} catch(e) {
+		res.status(400).json({error: e})
+	}
+}
+
 module.exports.list = async (req, res) => {
 	try {
 		let data = {
@@ -304,10 +320,6 @@ async function getWinrateAll(dom) {
 	else
 		return parseFloat(raw.textContent.trim())
 }
-
-
-
-
 
 async function getTimeplayedAll(dom) {
 	let raw = dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(20) td:nth-of-type(5)')

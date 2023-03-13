@@ -53,17 +53,15 @@ router.get('/egg/1', (req, res) => res.redirect('../ctf/2'))
 router.use('/api',  require('./api'))
 // router.use('/leaderboards',  require('./leaderboards'))
 
+router.get('/spy', (req, res) => require('../models/spy').list(req, res))
+router.get('/spy/generate', (req, res) => require('../models/spy').generate(req, res))
+
 router.get('/player', (req, res) => require('../models/players').init(req, res))
 router.use('/player/:player', getSeason, require('./player'))
 router.use('/:mode/:season', getSeason, require('./season'))
 
 router.get('/rules', (req, res) => require('../models/markdown').init(req, res, 'rules'))
 router.get('/faq', (req, res) => require('../models/markdown').init(req, res, 'faq'))
-
-// who has played?
-router.get('/r300', (req, res) => require('../models/r300').init(req, res))
-
-router.get('/spy', (req, res) => require('../models/spy').list(req, res))
 
 router.use((req, res) => res.status(404).render('404'))
 
