@@ -51,7 +51,6 @@ router.get('/', (req, res) => res.redirect('../player'))
 router.get('/ecltp/9', (req, res) => res.redirect('../nf/2'))
 
 router.use('/api',  require('./api'))
-// router.use('/leaderboards',  require('./leaderboards'))
 
 router.get('/spy', (req, res) => require('../models/spy').list(req, res))
 router.get('/spy/generate', (req, res) => require('../models/spy').generate(req, res))
