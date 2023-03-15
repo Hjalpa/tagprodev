@@ -48,7 +48,7 @@ router.use(getSeason)
 router.get('/', (req, res) => res.redirect('../player'))
 
 // pause this
-router.get('/egg/1', (req, res) => res.redirect('../ctf/2'))
+router.get('/ecltp/9', (req, res) => res.redirect('../nf/2'))
 
 router.use('/api',  require('./api'))
 // router.use('/leaderboards',  require('./leaderboards'))
