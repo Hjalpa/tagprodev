@@ -59,6 +59,7 @@ router.get('/player', (req, res) => require('../models/players').init(req, res))
 router.use('/player/:player', getSeason, require('./player'))
 router.use('/:mode/:season', getSeason, require('./season'))
 
+
 router.get('/rules', (req, res) => require('../models/markdown').init(req, res, 'rules'))
 router.get('/faq', (req, res) => require('../models/markdown').init(req, res, 'faq'))
 
