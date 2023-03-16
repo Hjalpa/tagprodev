@@ -26,4 +26,5 @@ app.use(bodyParser.raw())
 app.use(express.static(process.cwd() + '/public'))
 app.use(require('./routes'))
 
+
 console.log('App Started')
