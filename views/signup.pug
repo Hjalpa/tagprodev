@@ -53,7 +53,7 @@ html
 				.right
 					h2 Signup Quota
 					.bar
-						- signups = Math.round((signups.length / 24) * 100)
+						- signups = Math.round((signups.length / 28) * 100)
 						- if(signups >= 100) signups = 100
 						- signups_text = signups + '%'
 						.progress(style="width:"+signups+"%")
