@@ -48,8 +48,6 @@ router.use(getSeason)
 router.get('/', (req, res) => res.redirect('../player'))
 
 // pause this
-router.get('/ecltp/9', (req, res) => res.redirect('../nf/2'))
-
 router.get('/auction', (req, res) => res.redirect('http://165.22.127.194:3000'))
 
 router.use('/api',  require('./api'))
