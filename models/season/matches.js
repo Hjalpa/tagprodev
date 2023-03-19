@@ -20,7 +20,6 @@ let init = async (req, res) => {
 				title: req.mode.toUpperCase() + ' Season ' + req.season + ' ' + ((req.params.id) ? 'Playoff ' : '') + 'Matches',
 				name: req.seasonname,
 				path: req.baseUrl,
-
 				season: req.season,
 				nav: {
 					cat: req.mode,
@@ -31,6 +30,8 @@ let init = async (req, res) => {
 			schedule: await getFixtures(filters, req.mode),
 		}
 		res.render('superleague-matches', data)
+
+
 	}
 	catch(error) {
 		res.status(404).render('404')
