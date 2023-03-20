@@ -13,6 +13,7 @@ let init = async (req, res) => {
 			seasonid: req.seasonid,
 			league: (req.params.id) ? false : true,
 			playoff: (req.params.id) ? true : false
+
 		}
 
 		let data = {
