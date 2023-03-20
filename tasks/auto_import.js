@@ -16,7 +16,7 @@ init.call = async () => {
 		FROM seasonteam
 		LEFT JOIN team on team.id = seasonteam.teamid
 		WHERE seasonid = $1`,
-		[8], 'all')
+		[11], 'all')
 
 	for await (let name of teamnames) {
 
@@ -46,32 +46,27 @@ init.call = async () => {
 
 				FROM seasonschedule
 
-
-
 				LEFT JOIN seasonteam bst ON bst.id = teamblueid
 				LEFT JOIN team bt ON bt.id = bst.teamid
 
 				LEFT JOIN seasonteam rst ON rst.id = teamredid
 				LEFT JOIN team rt ON rt.id = rst.teamid
 
-
-
 				LEFT JOIN map ON map.id = seasonschedule.mapid
 
-				WHERE seasonschedule.seasonid = 8 AND map.name = $1 AND rt.acronym = $2 AND bt.acronym = $3 AND gameid IS NULL AND seasonschedule.date = '2022-04-11'
+				WHERE seasonschedule.seasonid = 11 AND map.name = $1 AND rt.acronym = $2 AND bt.acronym = $3 AND gameid IS NULL AND seasonschedule.date = '2023-03-19'
 
 				LIMIT 1
 			`, [data.map, data.red, data.blue], 'row')
 
 			if(game) {
 				let euid = data.euid
-				console.log(euid)
 				if(euid) {
 					let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [euid], 'id')
 					if(!gameExists) {
-						await axios.post(`https://tagpro.dev/api/import`, {
+						await axios.post(`http://localhost/api/import`, {
 							euid: euid,
-							seasonid: 8 // adjust this for new seasons and create db entry within season table
+							seasonid: 11 // adjust this for new seasons and create db entry within season table
 						})
 						console.log('imported:' + euid)
 					}

@@ -10,7 +10,7 @@ let game = async (req, res) => {
 
 async function makeGame(param, res) {
 	let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [param.euid], 'id')
-	if(!gameExists)
+	if(!gameExists) {
 		exec(`php stat-gen/index.php ${param.euid}`, async (error, raw) => {
 
 			if(error)
@@ -36,6 +36,7 @@ async function makeGame(param, res) {
 			}
 
 		})
+	}
 }
 
 async function savePlayers(raw, gameID) {

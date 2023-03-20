@@ -30,8 +30,6 @@ let init = async (req, res) => {
 			schedule: await getFixtures(filters, req.mode),
 		}
 		res.render('superleague-matches', data)
-
-
 	}
 	catch(error) {
 		res.status(404).render('404')

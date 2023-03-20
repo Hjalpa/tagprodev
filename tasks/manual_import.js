@@ -11,9 +11,9 @@ init.call = async () => {
 	if(euid) {
 		let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [euid], 'id')
 		if(!gameExists) {
-			await axios.post(`https://tagpro.dev/api/import`, {
+			await axios.post(`http://localhost/api/import`, {
 				euid: euid,
-				seasonid: 8 // adjust this for new seasons and create db entry within season table
+				seasonid: 11 // adjust this for new seasons and create db entry within season table
 			})
 			console.log('added ' + euid)
 		}
