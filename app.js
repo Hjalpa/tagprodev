@@ -7,12 +7,8 @@ const fs = require('fs')
 const compression = require('compression');
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
-
 const express = require('express')
 const https = require('https')
-
-
-
 const app = express()
 
 app.listen(80)
@@ -25,7 +21,6 @@ app.use(cookieParser())
 
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-
 
 app.use(bodyParser.raw())
 
