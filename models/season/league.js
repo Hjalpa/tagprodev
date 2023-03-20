@@ -1,5 +1,4 @@
 const db = require ('../../lib/db')
-
 const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
@@ -13,7 +12,6 @@ let init = async (req, res) => {
 				season: req.season,
 				nav: {
 					cat: req.mode,
-
 					page: 'league',
 				}
 			},
