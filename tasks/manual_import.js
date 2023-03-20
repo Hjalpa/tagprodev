@@ -1,4 +1,3 @@
-process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;
 require('dotenv').config({path:__dirname + '/../.env'})
 
 const axios = require('axios')
@@ -7,18 +6,18 @@ const util = require('../lib/util')
 
 init = (() => {})
 init.call = async () => {
-	let euid = process.argv[2]
+	let seasonid = process.argv[2]
+	let euid = process.argv[3]
 	if(euid) {
 		let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [euid], 'id')
 		if(!gameExists) {
 			await axios.post(`http://localhost/api/import`, {
 				euid: euid,
-				seasonid: 11 // adjust this for new seasons and create db entry within season table
+				seasonid: seasonid
 			})
 			console.log('added ' + euid)
 		}
 	}
-	// await axios.get(`https://tagpro.dev`)
 	process.kill(process.pid)
 }
 
