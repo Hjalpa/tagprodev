@@ -24,10 +24,10 @@ let cacheMiddleware = (duration) => {
 
 router.get('/', async (req, res) => {
 	let date = await db.select('SELECT date FROM seasonschedule WHERE seasonid = $1 AND gameid IS NOT NULL ORDER BY date ASC LIMIT 1', [req.seasonid], 'date')
-	// if(date)
+	if(date)
 		require('../models/season/overview').init(req, res)
-	// else
-		// require('../models/signup').init(req, res)
+	else
+		require('../models/signup').init(req, res)
 })
 
 router.post('/signup', (req, res) => require('../models/signup').signup(req, res))
@@ -38,7 +38,7 @@ router.get('/leaders/:id?', cacheMiddleware(3600), (req, res) => require('../mod
 router.get('/records', cacheMiddleware(3600), (req, res) => require('../models/season/records').init(req, res))
 router.get('/league', cacheMiddleware(3600), (req, res) => require('../models/season/league').init(req, res))
 router.get('/playoffs', cacheMiddleware(3600), (req, res) => require('../models/season/playoffs').init(req, res))
-// router.get('/teams', cacheMiddleware(3600), (req, res) => require('../models/season/teams').init(req, res))
+router.get('/teams', cacheMiddleware(3600), (req, res) => require('../models/season/teams').init(req, res))
 router.get('/teams', (req, res) => require('../models/season/teams').init(req, res))
 router.get('/stats/:id?', cacheMiddleware(3600), (req, res) => require('../models/season/stats').init(req, res))
 

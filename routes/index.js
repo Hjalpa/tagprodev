@@ -47,9 +47,6 @@ router.use(getSeason)
 // router.get('/', (req, res) => require('../models/home').init(req, res))
 router.get('/', (req, res) => res.redirect('../player'))
 
-// pause this
-router.get('/auction', (req, res) => res.redirect('http://165.22.127.194:3000'))
-
 router.use('/api',  require('./api'))
 
 router.get('/spy', (req, res) => require('../models/spy').list(req, res))
