@@ -1,6 +1,5 @@
 const fs = require('fs')
 const express = require('express')
-const cache = require('memory-cache')
 const router = express.Router()
 const db = require('../lib/db')
 const exec = require('child_process').exec

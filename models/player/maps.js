@@ -16,7 +16,6 @@ let init = async (req, res) => {
 			},
 			matches: await getAllies(req.player.id)
 		}
-		console.log(data)
 		res.render('player-allies', data)
 	}
 	catch(e) {
