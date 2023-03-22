@@ -8,7 +8,6 @@ module.exports.init = async (req, res) => {
 				title: 'Tagpro European Hub',
 				name:  'Tagpro European Hub',
 				path: req.baseUrl,
-
 				season: req.season,
 				nav: {
 					cat: 'home',
