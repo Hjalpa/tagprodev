@@ -40,7 +40,7 @@ async function recache(pattern) {
 init = (() => {})
 init.call = async () => {
 	try {
-		await recache('__express__/ecltp/9/*')
+		await recache('__express__/*')
 	}
 	catch(e) {
 		console.log(e)
