@@ -1,3 +1,8 @@
+v1.0.0 	22nd March 2023
+* Added page: home (seasons)
+* Implemented Redis caching
+* Refactor auto_import.js to accept params, and to clear and regen cache
+
 v0.1.4 	10th March 2023
 * Renewed expired domain
 * Added account age to spy

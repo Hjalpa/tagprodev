@@ -43,8 +43,7 @@ let getSeason = async function (req, res, next) {
 }
 router.use(getSeason)
 
-// router.get('/', (req, res) => require('../models/home').init(req, res))
-router.get('/', (req, res) => res.redirect('../player'))
+router.get('/', (req, res) => require('../models/home').init(req, res))
 
 router.use('/api',  require('./api'))
 
