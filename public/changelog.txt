@@ -1,5 +1,8 @@
+v1.0.1 	23rd March 2023
+* Added page: player search
+
 v1.0.0 	22nd March 2023
-* Added page: home (seasons)
+* Added page: homepage
 * Implemented Redis caching
 * Refactor auto_import.js to accept params, and to clear and regen cache
 

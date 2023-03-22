@@ -52,10 +52,13 @@ router.get('/spy/generate', (req, res) => require('../models/spy').generate(req,
 
 router.get('/player', (req, res) => require('../models/players').init(req, res))
 router.use('/player/:player', getSeason, require('./player'))
-router.use('/:mode/:season', getSeason, require('./season'))
+
+router.get('/search', (req, res) => require('../models/search').init(req, res))
 
 router.get('/rules', (req, res) => require('../models/markdown').init(req, res, 'rules'))
 router.get('/faq', (req, res) => require('../models/markdown').init(req, res, 'faq'))
+
+router.use('/:mode/:season', getSeason, require('./season'))
 
 router.use((req, res) => res.status(404).render('404'))
 
