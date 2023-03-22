@@ -1,0 +1,59 @@
+include template/head.pug
+
+.contain.players-list
+	.wrap
+
+		.player-stats
+			.row.head
+				each n, key in seasons
+					each v, k in n
+						if(k === 'mode')
+							- continue
+
+						else if(k === 'number')
+							.item.player
+
+						else if(k === 'playoffwinner')
+							.item.playoffwinner
+								svg
+									use(xlink:href="#trophy")
+
+						else
+							.item(
+								data-column= k
+							)= k
+
+					- break
+
+			each n, key in seasons
+				- let color = (n.playoffwinner != null) ? n.playoffwinner.color : '#ffc800'
+				- let colorGlow = (n.playoffwinner != null) ? n.playoffwinner.color + '80' : '#ffc80080'
+				- let colorBg = (n.playoffwinner != null) ? n.playoffwinner.color + '30' : '#ffc80030'
+				.row.entry(
+					style="--teamcolor: " + color + "; --teamglow: " + colorGlow + "; --teambg: " + colorBg
+				)
+
+					each v, k in n
+						if(k === 'mode')
+							- continue
+
+						else if(k === 'number')
+							.item.player(style="padding-left:1rem")
+								a(
+									href='/' + n['mode'] + '/' + v
+								)= n['mode'] + ' ' + v
+
+						else if(k === 'playoffwinner')
+							if(v != null)
+								.item.playoffwinner(
+									style="color: var(--teamcolor); text-shadow: 0 0 10px var(--teamglow);font-weight: 600"
+								)= v.acronym
+							else
+								.item.playoffwinner
+
+						else
+							.item(
+								data-column= k
+							)= v
+
+include template/foot.pug
