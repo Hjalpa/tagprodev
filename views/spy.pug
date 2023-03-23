@@ -28,6 +28,9 @@ include template/head.pug
 						else if(k === 'age')
 							.item.age(data-column="age") Account Age
 
+						else if(k === 'all.wr%')
+							.item(data-column="all.wr%") All.WR%
+
 						else
 							.item(
 								data-column= k
