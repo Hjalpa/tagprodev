@@ -330,7 +330,7 @@ async function getWinrateAll(dom) {
 		return parseFloat(0)
 	else {
 		console.log(wins, games)
-		return parseFloat((wins / games) * 100)
+		return parseFloat((wins / games) * 100).toFixed(2)
 	}
 }
 

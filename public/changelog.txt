@@ -1,10 +1,11 @@
 v1.0.1 	23rd March 2023
 * Added page: player search
+* Changed spy to use a true wr% formula
 
 v1.0.0 	22nd March 2023
 * Added page: homepage
 * Implemented Redis caching
-* Refactor auto_import.js to accept params, and to clear and regen cache
+* Refactored auto_import.js to accept params, and to clear and regen cache
 
 v0.1.4 	10th March 2023
 * Renewed expired domain
