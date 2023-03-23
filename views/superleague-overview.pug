@@ -50,20 +50,21 @@ include template/superleague-nav.pug
 									.item.test
 										.v= percent
 
-					.pane.final
-						.headline
-							.text Playoff Final
+					if leaguewinner
+						.pane.final
+							.headline
+								.text Playoff Final
 
-						.content
-							if playofffinalstream
-								iframe(
-									src= playofffinalstream
-									frameborder="0",
-									allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
-									allowfullscreen
-								)
+							.content
+								if playofffinalstream
+									iframe(
+										src= playofffinalstream
+										frameborder="0",
+										allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
+										allowfullscreen
+									)
 
-						a(href=config.path + "/stats/final").watchfinal Playoff Final Stats
+							a(href=config.path + "/stats/final").watchfinal Playoff Final Stats
 
 
 				// playoff champions
