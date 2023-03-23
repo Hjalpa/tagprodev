@@ -5,8 +5,8 @@ module.exports.init = async (req, res) => {
 	try {
 		let data = {
 			config: {
-				title: 'Tagpro European Hub',
-				name:  'Tagpro European Hub',
+				title: 'Tagpro',
+				name:  'Tagpro',
 				path: req.baseUrl,
 				season: req.season,
 				nav: {
