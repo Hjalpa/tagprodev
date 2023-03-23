@@ -96,7 +96,6 @@ async function getPlayers(term) {
 			LIMIT 1
 		) > 0
 		ORDER BY playoffwinner DESC, leaguewinner DESC, ppg DESC
-
 	`, ['%'+term+'%'], 'all')
 
 	return raw

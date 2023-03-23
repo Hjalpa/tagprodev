@@ -43,14 +43,42 @@ let getSeason = async function (req, res, next) {
 }
 router.use(getSeason)
 
+const redis = require('redis')
+const redisClient = redis.createClient({
+    url: process.env.REDIS
+})
+
+let cacheMiddleware = e => {
+	return async (req, res, next) => {
+		const key =  '__express__' + req.originalUrl || req.url
+
+		await redisClient.connect()
+		const cacheContent = await redisClient.get(key)
+		await redisClient.disconnect()
+
+		if(cacheContent)
+			return res.send(cacheContent)
+		else {
+			res.sendResponse = res.send
+			res.send = async (body) => {
+				await redisClient.connect()
+				await redisClient.set(key, body)
+				await redisClient.disconnect()
+				res.sendResponse(body)
+			}
+			next()
+		}
+	}
+}
+
 router.get('/', (req, res) => require('../models/home').init(req, res))
 
 router.use('/api',  require('./api'))
 
-router.get('/spy', (req, res) => require('../models/spy').list(req, res))
+router.get('/spy', cacheMiddleware(), (req, res) => require('../models/spy').list(req, res))
 router.get('/spy/generate', (req, res) => require('../models/spy').generate(req, res))
 
-router.get('/player', (req, res) => require('../models/players').init(req, res))
+router.get('/player', cacheMiddleware(), (req, res) => require('../models/players').init(req, res))
 router.use('/player/:player', getSeason, require('./player'))
 
 router.get('/search', (req, res) => require('../models/search').init(req, res))
