@@ -315,21 +315,21 @@ async function getWinrateMonth(dom) {
 
 async function getWinrateAll(dom) {
 	let raw = dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(1) td:nth-of-type(5)')
-
-	const saves = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(7) td:nth-of-type(5)').textContent.trim())
-	const saveAttemptPercentage = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(8) td:nth-of-type(5)').textContent.trim())
-	const hundredPercentValue = Math.round((saves / saveAttemptPercentage) * 100)
-
-	const ties = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(5) td:nth-of-type(5)').textContent.trim())
-	const disconnects = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(21) td:nth-of-type(5)').textContent.trim())
-
-	const games = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(3) td:nth-of-type(5)').textContent.trim()) - hundredPercentValue - ties - disconnects
-	const wins = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(4) td:nth-of-type(5)').textContent.trim())
-
 	if(raw.textContent.trim() === '–')
 		return parseFloat(0)
-	else
+	else {
+		const saves = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(7) td:nth-of-type(5)').textContent.trim())
+		const saveAttemptPercentage = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(8) td:nth-of-type(5)').textContent.trim())
+		const hundredPercentValue = Math.round((saves / saveAttemptPercentage) * 100)
+
+		const ties = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(5) td:nth-of-type(5)').textContent.trim())
+		const disconnects = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(21) td:nth-of-type(5)').textContent.trim())
+
+		const games = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(3) td:nth-of-type(5)').textContent.trim()) - hundredPercentValue - ties - disconnects
+		const wins = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(4) td:nth-of-type(5)').textContent.trim())
+
 		return parseFloat((wins / games) * 100).toFixed(2)
+	}
 }
 
 async function getTimeplayedAll(dom) {
