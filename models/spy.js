@@ -324,9 +324,11 @@ async function getWinrateAll(dom) {
 		let saveAttemptPercentage = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(8) td:nth-of-type(5)').textContent.trim())
 		if(isNaN(saveAttemptPercentage)) saveAttemptPercentage = 0
 
-		let hundredPercentValue = 0
-		if(!isNaN(parseFloat(saveAttemptPercentage)))
-			hundredPercentValue = Math.round((saves / saveAttemptPercentage) * 100)
+		let saveattempts = 0
+		if(saves === 0 && saveAttemptPercentage === 0)
+			saveattempts = 0
+		else if(!isNaN(parseFloat(saveAttemptPercentage)))
+			saveattempts = Math.round((saves / saveAttemptPercentage) * 100)
 
 		let ties = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(5) td:nth-of-type(5)').textContent.trim())
 		if(isNaN(ties)) ties = 0
@@ -334,7 +336,7 @@ async function getWinrateAll(dom) {
 		let disconnects = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(21) td:nth-of-type(5)').textContent.trim())
 		if(isNaN(disconnects)) disconnects = 0
 
-		let games = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(3) td:nth-of-type(5)').textContent.trim()) - hundredPercentValue - ties - disconnects
+		let games = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(3) td:nth-of-type(5)').textContent.trim()) - saveattempts - ties - disconnects
 		if(isNaN(games)) games = 0
 
 		let wins = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(4) td:nth-of-type(5)').textContent.trim())
