@@ -99,7 +99,5 @@ async function getPlayers(term) {
 
 	`, ['%'+term+'%'], 'all')
 
-	console.log(raw)
-
 	return raw
 }
