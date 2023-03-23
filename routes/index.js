@@ -75,7 +75,7 @@ router.get('/', (req, res) => require('../models/home').init(req, res))
 
 router.use('/api',  require('./api'))
 
-router.get('/spy', cacheMiddleware(), (req, res) => require('../models/spy').list(req, res))
+router.get('/spy', (req, res) => require('../models/spy').list(req, res))
 router.get('/spy/generate', (req, res) => require('../models/spy').generate(req, res))
 
 router.get('/player', cacheMiddleware(), (req, res) => require('../models/players').init(req, res))

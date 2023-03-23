@@ -315,10 +315,21 @@ async function getWinrateMonth(dom) {
 
 async function getWinrateAll(dom) {
 	let raw = dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(1) td:nth-of-type(5)')
+
+	const saves = parseInt(dom.window.querySelector('#all-stats tbody tr:nth-of-type(7) td:nth-of-type(5)').textContent.trim())
+	const saveAttemptPercentage = parseInt(dom.window.querySelector('#all-stats tbody tr:nth-of-type(8) td:nth-of-type(5)').textContent.trim())
+	const hundredPercentValue = Math.round((saves / saveAttemptPercentage) * 100)
+
+	const ties = parseInt(dom.window.querySelector('#all-stats tbody tr:nth-of-type(5) td:nth-of-type(5)').textContent.trim())
+	const disconnects = parseInt(dom.window.querySelector('#all-stats tbody tr:nth-of-type(21) td:nth-of-type(5)').textContent.trim())
+
+	const games = parseInt(dom.window.querySelector('#all-stats tbody tr:nth-of-type(3) td:nth-of-type(5)').textContent.trim()) - hundredPercentValue
+	const wins = parseInt(dom.window.querySelector('#all-stats tbody tr:nth-of-type(4) td:nth-of-type(5)').textContent.trim())
+
 	if(raw.textContent.trim() === '–')
 		return parseFloat(0)
 	else
-		return parseFloat(raw.textContent.trim())
+		return parseFloat((wins / games) * 100)
 }
 
 async function getTimeplayedAll(dom) {
