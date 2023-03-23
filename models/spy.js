@@ -328,7 +328,7 @@ async function getWinrateAll(dom) {
 		const games = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(3) td:nth-of-type(5)').textContent.trim()) - hundredPercentValue - ties - disconnects
 		const wins = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(4) td:nth-of-type(5)').textContent.trim())
 
-		return parseFloat((wins / games) * 100).toFixed(2)
+		return ((wins / games) * 100).toFixed(2)
 	}
 }
 
