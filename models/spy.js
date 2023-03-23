@@ -318,25 +318,26 @@ async function getWinrateAll(dom) {
 	if(raw.textContent.trim() === '–')
 		return parseFloat(0)
 	else {
-		const saves = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(7) td:nth-of-type(5)').textContent.trim())
+		let saves = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(7) td:nth-of-type(5)').textContent.trim())
 		if(isNaN(saves)) saves = 0
 
-		const saveAttemptPercentage = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(8) td:nth-of-type(5)').textContent.trim())
+		let saveAttemptPercentage = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(8) td:nth-of-type(5)').textContent.trim())
 		if(isNaN(saveAttemptPercentage)) saveAttemptPercentage = 0
 
-		const hundredPercentValue = Math.round((saves / saveAttemptPercentage) * 100)
-		if(isNaN(hundredPercentValue)) hundredPercentValue = 0
+		let hundredPercentValue = 0
+		if(isNaN(saveAttemptPercentage))
+			hundredPercentValue = Math.round((saves / saveAttemptPercentage) * 100)
 
-		const ties = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(5) td:nth-of-type(5)').textContent.trim())
+		let ties = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(5) td:nth-of-type(5)').textContent.trim())
 		if(isNaN(ties)) ties = 0
 
-		const disconnects = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(21) td:nth-of-type(5)').textContent.trim())
+		let disconnects = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(21) td:nth-of-type(5)').textContent.trim())
 		if(isNaN(disconnects)) disconnects = 0
 
-		const games = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(3) td:nth-of-type(5)').textContent.trim()) - hundredPercentValue - ties - disconnects
+		let games = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(3) td:nth-of-type(5)').textContent.trim()) - hundredPercentValue - ties - disconnects
 		if(isNaN(games)) games = 0
 
-		const wins = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(4) td:nth-of-type(5)').textContent.trim())
+		let wins = parseInt(dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(4) td:nth-of-type(5)').textContent.trim())
 		if(isNaN(wins)) wins = 0
 
 		return ((wins / games) * 100).toFixed(2)
