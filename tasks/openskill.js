@@ -8,6 +8,7 @@ score = (() => {})
 score.call = async () => {
 	try {
 		let games = await db.select('SELECT * FROM game ORDER BY euid ASC', [], 'all')
+
 		for await (const game of games) {
 			console.log(game.id + ' started')
 			let playerData = await db.select('SELECT * FROM playergame WHERE gameid = $1', [game.id], 'all')
@@ -24,6 +25,9 @@ score.call = async () => {
 
 				raw[win].push((playerSkill) ? {mu: playerSkill.mu, sigma: playerSkill.sigma} : rating() )
 			}
+
+			// kill script if unbalanced teams
+			if(players[0].length != players[1].length) continue
 
 			// get truescore
 			if(players[0].length === 4) {
