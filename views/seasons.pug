@@ -42,7 +42,7 @@ include template/head.pug
 							.item.player(style="padding-left:1rem")
 								a(
 									href='/' + n['mode'] + '/' + v
-								)= n['mode'] + ' ' + tier + ' ' + v
+								)= n['mode'].toUpperCase() + ' ' + tier + ' ' + v
 
 						else if(k === 'playoffwinner')
 							if(v != null)
