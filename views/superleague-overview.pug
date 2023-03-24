@@ -87,6 +87,10 @@ include template/superleague-nav.pug
 												.captain
 													svg
 														use(xlink:href="#captain")
+											else if p.manager
+												.manager
+													svg
+														use(xlink:href="#manager")
 											.name= p.name
 											.country
 												img(

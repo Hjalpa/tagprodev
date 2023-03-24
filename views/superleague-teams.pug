@@ -37,6 +37,12 @@ include template/superleague-nav.pug
 										.extra.captain
 											svg
 												use(xlink:href="#captain")
+
+									else if p.manager
+										.extra.manager
+											svg
+												use(xlink:href="#manager")
+
 									else
 										.extra.cost= p.cost
 

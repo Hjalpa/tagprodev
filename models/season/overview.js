@@ -117,7 +117,7 @@ async function getChampions(seasonid) {
 			st.winner,
 
             ARRAY(
-				select json_build_object('name', name, 'country', LOWER(country), 'captain', seasonplayer.captain)
+				select json_build_object('name', name, 'country', LOWER(country), 'captain', seasonplayer.captain, 'manager', seasonplayer.manager)
                 from player
                 left join seasonplayer on seasonplayer.playerid = player.id
                 left join seasonteam on seasonplayer.seasonteamid = seasonteam.id
