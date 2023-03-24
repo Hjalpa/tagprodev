@@ -46,7 +46,7 @@ router.get('/leaders/:id?', cacheMiddleware(), (req, res) => require('../models/
 router.get('/records', cacheMiddleware(), (req, res) => require('../models/season/records').init(req, res))
 router.get('/league', cacheMiddleware(), (req, res) => require('../models/season/league').init(req, res))
 router.get('/playoffs', cacheMiddleware(), (req, res) => require('../models/season/playoffs').init(req, res))
-router.get('/teams', cacheMiddleware(), (req, res) => require('../models/season/teams').init(req, res))
+router.get('/teams', (req, res) => require('../models/season/teams').init(req, res))
 router.get('/stats/:id?', cacheMiddleware(), (req, res) => require('../models/season/stats').init(req, res))
 
 module.exports = router

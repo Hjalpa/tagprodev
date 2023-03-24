@@ -78,7 +78,8 @@ async function getSeasons() {
 			) as CPM
 
 		FROM season
-		ORDER BY season.id DESC
+		WHERE season.id != 12
+		ORDER BY season.number DESC
 	`, [], 'all')
 
 	return raw
