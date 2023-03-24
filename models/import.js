@@ -43,7 +43,13 @@ async function savePlayers(raw, gameID) {
 	for await (const player of raw) {
 		let data = player
 
-		data.playerid = await getPlayerID(player.name.toLowerCase())
+		let realName = player.name.toLowerCase()
+		if(realName === 'paint ball') realname = 'lotus'
+		else if(realName === 'mym') realname = 'anom'
+		else if(realName === 'nom') realname = 'anom'
+		else if(realName === 'nice') realname = 'laggy blonde'
+
+		data.playerid = await getPlayerID(realName)
 		data.gameid = gameID
 
 		// clean up

@@ -27,6 +27,8 @@ async function getSeasons() {
 		select
 			season.mode, season.number,
 			(select TO_CHAR(MIN(date), 'Mon DD, YYYY') from seasonschedule where seasonid = season.id) as date,
+			(select MIN(date) from seasonschedule where seasonid = season.id) as dateorder,
+			tier,
 
 			(
 				SELECT json_build_object(
@@ -78,9 +80,9 @@ async function getSeasons() {
 			) as CPM
 
 		FROM season
-		WHERE season.id != 12
-		ORDER BY season.number DESC
+		ORDER BY dateorder DESC
 	`, [], 'all')
 
+	console.log(raw)
 	return raw
 }

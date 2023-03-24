@@ -528,7 +528,10 @@ class eu {
 	}
 
 	function fixPlayerName($player) {
-		// if($player === 'mP') $player = 'MagicPigeon';
+		if($player === 'Paint Ball') $player = 'lotus';
+		else if($player === 'mYm') $player = 'anom';
+		else if($player === 'nom') $player = 'anom';
+		else if($player === 'Nice') $player = 'laggy blonde';
 		return $player;
 	}
 

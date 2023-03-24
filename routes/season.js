@@ -41,7 +41,7 @@ router.get('/', cacheMiddleware(), async (req, res) => {
 router.post('/signup', (req, res) => require('../models/signup').signup(req, res))
 router.get('/draftpacket', (req, res) => require('../models/signup').draftpacket(req, res))
 
-router.get('/matches/:id?', (req, res) => require('../models/season/matches').init(req, res))
+router.get('/matches/:id?', cacheMiddleware(), (req, res) => require('../models/season/matches').init(req, res))
 router.get('/leaders/:id?', cacheMiddleware(), (req, res) => require('../models/season/leaders').init(req, res))
 router.get('/records', cacheMiddleware(), (req, res) => require('../models/season/records').init(req, res))
 router.get('/league', cacheMiddleware(), (req, res) => require('../models/season/league').init(req, res))
