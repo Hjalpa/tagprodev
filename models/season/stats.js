@@ -17,7 +17,7 @@ let init = async (req, res) => {
 		if(req.params.id === undefined || (r && r.league))
 			filters.league = true
 
-		let tier = req.seasonTeir ? ` ${req.seasonTier}` : ''
+		let tier = req.seasonTier ? ` ${req.seasonTier}` : ''
 		let data = {
 			config: {
 				title: req.mode.toUpperCase() + tier + ' Season ' + req.season + ' Stats' + ((req.params.id) ? ' - Round ' + req.params.id : ''),

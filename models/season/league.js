@@ -4,7 +4,7 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
-		let tier = req.seasonTeir ? ` ${req.seasonTier}` : ''
+		let tier = req.seasonTier ? ` ${req.seasonTier}` : ''
 		let data = {
 			config: {
 				title: req.mode.toUpperCase() + tier + ' Season ' + req.season + ' League Table',
