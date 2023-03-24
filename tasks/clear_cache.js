@@ -19,22 +19,22 @@ async function recache(pattern) {
 
 	await redisClient.disconnect()
 
-	await axios.get(`https://tagpro.dev/ecltp/9/matches`)
-	await axios.get(`https://tagpro.dev/ecltp/9/league`)
-	await axios.get(`https://tagpro.dev/ecltp/9/teams`)
-	await axios.get(`https://tagpro.dev/ecltp/9/records`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/matches`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/league`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/teams`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/records`)
 
-	await axios.get(`https://tagpro.dev/ecltp/9/stats`)
-	await axios.get(`https://tagpro.dev/ecltp/9/stats/1`)
-	await axios.get(`https://tagpro.dev/ecltp/9/stats/2`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/stats`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/stats/1`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/stats/2`)
 
-	await axios.get(`https://tagpro.dev/ecltp/9/leaders`)
-	await axios.get(`https://tagpro.dev/ecltp/9/leaders/averages`)
-	await axios.get(`https://tagpro.dev/ecltp/9/leaders/teampercent`)
-	await axios.get(`https://tagpro.dev/ecltp/9/leaders/gamepercent`)
-	await axios.get(`https://tagpro.dev/ecltp/9/leaders/top`)
-	await axios.get(`https://tagpro.dev/ecltp/9/leaders/versus`)
-	console.log('cache done')
+	// await axios.get(`https://tagpro.dev/ecltp/9/leaders`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/leaders/averages`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/leaders/teampercent`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/leaders/gamepercent`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/leaders/top`)
+	// await axios.get(`https://tagpro.dev/ecltp/9/leaders/versus`)
+	console.log('cache cleared')
 }
 
 init = (() => {})
