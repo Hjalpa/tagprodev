@@ -4,9 +4,10 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
+		let tier = req.seasonTeir ? ` ${req.seasonTier}` : ''
 		let data = {
 			config: {
-				title: req.mode.toUpperCase() + ' ' + req.seasonTier + ' Season ' + req.season + ' Teams',
+				title: req.mode.toUpperCase() + tier + ' Season ' + req.season + ' Teams',
 				name: req.seasonname,
 				path: req.baseUrl,
 				season: req.season,
