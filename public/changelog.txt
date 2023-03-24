@@ -1,3 +1,6 @@
+v1.0.2 	24th March 2023
+* Imported season: ecltp 6 minors
+
 v1.0.1 	23rd March 2023
 * Added page: player search
 * Changed spy to use a true wr% formula
