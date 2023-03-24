@@ -10,19 +10,20 @@ let getSeason = async function (req, res, next) {
 	try {
 		if(['ctf','nf','egg','eltp','ecltp'].includes(req.params.mode) && req.params.season) {
 			let season = await db.select(`
-				SELECT id
+				SELECT id, tier
 				FROM season
 				WHERE mode = $1 AND number = $2
 				LIMIT 1
-			`, [req.params.mode, req.params.season], 'id')
+			`, [req.params.mode, req.params.season], 'row')
 
-			if(!season)
+			if(!season.id)
 				throw 'invalid season'
 
 			req.season = req.params.season
-			req.seasonid = season
+			req.seasonid = season.id
 			req.mode = req.params.mode
-			req.seasonname = req.mode + ' Season ' + req.season
+			req.seasonTier = season.tier ? season.tier : ''
+			req.seasonname = req.mode + ' ' + req.seasontier + ' Season ' + req.season
 		}
 		if(req.params.player) {
 			req.player = {

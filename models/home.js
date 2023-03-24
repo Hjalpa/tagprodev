@@ -83,6 +83,5 @@ async function getSeasons() {
 		ORDER BY dateorder DESC
 	`, [], 'all')
 
-	console.log(raw)
 	return raw
 }

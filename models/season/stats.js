@@ -19,10 +19,11 @@ let init = async (req, res) => {
 
 		let data = {
 			config: {
-				title: req.mode.toUpperCase() + ' Season ' + req.season + ' Stats' + ((req.params.id) ? ' - Round ' + req.params.id : ''),
+				title: req.mode.toUpperCase() + ' ' + req.seasonTier + ' Season ' + req.season + ' Stats' + ((req.params.id) ? ' - Round ' + req.params.id : ''),
 				name: req.seasonname,
 				path: req.baseUrl,
 				season: req.season,
+				tier: req.seasonTier,
 				nav: {
 					cat: req.mode,
 					page: 'stats',

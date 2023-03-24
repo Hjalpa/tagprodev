@@ -14,10 +14,11 @@ let init = async (req, res) => {
 
 		let data = {
 			config: {
-				title: req.mode.toUpperCase() + ' Season ' + req.season + ' Leaders / ' + filters.mode.name,
+				title: req.mode.toUpperCase() + ' ' + req.seasonTier + ' Season ' + req.season + ' Leaders / ' + filters.mode.name,
 				name: req.seasonname,
 				path: req.baseUrl,
 				season: req.season,
+				tier: req.seasonTier,
 				nav: {
 					cat: req.mode,
 					page: 'leaders',
