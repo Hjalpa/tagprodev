@@ -16,6 +16,7 @@ let init = async (req, res) => {
 				}
 			},
 			seasons: await getSeasonCount(req.player.id),
+			games: await getGameCount(req.player.id),
 			winratio: await getWinRatio(req.player.id),
 			cost: await getAverageCost(req.player.id),
 			openskill: await getOpenSkill(req.player.id),
@@ -62,6 +63,17 @@ async function getSeasonCount(playerid) {
 		SELECT
 			count(*) as total
 		FROM seasonplayer
+		WHERE playerid = $1
+		GROUP BY playerid
+	`, [playerid], 'total')
+	return raw
+}
+
+async function getGameCount(playerid) {
+	let raw = await db.select(`
+		SELECT
+			count(*) as total
+		FROM playergame
 		WHERE playerid = $1
 		GROUP BY playerid
 	`, [playerid], 'total')
