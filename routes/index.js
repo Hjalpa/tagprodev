@@ -28,8 +28,8 @@ let getSeason = async function (req, res, next) {
 			req.season = req.params.season
 			req.seasonid = seasonid
 			req.mode = mode
-			req.seasonTier = (tier) ? tier : ''
-			req.seasonname = req.mode + ' ' + req.seasontier + ' Season ' + req.season
+			req.seasonTier = (tier) ? tier.toLowerCase().replace(/\b[a-z]/g, letter => letter.toUpperCase()) : ''
+			req.seasonname = req.mode + ' ' + req.season + (tier ? ' ' + req.seasonTier : '')
 		}
 		if(req.params.player) {
 			req.player = {

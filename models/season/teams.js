@@ -7,7 +7,7 @@ let init = async (req, res) => {
 		let tier = req.seasonTier ? ` ${req.seasonTier}` : ''
 		let data = {
 			config: {
-				title: req.mode.toUpperCase() + tier + ' Season ' + req.season + ' Teams',
+				title: req.mode.toUpperCase() + ' ' + req.season + (tier ? ' ' + tier : '') + ' Teams',
 				name: req.seasonname,
 				path: req.baseUrl,
 				season: req.season,
