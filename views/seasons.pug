@@ -38,11 +38,10 @@ include template/head.pug
 							- continue
 
 						else if(k === 'number')
-							- let tier = n['tier'] ? n['tier'] : ''
 							.item.player(style="padding-left:1rem")
 								a(
-									href='/' + n['mode'] + '/' + v
-								)= n['mode'].toUpperCase() + ' ' + tier + ' ' + v
+									href='/' + n['mode'] + (n.tier ? '-' + n.tier.toLowerCase() : '') + '/' + v
+								)= n['mode'].toUpperCase() + ' ' + v + (n.tier ? ' ' + n.tier.toLowerCase() : '')
 
 						else if(k === 'playoffwinner')
 							if(v != null)

@@ -197,6 +197,7 @@ async function getTopSeasons(player) {
 			t.color,
 			season.mode,
 			season.number,
+			season.tier,
 			ROUND(
 				(
 					count(*) filter (WHERE result_half_win = 1)
@@ -214,7 +215,7 @@ async function getTopSeasons(player) {
 		LEFT JOIN team as t on t.id = seasonteam.teamid
 
 		WHERE playergame.playerid = $1 AND mode IS NOT NULL
-		GROUP BY game.seasonid, t.acronym, t.color, season.mode, season.number
+		GROUP BY game.seasonid, t.acronym, t.color, season.mode, season.number, season.tier
 		ORDER BY rank ASC
 		LIMIT 10
 	`, [player], 'all')

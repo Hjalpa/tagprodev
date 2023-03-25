@@ -53,7 +53,7 @@ let init = async (req, res) => {
 		for await (const s of seasons) {
 			let raw = {
 				seasonid: s.seasonid,
-				seasonname: s.mode.toUpperCase() + ' Season ' + s.number,
+				seasonname: s.mode.toUpperCase() + ' ' + s.number + (s.tier ? ' ' + s.tier : ''),
 				gamemode: s.mode,
 				team: await getTeam(req.player.id, s.seasonid),
 				real: await getDataReal(req.player.id, s.seasonid, s.mode),
@@ -113,12 +113,12 @@ let init = async (req, res) => {
 async function getSeasonsPlayed(player) {
 	return await db.select(`
 		SELECT
-			seasonid, mode, number
+			seasonid, mode, number, tier
 		FROM playergame
 		LEFT JOIN game ON playergame.gameid = game.id
 		LEFT JOIN season ON game.seasonid = season.id
 		WHERE playerid = $1
-		GROUP BY seasonid, mode, number
+		GROUP BY seasonid, mode, number, tier
 		HAVING count(*) > 10
 		ORDER BY seasonid DESC
 	`, [player], 'all')

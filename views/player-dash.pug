@@ -37,8 +37,8 @@ include template/player-nav.pug
 							)= n.acronym
 							.item.player
 								a(
-									href= '/' + n.mode + '/' + n.number
-								)= n.mode + ' season ' + n.number
+									href= '/' + n.mode + (n.tier ? '-' + n.tier.toLowerCase() : '') + '/' + n.number
+								)= n.mode + ' ' + n.number + (n.tier ? ' ' + n.tier.toLowerCase() : '')
 							.item.value= n.winrate
 
 			if topmaps

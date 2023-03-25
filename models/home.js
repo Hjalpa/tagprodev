@@ -80,7 +80,6 @@ async function getSeasons() {
 			) as CPM
 
 		FROM season
-		WHERE id != 13
 		ORDER BY dateorder DESC
 	`, [], 'all')
 

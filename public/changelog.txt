@@ -1,3 +1,7 @@
+v1.0.3 	25th March 2023
+* Refactored seasons to allow majors, minors, and novice tiers
+* Imported season: ecltp 6 majors
+
 v1.0.2 	24th March 2023
 * Imported season: ecltp 6 minors
 
