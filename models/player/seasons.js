@@ -113,14 +113,14 @@ let init = async (req, res) => {
 async function getSeasonsPlayed(player) {
 	return await db.select(`
 		SELECT
-			seasonid, mode, number, tier
+			seasonid, mode, number, tier, (select MIN(date) from seasonschedule where seasonid = game.seasonid) as dateorder
 		FROM playergame
 		LEFT JOIN game ON playergame.gameid = game.id
 		LEFT JOIN season ON game.seasonid = season.id
 		WHERE playerid = $1
 		GROUP BY seasonid, mode, number, tier
 		HAVING count(*) > 10
-		ORDER BY seasonid DESC
+		ORDER BY dateorder DESC
 	`, [player], 'all')
 }
 
