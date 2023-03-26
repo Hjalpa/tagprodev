@@ -91,7 +91,7 @@ async function getPlayers() {
 			WHERE playerid = player.id
 			GROUP BY playerid
 			LIMIT 1
-		) > 0
+		) > 30
 		ORDER BY playoffwinner DESC, leaguewinner DESC, ppg DESC
 	`, [], 'all')
 	return raw
