@@ -7,7 +7,7 @@ let init = async (req, res) => {
 	try {
 		let data = {
 			config: {
-				title: req.player.name + ' profile',
+				title: req.player.name + ' TagPro Profile',
 				player: req.player.name,
 				path: req.baseUrl,
 				nav: {
@@ -142,7 +142,7 @@ async function getTopMaps(player) {
 		WHERE
 			player.id = $1
 		GROUP BY map.name, unfortunateid
-		HAVING count(*) >= 2
+		HAVING count(*) > 3
 		ORDER BY rank ASC
 		LIMIT 6
 	`, [player], 'all')
@@ -162,7 +162,7 @@ async function getTopTeammates(player) {
 			count(*) as played,
 			TO_CHAR( sum(play_time) * interval '1 sec', 'hh24:mi:ss') as time,
 			ROUND(
-				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time) / 60)
+				(sum(cap_team_for)::DECIMAL - sum(cap_team_against)::DECIMAL)::DECIMAL / (sum(play_time::DECIMAL) / 60)
 			, 3) as cap_diff_per_min,
 			count(*) filter (WHERE result_half_win = 1) as won,
 			count(*) filter (WHERE result_half_win = 0) as lost,
@@ -191,6 +191,7 @@ async function getTopTeammates(player) {
 				)
 
 		GROUP BY name
+		HAVING count(*) filter (WHERE result_half_win = 1) > 4 -- greater than 4 wins
 		ORDER BY rank ASC
 		LIMIT 6
 	`, [player, player], 'all')
