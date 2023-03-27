@@ -328,12 +328,12 @@ async function getWinrateAll(dom) {
 		if(isNaN(losses)) losses = 0
 
         const winRatio = (wins, losses) => {
-            const total = wins + losses;
+            const total = wins + losses
             if (total === 0) {
-                return 0;
+                return 0
             }
-            return ((wins / total) * 100).toFixed(2);
-        };
+            return ((wins / total) * 100).toFixed(2)
+        }
 
 		return winRatio(wins, losses)
 	}

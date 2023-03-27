@@ -1,3 +1,6 @@
+v1.0.5 	27th March 2023
+* Adjusted true wr% formula to exclude disc, saves, and ties
+
 v1.0.4 	26th March 2023
 * Imported season: ecltp 7 majors, ecltp 7 minors
 
