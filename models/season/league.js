@@ -183,5 +183,25 @@ async function getTable(seasonid) {
 		order by pts DESC, capdifference desc, name asc
 	`, [seasonid], 'all')
 
+	// overwrite for legacy leagues
+	let overwrites = await db.select(`SELECT league from season where id = $1`, [seasonid], 'league')
+	if(overwrites) {
+		for(let team in raw) {
+			for(let team_overwrites in overwrites) {
+				if(raw[team].id === overwrites[team_overwrites].id) {
+					raw[team] = {...raw[team], ...overwrites[team_overwrites]}
+				}
+			}
+		}
+
+		function compareSecondColumn(a, b) {
+			if (parseInt(a.data.points) === parseInt(b.data.points))
+				return 0
+			else
+				return (parseInt(a.data.points) > parseInt(b.data.points)) ? -1 : 1
+		}
+		raw.sort(compareSecondColumn);
+	}
+
 	return await raw
 }
