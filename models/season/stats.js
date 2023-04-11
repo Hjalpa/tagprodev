@@ -111,7 +111,7 @@ async function getRoundDate(id, seasonid) {
 
 async function getAllRounds(seasonid) {
 	let sql = `
-		select
+		SELECT
 			to_char(date, 'YYYY-MM-DD') as date,
 			league,
 			playoff,
