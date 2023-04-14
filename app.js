@@ -27,6 +27,10 @@ const redisClient = redis.createClient({
 	},
 })
 
+redisClient.on('error', async () => {
+  console.log('Redis error')
+})
+
 redisClient.on('ready', async () => {
   console.log('Redis connection ready')
 })
