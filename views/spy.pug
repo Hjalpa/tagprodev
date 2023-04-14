@@ -48,7 +48,8 @@ include template/head.pug
 
 						else if(k === 'flair')
 							.item.flair
-								span(data-flair= v)
+								- let flair = v.replace(',', '')
+								span(data-flair= flair)
 
 						else if(k === 'name')
 							.item.player
