@@ -10,6 +10,39 @@ const express = require('express')
 const https = require('https')
 const app = express()
 
+const redis = require('redis')
+const redisClient = redis.createClient({
+    url: process.env.REDIS,
+    retry_strategy: (options) => {
+		if (options.error && options.error.code === 'ECONNREFUSED')
+			return new Error('The server refused the connection')
+
+		if (options.total_retry_time > 1000 * 60 * 60)
+			return new Error('Retry time exhausted');
+
+		if (options.attempt > 10)
+			return undefined
+
+		return Math.min(options.attempt * 100, 3000);
+	},
+})
+
+redisClient.on('ready', async () => {
+  console.log('Redis connection ready')
+})
+
+redisClient.connect((err) => {
+    if (err)
+        console.log('Redis connection error:', err)
+    else
+        console.log('Redis connected')
+})
+
+app.use((req, res, next) => {
+  req.redisClient = redisClient
+  next()
+})
+
 app.listen(80)
 
 app.set('views', __dirname + '/views')

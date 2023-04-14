@@ -2,27 +2,18 @@ const express = require('express')
 const router = express.Router()
 const db = require('../lib/db')
 
-const redis = require('redis')
-const redisClient = redis.createClient({
-    url: process.env.REDIS
-})
-
 let cacheMiddleware = e => {
 	return async (req, res, next) => {
 		const key =  '__express__' + req.originalUrl || req.url
 
-		await redisClient.connect()
-		const cacheContent = await redisClient.get(key)
-		await redisClient.disconnect()
+		const cacheContent = await req.redisClient.get(key)
 
 		if(cacheContent)
 			return res.send(cacheContent)
 		else {
 			res.sendResponse = res.send
 			res.send = async (body) => {
-				await redisClient.connect()
-				await redisClient.set(key, body)
-				await redisClient.disconnect()
+				await req.redisClient.set(key, body)
 				res.sendResponse(body)
 			}
 			next()
