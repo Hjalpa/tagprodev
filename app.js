@@ -12,7 +12,6 @@ const app = express()
 
 app.listen(80)
 
-
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')
 
