@@ -1,3 +1,7 @@
+v1.1.2 	18th April 2023
+* Imported season: eltp 20 majors
+* Setup cron to automate spy updates
+
 v1.1.1 	15th April 2023
 * Upgraded DB server, and removed Redis
 
