@@ -3,11 +3,11 @@ const router = express.Router()
 const db = require('../lib/db')
 
 router.get('/', async (req, res) => {
-	let date = await db.select('SELECT date FROM seasonschedule WHERE seasonid = $1 AND gameid IS NOT NULL ORDER BY date ASC LIMIT 1', [req.seasonid], 'date')
-	if(date)
-		require('../models/season/overview').init(req, res)
-	else
-		require('../models/signup').init(req, res)
+	// let date = await db.select('SELECT date FROM seasonschedule WHERE seasonid = $1 AND gameid IS NOT NULL ORDER BY date ASC LIMIT 1', [req.seasonid], 'date')
+	// if(date)
+	require('../models/season/overview').init(req, res)
+	// else
+	// 	require('../models/signup').init(req, res)
 })
 
 router.post('/signup', (req, res) => require('../models/signup').signup(req, res))
