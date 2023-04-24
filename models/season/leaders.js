@@ -210,30 +210,30 @@ async function getLeaders(filters, mode) {
 						// top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
 					}),
 				},
-				points: {
-					title: 'Points',
-					data: await getData(filters, {
-						sum: 'sum(cap) + sum(assist)',
-						avg: 'ROUND(avg(cap + assist), 2)',
-						teampercent: `
-							ROUND(
-								(
-									sum(cap + assist)::DECIMAL
-									/
-									sum(cap_team_for + assist_team_for)::DECIMAL
-								)
-							* 100, 0)`,
-						gamepercent: `
-							ROUND(
-								(
-									sum(cap + assist)::DECIMAL
-									/
-									sum(cap_team_for + cap_team_against + assist_team_for + assist_team_against)::DECIMAL
-								)
-							* 100, 0)`,
-						top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
-					}),
-				},
+				// points: {
+				// 	title: 'Points',
+				// 	data: await getData(filters, {
+				// 		sum: 'sum(cap) + sum(assist)',
+				// 		avg: 'ROUND(avg(cap + assist), 2)',
+				// 		teampercent: `
+				// 			ROUND(
+				// 				(
+				// 					sum(cap + assist)::DECIMAL
+				// 					/
+				// 					sum(cap_team_for + assist_team_for)::DECIMAL
+				// 				)
+				// 			* 100, 0)`,
+				// 		gamepercent: `
+				// 			ROUND(
+				// 				(
+				// 					sum(cap + assist)::DECIMAL
+				// 					/
+				// 					sum(cap_team_for + cap_team_against + assist_team_for + assist_team_against)::DECIMAL
+				// 				)
+				// 			* 100, 0)`,
+				// 		top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
+				// 	}),
+				// },
 				caps: {
 					title: 'Caps',
 					data: await getData(filters, {
@@ -846,30 +846,30 @@ async function getLeaders(filters, mode) {
 						// top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
 					}),
 				},
-				points: {
-					title: 'Points',
-					data: await getData(filters, {
-						sum: 'sum(cap) + sum(assist)',
-						avg: 'ROUND(avg(cap + assist), 2)',
-						teampercent: `
-							ROUND(
-								(
-									sum(cap + assist)::DECIMAL
-									/
-									sum(cap_team_for + assist_team_for)::DECIMAL
-								)
-							* 100, 0)`,
-						gamepercent: `
-							ROUND(
-								(
-									sum(cap + assist)::DECIMAL
-									/
-									sum(cap_team_for + cap_team_against + assist_team_for + assist_team_against)::DECIMAL
-								)
-							* 100, 0)`,
-						top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
-					}),
-				},
+				// points: {
+				// 	title: 'Points',
+				// 	data: await getData(filters, {
+				// 		sum: 'sum(cap) + sum(assist)',
+				// 		avg: 'ROUND(avg(cap + assist), 2)',
+				// 		teampercent: `
+				// 			ROUND(
+				// 				(
+				// 					sum(cap + assist)::DECIMAL
+				// 					/
+				// 					sum(cap_team_for + assist_team_for)::DECIMAL
+				// 				)
+				// 			* 100, 0)`,
+				// 		gamepercent: `
+				// 			ROUND(
+				// 				(
+				// 					sum(cap + assist)::DECIMAL
+				// 					/
+				// 					sum(cap_team_for + cap_team_against + assist_team_for + assist_team_against)::DECIMAL
+				// 				)
+				// 			* 100, 0)`,
+				// 		top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
+				// 	}),
+				// },
 				caps: {
 					title: 'Caps',
 					data: await getData(filters, {
