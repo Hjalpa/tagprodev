@@ -230,7 +230,7 @@ async function getTopSeasons(player) {
 		WHERE playergame.playerid = $1 AND mode IS NOT NULL
 		GROUP BY game.seasonid, t.acronym, t.color, season.mode, season.number, season.tier
 		ORDER BY rank ASC
-		LIMIT 10
+		LIMIT 6
 	`, [player], 'all')
 
 	return raw
