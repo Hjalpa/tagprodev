@@ -17,6 +17,7 @@ html
 
 	body(
 		class= config.nav.cat
+		class= config.tier
 	)
 		.background
 
@@ -28,8 +29,11 @@ html
 			a(href="/player" class=(config.nav.cat === 'players' ? 'active' : ''))
 				span Players
 
-			a(href="/eltp/21" class=(config.nav.cat === 'eltp' ? 'active' : ''))
-				span ELTP 21 Signups Open
+			a(href="/eltp-majors/21" class=(config.tier === 'Majors' ? 'active' : ''))
+				span ELTP 21 Majors
+
+			a(href="/eltp-minors/21" class=(config.tier === 'Minors' ? 'active' : ''))
+				span ELTP 21 Minors
 
 			// a(href="/leaderboards" class=(config.nav.cat === 'leaderboards' ? 'active' : ''))
 			// 	span Leaders
