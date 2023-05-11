@@ -1,6 +1,6 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
-const mvb = require ('../../lib/mvb')
+const gasp = require ('../../lib/gasp')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -40,7 +40,7 @@ let init = async (req, res) => {
 
 async function getFixtures(filters, gamemode) {
 	let orderby =  (filters.league) ? 'seasonschedule.date ASC, seasonschedule.order ASC' : 'seasonschedule.round ASC, seasonschedule.match ASC, seasonschedule.order ASC'
-	let mvb_select = mvb.getSelectSingle(gamemode)
+	let gasp_select = gasp.getSelectSingle(gamemode)
 
 	let raw = await db.select(`
 		SELECT
@@ -183,14 +183,14 @@ async function getFixtures(filters, gamemode) {
 				LIMIT 1
 			) as timelosing,
 
-			-- mvb
+			-- gasp
 			(
 				SELECT
 					player.name
 				FROM playergame
 				LEFT JOIN player ON player.id = playergame.playerid
 				WHERE playergame.gameid = game.id
-				ORDER BY ${mvb_select} DESC
+				ORDER BY ${gasp_select} DESC
 				LIMIT 1
 			) as mvb
 

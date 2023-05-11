@@ -220,18 +220,13 @@ async function getSelects(gamemode) {
 					${gasp_select} as gasp,
 					SUM(cap) as caps,
 					SUM(assist) as assists,
-					ROUND((
-							sum(hold)::DECIMAL / (
-								sum(hold_team_for)::DECIMAL + sum(hold_team_against)::DECIMAL
-							)
-					) * 100, 0) || '%' as poss,
-					SUM(tag) as tags,
 					SUM(takeover) as takeovers,
-					SUM(grab) as grabs,
 					TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss') as hold,
+					SUM(grab) as grabs,
+					SUM(takeover - dispossessed) as controls,
+					SUM(tag) as tags,
 					SUM(chain) as chains,
 					TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss') as prevent,
-					TO_CHAR( sum(block) * interval '1 sec', 'hh24:mi:ss') as block,
 					SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups
 			`
 			break;
