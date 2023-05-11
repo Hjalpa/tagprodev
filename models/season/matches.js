@@ -1,6 +1,7 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
 const gasp = require ('../../lib/gasp')
+const mvb = require ('../../lib/mvb')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -40,7 +41,8 @@ let init = async (req, res) => {
 
 async function getFixtures(filters, gamemode) {
 	let orderby =  (filters.league) ? 'seasonschedule.date ASC, seasonschedule.order ASC' : 'seasonschedule.round ASC, seasonschedule.match ASC, seasonschedule.order ASC'
-	let gasp_select = gasp.getSelectSingle(gamemode)
+	// gasp works for ECLTP. The GASP doesnt work for ELTP/CTF cuz there is no "total" gasp formula, so it currently uses the old MVB formula
+	let gasp_select = (gamemode === 'ecltp' || gamemode === 'nf') ? gasp.getSelectSingle(gamemode) : mvb.getSelectSingle(gamemode)
 
 	let raw = await db.select(`
 		SELECT
