@@ -1,9 +1,8 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
-const mvb = require ('../../lib/mvb')
+const gasp = require ('../../lib/gasp')
 
-module.exports.init = async (req, res) => await init(req, res)
-let init = async (req, res) => {
+module.exports.init = async (req, res) => {
 	try {
 		let rounds = await getAllRounds(req.seasonid)
 		let r = rounds[req.params.id]
@@ -67,7 +66,66 @@ async function getData(filters, gamemode) {
 	}
 
 	let selects = await getSelects(gamemode)
-	let sql = `
+
+	let sql = ''
+	if(gamemode === 'eltp' || gamemode === 'ctf')
+		sql = `
+			SELECT
+				d.*,
+				Round(
+					((raw_gasp - min(raw_gasp) over()) / (max(raw_gasp) over() - min(raw_gasp) over ())) * 10
+				* 1, 2) as gasp
+
+			FROM (
+				SELECT
+					_data.*,
+					Round(
+							(real_dgasp * (avg(real_dgasp) over() / 10))::DECIMAL
+							+
+							(real_ogasp * (avg(real_ogasp) over() / 10))::DECIMAL
+					, 2) as raw_gasp
+
+				FROM (
+
+					SELECT
+						data.*,
+						Round(
+							((dgasp - min(dgasp) over()) / (max(dgasp) over() - min(dgasp) over ())) * 10
+						, 2) as real_dgasp,
+						Round(
+							((ogasp - min(ogasp) over()) / (max(ogasp) over() - min(ogasp) over ())) * 10
+						, 2) as real_ogasp
+
+					FROM (
+						SELECT
+							COALESCE(team.acronym, 'SUB') as acronym,
+							COALESCE(team.color, '#404040') as color,
+							player.name as player,
+							ROUND( sum(play_time) / 60, 0) as mins,
+							${selects}
+						FROM playergame
+						LEFT JOIN game ON game.id = playergame.gameid
+						LEFT JOIN seasonschedule ON playergame.gameid = seasonschedule.gameid
+						LEFT JOIN player ON player.id = playergame.playerid
+						LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid AND seasonplayer.seasonteamid IN (SELECT id FROM seasonteam WHERE seasonid = $1)
+						LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+						LEFT JOIN team ON seasonteam.teamid = team.id
+						WHERE seasonschedule.date <= now() AND ${query.where.join(' AND ')}
+						GROUP BY player.name, team.color, team.acronym
+					) as data
+				) as _data
+				ORDER BY raw_gasp desc
+			) as d
+		`
+	else if(gamemode === 'ecltp' || gamemode === 'nf')
+		sql = `
+			SELECT
+				_data.*,
+				Round(
+					((gasp - min(gasp) over()) / (max(gasp) over() - min(gasp) over ())) * 10
+				* 1, 2) as true_gasp
+
+			FROM (
 				SELECT
 					COALESCE(team.acronym, 'SUB') as acronym,
 					COALESCE(team.color, '#404040') as color,
@@ -83,10 +141,17 @@ async function getData(filters, gamemode) {
 				LEFT JOIN team ON seasonteam.teamid = team.id
 				WHERE seasonschedule.date <= now() AND ${query.where.join(' AND ')}
 				GROUP BY player.name, team.color, team.acronym
-				ORDER BY mvb DESC
-			`
+			) as _data
+			ORDER BY true_gasp desc
+		`
+	let raw = await db.select(sql, query.data, 'all')
 
-	return await db.select(sql, query.data, 'all')
+	if(gamemode === 'eltp' || gamemode === 'ctf')
+		raw = gasp.fixGASP(raw)
+	else if(gamemode === 'ecltp' || gamemode === 'nf')
+		raw = gasp.fixNFGASP(raw)
+
+	return raw
 }
 
 async function getRoundDate(id, seasonid) {
@@ -126,12 +191,15 @@ async function getAllRounds(seasonid) {
 }
 
 async function getSelects(gamemode) {
-	let mvb_select = mvb.getSelect(gamemode)
 	switch(gamemode) {
 		case 'ctf':
 		case 'eltp':
+			let gasp_select_o = gasp.getSelect(gamemode, 'o')
+			let gasp_select_d = gasp.getSelect(gamemode, 'd')
 			return `
-					${mvb_select} as mvb,
+					'' as gasp,
+					${gasp_select_o} as ogasp,
+					${gasp_select_d} as dgasp,
 					SUM(cap) as caps,
 					TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss') as hold,
 					SUM(grab) as grabs,
@@ -139,18 +207,17 @@ async function getSelects(gamemode) {
 					SUM(assist) as assists,
 					TO_CHAR( sum(prevent) * interval '1 sec', 'hh24:mi:ss') as prevent,
 					SUM(return) as returns,
-					SUM(return_within_2_tiles_from_opponents_base) as saves,
 					SUM(tag) as tags,
 					SUM(reset_from_my_prevent) + SUM(reset_from_my_return) as resets,
-					SUM(kiss) as kisses,
-					SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups,
-					SUM(pup_tp) as tps
+					SUM(return_within_2_tiles_from_opponents_base) as saves,
+					SUM(pup_jj)+SUM(pup_rb)+SUM(pup_tp) as pups
 			`
 			break;
 		case 'nf':
 		case 'ecltp':
+			let gasp_select = gasp.getSelect(gamemode)
 			return `
-					${mvb_select} as mvb,
+					${gasp_select} as gasp,
 					SUM(cap) as caps,
 					SUM(assist) as assists,
 					ROUND((

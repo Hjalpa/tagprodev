@@ -1,6 +1,7 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
 const mvb = require ('../../lib/mvb')
+const gasp = require ('../../lib/gasp')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -36,7 +37,7 @@ let init = async (req, res) => {
 	}
 }
 
-async function getData(filters, sql) {
+async function getData(filters, sql, gasp = false) {
 	let where = 'playergame.gameid in (SELECT id FROM game WHERE playergame.gameid = game.id AND seasonid = $1)'
 	let select = sql[filters.mode.get] || sql['sum']
 	let ascending = (filters.ascending === true) ? 'ASC' : 'DESC'
@@ -181,59 +182,10 @@ function getMode(id) {
 }
 
 async function getLeaders(filters, mode) {
-	let mvb_select = mvb.getSelect(mode)
 	switch(mode) {
 		case 'ctf':
 		case 'eltp':
 			return {
-				mvb: {
-					title: 'MVB',
-					data: await getData(filters, {
-						sum: mvb_select,
-						avg: 'ROUND('+ mvb_select + ' / count(*), 0)',
-						// teampercent: `
-						// 	ROUND(
-						// 		(
-						// 			sum(cap + assist)::DECIMAL
-						// 			/
-						// 			sum(cap_team_for + assist_team_for)::DECIMAL
-						// 		)
-						// 	* 100, 0)`,
-						// gamepercent: `
-						// 	ROUND(
-						// 		(
-						// 			sum(cap + assist)::DECIMAL
-						// 			/
-						// 			sum(cap_team_for + cap_team_against + assist_team_for + assist_team_against)::DECIMAL
-						// 		)
-						// 	* 100, 0)`,
-						// top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
-					}),
-				},
-				// points: {
-				// 	title: 'Points',
-				// 	data: await getData(filters, {
-				// 		sum: 'sum(cap) + sum(assist)',
-				// 		avg: 'ROUND(avg(cap + assist), 2)',
-				// 		teampercent: `
-				// 			ROUND(
-				// 				(
-				// 					sum(cap + assist)::DECIMAL
-				// 					/
-				// 					sum(cap_team_for + assist_team_for)::DECIMAL
-				// 				)
-				// 			* 100, 0)`,
-				// 		gamepercent: `
-				// 			ROUND(
-				// 				(
-				// 					sum(cap + assist)::DECIMAL
-				// 					/
-				// 					sum(cap_team_for + cap_team_against + assist_team_for + assist_team_against)::DECIMAL
-				// 				)
-				// 			* 100, 0)`,
-				// 		top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
-				// 	}),
-				// },
 				caps: {
 					title: 'Caps',
 					data: await getData(filters, {
@@ -243,6 +195,36 @@ async function getLeaders(filters, mode) {
 						gamepercent: 'ROUND((sum(cap)::DECIMAL / sum(cap_team_for + cap_team_against)::DECIMAL) * 100, 0)',
 						top: 'playergame.hold = (SELECT hold',
 					})
+				},
+				hold: {
+					title: 'Hold',
+					data: await getData(filters, {
+						sum: `TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss')`,
+						avg: `TO_CHAR( avg(hold) * interval '1 sec', 'mi:ss')`,
+						teampercent: 'ROUND((sum(hold)::DECIMAL / sum(hold_team_for)::DECIMAL) * 100, 0)',
+						gamepercent: 'ROUND((sum(hold)::DECIMAL / sum(hold_team_for + hold_team_against)::DECIMAL) * 100, 0)',
+						top: 'playergame.hold = (SELECT hold',
+					}),
+				},
+				prevent: {
+					title: 'Prevent',
+					data: await getData(filters, {
+						sum: `TO_CHAR(sum(prevent) * interval '1 sec', 'hh24:mi:ss')`,
+						avg: `TO_CHAR(avg(prevent) * interval '1 sec', 'mi:ss')`,
+						teampercent: 'ROUND((sum(prevent)::DECIMAL / sum(prevent_team_for)::DECIMAL) * 100, 0)',
+						gamepercent: 'ROUND((sum(prevent)::DECIMAL / sum(prevent_team_for + prevent_team_against)::DECIMAL) * 100, 0)',
+						top: 'playergame.prevent = (SELECT prevent',
+					}),
+				},
+				returns: {
+					title: 'Returns',
+					data: await getData(filters, {
+						sum: 'sum(return)',
+						avg: 'ROUND(avg(return), 2)',
+						teampercent: 'ROUND((sum(return)::DECIMAL / sum(return_team_for)::DECIMAL) * 100, 0)',
+						gamepercent: 'ROUND((sum(return)::DECIMAL / sum(return_team_for + return_team_against)::DECIMAL) * 100, 0)',
+						top: 'playergame.return = (SELECT return',
+					}),
 				},
 				assists: {
 					title: 'Assists',
@@ -254,6 +236,15 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.assist = (SELECT assist',
 					})
 				},
+				capdifference: {
+					title: 'Cap Difference',
+					data: await getData(filters, {
+						sum: 'sum(cap_team_for) - sum(cap_team_against)',
+						avg: 'ROUND(avg(cap_team_for - cap_team_against), 2)',
+						teampercent: false,
+						top: false,
+					})
+				},
 				timeleading: {
 					title: 'Time Leading',
 					data: await getData(filters, {
@@ -262,15 +253,6 @@ async function getLeaders(filters, mode) {
 						teampercent: 'ROUND((sum(position_win_time)::DECIMAL / sum(play_time)::DECIMAL) * 100, 0)',
 						gamepercent: 'ROUND((sum(position_win_time)::DECIMAL / sum(play_time)::DECIMAL) * 100, 0)',
 						top: 'playergame.position_win_time = (SELECT MAX(position_win_time)',
-					})
-				},
-				capdifference: {
-					title: 'Cap Difference',
-					data: await getData(filters, {
-						sum: 'sum(cap_team_for) - sum(cap_team_against)',
-						avg: 'ROUND(avg(cap_team_for - cap_team_against), 2)',
-						teampercent: false,
-						top: false,
 					})
 				},
 				pups: {
@@ -355,16 +337,7 @@ async function getLeaders(filters, mode) {
 						top: '(playergame.tag - playergame.return) = (SELECT (tag - return)',
 					}),
 				},
-				returns: {
-					title: 'Returns',
-					data: await getData(filters, {
-						sum: 'sum(return)',
-						avg: 'ROUND(avg(return), 2)',
-						teampercent: 'ROUND((sum(return)::DECIMAL / sum(return_team_for)::DECIMAL) * 100, 0)',
-						gamepercent: 'ROUND((sum(return)::DECIMAL / sum(return_team_for + return_team_against)::DECIMAL) * 100, 0)',
-						top: 'playergame.return = (SELECT return',
-					}),
-				},
+
 				returnswithinownhalf: {
 					title: 'Returns Within Own Half',
 					data: await getData(filters, {
@@ -385,16 +358,6 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.return - playergame.return_within_my_half = (SELECT return - return_within_my_half',
 					}),
 				},
-				prevent: {
-					title: 'Prevent',
-					data: await getData(filters, {
-						sum: `TO_CHAR(sum(prevent) * interval '1 sec', 'hh24:mi:ss')`,
-						avg: `TO_CHAR(avg(prevent) * interval '1 sec', 'mi:ss')`,
-						teampercent: 'ROUND((sum(prevent)::DECIMAL / sum(prevent_team_for)::DECIMAL) * 100, 0)',
-						gamepercent: 'ROUND((sum(prevent)::DECIMAL / sum(prevent_team_for + prevent_team_against)::DECIMAL) * 100, 0)',
-						top: 'playergame.prevent = (SELECT prevent',
-					}),
-				},
 				teamholdwilstprevent: {
 					title: 'Team Hold Whislt Prevent',
 					data: await getData(filters, {
@@ -405,16 +368,7 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.prevent_whilst_team_hold_time = (SELECT prevent_whilst_team_hold_time',
 					}),
 				},
-				hold: {
-					title: 'Hold',
-					data: await getData(filters, {
-						sum: `TO_CHAR( sum(hold) * interval '1 sec', 'hh24:mi:ss')`,
-						avg: `TO_CHAR( avg(hold) * interval '1 sec', 'mi:ss')`,
-						teampercent: 'ROUND((sum(hold)::DECIMAL / sum(hold_team_for)::DECIMAL) * 100, 0)',
-						gamepercent: 'ROUND((sum(hold)::DECIMAL / sum(hold_team_for + hold_team_against)::DECIMAL) * 100, 0)',
-						top: 'playergame.hold = (SELECT hold',
-					}),
-				},
+
 				holdwhilstteamprevent: {
 					title: 'Hold Whilst Team Prevent',
 					data: await getData(filters, {
@@ -445,6 +399,39 @@ async function getLeaders(filters, mode) {
 						top: 'playergame.grab = (SELECT grab',
 					}),
 				},
+				grabflaccid: {
+					title: 'Grabs / Flaccid',
+					data: await getData(filters, {
+						sum: 'ROUND(CASE WHEN sum(flaccid) = 0 THEN 0 ELSE sum(grab)::decimal / nullif(sum(flaccid),0) END, 2)',
+						avg: 'ROUND(CASE WHEN avg(flaccid) = 0 THEN 0 ELSE avg(grab)::decimal / nullif(avg(flaccid),0) END, 2)',
+						teampercent: `ROUND(
+							(
+								CASE
+									WHEN sum(flaccid) = 0
+									THEN sum(grab)
+									ELSE (
+										sum(grab / nullif(flaccid, 0))::DECIMAL / nullif(sum(flaccid_team_for), 0)
+									)
+								END
+							) * 100,
+							0
+						)`,
+						gamepercent: `ROUND(
+							(
+								CASE
+									WHEN sum(flaccid) = 0
+									THEN sum(grab)
+									ELSE (
+										sum(grab / nullif(flaccid, 0))::DECIMAL / nullif(sum(flaccid_team_for + flaccid_team_against), 0)
+									)
+								END
+							) * 100,
+							0
+						)`,
+						// top: 'playergame.flaccid = (SELECT flaccid',
+					})
+				},
+
 				grabwhilstopponentsprevent: {
 					title: 'Grabs Whilst Opp Prevent',
 					data: await getData(filters, {
@@ -805,71 +792,13 @@ async function getLeaders(filters, mode) {
 						gamepercent: 'ROUND((sum(pop)::DECIMAL / sum(pop_team_for + pop_team_against)::DECIMAL) * 100, 0)',
 						top: 'playergame.pop = (SELECT MAX(pop)',
 					})
-				},
-				flaccid: {
-					title: 'Flaccids',
-					data: await getData(filters, {
-						sum: 'sum(flaccid)',
-						avg: 'ROUND(avg(flaccid), 2)',
-						teampercent: 'ROUND((sum(flaccid)::DECIMAL / sum(flaccid_team_for)::DECIMAL) * 100, 0)',
-						gamepercent: 'ROUND((sum(flaccid)::DECIMAL / sum(flaccid_team_for + flaccid_team_against)::DECIMAL) * 100, 0)',
-						top: 'playergame.flaccid = (SELECT flaccid',
-					})
-				},
+				}
 			}
 			break;
 
 		case 'nf':
 		case 'ecltp':
 			return {
-				mvb: {
-					title: 'MVB',
-					data: await getData(filters, {
-						sum: mvb_select,
-						avg: 'ROUND('+ mvb_select + ' / count(*), 0)',
-						// teampercent: `
-						// 	ROUND(
-						// 		(
-						// 			sum(cap + assist)::DECIMAL
-						// 			/
-						// 			sum(cap_team_for + assist_team_for)::DECIMAL
-						// 		)
-						// 	* 100, 0)`,
-						// gamepercent: `
-						// 	ROUND(
-						// 		(
-						// 			sum(cap + assist)::DECIMAL
-						// 			/
-						// 			sum(cap_team_for + cap_team_against + assist_team_for + assist_team_against)::DECIMAL
-						// 		)
-						// 	* 100, 0)`,
-						// top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
-					}),
-				},
-				// points: {
-				// 	title: 'Points',
-				// 	data: await getData(filters, {
-				// 		sum: 'sum(cap) + sum(assist)',
-				// 		avg: 'ROUND(avg(cap + assist), 2)',
-				// 		teampercent: `
-				// 			ROUND(
-				// 				(
-				// 					sum(cap + assist)::DECIMAL
-				// 					/
-				// 					sum(cap_team_for + assist_team_for)::DECIMAL
-				// 				)
-				// 			* 100, 0)`,
-				// 		gamepercent: `
-				// 			ROUND(
-				// 				(
-				// 					sum(cap + assist)::DECIMAL
-				// 					/
-				// 					sum(cap_team_for + cap_team_against + assist_team_for + assist_team_against)::DECIMAL
-				// 				)
-				// 			* 100, 0)`,
-				// 		top: 'playergame.cap + playergame.assist = (SELECT cap+assist'
-				// 	}),
-				// },
 				caps: {
 					title: 'Caps',
 					data: await getData(filters, {

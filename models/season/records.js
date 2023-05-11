@@ -1,6 +1,7 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
 const mvb = require ('../../lib/mvb')
+const gasp = require ('../../lib/gasp')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -72,20 +73,10 @@ async function getData(filters, select) {
 }
 
 async function getRecords(filters, gamemode) {
-	let mvb_select = mvb.getSelectSingle(gamemode)
-
 	switch(gamemode) {
 		case 'ctf':
 		case 'eltp':
 			return {
-				mvb: {
-					title: 'MVB',
-					data: await getData(filters, mvb_select),
-				},
-				// points: {
-				// 	title: 'Points',
-				// 	data: await getData(filters, 'cap + assist'),
-				// },
 				caps: {
 					title: 'Caps',
 					data: await getData(filters, 'cap'),
@@ -203,14 +194,6 @@ async function getRecords(filters, gamemode) {
 		case 'nf':
 		case 'ecltp':
 			return {
-				mvb: {
-					title: 'MVB',
-					data: await getData(filters, mvb_select),
-				},
-				// points: {
-				// 	title: 'Points',
-				// 	data: await getData(filters, 'cap + assist'),
-				// },
 				caps: {
 					title: 'Caps',
 					data: await getData(filters, 'cap'),

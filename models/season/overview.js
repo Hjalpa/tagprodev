@@ -1,6 +1,6 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
-const mvb = require ('../../lib/mvb')
+const gasp = require ('../../lib/gasp')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -21,7 +21,7 @@ let init = async (req, res) => {
 			date: await getSeasonDate(req.seasonid),
 			teams: await getTeamCount(req.seasonid),
 			players: await getPlayerCount(req.seasonid),
-			mvb: await getMVB(req.mode, req.seasonid),
+			mvb: await getGASP(req.mode, req.seasonid),
 			champions: await getChampions(req.seasonid),
 			leaguewinner: await getLeagueWinner(req.seasonid),
 			playofffinalstream: await getPlayoffFinalStream(req.seasonid),
@@ -76,34 +76,68 @@ async function getPlayoffFinalStream(seasonid) {
 	return raw
 }
 
-async function getMVB(gamemode, seasonid) {
-	let select = mvb.getSelect(gamemode)
+async function getGASP(gamemode, seasonid) {
+	let gasp_select_o = gasp.getSelect(gamemode, 'o')
+	let gasp_select_d = gasp.getSelect(gamemode, 'd')
 	let raw = await db.select(`
 		SELECT
+			d.acronym,
+			d.color,
+			d.player,
+			d.mins,
+			Round(
+				((raw_gasp - min(raw_gasp) over()) / (max(raw_gasp) over() - min(raw_gasp) over ())) * 10
+			* 1, 2) as value,
 			RANK() OVER (
-				ORDER BY ${select} DESC
-			) rank,
-			player.name as player,
-			COALESCE(team.acronym, 'SUB') as acronym,
-			COALESCE(team.color, '#404040') as color,
-			${select} as value
+				ORDER BY raw_gasp DESC
+			) rank
 
-		FROM playergame
-		LEFT JOIN game ON game.id = playergame.gameid AND game.seasonid = $1
-		LEFT JOIN seasonschedule ON game.id = seasonschedule.gameid
-		LEFT JOIN player ON player.id = playergame.playerid
+		FROM (
+			SELECT
+				_data.*,
+				Round(
+						(real_dgasp * (avg(real_dgasp) over() / 10))::DECIMAL
+						+
+						(real_ogasp * (avg(real_ogasp) over() / 10))::DECIMAL
+				, 2) as raw_gasp
 
-		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid AND seasonplayer.seasonteamid IN (SELECT id FROM seasonteam WHERE seasonid = $1)
-		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
-		LEFT JOIN team ON seasonteam.teamid = team.id
+			FROM (
 
-		WHERE seasonteam.seasonid = $1 AND league = true AND game.seasonid = $1
-		GROUP BY player.name, team.acronym, team.color
+				SELECT
+					data.*,
+					Round(
+						((dgasp - min(dgasp) over()) / (max(dgasp) over() - min(dgasp) over ())) * 10
+					, 2) as real_dgasp,
+					Round(
+						((ogasp - min(ogasp) over()) / (max(ogasp) over() - min(ogasp) over ())) * 10
+					, 2) as real_ogasp
 
-		HAVING sum(play_time) > 10
-		ORDER BY value DESC
-		LIMIT 6
+				FROM (
+					SELECT
+						COALESCE(team.acronym, 'SUB') as acronym,
+						COALESCE(team.color, '#404040') as color,
+						player.name as player,
+						ROUND( sum(play_time) / 60, 0) as mins,
+						${gasp_select_o} as ogasp,
+						${gasp_select_d} as dgasp
+					FROM playergame
+					LEFT JOIN game ON game.id = playergame.gameid
+					LEFT JOIN seasonschedule ON playergame.gameid = seasonschedule.gameid
+					LEFT JOIN player ON player.id = playergame.playerid
+					LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid AND seasonplayer.seasonteamid IN (SELECT id FROM seasonteam WHERE seasonid = $1)
+					LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
+					LEFT JOIN team ON seasonteam.teamid = team.id
+					WHERE seasonschedule.date <= now() AND game.seasonid = $1 AND seasonschedule.league = true
+					GROUP BY player.name, team.color, team.acronym
+				) as data
+			) as _data
+			ORDER BY raw_gasp desc
+		) as d
+		LIMIT 10
 	`, [seasonid], 'all')
+
+	raw = gasp.fixGASP(raw)
+
 	return raw
 }
 

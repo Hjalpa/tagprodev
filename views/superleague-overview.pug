@@ -31,7 +31,7 @@ include template/superleague-nav.pug
 							.headline
 								svg
 									use(xlink:href="#mvb")
-								.text MVB
+								.text GASP
 
 							- let max = parseInt(mvb[0].value)
 							each n, key in mvb
@@ -46,9 +46,8 @@ include template/superleague-nav.pug
 											href='/player/' + n.player
 										)= n.player
 
-									- let percent = ((n.value / max) * 100).toFixed(2)
 									.item.test
-										.v= percent
+										.v= n.value
 
 					if leaguewinner
 						.pane.final
