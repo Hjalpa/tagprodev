@@ -239,33 +239,31 @@ async function getTopSeasons(player) {
 
 async function getTopTrophies(player) {
 	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY raw.datec DESC
-			) rank,
-			raw.*
-		FROM (
-			SELECT
-				t.acronym,
-				t.color,
-				season.mode,
-				season.number,
-				season.tier,
-				(select MIN(date) from seasonschedule where seasonid = season.id) as datec
+        SELECT
+            RANK() OVER (
+                ORDER BY raw.datec DESC
+            ) rank,
+            raw.*
+        FROM (
+            SELECT
+                t.acronym,
+                t.color,
+                season.mode,
+                season.number,
+                season.tier,
+                (select MIN(date) from seasonschedule where seasonid = season.id) as datec
 
-			FROM playergame
-			LEFT JOIN game on game.id = playergame.gameid
-			LEFT JOIN player on player.id = playergame.playerid
-			LEFT JOIN seasonplayer on seasonplayer.playerid = player.id
-			LEFT JOIN seasonteam on seasonteam.id = seasonplayer.seasonteamid
-			LEFT JOIN season on season.id = game.seasonid AND seasonteam.seasonid = season.id
-			LEFT JOIN team as t on t.id = seasonteam.teamid
+            FROM seasonplayer
+            LEFT JOIN player on player.id = seasonplayer.playerid
+            LEFT JOIN seasonteam on seasonteam.id = seasonplayer.seasonteamid
+            LEFT JOIN season on season.id = seasonteam.seasonid AND seasonteam.seasonid = season.id
+            LEFT JOIN team as t on t.id = seasonteam.teamid
 
-			WHERE playergame.playerid = $1 AND mode IS NOT NULL AND seasonteam.winner = TRUE
-			GROUP BY game.seasonid, t.acronym, t.color, season.mode, season.number, season.tier, datec
-		) as raw
-		ORDER BY rank ASC
-		LIMIT 15
+            WHERE seasonplayer.playerid = $1 AND mode IS NOT NULL AND seasonteam.winner = TRUE
+            GROUP BY season.id, t.acronym, t.color, season.mode, season.number, season.tier, datec
+        ) as raw
+        ORDER BY rank ASC
+        LIMIT 15
 	`, [player], 'all')
 
 	return raw
