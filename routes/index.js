@@ -50,11 +50,6 @@ router.use(getSeason)
 
 router.get('/', (req, res) => require('../models/home').init(req, res))
 
-
-router.get('/eltp/21', (req, res) => {
-	res.redirect('https://www.reddit.com/r/ELTP/comments/12hi2er/eltp_21_signup/')
-})
-
 router.use('/api',  require('./api'))
 
 router.get('/spy', (req, res) => require('../models/spy').list(req, res))

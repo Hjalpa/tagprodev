@@ -133,7 +133,7 @@ async function getGASP(gamemode, seasonid) {
 			) as _data
 			ORDER BY raw_gasp desc
 		) as d
-		LIMIT 10
+		LIMIT 15
 	`, [seasonid], 'all')
 
 	raw = gasp.fixGASP(raw)
