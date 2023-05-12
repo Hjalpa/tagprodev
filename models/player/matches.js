@@ -1,6 +1,5 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
-const mvb = require ('../../lib/mvb')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -53,8 +52,10 @@ async function getMatches(playerid, gamemode) {
 			COALESCE(team.color, '#404040') as color,
 			euid,
 			CASE
-				WHEN result_half_win = 1 THEN 'w'
-				WHEN result_half_lose = 1 THEN 'l'
+				WHEN game.winner = 'r' AND playergame.team = 1 THEN 'w'
+				WHEN game.winner = 'r' AND playergame.team = 2 THEN 'l'
+				WHEN game.winner = 'b' AND playergame.team = 1 THEN 'l'
+				WHEN game.winner = 'b' AND playergame.team = 2 THEN 'w'
 				ELSE 't'
 			END as result,
             (
@@ -95,12 +96,11 @@ async function getMatches(playerid, gamemode) {
 
 async function getSelect(gamemode) {
 	let raw
-	let mvb_select = mvb.getSelectSingle(gamemode)
 	switch(gamemode) {
 		case 'ctf':
 		case 'eltp':
 			raw = `
-				${mvb_select} as mvb,
+				cap_team_for - cap_team_against as "+/-",
 				cap as caps,
 				TO_CHAR(hold * interval '1 sec', 'hh24:mi:ss') as hold,
 				grab as grabs,
@@ -119,21 +119,18 @@ async function getSelect(gamemode) {
 		case 'nf':
 		case 'ecltp':
 			raw = `
-				${mvb_select} as mvb,
+				cap_team_for - cap_team_against as "+/-",
 				cap as caps,
+				cap_from_tapin as tapins,
 				assist as assists,
-				ROUND((
-					hold / (
-						hold_team_for::DECIMAL + hold_team_against::DECIMAL
-					)
-				) * 100, 0) || '%' as poss,
-				tag as tags,
 				takeover as takeovers,
-				grab as grabs,
 				TO_CHAR(hold * interval '1 sec', 'hh24:mi:ss') as hold,
+				grab as grabs,
+				Round(hold::decimal / grab::decimal, 2) as "avg hold",
+				takeover - dispossessed as controls,
+				tag as tags,
 				chain as chains,
 				TO_CHAR(prevent * interval '1 sec', 'hh24:mi:ss') as prevent,
-				TO_CHAR(block * interval '1 sec', 'hh24:mi:ss') as block,
 				pup_jj + pup_rb + pup_tp as pups
 			`
 			break;
