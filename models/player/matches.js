@@ -45,7 +45,6 @@ async function getMatches(playerid, gamemode) {
 			break;
 	}
 
-
 	let raw = await db.select(`
 		SELECT
 			COALESCE(team.acronym, 'SUB') as acronym,

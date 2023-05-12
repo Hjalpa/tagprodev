@@ -144,7 +144,7 @@ async function getTopMaps(player) {
 		GROUP BY map.name, unfortunateid
 		HAVING count(*) > 3
 		ORDER BY rank ASC
-		LIMIT 6
+		LIMIT 10
 	`, [player], 'all')
 
 	return raw
@@ -193,7 +193,7 @@ async function getTopTeammates(player) {
 		GROUP BY name
 		HAVING count(*) filter (WHERE result_half_win = 1) > 4 -- greater than 4 wins
 		ORDER BY rank ASC
-		LIMIT 6
+		LIMIT 10
 	`, [player, player], 'all')
 
 	return raw
@@ -230,7 +230,7 @@ async function getTopSeasons(player) {
 		WHERE playergame.playerid = $1 AND mode IS NOT NULL
 		GROUP BY game.seasonid, t.acronym, t.color, season.mode, season.number, season.tier
 		ORDER BY rank ASC
-		LIMIT 6
+		LIMIT 10
 	`, [player], 'all')
 
 	return raw
