@@ -1,7 +1,5 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
-const mvb = require ('../../lib/mvb')
-const gasp = require ('../../lib/gasp')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -37,7 +35,7 @@ let init = async (req, res) => {
 	}
 }
 
-async function getData(filters, sql, gasp = false) {
+async function getData(filters, sql) {
 	let where = 'playergame.gameid in (SELECT id FROM game WHERE playergame.gameid = game.id AND seasonid = $1)'
 	let select = sql[filters.mode.get] || sql['sum']
 	let ascending = (filters.ascending === true) ? 'ASC' : 'DESC'

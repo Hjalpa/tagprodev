@@ -1,7 +1,6 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
 const gasp = require ('../../lib/gasp')
-const mvb = require ('../../lib/mvb')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
@@ -41,11 +40,10 @@ let init = async (req, res) => {
 
 async function getFixtures(filters, gamemode) {
 	let orderby =  (filters.league) ? 'seasonschedule.date ASC, seasonschedule.order ASC' : 'seasonschedule.round ASC, seasonschedule.match ASC, seasonschedule.order ASC'
-	// gasp works for ECLTP. The GASP doesnt work for ELTP/CTF cuz there is no "total" gasp formula, so it currently uses the old MVB formula
-	let gasp_select = (gamemode === 'ecltp' || gamemode === 'nf') ? gasp.getSelectSingle(gamemode) : mvb.getSelectSingle(gamemode)
 
 	let raw = await db.select(`
 		SELECT
+			game.id as gameid,
 			seasonschedule.id as seasonscheduleid,
 			seasonschedule.date,
 			map.name as map,
@@ -183,18 +181,7 @@ async function getFixtures(filters, gamemode) {
 				WHERE playergame.gameid = game.id AND seasonschedule.seasonid = $1 AND seasonteam.seasonid = $1
 				ORDER BY position_loss_time DESC
 				LIMIT 1
-			) as timelosing,
-
-			-- gasp
-			(
-				SELECT
-					player.name
-				FROM playergame
-				LEFT JOIN player ON player.id = playergame.playerid
-				WHERE playergame.gameid = game.id
-				ORDER BY ${gasp_select} DESC
-				LIMIT 1
-			) as mvb
+			) as timelosing
 
 		from seasonschedule
 		left join seasonteam rst on rst.id = seasonschedule.teamredid AND seasonschedule.seasonid = $1
@@ -207,11 +194,10 @@ async function getFixtures(filters, gamemode) {
 		order by ${orderby}
 	`, [filters.seasonid, filters.league, filters.playoff], 'all')
 
-	return await format(raw, filters)
+	return await format(raw, filters, gamemode)
 }
 
-
-async function format(raw, filters) {
+async function format(raw, filters, gamemode) {
 	const schedule = {}
 
 	if(filters.league) {
@@ -256,6 +242,8 @@ async function format(raw, filters) {
 	}
 
 	else if(filters.playoff) {
+		raw = await setGASP(raw, gamemode)
+
 		for (let k in raw) {
 			let d = raw[k]
 
@@ -306,4 +294,73 @@ async function format(raw, filters) {
 	}
 
 	return schedule
+}
+
+async function setGASP(raw, gamemode) {
+	for(let game in raw) {
+		if(game.euid === null) continue
+
+		let gameid = raw[game].gameid
+
+		if(gamemode === 'eltp' || 'ctf') {
+			let gasp_select_o = gasp.getSelectSingle(gamemode, 'o')
+			let gasp_select_d = gasp.getSelectSingle(gamemode, 'd')
+
+			let topGASP = await db.select(`
+					SELECT
+						_data.player,
+						Round(
+								(real_dgasp * (avg(real_dgasp) over() / 10))::DECIMAL
+								+
+								(real_ogasp * (avg(real_ogasp) over() / 10))::DECIMAL
+						, 2) as raw_gasp
+
+					FROM (
+
+						SELECT
+							data.*,
+							Round(
+								((dgasp - min(dgasp) over()) / (max(dgasp) over() - min(dgasp) over ())) * 10
+							, 2) as real_dgasp,
+							Round(
+								((ogasp - min(ogasp) over()) / (max(ogasp) over() - min(ogasp) over ())) * 10
+							, 2) as real_ogasp
+
+						FROM (
+							SELECT
+								player.name as player,
+								${gasp_select_o} as ogasp,
+								${gasp_select_d} as dgasp
+							FROM playergame
+							LEFT JOIN game ON game.id = playergame.gameid
+							LEFT JOIN player ON player.id = playergame.playerid
+							WHERE playergame.gameid = $1
+						) as data
+					) as _data
+					ORDER BY raw_gasp desc
+					LIMIT 1
+			`, [gameid], 'player')
+
+			raw[game].mvb = topGASP
+		}
+		else if(gamemode === 'ecltp' || 'nf') {
+			let gasp_select = gasp.getSelectSingle(gamemode)
+
+			let topGASP = await db.select(`
+				SELECT
+					player.name as player,
+					${gasp_select} as raw_gasp
+				FROM playergame
+				LEFT JOIN game ON game.id = playergame.gameid
+				LEFT JOIN player ON player.id = playergame.playerid
+				WHERE playergame.gameid = $1
+				ORDER BY raw_gasp DESC
+				LIMIT 1
+			`, [gameid], 'player')
+
+			raw[game].mvb = topGASP
+		}
+	}
+
+	return raw
 }

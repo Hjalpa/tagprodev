@@ -1,7 +1,5 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
-const mvb = require ('../../lib/mvb')
-const gasp = require ('../../lib/gasp')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
