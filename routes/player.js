@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../lib/db')
 
-router.get('/', (req, res) => require('../models/player/dash').init(req, res))
+router.get('/', (req, res) => require('../models/player/overview').init(req, res))
 router.get('/matches/:gamemode?', (req, res) => require('../models/player/matches').init(req, res))
 router.get('/allies', (req, res) => require('../models/player/allies').init(req, res))
 router.get('/opponents', (req, res) => require('../models/player/opponents').init(req, res))
