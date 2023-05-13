@@ -75,15 +75,21 @@ include template/player-nav.pug
 				.stat
 					h3 Trophy Cabinet
 					each n, key in toptrophies
-						.row
+						.row(
+							style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+						)
 							.item.rank= n.rank
-							.item.team(
-								style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
-							)= n.acronym
+							.item.team= n.acronym
 							.item.player
 								a(
 									href= '/' + n.mode + (n.tier ? '-' + n.tier.toLowerCase() : '') + '/' + n.number
 								)= n.mode + ' ' + n.number + (n.tier ? ' ' + n.tier.toLowerCase() : '')
-							.item.value= n.winrate
+							.item.role
+								if n.role === 'captain'
+									svg
+										use(xlink:href="#captain")
+								else if n.role === 'manager'
+									svg
+										use(xlink:href="#manager")
 
 include template/foot.pug

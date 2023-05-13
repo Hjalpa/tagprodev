@@ -243,7 +243,8 @@ async function getTopTrophies(player) {
             RANK() OVER (
                 ORDER BY raw.datec DESC
             ) rank,
-            raw.*
+            raw.*,
+			raw.role
         FROM (
             SELECT
                 t.acronym,
@@ -251,7 +252,12 @@ async function getTopTrophies(player) {
                 season.mode,
                 season.number,
                 season.tier,
-                (select MIN(date) from seasonschedule where seasonid = season.id) as datec
+                (select MIN(date) from seasonschedule where seasonid = season.id) as datec,
+				CASE
+					WHEN seasonplayer.manager = true THEN 'manager'
+					WHEN seasonplayer.captain = true THEN 'captain'
+					ELSE NULL
+				END AS role
 
             FROM seasonplayer
             LEFT JOIN player on player.id = seasonplayer.playerid
@@ -260,7 +266,7 @@ async function getTopTrophies(player) {
             LEFT JOIN team as t on t.id = seasonteam.teamid
 
             WHERE seasonplayer.playerid = $1 AND mode IS NOT NULL AND seasonteam.winner = TRUE
-            GROUP BY season.id, t.acronym, t.color, season.mode, season.number, season.tier, datec
+            GROUP BY season.id, t.acronym, t.color, season.mode, season.number, season.tier, datec, role
         ) as raw
         ORDER BY rank ASC
         LIMIT 15
