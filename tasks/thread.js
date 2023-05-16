@@ -131,7 +131,7 @@ init.call = async () => {
 				limit 1`,
 			[gameids], 'row')
 
-			raw.push(`[](#team-CAPS) **${topCapper.name}**: ${topCapper.caps} | [](#team-HOLD) **${topHolder.name}**: ${topHolder.holds} | [](#team-RETS) **${topReturner.name}**: ${topReturner.returns} | [](#team-PREVENT) **${topPreventer.name}**: ${topPreventer.prevents} | [](#team-PUPS) **${topPups.name}**: ${topPups.pups}`)
+			raw.push(`[](#team-CAPS) **${topCapper.name}**: ${topCapper.caps} | [](#team-HOLD) **${topHolder.name}**: ${topHolder.holds} | [](#team-RETS) **${topReturner.name}**: ${topReturner.returns} | [](#team-PRVNT) **${topPreventer.name}**: ${topPreventer.prevents} | [](#team-PUPS) **${topPups.name}**: ${topPups.pups}`)
 
 			raw.push('')
 			raw.push('-------')
