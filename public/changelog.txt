@@ -1,3 +1,6 @@
+v1.2.2 	16th May 2023
+* Added all-time records page
+
 v1.2.1 	12th May 2023
 * Added trophy cabinet to player overview
 * Added +/- to player matches

@@ -1,23 +1,26 @@
-const db = require ('../../lib/db')
-const util = require ('../../lib/util')
+const db = require ('../lib/db')
+const util = require ('../lib/util')
 
 module.exports.init = async (req, res) => await init(req, res)
 let init = async (req, res) => {
 	try {
+		req.mode = req.params.mode === 'ctf' ? 'ctf' : 'nf'
+		req.tier = req.params.tier === 'majors' ? 'Majors' : 'Minors'
+
 		let filters =  {
-			seasonid: req.seasonid,
 			ascending: false,
 			percentage: false,
+			mode: req.mode,
+			tier: req.tier
 		}
 
-		let tier = req.seasonTier ? ` ${req.seasonTier}` : ''
 		let data = {
 			config: {
-				title: req.mode.toUpperCase() + ' ' + req.season + (tier ? ' ' + tier : '') + ' Records',
-				name: req.seasonname,
-				path: req.baseUrl,
-				season: req.season,
-				tier: req.seasonTier,
+				title: req.mode.toUpperCase() + ' ' + (req.tier ? ' ' + req.tier : '') + ' Records',
+				name: 'wat is this',
+				// path: req.baseUrl,
+				tier: req.tier,
+				mode: req.mode === 'ctf' ? 'eltp' : 'ecltp',
 				nav: {
 					cat: req.mode,
 					page: 'records'
@@ -26,7 +29,7 @@ let init = async (req, res) => {
 			records: await getRecords(filters, req.mode)
 		}
 
-		res.render('superleague-records', data);
+		res.render('records', data);
 	} catch(e) {
 		res.status(400).json({error: e})
 	}
@@ -35,6 +38,14 @@ let init = async (req, res) => {
 async function getData(filters, select) {
 	let ascending = (filters.ascending === true) ? 'ASC' : 'DESC'
 	let percentage = (filters.percentage) ? " || '%' " : ''
+
+	let _tier_ctf = _tier_nf = ''
+	// let _tier_ctf = filters.tier === 'Majors' ? ` OR season.mode = 'ctf' ` : ''
+	// let _tier_nf = filters.tier === 'Majors' ?  ` OR season.mode = 'nf'  ` : ''
+
+	let mode = filters.mode === 'eltp' || filters.mode === 'ctf' ?
+		`((season.mode = 'eltp' AND season.tier = '${filters.tier}') ${_tier_ctf})`
+		: `((season.mode = 'ecltp' AND season.tier = '${filters.tier}') ${_tier_nf})`
 
 	let raw = await db.select(`
 		SELECT
@@ -53,19 +64,20 @@ async function getData(filters, select) {
 		FROM playergame
 		LEFT JOIN game ON game.id = playergame.gameid
 		LEFT JOIN player ON player.id = playergame.playerid
-		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid AND seasonplayer.seasonteamid IN (SELECT id FROM seasonteam WHERE seasonid = $1)
+		LEFT JOIN map ON map.id = game.mapid
+		LEFT JOIN season ON season.id = game.seasonid
+
+		LEFT JOIN seasonplayer ON player.id = seasonplayer.playerid
 		LEFT JOIN seasonteam ON seasonteam.id = seasonplayer.seasonteamid
 		LEFT JOIN team ON seasonteam.teamid = team.id
-		LEFT JOIN map ON map.id = game.mapid
 
-		WHERE gameid in (
-			SELECT game.id
-			FROM game
-			LEFT JOIN seasonschedule ON seasonschedule.gameid = game.id
-		) AND game.seasonid = $1
+		WHERE
+			${mode}
+			AND (seasonteam.teamid = team.id AND season.id = seasonteam.seasonid)
+
 		ORDER BY rank ASC, game.date ASC
 		LIMIT 10
-	`, [filters.seasonid], 'all')
+	`, [], 'all')
 
 	return raw
 }

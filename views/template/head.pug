@@ -29,17 +29,11 @@ html
 			a(href="/player" class=(config.nav.cat === 'players' ? 'active' : ''))
 				span Players
 
-			a(href="/eltp-majors/21" class=(config.tier === 'Majors' ? 'active' : ''))
-				span ELTP 21 Majors
-
-			a(href="/eltp-minors/21" class=(config.tier === 'Minors' ? 'active' : ''))
-				span ELTP 21 Minors
-
 			//- a(href="/leaderboards" class=(config.nav.cat === 'leaderboards' ? 'active' : ''))
 			//- 	span Leaders
 
-			//- a(href="/records" class=(config.nav.cat === 'leaderboards' ? 'active' : ''))
-			//- 	span Records
+			a(href="/records/ctf/majors" class=(config.nav.page === 'records' ? 'active' : ''))
+				span All-time Records
 
 			.right
 				form(action="/search")

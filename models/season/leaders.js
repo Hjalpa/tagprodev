@@ -398,7 +398,7 @@ async function getLeaders(filters, mode) {
 					}),
 				},
 				grabflaccid: {
-					title: 'Grabs / Flaccid',
+					title: 'Grab / Flaccid',
 					data: await getData(filters, {
 						sum: 'ROUND(CASE WHEN sum(flaccid) = 0 THEN 0 ELSE sum(grab)::decimal / nullif(sum(flaccid),0) END, 2)',
 						avg: 'ROUND(CASE WHEN avg(flaccid) = 0 THEN 0 ELSE avg(grab)::decimal / nullif(avg(flaccid),0) END, 2)',
