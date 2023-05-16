@@ -57,7 +57,8 @@ async function getData(filters, select) {
 			COALESCE(team.acronym, 'SUB') as acronym,
 			COALESCE(team.color, '#404040') as color,
 			map.name as map,
-			TO_CHAR(date, 'DD Mon') as date,
+			--TO_CHAR(date, 'Mon YY') as date,
+			CONCAT('s', number) as date,
 			euid,
 			${select} ${percentage} as value
 
