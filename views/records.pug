@@ -1,0 +1,36 @@
+include template/head.pug
+
+.contain
+	.wrap
+
+		.nav-bar-tertiary
+			a(href="/records/ctf/majors" class=(config.mode === 'eltp' && config.tier === 'Majors' ? 'active' : '')) ELTP Majors
+			a(href="/records/nf/majors" class=(config.mode === 'ecltp' && config.tier === 'Majors' ? 'active' : '')) ECLTP Majors
+			a(href="/records/ctf/minors" class=(config.mode === 'eltp' && config.tier === 'Minors' ? 'active' : ''), style="margin-left:auto") ELTP Minors
+			a(href="/records/nf/minors" class=(config.mode === 'ecltp' && config.tier === 'Minors' ? 'active' : '')) ECLTP Minors
+
+		.stats.records
+
+			each raw in records
+				.stat
+					h3= raw.title
+
+					each n, key in raw.data
+						.row(class=(key === 0 ? 'top' : ''))
+							.item.rank= n.rank
+							.item.team(
+								data-position= i
+								style="--teamcolor: " + n.color + "; --teamglow: " + n.color + "80"
+							)= n.acronym
+							.item.player
+								a(
+									href= '/player/' + n.player
+								)= n.player
+							.item.date
+								a(
+									href= 'https://tagpro.eu/?match=' + n.euid
+								)= n.date
+							.item.map= n.map
+							.item.value= n.value
+
+include template/foot.pug
