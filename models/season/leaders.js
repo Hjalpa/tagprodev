@@ -357,7 +357,7 @@ async function getLeaders(filters, mode) {
 					}),
 				},
 				teamholdwilstprevent: {
-					title: 'Team Hold Whislt Prevent',
+					title: 'Team Hold Whilst Prevent',
 					data: await getData(filters, {
 						sum: `TO_CHAR(sum(prevent_whilst_team_hold_time) * interval '1 sec', 'hh24:mi:ss')`,
 						avg: `TO_CHAR(avg(prevent_whilst_team_hold_time) * interval '1 sec', 'mi:ss')`,
