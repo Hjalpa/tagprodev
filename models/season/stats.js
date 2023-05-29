@@ -79,11 +79,7 @@ async function getData(filters, gamemode) {
 			FROM (
 				SELECT
 					_data.*,
-					Round(
-							(real_dgasp * (avg(real_dgasp) over() / 10))::DECIMAL
-							+
-							(real_ogasp * (avg(real_ogasp) over() / 10))::DECIMAL
-					, 2) as raw_gasp
+					Round(real_dgasp + real_ogasp, 2) as raw_gasp
 
 				FROM (
 
