@@ -121,7 +121,7 @@ async function getRecords(filters, gamemode) {
 				},
 				saves: {
 					title: 'Saves',
-					data: await getData(filters, 'return_within_5_tiles_from_opponents_base'),
+					data: await getData(filters, 'return_within_2_tiles_from_opponents_base'),
 				},
 				grabpercap: {
 					title: 'Cap / Grab',

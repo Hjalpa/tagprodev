@@ -44,12 +44,13 @@ init.call = async () => {
 			LEFT JOIN team as bt on bt.id = bst.teamid
 
 			WHERE seasonschedule.seasonid = $1 AND seasonschedule.date = $2
-			ORDER BY "order" ASC`,
+			ORDER BY "match" ASC, "order" ASC`,
 			[filters.seasonid, filters.date], 'all')
 
 		const matches = groupGamesByTeams(results);
 
 		const raw = []
+
 		for(let match of matches) {
 			raw.push(`#${match[0].redname} vs ${match[0].bluename}`)
 			raw.push('')
@@ -164,9 +165,17 @@ function groupGamesByTeams(games) {
       group[0].redname === blueName && group[0].bluename === redName
     ));
 
+   // check if there's an existing group that has the same two teams
+    existingGroup1 = result.find(group => (
+      group[0].redname === redName && group[0].bluename === blueName
+    ));
+
     // if there is, add the game to that group
     if (existingGroup) {
       existingGroup.push(game);
+    }
+	else if (existingGroup1) {
+      existingGroup1.push(game);
     }
     // otherwise, create a new group with this game
     else {
