@@ -6,11 +6,11 @@
   "scripts": {
     "start": "node app",
     "build": "gulp build",
-    "dev": "nodemon app & gulp watch"
+    "dev": "nodemon app --ignore ./public/ & gulp watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/anom/tagpro.git"
+    "url": "https://gitlab.com/anom/tagpro.dev.git"
   },
   "author": "Daniel <@anom>",
   "dependencies": {
