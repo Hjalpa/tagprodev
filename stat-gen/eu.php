@@ -531,6 +531,8 @@ class eu {
 		if($player === 'Paint Ball') $player = 'lotus';
 		else if($player === 'mYm') $player = 'anom';
 		else if($player === 'nom') $player = 'anom';
+		else if($player === 'Kute') $player = 'a-a--r--o--n';
+		else if($player === 'Sensei') $player = 'sensei osy';
 		else if($player === 'Nice') $player = 'laggy blonde';
 		return $player;
 	}
