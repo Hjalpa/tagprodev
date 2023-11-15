@@ -1,11 +1,32 @@
 const axios = require('axios')
-const db = require ('../lib/db')
-const util = require ('../lib/util')
-const openskill = require ('../lib/openskill')
+const db = require ('../../lib/db')
+const util = require ('../../lib/util')
+const openskill = require ('../../lib/openskill')
 
-module.exports.game = async (req, res) => await game(req, res)
-let game = async (data) => {
-	await makeGame(data)
+module.exports.import = async (req, res) => {
+	try {
+		let url = 'https://tagpro.koalabeast.com/history/data?page=1&pageSize=50'
+		let raw = await axios.get(url)
+
+		raw.headers['content-type']
+		const data = raw.data.games
+
+		for await(let row of data) {
+			let exists = await db.select('SELECT id FROM tp_game WHERE tpid = $1', [row.id], 'id')
+			if(!exists) {
+				await makeGame(row)
+				console.log(`added tpid: ${row.id}`)
+			}
+		}
+	}
+
+	catch(e) {
+		console.log(e)
+	}
+
+	finally {
+		res.send('done')
+	}
 }
 
 async function makeGame(data) {
