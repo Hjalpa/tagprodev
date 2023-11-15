@@ -148,6 +148,7 @@ async function savePlayers(raw, gameID, rawData) {
 			cap_team_for: rawData.teams[(player.team == 1 ? 'red' : 'blue')].score,
 			cap_team_against: rawData.teams[(player.team == 2 ? 'red' : 'blue')].score,
 			flair: player.flair,
+			datetime: rawData.started,
 		}
 
 		let playerGameID = await db.insert('tp_playergame', data)
