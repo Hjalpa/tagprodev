@@ -21,11 +21,11 @@ module.exports.import = async (req, res) => {
 	}
 
 	catch(e) {
-		console.log(e)
+		res.json({success:false,error: e})
 	}
 
 	finally {
-		res.send('done')
+		res.json({success:true})
 	}
 }
 
