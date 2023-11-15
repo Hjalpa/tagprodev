@@ -1,3 +1,6 @@
+v1.3.0 	15th Nov 2023
+* Added True Leaderboards API
+
 v1.2.2 	16th May 2023
 * Added all-time records page
 
