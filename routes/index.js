@@ -52,6 +52,8 @@ router.get('/', (req, res) => require('../models/home').init(req, res))
 
 router.use('/api',  require('./api'))
 
+router.use('/pub',  require('./pub'))
+
 router.get('/spy', (req, res) => require('../models/spy').list(req, res))
 router.get('/spy/generate', (req, res) => require('../models/spy').generate(req, res))
 

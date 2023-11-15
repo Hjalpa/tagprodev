@@ -9,6 +9,9 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const https = require('https')
 const app = express()
+const cors = require('cors');
+
+app.use(cors())
 
 app.listen(80)
 

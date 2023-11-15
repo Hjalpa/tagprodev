@@ -1,6 +1,5 @@
 const express = require('express')
 const router = express.Router()
-const db = require('../lib/db')
 
 router.get('/', (req, res) => require('../models/player/overview').init(req, res))
 router.get('/matches/:gamemode?', (req, res) => require('../models/player/matches').init(req, res))

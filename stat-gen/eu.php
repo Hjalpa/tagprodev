@@ -8,7 +8,7 @@ class eu {
 	}
 
 	private function getMatchData($euid) {
-		$file = "/root/tagpro-stats/matches/$euid.json";
+		$file = "/home/nom/tagpro.dev/matches/$euid.json";
 
 		if(file_exists($file))
 			$match = file_get_contents($file);
@@ -532,8 +532,8 @@ class eu {
 		else if($player === 'mYm') $player = 'anom';
 		else if($player === 'nom') $player = 'anom';
 		else if($player === 'Kute') $player = 'a-a--r--o--n';
-		else if($player === 'Sensei') $player = 'sensei osy';
 		else if($player === 'Nice') $player = 'laggy blonde';
+		else if($player === 'Sensei Osy') $player = 'Sensei Osy';
 		return $player;
 	}
 
