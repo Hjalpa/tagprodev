@@ -3,24 +3,14 @@ const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => {
 	try {
-		let day = await getData('day')
-		let week = await getData('week')
-		let month = await getData('month')
-		let all = await getData('all')
-		res.json({
-			day,
-			week,
-			month,
-			all
-		})
+		let data = await getData(profileID)
+		res.json(data)
 	} catch(e) {
 		res.status(400).send({error: e})
 	}
 }
 
 async function getData(datePeriod) {
-	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`);
-
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -47,8 +37,8 @@ async function getData(datePeriod) {
 				)
 				FROM tp_playergame
 				LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
-				WHERE tp_playergame.playerid = p.id ${dateFilter}
-				ORDER BY tp_playergame.datetime ASC
+				WHERE tp_playergame.playerid = p.id
+				ORDER BY tp_playergame.datetime DESC
 				LIMIT 10
 			) as form,
 
@@ -60,7 +50,7 @@ async function getData(datePeriod) {
 
 		FROM tp_playergame
 		LEFT JOIN tp_player as p ON p.id = tp_playergame.playerid
-		WHERE p.tpid is not null ${dateFilter} AND p.openskill is not null
+		WHERE p.tpid is not null
 		GROUP BY p.name, p.id, p.openskill, profile
 		ORDER BY rank ASC, cd DESC, winrate DESC, wins DESC
 		LIMIT 100
