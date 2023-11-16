@@ -5,7 +5,7 @@ const openskill = require ('../../lib/openskill')
 
 module.exports.import = async (req, res) => {
 	try {
-		console.log('Started pub import at ' new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' }))
+		console.log('Started pub import at ' + new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' }))
 
 		let url = 'https://tagpro.koalabeast.com/history/data?page=1&pageSize=50'
 		let raw = await axios.get(url)
