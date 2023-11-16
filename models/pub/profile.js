@@ -5,17 +5,31 @@ module.exports.init = async (req, res) => {
 	try {
 		let profileID = req.params.profileID
 		res.json({
-			games: await getGames(profileID),
+			openskill: await getOpenSkill(profileID),
 			stats: {
 				day: await getStats(profileID, 'day'),
 				week: await getStats(profileID, 'week'),
 				month: await getStats(profileID, 'month'),
 				all: await getStats(profileID, 'all'),
-			}
+			},
+			games: await getGames(profileID)
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
 	}
+}
+
+async function getOpenSkill(profileID) {
+	let raw = await db.select(`
+		SELECT
+			ROUND(openskill::decimal, 2)::real as openskill
+
+		FROM tp_player
+		WHERE tpid = $1
+		LIMIT 1
+	`, [profileID], 'openskill')
+
+	return raw
 }
 
 async function getStats(profileID, datePeriod) {
@@ -57,7 +71,7 @@ async function getGames(profileID) {
 		LEFT JOIN tp_player as p ON p.id = pg.playerid
 		WHERE p.tpid = $1
 		ORDER BY datetime ASC
-		LIMIT 1000;
+		LIMIT 1000
 	`, [profileID], 'all')
 
 	return raw

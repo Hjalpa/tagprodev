@@ -55,7 +55,7 @@ async function getData(datePeriod) {
 			TO_CHAR(SUM(duration) * interval '1 sec', 'hh24:mi:ss') as timeplayed,
 			MAX(tp_playergame.datetime) as lastseen,
 
-			ROUND(p.openskill::decimal, 2)::real  as openskill,
+			ROUND(p.openskill::decimal, 2)::real as openskill,
 			(SELECT flair from tp_playergame as tppg where tppg.playerid = p.id ORDER by id DESC LIMIT 1) as flair
 
 		FROM tp_playergame
