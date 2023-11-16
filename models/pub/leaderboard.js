@@ -19,12 +19,13 @@ module.exports.init = async (req, res) => {
 }
 
 async function getData(datePeriod) {
-	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`);
+	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`)
+	let rankFilter= (datePeriod === 'all' ? 'p.openskill:real' : 'SUM(cap_team_for - cap_team_against)::real')
 
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
-				ORDER BY p.openskill::real DESC
+				ORDER BY ${rankFilter} DESC
 			)::real rank,
 
 			p.name as name,
