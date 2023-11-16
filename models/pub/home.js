@@ -3,24 +3,18 @@ const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => {
 	try {
-		let day = await getData('day')
-		let week = await getData('week')
-		let month = await getData('month')
-		let all = await getData('all')
 		res.json({
-			day,
-			week,
-			month,
-			all
+			recent: {
+				games: await getRecentGames(),
+				players: await getRecentGames(),
+			}
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
 	}
 }
 
-async function getData(datePeriod) {
-	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`);
-
+async function getRecentGames() {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -47,13 +41,13 @@ async function getData(datePeriod) {
 				)
 				FROM tp_playergame
 				LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
-				WHERE tp_playergame.playerid = p.id ${dateFilter}
+				WHERE tp_playergame.playerid = p.id
 				ORDER BY tp_playergame.datetime DESC
 				LIMIT 10
 			) as form,
 
 			TO_CHAR(SUM(duration) * interval '1 sec', 'hh24:mi:ss') as timeplayed,
-			MAX(tp_playergame.datetime) as lastgame,
+			MAX(tp_playergame.datetime) as lastseen,
 
 			ROUND(p.openskill::decimal, 2)::real as openskill,
 			(SELECT flair from tp_playergame as tppg where tppg.playerid = p.id ORDER by id DESC LIMIT 1) as flair
