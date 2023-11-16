@@ -23,12 +23,10 @@ async function getStats(profileID, datePeriod) {
 
 	let raw = await db.select(`
 		SELECT
+			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
 			COUNT(*)::REAL as games,
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::REAL as wins,
 			COUNT(*) filter (WHERE tp_playergame.winner = false)::REAL as losses,
-
-			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
-
 			SUM(cap_team_for)::REAL as CF,
 			SUM(cap_team_against)::REAL as CA,
 			SUM(cap_team_for - cap_team_against)::REAL as CD,
