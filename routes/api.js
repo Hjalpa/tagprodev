@@ -13,7 +13,7 @@ let cacheMiddleware = duration => {
 		}else{
 			res.sendResponse = res.send
 			res.send = body => {
-				memCache.put(key,body,(duration*1000) * 24)
+				memCache.put(key,body,duration)
 				res.sendResponse(body)
 			}
 			next()
