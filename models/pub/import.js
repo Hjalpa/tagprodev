@@ -7,7 +7,7 @@ module.exports.import = async (req, res) => {
 	try {
 		console.log('running pub importer...')
 
-		let url = 'https://tagpro.koalabeast.com/history/data?page=1&pageSize=50'
+		let url = 'https://tagpro.koalabeast.com/history/data?page=0&pageSize=50'
 		let raw = await axios.get(url)
 
 		raw.headers['content-type']
