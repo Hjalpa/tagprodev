@@ -81,7 +81,7 @@ async function getGames(profileID) {
 		FROM tp_playergame as pg
 		LEFT JOIN tp_player as p ON p.id = pg.playerid
 		WHERE p.tpid = $1
-		ORDER BY datetime ASC
+		ORDER BY datetime DESC
 		LIMIT 1000
 	`, [profileID], 'all')
 
