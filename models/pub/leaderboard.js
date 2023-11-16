@@ -48,7 +48,7 @@ async function getData(datePeriod) {
 				FROM tp_playergame
 				LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
 				WHERE tp_playergame.playerid = p.id ${dateFilter}
-				ORDER BY tp_playergame.datetime ASC
+				ORDER BY tp_playergame.datetime DESC
 				LIMIT 10
 			) as form,
 
