@@ -48,7 +48,7 @@ async function getStats(profileID, datePeriod) {
 
 	let raw = await db.select(`
 		SELECT
-			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS "Win% ",
+			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS "Win%",
 			COALESCE(COUNT(*)::REAL, 0) as "Games",
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::REAL as "Wins",
 			COUNT(*) filter (WHERE tp_playergame.winner = false)::REAL as "Losses",
