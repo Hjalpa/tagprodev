@@ -13,7 +13,7 @@ module.exports.init = async (req, res) => {
 async function getProfileData(profileID) {
 	let raw = await db.select(`
 		SELECT
-			openskill as skill
+			ROUND(openskill::decimal, 2)::real  as openskill,
 		FROM tp_player
 		WHERE tp_player.tpid = $1
 	`, [profileID], 'row')
