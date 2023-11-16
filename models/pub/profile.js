@@ -35,10 +35,21 @@ async function getOpenSkill(profileID) {
 async function getStats(profileID, datePeriod) {
 	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`);
 
+	let defaults = {
+		"Win%": 0,
+		"Games": 0,
+		"Wins": 0,
+		"Losses": 0,
+		"Caps For": 0,
+		"Caps Against": 0,
+		"Cap Difference": 0,
+		"Time Played": "00:00:00"
+	}
+
 	let raw = await db.select(`
 		SELECT
 			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS "Win% ",
-			COUNT(*)::REAL as "Games",
+			COALESCE(COUNT(*)::REAL, 0) as "Games",
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::REAL as "Wins",
 			COUNT(*) filter (WHERE tp_playergame.winner = false)::REAL as "Losses",
 			SUM(cap_team_for)::REAL as "Caps For",
@@ -53,7 +64,7 @@ async function getStats(profileID, datePeriod) {
 		LIMIT 1
 	`, [profileID], 'row')
 
-	return raw
+	return raw ? raw : defaults
 }
 
 async function getGames(profileID) {
