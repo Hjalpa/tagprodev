@@ -4,9 +4,12 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => {
 	try {
 		res.json({
+			total: {
+				gamesPerDay: await getGamesPerDay(),
+			},
 			recent: {
 				games: await getRecentGames(),
-				players: await getRecentGames(),
+				game: await getRecentGames(),
 			}
 		})
 	} catch(e) {
