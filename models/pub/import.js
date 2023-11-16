@@ -5,6 +5,8 @@ const openskill = require ('../../lib/openskill')
 
 module.exports.import = async (req, res) => {
 	try {
+		console.log('Started pub import at ' new Date().toLocaleString('en-GB', { timeZone: 'Europe/London' }))
+
 		let url = 'https://tagpro.koalabeast.com/history/data?page=1&pageSize=50'
 		let raw = await axios.get(url)
 
@@ -13,10 +15,8 @@ module.exports.import = async (req, res) => {
 
 		for await(let row of data) {
 			let exists = await db.select('SELECT id FROM tp_game WHERE tpid = $1', [row.id], 'id')
-			if(!exists) {
+			if(!exists)
 				await makeGame(row)
-				console.log(`added tpid: ${row.id}`)
-			}
 		}
 	}
 
@@ -37,6 +37,7 @@ async function makeGame(data) {
 			let players = await getPlayers(data)
 			// save game
 			let gameID = await saveGame(data)
+			console.log('Added game: ' + gameID)
 			// save players
 			await savePlayers(players, gameID, data)
 			// update openskill
