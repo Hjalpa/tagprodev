@@ -8,13 +8,11 @@ let cacheMiddleware = duration => {
 		let key =  '__express__' + req.originalUrl || req.url
 		let cacheContent = memCache.get(key)
 		if(cacheContent){
-			console.log('I AM A CACHE')
 			res.send(cacheContent)
 			return
 		}else{
 			res.sendResponse = res.send
 			res.send = body => {
-				console.log('NOT cached')
 				// duration is in seconds
 				memCache.put(key,body, ((1 * 1000 * 60 * 60) / 60) * duration)
 				res.sendResponse(body)
