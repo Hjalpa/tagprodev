@@ -12,7 +12,8 @@ module.exports.init = async (req, res) => {
 				month: await getStats(profileID, 'month'),
 				all: await getStats(profileID, 'all'),
 			},
-			games: await getGames(profileID)
+			games: await getGames(profileID),
+			skillPerDay: await getSkillPerDay(profileID),
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
@@ -28,6 +29,33 @@ async function getOpenSkill(profileID) {
 		WHERE tpid = $1
 		LIMIT 1
 	`, [profileID], 'openskill')
+
+	return raw
+}
+
+async function getSkillPerDay(profileID) {
+	let raw = await db.select(`
+		WITH PlayerCTE AS (
+			SELECT id AS pid
+			FROM tp_player
+			WHERE tp_player.tpid = $1
+		)
+		SELECT
+			DATE(datetime)::DATE AS date,
+			ROUND(openskill::decimal, 2) as openskill
+		FROM tp_playergame
+		WHERE (playerid, DATE(datetime), datetime) IN (
+			SELECT
+				p.pid,
+				DATE(pg.datetime) AS date,
+				MAX(pg.datetime) AS min_datetime
+			FROM PlayerCTE p
+			JOIN tp_playergame pg ON p.pid = pg.playerid
+			WHERE pg.playerid = p.pid
+			GROUP BY p.pid, DATE(pg.datetime)
+		)
+		order by date desc
+	`, [profileID], 'all')
 
 	return raw
 }
