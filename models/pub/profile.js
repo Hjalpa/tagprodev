@@ -151,7 +151,7 @@ async function getTopMaps(profileID) {
 		GROUP BY tp_map.name
 		HAVING count(*) > 5
 		ORDER BY rank ASC
-		LIMIT 10
+		LIMIT 3
 	`, [profileID], 'all')
 
 	return raw
