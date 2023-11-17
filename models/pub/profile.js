@@ -14,6 +14,9 @@ module.exports.init = async (req, res) => {
 			},
 			games: await getGames(profileID),
 			skillPerDay: await getSkillPerDay(profileID),
+			top: {
+				maps: await getTopMaps(profileID),
+			}
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
@@ -111,6 +114,44 @@ async function getGames(profileID) {
 		WHERE p.tpid = $1
 		ORDER BY datetime DESC
 		LIMIT 1000
+	`, [profileID], 'all')
+
+	return raw
+}
+
+async function getTopMaps(profileID) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					ROUND(
+						(
+							count(*) filter (WHERE tp_playergame.winner = true)
+							/
+							count(*)::DECIMAL
+						) * 100
+					, 2) DESC
+			)::real rank,
+			tp_map.name as map,
+			ROUND(
+				(
+					count(*) filter (WHERE tp_playergame.winner = true)
+					/
+					count(*)::DECIMAL
+				) * 100
+			, 0) || '%' as winrate
+
+		FROM tp_playergame
+		LEFT JOIN tp_player on tp_player.id = tp_playergame.playerid
+		LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
+		LEFT JOIN tp_map on tp_map.id = tp_game.mapid
+
+		WHERE
+			tp_player.tpid = $1
+		GROUP BY tp_map.name
+		HAVING count(*) > 5
+		ORDER BY rank ASC
+		LIMIT 10
 	`, [profileID], 'all')
 
 	return raw
