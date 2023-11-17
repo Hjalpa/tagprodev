@@ -41,7 +41,7 @@ async function getSkillPerDay(profileID) {
 			WHERE tp_player.tpid = $1
 		)
 		SELECT
-			DATE(datetime)::DATE AS date,
+			TO_CHAR(DATE(datetime), 'YYYY-MM-DD') as date,
 			ROUND(openskill::decimal, 2) as openskill
 		FROM tp_playergame
 		WHERE (playerid, DATE(datetime), datetime) IN (
