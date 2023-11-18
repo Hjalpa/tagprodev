@@ -4,6 +4,7 @@ const util = require ('../../lib/util')
 module.exports.init = async (req, res) => {
 	try {
 		let profileID = req.params.profileID
+		let playerID = await getPlayerID(profileID)
 		res.json({
 			openskill: await getOpenSkill(profileID),
 			stats: {
@@ -16,11 +17,24 @@ module.exports.init = async (req, res) => {
 			skillPerDay: await getSkillPerDay(profileID),
 			top: {
 				maps: await getTopMaps(profileID),
+				teammates: await getTopTeammates(playerID),
 			}
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
 	}
+}
+
+async function getPlayerID(profileID) {
+	let raw = await db.select(`
+		SELECT
+			id
+		FROM tp_player
+		WHERE tpid = $1
+		LIMIT 1
+	`, [profileID], 'id')
+
+	return raw
 }
 
 async function getOpenSkill(profileID) {
@@ -121,54 +135,93 @@ async function getGames(profileID) {
 
 async function getTopMaps(profileID) {
 	let raw = await db.select(`
-SELECT
-    RANK() OVER (
-        ORDER BY
-            ROUND(
-                (
-                    COUNT(*) FILTER (WHERE tp_playergame.winner = true)
-                    /
-                    COUNT(*)::DECIMAL
-                ) * 100
-            , 2) DESC
-    ) rank,
-    tp_map.name as map,
-    ROUND(
-        (
-            COUNT(*) FILTER (WHERE tp_playergame.winner = true)
-            /
-            COUNT(*)::DECIMAL
-        ) * 100
-    , 0) || '%' as winrate
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					ROUND(
+						(
+							COUNT(*) FILTER (WHERE tp_playergame.winner = true)
+							/
+							COUNT(*)::DECIMAL
+						) * 100
+					, 2) DESC
+			) rank,
+			tp_map.name as map,
+			ROUND(
+				(
+					COUNT(*) FILTER (WHERE tp_playergame.winner = true)
+					/
+					COUNT(*)::DECIMAL
+				) * 100
+			, 0) || '%' as winrate
 
-FROM tp_playergame
-LEFT JOIN tp_player on tp_player.id = tp_playergame.playerid
-LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
-LEFT JOIN tp_map on tp_map.id = tp_game.mapid
+		FROM tp_playergame
+		LEFT JOIN tp_player on tp_player.id = tp_playergame.playerid
+		LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
+		LEFT JOIN tp_map on tp_map.id = tp_game.mapid
 
-WHERE
-    tp_player.tpid = $1
-GROUP BY tp_map.name
-HAVING COUNT(*) >
-(
-    SELECT
-        AVG(avg_games) as overall_avg_games
-    FROM (
-        SELECT
-            AVG(count(*)) OVER (PARTITION BY tp_map.id) as avg_games
-        FROM
-            tp_playergame
-        LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
-        LEFT JOIN tp_game ON tp_game.id = tp_playergame.gameid
-        LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
-        WHERE
-            tp_player.tpid = $1
-        GROUP BY tp_map.id
-    ) AS map_avg_games
-)
-ORDER BY rank ASC
-LIMIT 15;
+		WHERE
+			tp_player.tpid = $1
+		GROUP BY tp_map.name
+		HAVING COUNT(*) > (
+			SELECT
+				AVG(avg_games) as overall_avg_games
+			FROM (
+				SELECT
+					AVG(count(*)) OVER (PARTITION BY tp_map.id) as avg_games
+				FROM
+					tp_playergame
+				LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
+				LEFT JOIN tp_game ON tp_game.id = tp_playergame.gameid
+				LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
+				WHERE
+					tp_player.tpid = $1
+				GROUP BY tp_map.id
+			) AS map_avg_games
+		)
+		ORDER BY rank ASC
+		LIMIT 10
 	`, [profileID], 'all')
+
+	return raw
+}
+
+async function getTopTeammates(playerID) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					ROUND(
+						(
+							COUNT(*) FILTER (WHERE tp_playergame.winner = true)
+							/
+							COUNT(*)::DECIMAL
+						) * 100
+					, 2) DESC
+			) rank,
+			tp_player.name,
+			tp_player.tpid,
+			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
+			COUNT(*) as games
+
+		FROM tp_playergame
+		LEFT JOIN tp_player on tp_player.id = tp_playergame.playerid
+		JOIN (
+			SELECT
+				DISTINCT gameid, team
+			FROM tp_playergame pg
+			WHERE pg.playerid = $1
+		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
+
+		WHERE
+			playerid != $1 AND tp_player.tpid is not null
+		GROUP BY tp_player.name, tp_player.tpid
+		HAVING COUNT(*) > 1
+		ORDER BY rank ASC, games DESC
+		LIMIT 10
+	`, [playerID], 'all')
+
+	console.log(raw, playerID)
 
 	return raw
 }
