@@ -222,7 +222,8 @@ async function getBestWith(playerID) {
 			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
 			COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS wins,
 			COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS losses,
-			COUNT(*) AS games
+			COUNT(*) AS games,
+			(SELECT flair from tp_playergame as tppg where tppg.playerid = tp_playergame.playerid ORDER by id DESC LIMIT 1) as flair
 
 		FROM tp_playergame
 		LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
@@ -234,7 +235,7 @@ async function getBestWith(playerID) {
 		JOIN PlayerStats ON tp_player.id = PlayerStats.player_id
 		WHERE
 			playerid != $1 AND tp_player.tpid IS NOT NULL
-		GROUP BY tp_player.name, tp_player.tpid
+		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
 		HAVING count(*) >= (SELECT AVG(total_games::DECIMAL) FROM PlayerStats) AND ((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100) >= 50
 		ORDER BY rank ASC, games DESC
 		LIMIT 10
@@ -275,7 +276,8 @@ async function getBestAgainst(playerID) {
 			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
 			COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS wins,
 			COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS losses,
-			COUNT(*) AS games
+			COUNT(*) AS games,
+			(SELECT flair from tp_playergame as tppg where tppg.playerid = tp_playergame.playerid ORDER by id DESC LIMIT 1) as flair
 
 		FROM tp_playergame
 		LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
@@ -287,7 +289,7 @@ async function getBestAgainst(playerID) {
 		JOIN PlayerStats ON tp_player.id = PlayerStats.player_id
 		WHERE
 			playerid != $1 AND tp_player.tpid IS NOT NULL
-		GROUP BY tp_player.name, tp_player.tpid
+		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
 		HAVING count(*) >= (SELECT AVG(total_games::DECIMAL) FROM PlayerStats) AND ((COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100) >= 50
 		ORDER BY rank ASC, games DESC
 		LIMIT 10
