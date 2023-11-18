@@ -154,7 +154,10 @@ async function getBestMaps(profileID) {
 					/
 					COUNT(*)::DECIMAL
 				) * 100
-			, 0) || '%' as winrate
+			, 0) || '%' as winrate,
+			COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS wins,
+			COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS losses,
+			COUNT(*) as games
 
 		FROM tp_playergame
 		LEFT JOIN tp_player on tp_player.id = tp_playergame.playerid
