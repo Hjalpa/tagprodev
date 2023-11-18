@@ -192,54 +192,52 @@ async function getBestMaps(profileID) {
 
 async function getBestWith(playerID) {
 	let raw = await db.select(`
-		WITH PlayerStats AS (
-			SELECT
-				tp_player.id AS player_id,
-				COUNT(*) AS total_games
-			FROM
-				tp_playergame
-			LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
-			JOIN (
-				SELECT DISTINCT gameid, team
-				FROM tp_playergame pg
-				WHERE pg.playerid = 802
-			) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
-			WHERE
-				playerid != $1 AND tp_player.tpid IS NOT NULL
-			GROUP BY tp_player.id
-			ORDER BY total_games DESC
-		)
+WITH PlayerStats AS (
+    SELECT
+        tp_player.id AS player_id,
+        COUNT(*) AS total_games
+    FROM
+        tp_playergame
+    LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
+    JOIN (
+        SELECT DISTINCT gameid, team
+        FROM tp_playergame pg
+        WHERE pg.playerid = $1
+    ) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
+    WHERE
+        playerid != 961 AND tp_player.tpid IS NOT NULL
+    GROUP BY tp_player.id
+    ORDER BY total_games DESC
+)
 
-		SELECT
-			RANK() OVER (
-				ORDER BY
-					ROUND(
-						(COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100
-					, 2) DESC, count(*) DESC
-			) rank,
-			tp_player.name,
-			tp_player.tpid,
-			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
-			COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS wins,
-			COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS losses,
-			COUNT(*) AS games
+SELECT
+    RANK() OVER (
+        ORDER BY
+            ROUND(
+                (COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100
+            , 2) DESC, count(*) DESC
+    ) rank,
+    tp_player.name,
+    tp_player.tpid,
+    ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
+    COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS wins,
+    COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS losses,
+    COUNT(*) AS games
 
-		FROM tp_playergame
-		LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
-		JOIN (
-			SELECT DISTINCT gameid, team
-			FROM tp_playergame pg
-			WHERE pg.playerid = $1
-		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
-		JOIN PlayerStats ON tp_player.id = PlayerStats.player_id
-
-		WHERE
-			playerid != $1 AND tp_player.tpid IS NOT NULL
-
-		GROUP BY tp_player.name, tp_player.tpid
-		HAVING count(*) >= (SELECT AVG(total_games::DECIMAL) FROM PlayerStats)
-		ORDER BY rank ASC, games DESC
-		LIMIT 10;
+FROM tp_playergame
+LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
+JOIN (
+    SELECT DISTINCT gameid, team
+    FROM tp_playergame pg
+    WHERE pg.playerid = $1
+) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
+JOIN PlayerStats ON tp_player.id = PlayerStats.player_id
+WHERE
+    playerid != $1 AND tp_player.tpid IS NOT NULL
+GROUP BY tp_player.name, tp_player.tpid
+HAVING count(*) >= (SELECT AVG(total_games::DECIMAL) FROM PlayerStats)
+ORDER BY rank ASC, games DESC
+LIMIT 10
 
 	`, [playerID], 'all')
 
