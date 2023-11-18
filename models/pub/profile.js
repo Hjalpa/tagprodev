@@ -194,7 +194,7 @@ async function getBestWith(playerID) {
 				ORDER BY
 					ROUND(
 						(
-							COUNT(*) FILTER (WHERE tp_playergame.winner = true)
+							COUNT(*) FILTER (WHERE tp_playergame.winner = false)
 							/
 							COUNT(*)::DECIMAL
 						) * 100
@@ -202,7 +202,7 @@ async function getBestWith(playerID) {
 			) rank,
 			tp_player.name,
 			tp_player.tpid,
-			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
+			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
 			COUNT(*) as games
 
 		FROM tp_playergame
