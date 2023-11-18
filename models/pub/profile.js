@@ -145,7 +145,7 @@ async function getBestMaps(profileID) {
 							/
 							COUNT(*)::DECIMAL
 						) * 100
-					, 2) DESC
+					, 2) DESC, count(*) DESC
 			) rank,
 			tp_map.name as map,
 			ROUND(
@@ -201,7 +201,7 @@ async function getBestWith(playerID) {
 							/
 							COUNT(*)::DECIMAL
 						) * 100
-					, 2) DESC
+					, 2) DESC, count(*) DESC
 			) rank,
 			tp_player.name,
 			tp_player.tpid,
@@ -241,7 +241,7 @@ async function getBestAgainst(playerID) {
 							/
 							COUNT(*)::DECIMAL
 						) * 100
-					, 2) DESC
+					, 2) DESC, count(*) DESC
 			) rank,
 			tp_player.name,
 			tp_player.tpid,
