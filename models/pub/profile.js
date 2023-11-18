@@ -222,8 +222,6 @@ async function getBestWith(playerID) {
 		LIMIT 10
 	`, [playerID], 'all')
 
-	console.log(raw, playerID)
-
 	return raw
 }
 
@@ -261,8 +259,6 @@ async function getBestAgainst(playerID) {
 		ORDER BY rank ASC, games DESC
 		LIMIT 10
 	`, [playerID], 'all')
-
-	console.log(raw, playerID)
 
 	return raw
 }
