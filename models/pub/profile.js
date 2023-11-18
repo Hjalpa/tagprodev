@@ -16,8 +16,9 @@ module.exports.init = async (req, res) => {
 			games: await getGames(profileID),
 			skillPerDay: await getSkillPerDay(profileID),
 			top: {
-				maps: await getTopMaps(profileID),
-				teammates: await getTopTeammates(playerID),
+				maps: await getBestMaps(profileID),
+				with: await getBestWith(playerID),
+				against: await getBestAgainst(playerID),
 			}
 		})
 	} catch(e) {
@@ -133,7 +134,7 @@ async function getGames(profileID) {
 	return raw
 }
 
-async function getTopMaps(profileID) {
+async function getBestMaps(profileID) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -186,7 +187,7 @@ async function getTopMaps(profileID) {
 	return raw
 }
 
-async function getTopTeammates(playerID) {
+async function getBestWith(playerID) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
@@ -212,6 +213,46 @@ async function getTopTeammates(playerID) {
 			FROM tp_playergame pg
 			WHERE pg.playerid = $1
 		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
+
+		WHERE
+			playerid != $1 AND tp_player.tpid is not null
+		GROUP BY tp_player.name, tp_player.tpid
+		HAVING COUNT(*) > 1
+		ORDER BY rank ASC, games DESC
+		LIMIT 10
+	`, [playerID], 'all')
+
+	console.log(raw, playerID)
+
+	return raw
+}
+
+async function getBestAgainst(playerID) {
+	let raw = await db.select(`
+		SELECT
+			RANK() OVER (
+				ORDER BY
+					ROUND(
+						(
+							COUNT(*) FILTER (WHERE tp_playergame.winner = true)
+							/
+							COUNT(*)::DECIMAL
+						) * 100
+					, 2) DESC
+			) rank,
+			tp_player.name,
+			tp_player.tpid,
+			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
+			COUNT(*) as games
+
+		FROM tp_playergame
+		LEFT JOIN tp_player on tp_player.id = tp_playergame.playerid
+		JOIN (
+			SELECT
+				DISTINCT gameid, team
+			FROM tp_playergame pg
+			WHERE pg.playerid = $1
+		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team != subquery.team
 
 		WHERE
 			playerid != $1 AND tp_player.tpid is not null
