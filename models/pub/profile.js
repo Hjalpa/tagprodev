@@ -155,8 +155,6 @@ async function getBestMaps(profileID) {
 					COUNT(*)::DECIMAL
 				) * 100
 			, 0) || '%' as winrate,
-			COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS wins,
-			COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS losses,
 			COUNT(*) as games
 
 		FROM tp_playergame
@@ -220,8 +218,6 @@ async function getBestWith(playerID) {
 			tp_player.name,
 			tp_player.tpid,
 			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
-			COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS wins,
-			COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS losses,
 			COUNT(*) AS games,
 			(SELECT flair from tp_playergame as tppg where tppg.playerid = tp_playergame.playerid ORDER by id DESC LIMIT 1) as flair
 
@@ -274,8 +270,6 @@ async function getBestAgainst(playerID) {
 			tp_player.name,
 			tp_player.tpid,
 			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
-			COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS wins,
-			COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS losses,
 			COUNT(*) AS games,
 			(SELECT flair from tp_playergame as tppg where tppg.playerid = tp_playergame.playerid ORDER by id DESC LIMIT 1) as flair
 
