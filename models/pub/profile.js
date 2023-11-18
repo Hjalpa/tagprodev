@@ -205,7 +205,7 @@ WITH PlayerStats AS (
         WHERE pg.playerid = $1
     ) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
     WHERE
-        playerid != 961 AND tp_player.tpid IS NOT NULL
+        playerid != $1 AND tp_player.tpid IS NOT NULL
     GROUP BY tp_player.id
     ORDER BY total_games DESC
 )
