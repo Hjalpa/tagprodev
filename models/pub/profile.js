@@ -235,7 +235,7 @@ async function getBestWith(playerID) {
 		WHERE
 			playerid != $1 AND tp_player.tpid IS NOT NULL
 		GROUP BY tp_player.name, tp_player.tpid
-		HAVING count(*) >= (SELECT AVG(total_games::DECIMAL) FROM PlayerStats)
+		HAVING count(*) >= (SELECT AVG(total_games::DECIMAL) FROM PlayerStats) AND ((COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100) >= 50
 		ORDER BY rank ASC, games DESC
 		LIMIT 10
 	`, [playerID], 'all')
