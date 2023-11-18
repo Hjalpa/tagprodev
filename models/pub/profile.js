@@ -203,6 +203,8 @@ async function getBestWith(playerID) {
 			tp_player.name,
 			tp_player.tpid,
 			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
+			COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS wins,
+			COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS losses,
 			COUNT(*) as games
 
 		FROM tp_playergame
@@ -241,6 +243,8 @@ async function getBestAgainst(playerID) {
 			tp_player.name,
 			tp_player.tpid,
 			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
+			COUNT(*) FILTER (WHERE tp_playergame.winner = false) AS wins,
+			COUNT(*) FILTER (WHERE tp_playergame.winner = true) AS losses,
 			COUNT(*) as games
 
 		FROM tp_playergame
