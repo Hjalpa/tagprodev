@@ -13,7 +13,7 @@ module.exports.init = async (req, res) => {
 				month: await getStats(profileID, 'month'),
 				all: await getStats(profileID, 'all'),
 			},
-			games: await getGames(profileID),
+			games: await getGames(playerID),
 			skillPerDay: await getSkillPerDay(profileID),
 			top: {
 				maps: await getBestMaps(profileID),
@@ -113,7 +113,7 @@ async function getStats(profileID, datePeriod) {
 	return raw ? raw : defaults
 }
 
-async function getGames(profileID) {
+async function getGames(playerID) {
 	let raw = await db.select(`
 		SELECT
 			pg.datetime,
@@ -124,13 +124,16 @@ async function getGames(profileID) {
 			pg.cap_team_for,
 			pg.cap_team_against,
 			pg.openskill,
-			Round(pg.openskill::DECIMAL - LAG(pg.openskill) OVER (ORDER BY pg.datetime)::DECIMAL, 2) AS openskill_change
+			Round(pg.openskill::DECIMAL - LAG(pg.openskill) OVER (ORDER BY pg.datetime)::DECIMAL, 2) AS openskill_change,
+			m.name
+
 		FROM tp_playergame as pg
-		LEFT JOIN tp_player as p ON p.id = pg.playerid
-		WHERE p.tpid = $1
+		LEFT JOIN tp_game as g ON g.id = pg.gameid
+		LEFT JOIN tp_map as m ON m.id = g.mapid
+		WHERE pg.playerid = $1
 		ORDER BY datetime DESC
 		LIMIT 50
-	`, [profileID], 'all')
+	`, [playerID], 'all')
 
 	return raw
 }
