@@ -123,7 +123,8 @@ async function getGames(profileID) {
 			pg.winner,
 			pg.cap_team_for,
 			pg.cap_team_against,
-			pg.openskill
+			pg.openskill,
+			pg.openskill - LAG(pg.openskill) OVER (ORDER BY pg.datetime) AS openskillchange
 		FROM tp_playergame as pg
 		LEFT JOIN tp_player as p ON p.id = pg.playerid
 		WHERE p.tpid = $1
