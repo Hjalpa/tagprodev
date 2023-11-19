@@ -117,7 +117,7 @@ async function getGames(playerID) {
 	let raw = await db.select(`
 		SELECT
 			pg.datetime,
-			pg.duration,
+			TO_CHAR(pg.duration * interval '1 sec', 'mi:ss') as duration,
 			pg.finished,
 			pg.team,
 			pg.winner,
