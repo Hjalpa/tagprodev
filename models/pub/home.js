@@ -46,9 +46,15 @@ async function getGames() {
           ARRAY(
 				select json_build_object('name', tp_player.name)
                 from tp_playergame
-                left join tp_player on to_player.id = tp_playergame.playerid
-                where tp_playergame.gameid = tp_game.id
-            ) AS players
+                left join tp_player on tp_player.id = tp_playergame.playerid
+                where tp_playergame.gameid = tp_game.id and tp_playergame.team = 1
+            ) AS red_team,
+          ARRAY(
+				select json_build_object('name', tp_player.name)
+                from tp_playergame
+                left join tp_player on tp_player.id = tp_playergame.playerid
+                where tp_playergame.gameid = tp_game.id and tp_playergame.team = 2
+            ) AS blue_team
 
 
 		FROM tp_game
