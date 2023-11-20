@@ -41,7 +41,15 @@ async function getGames() {
 			tp_game.datetime,
 
 			tp_map.name as map,
-			tp_server.name as server
+			tp_server.name as server,
+
+          ARRAY(
+				select json_build_object('name', tp_player.name)
+                from tp_playergame
+                left join tp_player on to_player.id = tp_playergame.playerid
+                where tp_playergame.gameid = tp_game.id
+            ) AS players
+
 
 		FROM tp_game
 		LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
