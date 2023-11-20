@@ -20,7 +20,7 @@ module.exports.init = async (req, res) => {
 
 async function getData(datePeriod) {
 	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`)
-	let rankFilter= (datePeriod === 'all' ? '(SELECT openskill from tp_playergame as tppg where tppg.playerid = p.id ORDER by id DESC LIMIT 1)' : 'SUM(cap_team_for - cap_team_against)::real')
+	let rankFilter= (datePeriod === 'all' ? 'xpg.openskill' : 'SUM(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::real')
 
 	let raw = await db.select(`
 		SELECT
@@ -37,9 +37,9 @@ async function getData(datePeriod) {
 
 			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
 
-			SUM(cap_team_for)::real as CF,
-			SUM(cap_team_against)::real as CA,
-			SUM(cap_team_for - cap_team_against)::real as CD,
+			SUM(tp_playergame.cap_team_for)::real as CF,
+			SUM(tp_playergame.cap_team_against)::real as CA,
+			SUM(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::real as CD,
 
 			array(
 				SELECT jsonb_build_object(
@@ -53,16 +53,21 @@ async function getData(datePeriod) {
 				LIMIT 10
 			) as form,
 
-			TO_CHAR(SUM(duration) * interval '1 sec', 'hh24:mi:ss') as timeplayed,
+			TO_CHAR(SUM(tp_playergame.duration) * interval '1 sec', 'hh24:mi:ss') as timeplayed,
 			MAX(tp_playergame.datetime) as lastgame,
 
-			(SELECT Round(openskill::decimal, 2) from tp_playergame as tppg where tppg.playerid = p.id ORDER by id DESC LIMIT 1) as openskill,
-			(SELECT flair from tp_playergame as tppg where tppg.playerid = p.id ORDER by id DESC LIMIT 1) as flair
+			xpg.openskill as openskill,
+			xpg.flair as flair
 
 		FROM tp_playergame
 		LEFT JOIN tp_player as p ON p.id = tp_playergame.playerid
-		WHERE p.tpid is not null ${dateFilter} AND openskill is not null
-		GROUP BY p.name, p.id, profile
+		LEFT JOIN tp_playergame as xpg ON p.id = xpg.playerid AND xpg.datetime = (
+			SELECT MAX(datetime)
+			FROM tp_playergame
+			WHERE playerid = p.id
+		)
+		WHERE p.tpid is not null ${dateFilter} AND xpg.openskill is not null
+		GROUP BY p.name, p.id, profile, tp_playergame.playerid, xpg.openskill, xpg.flair
 		ORDER BY rank ASC, cd DESC, winrate DESC, wins DESC
 		LIMIT 100
 	`, [], 'all')
