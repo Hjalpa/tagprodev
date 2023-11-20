@@ -18,7 +18,7 @@ module.exports.init = async (req, res) => {
 async function getGamesPerDay() {
 	let raw = await db.select(`
 		SELECT
-			DATE(datetime) AS date,
+			TO_CHAR(DATE(datetime), 'YYYY-MM-DD') as date,
 			COUNT(*) AS games
 		FROM tp_game
 		GROUP BY date
