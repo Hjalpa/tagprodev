@@ -60,7 +60,7 @@ async function getGames() {
 		LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
 		LEFT JOIN tp_server ON tp_server.id = tp_game.serverid
 		ORDER BY tp_game.datetime DESC
-		LIMIT 50
+		LIMIT 10
 	`, [], 'all')
 
 	return raw
