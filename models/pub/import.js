@@ -12,6 +12,7 @@ module.exports.import = async (req, res) => {
 
 		raw.headers['content-type']
 		const data = raw.data.games
+		data.reverse()
 
 		for await(let row of data) {
 			let exists = await db.select('SELECT id FROM tp_game WHERE tpid = $1', [row.id], 'id')

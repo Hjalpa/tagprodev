@@ -55,10 +55,7 @@ async function savePlayers(raw, gameID) {
 		// clean up
 		delete data.name
 
-		let playerGameID = await db.insert('playergame', data)
-
-		if(!playerGameID)
-			throw 'Could not player game data: ' + db.error
+		await db.insert('playergame', data)
 	}
 }
 

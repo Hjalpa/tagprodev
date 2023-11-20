@@ -30,6 +30,7 @@ init.call = async () => {
 
 			console.log('searching '+name.acronym+' games')
 			let raw = await axios.get(`https://tagpro.eu/?search=team-official&name=` + name.acronym)
+			// let raw = await axios.get('https://tagpro.eu/?search=server&name=tagpro-amsterdam-test.koalabeast.com')
 
 			raw.headers['content-type']
 			const dom = new jsdom.JSDOM(raw.data)
