@@ -20,7 +20,7 @@ module.exports.init = async (req, res) => {
 
 async function getData(datePeriod) {
 	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`)
-	let rankFilter= (datePeriod === 'all' ? 'p.openskill' : 'SUM(cap_team_for - cap_team_against)::real')
+	let rankFilter= (datePeriod === 'all' ? '(SELECT openskill from tp_playergame as tppg where tppg.playerid = p.id ORDER by id DESC LIMIT 1)' : 'SUM(cap_team_for - cap_team_against)::real')
 
 	let raw = await db.select(`
 		SELECT
@@ -56,13 +56,13 @@ async function getData(datePeriod) {
 			TO_CHAR(SUM(duration) * interval '1 sec', 'hh24:mi:ss') as timeplayed,
 			MAX(tp_playergame.datetime) as lastgame,
 
-			ROUND(p.openskill::decimal, 2)::real as openskill,
+			(SELECT Round(openskill::decimal, 2) from tp_playergame as tppg where tppg.playerid = p.id ORDER by id DESC LIMIT 1) as openskill,
 			(SELECT flair from tp_playergame as tppg where tppg.playerid = p.id ORDER by id DESC LIMIT 1) as flair
 
 		FROM tp_playergame
 		LEFT JOIN tp_player as p ON p.id = tp_playergame.playerid
-		WHERE p.tpid is not null ${dateFilter} AND p.openskill is not null
-		GROUP BY p.name, p.id, p.openskill, profile
+		WHERE p.tpid is not null ${dateFilter} AND openskill is not null
+		GROUP BY p.name, p.id, profile
 		ORDER BY rank ASC, cd DESC, winrate DESC, wins DESC
 		LIMIT 100
 	`, [], 'all')

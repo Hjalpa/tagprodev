@@ -5,7 +5,7 @@ module.exports.init = async (req, res) => {
 		let profileID = req.params.profileID
 		let playerID = await getPlayerID(profileID)
 		res.json({
-			openskill: await getOpenSkill(profileID),
+			openskill: await getOpenSkill(playerID),
 			stats: {
 				day: await getStats(profileID, 'day'),
 				week: await getStats(profileID, 'week'),
@@ -37,15 +37,16 @@ async function getPlayerID(profileID) {
 	return raw
 }
 
-async function getOpenSkill(profileID) {
+async function getOpenSkill(playerID) {
 	let raw = await db.select(`
 		SELECT
 			ROUND(openskill::decimal, 2)::real as openskill
 
-		FROM tp_player
-		WHERE tpid = $1
+		FROM tp_playergame
+		WHERE playerid = $1
+		ORDER BY datetime DESC
 		LIMIT 1
-	`, [profileID], 'openskill')
+	`, [playerID], 'openskill')
 
 	return raw
 }
