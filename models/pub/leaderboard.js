@@ -56,7 +56,7 @@ async function getData(datePeriod) {
 			TO_CHAR(SUM(tp_playergame.duration) * interval '1 sec', 'hh24:mi:ss') as timeplayed,
 			MAX(tp_playergame.datetime) as lastgame,
 
-			xpg.openskill as openskill,
+			Round(xpg.openskill::decimal, 2)::serial as openskill,
 			xpg.flair as flair
 
 		FROM tp_playergame
