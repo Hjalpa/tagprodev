@@ -1,5 +1,4 @@
 const db = require ('../../lib/db')
-const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => {
 	try {

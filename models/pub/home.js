@@ -1,15 +1,13 @@
 const db = require ('../../lib/db')
-const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => {
 	try {
 		res.json({
-			total: {
-				gamesPerDay: await getGamesPerDay(),
-			},
-			recent: {
-				games: await getRecentGames(),
-				game: await getRecentGames(),
+			games: await getGames(),
+			gamesPerDay: await getGamesPerDay(),
+			top: {
+				maps: await getTopMaps(),
+				servers: await getTopServers(),
 			}
 		})
 	} catch(e) {
@@ -17,50 +15,79 @@ module.exports.init = async (req, res) => {
 	}
 }
 
-async function getRecentGames() {
+async function getGamesPerDay() {
 	let raw = await db.select(`
 		SELECT
-			RANK() OVER (
-				ORDER BY p.openskill::real DESC
-			)::real rank,
+			DATE(datetime) AS date,
+			COUNT(*) AS games
+		FROM tp_game
+		GROUP BY date
+		ORDER BY date DESC
+	`, [], 'all')
 
-			p.name as name,
-			p.tpid as profile,
+	return raw
+}
 
-			COUNT(*)::real as games,
-			COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
-			COUNT(*) filter (WHERE tp_playergame.winner = false)::real as losses,
+async function getGames() {
+	let raw = await db.select(`
+		select
+			tp_game.id,
+			tp_game.uuid,
+			tp_game.id,
+			tp_game.winner,
+			tp_game.redcaps,
+			tp_game.bluecaps,
+			tp_game.duration,
+			tp_game.datetime,
 
-			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
+			tp_map.name as map,
+			tp_server.name as server
 
-			SUM(cap_team_for)::real as CF,
-			SUM(cap_team_against)::real as CA,
-			SUM(cap_team_for - cap_team_against)::real as CD,
+		FROM tp_game
+		LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
+		LEFT JOIN tp_server ON tp_server.id = tp_game.serverid
+		ORDER BY tp_game.datetime DESC
+		LIMIT 50
+	`, [], 'all')
 
-			array(
-				SELECT jsonb_build_object(
-					'uuid', tp_game.uuid,
-					'winner', tp_playergame.winner
-				)
-				FROM tp_playergame
-				LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
-				WHERE tp_playergame.playerid = p.id
-				ORDER BY tp_playergame.datetime DESC
-				LIMIT 10
-			) as form,
+	return raw
+}
 
-			TO_CHAR(SUM(duration) * interval '1 sec', 'hh24:mi:ss') as timeplayed,
-			MAX(tp_playergame.datetime) as lastseen,
+async function getTopMaps() {
+	let raw = await db.select(`
+		SELECT
+			tp_map.name,
+			COUNT(*) AS games,
+			TO_CHAR(AVG(duration) * INTERVAL '1 millisecond', 'MI:SS') as avg_duration,
+			ROUND(SUM(1) FILTER(WHERE tp_game.winner = 1) * 100.0 / COUNT(*), 2) AS red_win_percentage,
+			ROUND(SUM(1) FILTER(WHERE tp_game.winner = 2) * 100.0 / COUNT(*), 2) AS blue_win_percentage,
+			max(tp_game.datetime) as date
 
-			ROUND(p.openskill::decimal, 2)::real as openskill,
-			(SELECT flair from tp_playergame as tppg where tppg.playerid = p.id ORDER by id DESC LIMIT 1) as flair
+		FROM tp_game
+		LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
+		GROUP BY tp_map.name
+		ORDER BY games DESC
+		LIMIT 20
+	`, [], 'all')
 
-		FROM tp_playergame
-		LEFT JOIN tp_player as p ON p.id = tp_playergame.playerid
-		WHERE p.tpid is not null ${dateFilter} AND p.openskill is not null
-		GROUP BY p.name, p.id, p.openskill, profile
-		ORDER BY rank ASC, cd DESC, winrate DESC, wins DESC
-		LIMIT 100
+	return raw
+}
+
+async function getTopServers() {
+	let raw = await db.select(`
+		SELECT
+			tp_server.name,
+			COUNT(*) AS games,
+			TO_CHAR(AVG(duration) * INTERVAL '1 millisecond', 'MI:SS') as avg_duration,
+			ROUND(SUM(1) FILTER(WHERE tp_game.winner = 1) * 100.0 / COUNT(*), 2) AS red_win_percentage,
+			ROUND(SUM(1) FILTER(WHERE tp_game.winner = 2) * 100.0 / COUNT(*), 2) AS blue_win_percentage,
+			max(tp_game.datetime) as date
+
+		FROM tp_game
+		LEFT JOIN tp_server ON tp_server.id = tp_game.serverid
+		GROUP BY tp_server.name
+		ORDER BY games DESC
+		LIMIT 20
 	`, [], 'all')
 
 	return raw
