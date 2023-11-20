@@ -37,7 +37,7 @@ async function getGames() {
 			tp_game.winner,
 			tp_game.redcaps,
 			tp_game.bluecaps,
-			tp_game.duration,
+			TO_CHAR(duration * INTERVAL '1 millisecond', 'MI:SS') as duration,
 			tp_game.datetime,
 
 			tp_map.name as map,
