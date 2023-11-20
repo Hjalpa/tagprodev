@@ -44,18 +44,17 @@ async function getGames() {
 			tp_server.name as server,
 
           ARRAY(
-				select json_build_object('name', tp_player.name, 'flair', tp_playergame.flair, 'openskill_change', tp_playergame.openskill_change)
+				select json_build_object('name', tp_player.name, 'flair', tp_playergame.flair)
                 from tp_playergame
                 left join tp_player on tp_player.id = tp_playergame.playerid
                 where tp_playergame.gameid = tp_game.id and tp_playergame.team = 1
             ) AS red_team,
           ARRAY(
-				select json_build_object('name', tp_player.name, 'flair', tp_playergame.flair, 'openskill_change', tp_playergame.openskill_change)
+				select json_build_object('name', tp_player.name, 'flair', tp_playergame.flair)
                 from tp_playergame
                 left join tp_player on tp_player.id = tp_playergame.playerid
                 where tp_playergame.gameid = tp_game.id and tp_playergame.team = 2
             ) AS blue_team
-
 
 		FROM tp_game
 		LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
