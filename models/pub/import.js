@@ -132,7 +132,7 @@ async function getPlayers(data) {
 				}
 			}
 
-			if(rawPlayers.length < 6)
+			if(rawPlayers.length < 8)
 				throw 'There are not enough players playing: ' + rawPlayers.length
 
 			// remove duplicate players
@@ -264,5 +264,5 @@ function checkEvenTeams(arr) {
   const team1Count = teamCounts[1] || 0;
   const team2Count = teamCounts[2] || 0;
 
-  return team1Count >= 3 && team2Count >= 3;
+  return team1Count >= 4 && team2Count >= 4;
 }
