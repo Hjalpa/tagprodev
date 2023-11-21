@@ -12,7 +12,7 @@ module.exports.init = async (req, res) => {
 
 async function getGames() {
 	let raw = await db.select(`
-		select
+		SELECT
 			tp_game.id,
 			tp_game.uuid,
 			tp_game.id,
@@ -25,31 +25,44 @@ async function getGames() {
 			tp_map.name as map,
 			tp_server.name as server,
 
-          ARRAY(
-				select json_build_object('name', tp_player.name, 'flair', tp_playergame.flair, 'openskill', tp_playergame - xpg.openskill)
-                from tp_playergame
-                left join tp_player on tp_player.id = tp_playergame.playerid
-
-				LEFT JOIN tp_playergame as xpg ON p.id = xpg.playerid AND xpg.datetime = (
-					SELECT MAX(datetime)
-					FROM tp_playergame
-					WHERE playerid = p.id
+			ARRAY(
+				select json_build_object(
+					'name', tp_player.name, 'flair', pg.flair,
+					'change', Round(xpg.openskill::decimal - pg.openskill::decimal, 2)::real,
+					'old', xpg.openskill,
+					'current', pg.openskill
 				)
-
-                where tp_playergame.gameid = tp_game.id and tp_playergame.team = 1
-            ) AS red_team,
-          ARRAY(
-				select json_build_object('name', tp_player.name, 'flair', tp_playergame.flair)
-                from tp_playergame
-                left join tp_player on tp_player.id = tp_playergame.playerid
-                where tp_playergame.gameid = tp_game.id and tp_playergame.team = 2
-            ) AS blue_team
+				from tp_playergame as pg
+				left join tp_player on tp_player.id = pg.playerid
+				LEFT JOIN tp_playergame as xpg ON tp_player.id = xpg.playerid AND xpg.datetime = (
+					SELECT max(datetime)
+					FROM tp_playergame
+					WHERE playerid = tp_player.id AND tp_playergame.gameid < pg.gameid
+				)
+				where pg.gameid = tp_game.id and pg.team = 1
+			) AS red_team,
+			ARRAY(
+				select json_build_object(
+					'name', tp_player.name, 'flair', pg.flair,
+					'change', Round(xpg.openskill::decimal - pg.openskill::decimal, 2)::real,
+					'old', xpg.openskill,
+					'current', pg.openskill
+				)
+				from tp_playergame as pg
+				left join tp_player on tp_player.id = pg.playerid
+				LEFT JOIN tp_playergame as xpg ON tp_player.id = xpg.playerid AND xpg.datetime = (
+					SELECT max(datetime)
+					FROM tp_playergame
+					WHERE playerid = tp_player.id AND tp_playergame.gameid < pg.gameid
+				)
+				where pg.gameid = tp_game.id and pg.team = 2
+			) AS blue_team
 
 		FROM tp_game
 		LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
 		LEFT JOIN tp_server ON tp_server.id = tp_game.serverid
 		ORDER BY tp_game.datetime DESC
-		LIMIT 10
+		LIMIT 20
 	`, [], 'all')
 
 	return raw
