@@ -1,5 +1,10 @@
+v1.3.1 	21th Nov 2023
+* Added True Pub Profile API
+* Added True Pub History API
+* Added True Pub Home API
+
 v1.3.0 	15th Nov 2023
-* Added True Leaderboards API
+* Added True Pub API
 
 v1.2.2 	16th May 2023
 * Added all-time records page
