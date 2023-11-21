@@ -38,7 +38,6 @@ async function makeGame(data) {
 			let players = await getPlayers(data)
 			// save game
 			let gameID = await saveGame(data)
-			console.log('Added ' + gameID)
 			// save players
 			await savePlayers(players, gameID, data)
 			// update openskill
@@ -136,6 +135,14 @@ async function getPlayers(data) {
 			if(rawPlayers.length < 6)
 				throw 'There are not enough players playing: ' + rawPlayers.length
 
+			// remove duplicate players
+			rawPlayers = removePlayerDuplicatesAndPreserveNull(rawPlayers)
+
+			// check that there are at least 3 players on each team
+			let evenTeams = checkEvenTeams(rawPlayers)
+			if(!evenTeams)
+				throw 'Teams are not even'
+
 			return rawPlayers
 		}
 	}
@@ -226,4 +233,36 @@ function isWinner(player, gameData) {
 		return true
 	else
 		return false
+}
+
+function removePlayerDuplicatesAndPreserveNull(arr) {
+  const seen = {};
+  const result = [];
+
+  arr.reverse()
+
+  arr.forEach((item) => {
+    if (item.userId === null || !seen[item.userId]) {
+      result.push(item);
+      seen[item.userId] = true;
+    }
+  });
+
+  return result;
+}
+
+function checkEvenTeams(arr) {
+  const teamCounts = {};
+
+  // Count the number of entries for each team
+  arr.forEach((item) => {
+    const teamId = item.team;
+    teamCounts[teamId] = (teamCounts[teamId] || 0) + 1;
+  });
+
+  // Check if each team has at least 3 entries
+  const team1Count = teamCounts[1] || 0;
+  const team2Count = teamCounts[2] || 0;
+
+  return team1Count >= 3 && team2Count >= 3;
 }
