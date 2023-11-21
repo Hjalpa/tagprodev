@@ -42,9 +42,7 @@ async function getGames() {
 			ARRAY(
 				select json_build_object(
 					'name', tp_player.name, 'flair', pg.flair,
-					'change', Round(pg.openskill::decimal - xpg.openskill::decimal, 2)::real,
-					'old', xpg.openskill,
-					'current', pg.openskill
+					'openskill_change', Round(pg.openskill::decimal - xpg.openskill::decimal, 2)::real
 				)
 				from tp_playergame as pg
 				left join tp_player on tp_player.id = pg.playerid
