@@ -40,6 +40,7 @@ async function getGames() {
 					WHERE playerid = tp_player.id AND tp_playergame.gameid < pg.gameid
 				)
 				where pg.gameid = tp_game.id and pg.team = 1
+				ORDER BY pg.finished DESC
 			) AS red_team,
 			ARRAY(
 				select json_build_object(
@@ -55,6 +56,7 @@ async function getGames() {
 					WHERE playerid = tp_player.id AND tp_playergame.gameid < pg.gameid
 				)
 				where pg.gameid = tp_game.id and pg.team = 2
+				ORDER BY pg.finished DESC
 			) AS blue_team
 
 		FROM tp_game
