@@ -41,7 +41,7 @@ async function getGames() {
 			) AS red_team,
 			ARRAY(
 				select json_build_object(
-					'name', tp_player.name, 'flair', pg.flair,
+					'name', tp_player.name, 'flair', pg.flair, 'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - xpg.openskill::decimal, 2)::real
 				)
 				from tp_playergame as pg
