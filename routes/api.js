@@ -36,7 +36,7 @@ router.post('/spy/update', (req, res) => spy.update(req, res))
 
 // pub data
 router.post('/pub/import', (req, res) => require('../models/pub/import').import(req, res))
-router.get('/pub/home', cacheMiddleware(5), (req, res) => require('../models/pub/home').init(req, res))
+router.get('/pub/home', (req, res) => require('../models/pub/home').init(req, res))
 router.get('/pub/leaderboard', cacheMiddleware(10), (req, res) => require('../models/pub/leaderboard').init(req, res))
 router.get('/pub/history', cacheMiddleware(10), (req, res) => require('../models/pub/history').init(req, res))
 router.get('/pub/profile/:profileID', cacheMiddleware(10), (req, res) => require('../models/pub/profile').init(req, res))

@@ -28,7 +28,9 @@ async function getGames() {
 
 			ARRAY(
 				select json_build_object(
-					'name', tp_player.name, 'flair', pg.flair, 'tpid', tp_player.tpid,
+					'name', tp_player.name,
+					'flair', pg.flair,
+					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'finished', pg.finished
 				)
@@ -40,11 +42,13 @@ async function getGames() {
 					WHERE playerid = tp_player.id AND tp_playergame.gameid < pg.gameid
 				)
 				where pg.gameid = tp_game.id and pg.team = 1
-				ORDER BY pg.finished DESC
+				ORDER BY pg.finished DESC, pg.openskill DESC
 			) AS red_team,
 			ARRAY(
 				select json_build_object(
-					'name', tp_player.name, 'flair', pg.flair, 'tpid', tp_player.tpid,
+					'name', tp_player.name,
+					'flair', pg.flair,
+					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'finished', pg.finished
 				)
@@ -56,7 +60,7 @@ async function getGames() {
 					WHERE playerid = tp_player.id AND tp_playergame.gameid < pg.gameid
 				)
 				where pg.gameid = tp_game.id and pg.team = 2
-				ORDER BY pg.finished DESC
+				ORDER BY pg.finished DESC, pg.openskill DESC
 			) AS blue_team
 
 		FROM tp_game
