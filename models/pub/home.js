@@ -26,9 +26,16 @@ async function getGames() {
 			tp_server.name as server,
 
           ARRAY(
-				select json_build_object('name', tp_player.name, 'flair', tp_playergame.flair)
+				select json_build_object('name', tp_player.name, 'flair', tp_playergame.flair, 'openskill', tp_playergame - xpg.openskill)
                 from tp_playergame
                 left join tp_player on tp_player.id = tp_playergame.playerid
+
+				LEFT JOIN tp_playergame as xpg ON p.id = xpg.playerid AND xpg.datetime = (
+					SELECT MAX(datetime)
+					FROM tp_playergame
+					WHERE playerid = p.id
+				)
+
                 where tp_playergame.gameid = tp_game.id and tp_playergame.team = 1
             ) AS red_team,
           ARRAY(
