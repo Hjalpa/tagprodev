@@ -27,7 +27,7 @@ async function getGames() {
 
 			ARRAY(
 				select json_build_object(
-					'name', tp_player.name, 'flair', pg.flair,
+					'name', tp_player.name, 'flair', pg.flair, 'tpid', tp_player.tpid,
 					'change', Round(xpg.openskill::decimal - pg.openskill::decimal, 2)::real,
 					'old', xpg.openskill,
 					'current', pg.openskill
