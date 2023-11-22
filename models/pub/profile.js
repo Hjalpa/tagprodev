@@ -7,6 +7,7 @@ module.exports.init = async (req, res) => {
 		res.json({
 			openSkill: {
 				best: await getBestSkill(playerID)
+
 			},
 			stats: {
 				day: await getStats(profileID, 'day'),
