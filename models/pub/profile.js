@@ -6,7 +6,7 @@ module.exports.init = async (req, res) => {
 		let playerID = await getPlayerID(profileID)
 		res.json({
 			openSkill: {
-				best: await getBestSkill(profileID)
+				best: await getBestSkill(playerID)
 			},
 			stats: {
 				day: await getStats(profileID, 'day'),
@@ -43,11 +43,11 @@ async function getBestSkill(playerID) {
 	let raw = await db.select(`
 		SELECT
 			openskill
-		FROM tp_player
+		FROM tp_playergame
 		WHERE playerid = $1
 		ORDER BY openskill DESC
 		LIMIT 1
-	`, [profileID], 'id')
+	`, [playerID], 'openskill')
 
 	return raw
 }
