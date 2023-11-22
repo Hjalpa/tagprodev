@@ -71,10 +71,11 @@ async function getStats(profileID, datePeriod) {
 		"Games": 0,
 		"Wins": 0,
 		"Losses": 0,
+		"Quits": 0,
 		"Caps For": 0,
 		"Caps Against": 0,
 		"Cap Difference": 0,
-		"Time Played": "00:00:00"
+		"Time Played": "00:00:00",
 	}
 
 	let raw = await db.select(`
@@ -83,6 +84,7 @@ async function getStats(profileID, datePeriod) {
 			COALESCE(COUNT(*)::REAL, 0) as "Games",
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::REAL as "Wins",
 			COUNT(*) filter (WHERE tp_playergame.winner = false)::REAL as "Losses",
+			COUNT(*) filter (WHERE tp_playergame.finished = false)::REAL as "Quits",
 			SUM(cap_team_for)::REAL as "Caps For",
 			SUM(cap_team_against)::REAL as "Caps Against",
 			SUM(cap_team_for - cap_team_against)::REAL as "Cap Difference",
