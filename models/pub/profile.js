@@ -5,6 +5,9 @@ module.exports.init = async (req, res) => {
 		let profileID = req.params.profileID
 		let playerID = await getPlayerID(profileID)
 		res.json({
+			openSkill: {
+				best: await getBestSkill(profileID)
+			},
 			stats: {
 				day: await getStats(profileID, 'day'),
 				week: await getStats(profileID, 'week'),
@@ -30,6 +33,19 @@ async function getPlayerID(profileID) {
 			id
 		FROM tp_player
 		WHERE tpid = $1
+		LIMIT 1
+	`, [profileID], 'id')
+
+	return raw
+}
+
+async function getBestSkill(playerID) {
+	let raw = await db.select(`
+		SELECT
+			openskill
+		FROM tp_player
+		WHERE playerid = $1
+		ORDER BY openskill DESC
 		LIMIT 1
 	`, [profileID], 'id')
 
