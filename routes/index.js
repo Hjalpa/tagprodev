@@ -64,6 +64,7 @@ router.get('/records/:mode/:tier', (req, res) => require('../models/records').in
 
 router.get('/rules', (req, res) => require('../models/markdown').init(req, res, 'rules'))
 router.get('/faq', (req, res) => require('../models/markdown').init(req, res, 'faq'))
+router.get('/rankedpubs', (req, res) => require('../models/markdown').init(req, res, 'rankedpubs'))
 
 router.use('/:mode/:season', getSeason, require('./season'))
 
