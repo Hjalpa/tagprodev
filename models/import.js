@@ -1,16 +1,11 @@
 const exec = require('child_process').exec
 const db = require ('../lib/db')
 const util = require ('../lib/util')
-const routeCache = require('route-cache')
 
 module.exports.game = async (req, res) => await game(req, res)
 let game = async (req, res) => {
 	if(req.body.euid && req.body.seasonid)
 		await makeGame(req.body, res)
-
-	routeCache.removeCache('/api/pub/home')
-	routeCache.removeCache('/api/pub/leaderboard')
-	routeCache.removeCache('/api/pub/history')
 }
 
 async function makeGame(param, res) {
@@ -39,6 +34,7 @@ async function makeGame(param, res) {
 			} finally {
 				res.json(data)
 			}
+
 		})
 	}
 }

@@ -2,6 +2,7 @@ const axios = require('axios')
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
 const openskill = require ('../../lib/openskill')
+const routeCache = require('route-cache')
 
 module.exports.import = async (req, res) => {
 	try {
@@ -19,6 +20,10 @@ module.exports.import = async (req, res) => {
 			if(!exists)
 				await makeGame(row)
 		}
+
+		routeCache.removeCache('/api/pub/home')
+		routeCache.removeCache('/api/pub/leaderboard')
+		routeCache.removeCache('/api/pub/history')
 	}
 
 	catch(e) {
