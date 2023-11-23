@@ -11,7 +11,6 @@ let game = async (req, res) => {
 	routeCache.removeCache('/api/pub/home')
 	routeCache.removeCache('/api/pub/leaderboard')
 	routeCache.removeCache('/api/pub/history')
-	routeCache.removeCache('/api/pub/*')
 }
 
 async function makeGame(param, res) {
