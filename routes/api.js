@@ -1,26 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const cache = require('memory-cache')
-
-let memCache = new cache.Cache()
-let cacheMiddleware = duration => {
-	return (req, res, next) => {
-		let key =  '__express__' + req.originalUrl || req.url
-		let cacheContent = memCache.get(key)
-		if(cacheContent){
-			res.send(cacheContent)
-			return
-		}else{
-			res.sendResponse = res.send
-			res.send = body => {
-				// duration is in seconds
-				memCache.put(key,body, ((1 * 1000 * 60 * 60) / 60) * duration)
-				res.sendResponse(body)
-			}
-			next()
-		}
-	}
-}
+const routeCache = require('route-cache')
 
 const imp = require('../models/import')
 router.post('/import', (req, res) => imp.game(req, res))
@@ -36,9 +16,9 @@ router.post('/spy/update', (req, res) => spy.update(req, res))
 
 // pub data
 router.post('/pub/import', (req, res) => require('../models/pub/import').import(req, res))
-router.get('/pub/home', cacheMiddleware(4), (req, res) => require('../models/pub/home').init(req, res))
-router.get('/pub/leaderboard', cacheMiddleware(4), (req, res) => require('../models/pub/leaderboard').init(req, res))
-router.get('/pub/history', cacheMiddleware(4), (req, res) => require('../models/pub/history').init(req, res))
-router.get('/pub/profile/:profileID', cacheMiddleware(4), (req, res) => require('../models/pub/profile').init(req, res))
+router.get('/pub/home', routeCache.cacheSeconds(60*5), (req, res) => require('../models/pub/home').init(req, res))
+router.get('/pub/leaderboard', routeCache.cacheSeconds(60*5), (req, res) => require('../models/pub/leaderboard').init(req, res))
+router.get('/pub/history', routeCache.cacheSeconds(60*5), (req, res) => require('../models/pub/history').init(req, res))
+router.get('/pub/profile/:profileID', routeCache.cacheSeconds(60*5), (req, res) => require('../models/pub/profile').init(req, res))
 
 module.exports = router
