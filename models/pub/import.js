@@ -248,19 +248,24 @@ function isWinner(player, gameData) {
 }
 
 function removePlayerDuplicatesAndPreserveNull(arr) {
-  const seen = {};
-  const result = [];
+    const seenReal = {};
+    const seenFake = {};
+    const result = [];
 
-  arr.reverse()
+    arr.reverse()
 
-  arr.forEach((item) => {
-    if (item.userId === null || !seen[item.userId]) {
-      result.push(item);
-      seen[item.userId] = true;
+    for (let player of arr) {
+        if (!seenReal[player.userId] && player.userId != null) { // real players. no duplicates
+            result.push(player);
+            seenReal[player.userId] = true;
+        }
+      else if (!seenFake[player.displayName] && player.userId == null) { // fake player
+            result.push(player);
+            seenFake[player.displayName] = true;
+        }
     }
-  });
 
-  return result;
+    return result;
 }
 
 function checkEvenTeams(arr) {

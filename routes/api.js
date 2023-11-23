@@ -21,4 +21,6 @@ router.get('/pub/leaderboard', routeCache.cacheSeconds(60*5), (req, res) => requ
 router.get('/pub/history', routeCache.cacheSeconds(60*5), (req, res) => require('../models/pub/history').init(req, res))
 router.get('/pub/profile/:profileID', routeCache.cacheSeconds(60*5), (req, res) => require('../models/pub/profile').init(req, res))
 
+router.get('/pub/import/anomrocks', (req, res) => require('../models/pub/import').import(req, res))
+
 module.exports = router
