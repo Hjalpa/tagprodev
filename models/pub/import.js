@@ -56,7 +56,7 @@ async function makeGame(data) {
 		}
 		catch(error) {
 			await db.insert('tp_gameexclude', {
-				tpid: data.tpid,
+				tpid: data.id,
 				error: error
 			})
 			console.log(error)
