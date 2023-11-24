@@ -16,7 +16,7 @@ module.exports.import = async (req, res) => {
 		data.reverse()
 
 		for await(let row of data) {
-			let exists = await db.select('SELECT id FROM tp_game WHERE tpid = $1', [row.id], 'id')
+			let exists = await db.select('SELECT id FROM tp_gameexclude WHERE tpid = $1', [row.id], 'id')
 			if(!exists)
 				await makeGame(row)
 		}
@@ -55,6 +55,10 @@ async function makeGame(data) {
 			await openskill.rank(gameID)
 		}
 		catch(error) {
+			await db.insert('tp_gameexclude', {
+				tpid: data.tpid,
+				error: error
+			})
 			console.log(error)
 		}
 	}
