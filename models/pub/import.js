@@ -296,12 +296,10 @@ async function preventExploitChangingNameAfterLoad(players, lines) {
 			let id = playerData.for
 			let name = playerData.message.split(' has joined the')[0]
 
-			console.log(playerData)
 			updateEntry(id, name, players)
 		}
 
 	}
-	console.log(players)
 	return players
 }
 
