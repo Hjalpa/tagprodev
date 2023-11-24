@@ -1,6 +1,5 @@
 const axios = require('axios')
 const db = require ('../../lib/db')
-const util = require ('../../lib/util')
 const openskill = require ('../../lib/openskill')
 const routeCache = require('route-cache')
 
@@ -155,6 +154,9 @@ async function getPlayers(data) {
 			if(!evenTeams)
 				throw 'Teams are not even'
 
+			// prevent people exploiting name change. e.g. start game with stats off and displayName, and switch to reservedName when about to win.
+			rawPlayers = await preventExploitChangingNameAfterLoad(rawPlayers, raw.data.trim().split('\n'))
+
 			return rawPlayers
 		}
 	}
@@ -282,4 +284,33 @@ function checkEvenTeams(arr) {
   const team2Count = teamCounts[2] || 0;
 
   return team1Count >= 4 && team2Count >= 4;
+}
+
+async function preventExploitChangingNameAfterLoad(players, lines) {
+	const seen = {}
+	for (let line of lines) {
+		if(line.includes('from":null') && line.includes('has joined the')) {
+			let jsonArray = await JSON.parse(line)
+			let playerData = jsonArray[2]
+
+			let id = playerData.for
+			let name = playerData.message.split(' has joined the')[0]
+
+			console.log(playerData)
+			updateEntry(id, name, players)
+		}
+
+	}
+	console.log(players)
+	return players
+}
+
+function updateEntry(id, displayName, inputData) {
+	const index = inputData.findIndex(entry => entry.id === id)
+	if (index !== -1) {
+		if(inputData[index].displayName != displayName) {
+			inputData[index].displayName = displayName
+			inputData[index].userId = null
+		}
+	}
 }
