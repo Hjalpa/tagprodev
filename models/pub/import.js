@@ -140,9 +140,6 @@ async function getPlayers(data) {
 
 			let rawPlayers = []
 			for(let player of players) {
-				if(player.displayName === 'anom')
-					throw 'ignore games with anom whilst testing'
-
 				let timePlayed = getTimestampDifferenceInSeconds(player.joined, player.left)
 				if(timePlayed >= 30) {
 					player.flair = await getFlair(player.displayName, raw.data.trim().split('\n'))
