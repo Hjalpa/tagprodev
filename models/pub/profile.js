@@ -122,6 +122,7 @@ async function getGames(playerID) {
 			pg.datetime,
 			TO_CHAR(pg.duration * interval '1 sec', 'mi:ss') as duration,
 			pg.finished,
+			pg.saveattempt,
 			pg.team,
 			pg.winner,
 			pg.cap_team_for,
