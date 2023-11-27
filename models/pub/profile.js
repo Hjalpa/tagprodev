@@ -190,7 +190,7 @@ async function getBestMaps(profileID) {
 			) AS map_avg_games
 		)
 		ORDER BY rank ASC
-		LIMIT 10
+		LIMIT 15
 	`, [profileID], 'all')
 
 	return raw
@@ -220,7 +220,7 @@ async function getBestWith(playerID) {
 			playerid != $1 AND tp_player.tpid IS NOT NULL
 		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
 		ORDER BY rank ASC
-		LIMIT 10
+		LIMIT 15
 	`, [playerID], 'all')
 
 	return raw
@@ -250,7 +250,7 @@ async function getBestAgainst(playerID) {
 			playerid != $1 AND tp_player.tpid IS NOT NULL
 		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
 		ORDER BY rank ASC
-		LIMIT 20
+		LIMIT 15
 	`, [playerID], 'all')
 
 	return raw
