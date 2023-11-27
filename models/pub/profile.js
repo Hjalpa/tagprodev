@@ -17,7 +17,7 @@ module.exports.init = async (req, res) => {
 			games: await getGames(playerID),
 			skillPerDay: await getSkillPerDay(profileID),
 			top: {
-				maps: await getBestMaps(profileID),
+				maps: await getBestMaps(playerID),
 				with: await getBestWith(playerID),
 				against: await getBestAgainst(playerID),
 			}
@@ -142,18 +142,12 @@ async function getGames(playerID) {
 	return raw
 }
 
-async function getBestMaps(profileID) {
+async function getBestMaps(playerID) {
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
 				ORDER BY
-					ROUND(
-						(
-							COUNT(*) FILTER (WHERE tp_playergame.winner = true)
-							/
-							COUNT(*)::DECIMAL
-						) * 100
-					, 2) DESC, count(*) DESC
+					(COUNT(*) FILTER (WHERE tp_playergame.winner = true) + 0.1) / (count(*) + 1) DESC
 			) rank,
 			tp_map.name as map,
 			ROUND(
@@ -166,29 +160,11 @@ async function getBestMaps(profileID) {
 			COUNT(*) as games
 
 		FROM tp_playergame
-		LEFT JOIN tp_player on tp_player.id = tp_playergame.playerid
 		LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
 		LEFT JOIN tp_map on tp_map.id = tp_game.mapid
-
 		WHERE
-			tp_player.tpid = $1
+			tp_playergame.playerid = $1
 		GROUP BY tp_map.name
-		HAVING COUNT(*) > (
-			SELECT
-				AVG(avg_games) as overall_avg_games
-			FROM (
-				SELECT
-					AVG(count(*)) OVER (PARTITION BY tp_map.id) as avg_games
-				FROM
-					tp_playergame
-				LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
-				LEFT JOIN tp_game ON tp_game.id = tp_playergame.gameid
-				LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
-				WHERE
-					tp_player.tpid = $1
-				GROUP BY tp_map.id
-			) AS map_avg_games
-		)
 		ORDER BY rank ASC
 		LIMIT 15
 	`, [profileID], 'all')
