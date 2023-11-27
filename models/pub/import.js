@@ -203,6 +203,7 @@ async function savePlayers(raw, gameID, rawData) {
 			saveattempt: player.saveAttempt ? true: false
 		}
 
+
 		let playerGameID = await db.insert('tp_playergame', data)
 
 		if(!playerGameID) {
@@ -325,14 +326,14 @@ async function isSaveAttempt(players, lines) {
 	for (let line of lines) {
 		if(line.includes('from":null,"message":"This is a save attempt! A loss will not negatively impact your win %.",')) {
 			let arr = await JSON.parse(line)
-			let playerData = arr[2]
-			players = addSaveKey(players, playerData.id)
+			players = addSaveKey(players, arr[2].for)
 		}
 	}
 	function addSaveKey(objects, playerID) {
 		for (let i = 0; i < objects.length; i++) {
-			if (objects[i].id === playerID)
+			if (objects[i].id === playerID) {
 				objects[i].saveAttempt = true
+			}
 		}
 		return objects
 	}
