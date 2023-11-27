@@ -7,7 +7,7 @@ init= (() => {})
 init.call = async () => {
 	try {
 
-		// node auto_import [seasonid] [2023-03-20]
+		// node thread [seasonid] [2023-03-20]
 		if(!process.argv[2]) throw 'no seasonid param'
 		if(!process.argv[3]) throw 'no date param'
 

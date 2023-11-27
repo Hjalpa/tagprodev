@@ -198,30 +198,10 @@ async function getBestMaps(profileID) {
 
 async function getBestWith(playerID) {
 	let raw = await db.select(`
-		WITH PlayerStats AS (
-			SELECT
-				tp_player.id AS player_id,
-				COUNT(*) AS total_games
-			FROM
-				tp_playergame
-			LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
-			JOIN (
-				SELECT DISTINCT gameid, team
-				FROM tp_playergame pg
-				WHERE pg.playerid = $1
-			) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
-			WHERE
-				playerid != $1 AND tp_player.tpid IS NOT NULL
-			GROUP BY tp_player.id
-			ORDER BY total_games DESC
-		)
-
 		SELECT
 			RANK() OVER (
 				ORDER BY
-					ROUND(
-						(COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100
-					, 2) DESC, count(*) DESC
+					(COUNT(*) FILTER (WHERE tp_playergame.winner = true) + 0.25) / (count(*) + 1) DESC
 			) rank,
 			tp_player.name,
 			tp_player.tpid,
@@ -236,12 +216,10 @@ async function getBestWith(playerID) {
 			FROM tp_playergame pg
 			WHERE pg.playerid = $1
 		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
-		JOIN PlayerStats ON tp_player.id = PlayerStats.player_id
 		WHERE
 			playerid != $1 AND tp_player.tpid IS NOT NULL
 		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
-		HAVING count(*) >= (SELECT AVG(total_games::DECIMAL) FROM PlayerStats) AND ((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100) >= 50
-		ORDER BY rank ASC, games DESC
+		ORDER BY rank ASC
 		LIMIT 10
 	`, [playerID], 'all')
 
@@ -250,30 +228,10 @@ async function getBestWith(playerID) {
 
 async function getBestAgainst(playerID) {
 	let raw = await db.select(`
-		WITH PlayerStats AS (
-			SELECT
-				tp_player.id AS player_id,
-				COUNT(*) AS total_games
-			FROM
-				tp_playergame
-			LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
-			JOIN (
-				SELECT DISTINCT gameid, team
-				FROM tp_playergame pg
-				WHERE pg.playerid = $1
-			) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team != subquery.team
-			WHERE
-				playerid != $1 AND tp_player.tpid IS NOT NULL
-			GROUP BY tp_player.id
-			ORDER BY total_games DESC
-		)
-
 		SELECT
 			RANK() OVER (
 				ORDER BY
-					ROUND(
-						(COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100
-					, 2) DESC, count(*) DESC
+					(COUNT(*) FILTER (WHERE tp_playergame.winner = false) + 0.25) / (count(*) + 1) DESC
 			) rank,
 			tp_player.name,
 			tp_player.tpid,
@@ -288,13 +246,11 @@ async function getBestAgainst(playerID) {
 			FROM tp_playergame pg
 			WHERE pg.playerid = $1
 		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team != subquery.team
-		JOIN PlayerStats ON tp_player.id = PlayerStats.player_id
 		WHERE
 			playerid != $1 AND tp_player.tpid IS NOT NULL
 		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
-		HAVING count(*) >= (SELECT AVG(total_games::DECIMAL) FROM PlayerStats) AND ((COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100) >= 50
-		ORDER BY rank ASC, games DESC
-		LIMIT 10
+		ORDER BY rank ASC
+		LIMIT 20
 	`, [playerID], 'all')
 
 	return raw
