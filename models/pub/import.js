@@ -161,6 +161,9 @@ async function getPlayers(data) {
 			// prevent people exploiting name change. e.g. start game with stats off and displayName, and switch to reservedName when about to win.
 			rawPlayers = await preventExploitChangingNameAfterLoad(rawPlayers, raw.data.trim().split('\n'))
 
+			// is save attempt
+			rawPlayers = await isSaveAttempt(rawPlayers, raw.data.trim().split('\n'))
+
 			return rawPlayers
 		}
 	}
@@ -197,6 +200,7 @@ async function savePlayers(raw, gameID, rawData) {
 			cap_team_against: rawData.teams[(player.team == 2 ? 'red' : 'blue')].score,
 			flair: player.flair,
 			datetime: rawData.started,
+			saveattempt: player.saveAttempt ? true: false
 		}
 
 		let playerGameID = await db.insert('tp_playergame', data)
@@ -294,8 +298,8 @@ async function preventExploitChangingNameAfterLoad(players, lines) {
 	const seen = {}
 	for (let line of lines) {
 		if(line.includes('from":null') && line.includes('has joined the')) {
-			let jsonArray = await JSON.parse(line)
-			let playerData = jsonArray[2]
+			let arr = await JSON.parse(line)
+			let playerData = arr[2]
 
 			let id = playerData.for
 			let name = playerData.message.split(' has joined the')[0]
@@ -315,4 +319,22 @@ function updateEntry(id, displayName, inputData) {
 			inputData[index].userId = null
 		}
 	}
+}
+
+async function isSaveAttempt(players, lines) {
+	for (let line of lines) {
+		if(line.includes('from":null,"message":"This is a save attempt! A loss will not negatively impact your win %.",')) {
+			let arr = await JSON.parse(line)
+			let playerData = arr[2]
+			players = addSaveKey(players, playerData.id)
+		}
+	}
+	function addSaveKey(objects, playerID) {
+		for (let i = 0; i < objects.length; i++) {
+			if (objects[i].id === playerID)
+				objects[i].saveAttempt = true
+		}
+		return objects
+	}
+	return players
 }
