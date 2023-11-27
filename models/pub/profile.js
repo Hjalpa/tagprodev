@@ -201,7 +201,7 @@ async function getBestWith(playerID) {
 		SELECT
 			RANK() OVER (
 				ORDER BY
-					(COUNT(*) FILTER (WHERE tp_playergame.winner = true) + 0.15) / (count(*) + 1) DESC
+					(COUNT(*) FILTER (WHERE tp_playergame.winner = true) + 0.1) / (count(*) + 1) DESC
 			) rank,
 			tp_player.name,
 			tp_player.tpid,
@@ -231,7 +231,7 @@ async function getBestAgainst(playerID) {
 		SELECT
 			RANK() OVER (
 				ORDER BY
-					(COUNT(*) FILTER (WHERE tp_playergame.winner = false) + 0.15) / (count(*) + 1) DESC
+					(COUNT(*) FILTER (WHERE tp_playergame.winner = false) + 0.1) / (count(*) + 1) DESC
 			) rank,
 			tp_player.name,
 			tp_player.tpid,
