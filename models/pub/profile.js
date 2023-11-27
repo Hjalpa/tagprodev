@@ -167,7 +167,7 @@ async function getBestMaps(playerID) {
 		GROUP BY tp_map.name
 		ORDER BY rank ASC
 		LIMIT 15
-	`, [profileID], 'all')
+	`, [playerID], 'all')
 
 	return raw
 }
