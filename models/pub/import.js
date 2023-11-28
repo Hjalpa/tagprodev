@@ -142,7 +142,7 @@ async function getPlayers(data) {
 			for(let player of players) {
 				let timePlayed = getTimestampDifferenceInSeconds(player.joined, player.left)
 				if(timePlayed >= 30) {
-					player.flair = await getFlair(player.displayName, raw.data.trim().split('\n'))
+					player.flair = await getFlair(player.id, raw.data.trim().split('\n'))
 					rawPlayers.push(player)
 				}
 			}
@@ -169,9 +169,9 @@ async function getPlayers(data) {
 	}
 }
 
-async function getFlair(playerName, lines) {
+async function getFlair(playerID, lines) {
 	for (let line of lines) {
-		if(line.includes(playerName) && line.includes('flair":{"x":')) {
+		if(line.includes(`{"id":${playerID}`) && line.includes('flair":{"x":')) {
 			let json = await JSON.parse(line)
 			if(json[2][0].flair)
 				return {
