@@ -3,7 +3,7 @@ const db = require ('../../lib/db')
 module.exports.init = async (req, res) => {
 	try {
 		let profileID = req.params.profileID
-		let timezone = req.params.timezone
+		let timezone = req.body.timezone
 		let playerID = await getPlayerID(profileID)
 		res.json({
 			openskill: {
