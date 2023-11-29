@@ -5,6 +5,7 @@ module.exports.init = async (req, res) => {
 		let profileID = req.body.profileID
 		let playerID = await getPlayerID(profileID)
 		let timezone = req.body.timezone
+		console.log(profileID, timezone)
 		res.json({
 			openskill: {
 				best: await getBestSkill(playerID)
