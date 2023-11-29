@@ -13,7 +13,7 @@ module.exports.init = async (req, res) => {
 				day: await getStats(profileID, 'day', timezone),
 				week: await getStats(profileID, 'week', timezone),
 				month: await getStats(profileID, 'month', timezone),
-				all: await getStats(profileID, 'all', timezone),
+				all: await getStats(profileID, 'all'),
 			},
 			games: await getGames(playerID),
 			skillPerDay: await getSkillPerDay(profileID, timezone),
