@@ -3,7 +3,7 @@ const db = require ('../../lib/db')
 module.exports.init = async (req, res) => {
 	try {
 		res.json({
-			gamesPerDay: await getGamesPerDay(),
+			gamesPerDay: await getGamesPerDay(req),
 			top: {
 				maps: await getTopMaps(),
 				servers: await getTopServers(),
@@ -14,15 +14,16 @@ module.exports.init = async (req, res) => {
 	}
 }
 
-async function getGamesPerDay() {
+async function getGamesPerDay(req) {
+	let timezone = req.body.timezone
 	let raw = await db.select(`
 		SELECT
-			TO_CHAR(DATE(datetime), 'YYYY-MM-DD') as date,
+			TO_CHAR(DATE(datetime::timestamp AT TIME ZONE $1), 'YYYY-MM-DD') as date,
 			COUNT(*) AS games
 		FROM tp_game
 		GROUP BY date
 		ORDER BY date DESC
-	`, [], 'all')
+	`, [timezone], 'all')
 
 	return raw
 }
