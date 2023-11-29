@@ -64,17 +64,17 @@ async function getSkillPerDay(profileID, timezone) {
 			TO_CHAR(datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $2, 'YYYY-MM-DD') as date,
 			ROUND(openskill::decimal, 2) as openskill
 		FROM tp_playergame
-		WHERE (playerid, DATE(datetime), datetime) IN (
+		WHERE (playerid, DATE(datetime AT TIME ZONE 'UTC' AT TIME ZONE $2), datetime AT TIME ZONE 'UTC' AT TIME ZONE $2) IN (
 			SELECT
 				p.pid,
-				DATE(pg.datetime) AS date,
-				MAX(pg.datetime) AS min_datetime
+				DATE(pg.datetime AT TIME ZONE 'UTC' AT TIME ZONE $2) AS date,
+				MAX(pg.datetime AT TIME ZONE 'UTC' AT TIME ZONE $2) AS min_datetime
 			FROM PlayerCTE p
 			JOIN tp_playergame pg ON p.pid = pg.playerid
 			WHERE pg.playerid = p.pid
-			GROUP BY p.pid, DATE(pg.datetime)
+			GROUP BY p.pid, DATE(pg.datetime AT TIME ZONE 'UTC' AT TIME ZONE $2)
 		)
-		order by date desc
+		ORDER BY date DESC
 	`, [profileID, timezone], 'all')
 
 	return raw
