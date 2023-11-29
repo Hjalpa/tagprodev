@@ -18,7 +18,7 @@ async function getGamesPerDay(req) {
 	let timezone = req.body.timezone
 	let raw = await db.select(`
 		SELECT
-			TO_CHAR(DATE(datetime::timestamp AT TIME ZONE $1), 'YYYY-MM-DD') as date,
+			TO_CHAR(datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $1, 'YYYY-MM-DD') as date,
 			COUNT(*) AS games
 		FROM tp_game
 		GROUP BY date
