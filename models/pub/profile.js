@@ -10,10 +10,10 @@ module.exports.init = async (req, res) => {
 				best: await getBestSkill(playerID)
 			},
 			stats: {
-				day: await getStats(profileID, 'day'),
-				week: await getStats(profileID, 'week'),
-				month: await getStats(profileID, 'month'),
-				all: await getStats(profileID, 'all'),
+				day: await getStats(profileID, 'day', timezone),
+				week: await getStats(profileID, 'week', timezone),
+				month: await getStats(profileID, 'month', timezone),
+				all: await getStats(profileID, 'all', timezone),
 			},
 			games: await getGames(playerID),
 			skillPerDay: await getSkillPerDay(profileID, timezone),
@@ -80,8 +80,8 @@ async function getSkillPerDay(profileID, timezone) {
 	return raw
 }
 
-async function getStats(profileID, datePeriod) {
-	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`);
+async function getStats(profileID, datePeriod, timezone) {
+	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $2  >= NOW() - interval '1 ${datePeriod}'`);
 
 	let defaults = {
 		"Win%": 0,
@@ -112,7 +112,7 @@ async function getStats(profileID, datePeriod) {
 		WHERE p.tpid = $1 ${dateFilter}
 		GROUP BY p.id
 		LIMIT 1
-	`, [profileID], 'row')
+	`, [profileID, timezone], 'row')
 
 	return raw ? raw : defaults
 }
