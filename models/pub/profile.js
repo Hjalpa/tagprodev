@@ -3,7 +3,9 @@ const db = require ('../../lib/db')
 module.exports.init = async (req, res) => {
 	try {
 		let profileID = req.params.profileID
-		let timezone = req.body.timezone
+		let rawTimezone = req.params.timezone
+		let timezone = `${rawTimezone}${req.params[0] || ''}`
+
 		let playerID = await getPlayerID(profileID)
 		res.json({
 			openskill: {
@@ -81,7 +83,11 @@ async function getSkillPerDay(profileID, timezone) {
 }
 
 async function getStats(profileID, datePeriod, timezone = false) {
-	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $2  >= NOW() - interval '1 ${datePeriod}'`);
+	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $2 >= NOW() - interval '1 ${datePeriod}'`);
+
+	let condition = [profileID]
+	if(timezone != false)
+		condition.push(timezone)
 
 	let defaults = {
 		"Win%": 0,
@@ -112,7 +118,7 @@ async function getStats(profileID, datePeriod, timezone = false) {
 		WHERE p.tpid = $1 ${dateFilter}
 		GROUP BY p.id
 		LIMIT 1
-	`, [profileID, timezone], 'row')
+	`, condition, 'row')
 
 	return raw ? raw : defaults
 }

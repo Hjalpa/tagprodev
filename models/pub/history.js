@@ -15,7 +15,9 @@ module.exports.init = async (req, res) => {
 }
 
 async function getGamesPerDay(req) {
-	let timezone = req.body.timezone
+	let rawTimezone = req.params.timezone
+	let timezone = `${rawTimezone}${req.params[0] || ''}`
+
 	let raw = await db.select(`
 		SELECT
 			TO_CHAR(datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $1, 'YYYY-MM-DD') as date,

@@ -23,10 +23,6 @@ module.exports.import = async (req, res) => {
 
 		routeCache.removeCache('/api/pub/home')
 		routeCache.removeCache('/api/pub/leaderboard')
-		routeCache.removeCache('/api/pub/history')
-
-		routeCache.removeCache('/api/pub/profile/52d14ba81c0f1b1421277d0c')
-		routeCache.removeCache('/api/pub/profile/64427a589302cd25e377cf0d')
 
 		console.log('finished pub importer')
 		console.log('-------------------------------------')
