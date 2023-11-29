@@ -37,9 +37,9 @@ async function getData(datePeriod) {
 
 			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
 
-			SUM(tp_playergame.cap_team_for)::real as CF,
-			SUM(tp_playergame.cap_team_against)::real as CA,
-			SUM(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::real as CD,
+			AVG(tp_playergame.cap_team_for)::real as CF,
+			AVG(tp_playergame.cap_team_against)::real as CA,
+			AVG(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::real as CD,
 
 			array(
 				SELECT jsonb_build_object(
