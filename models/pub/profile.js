@@ -80,7 +80,7 @@ async function getSkillPerDay(profileID, timezone) {
 	return raw
 }
 
-async function getStats(profileID, datePeriod, timezone) {
+async function getStats(profileID, datePeriod, timezone = false) {
 	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $2  >= NOW() - interval '1 ${datePeriod}'`);
 
 	let defaults = {
