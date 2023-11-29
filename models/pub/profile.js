@@ -2,8 +2,9 @@ const db = require ('../../lib/db')
 
 module.exports.init = async (req, res) => {
 	try {
-		let profileID = req.params.profileID
+		let profileID = req.body.profileID
 		let playerID = await getPlayerID(profileID)
+		let timezone = req.body.timezone
 		res.json({
 			openskill: {
 				best: await getBestSkill(playerID)
@@ -15,7 +16,7 @@ module.exports.init = async (req, res) => {
 				all: await getStats(profileID, 'all'),
 			},
 			games: await getGames(playerID),
-			skillPerDay: await getSkillPerDay(profileID),
+			skillPerDay: await getSkillPerDay(profileID, timezone),
 			top: {
 				maps: await getBestMaps(playerID),
 				with: await getBestWith(playerID),
@@ -52,7 +53,7 @@ async function getBestSkill(playerID) {
 	return raw
 }
 
-async function getSkillPerDay(profileID) {
+async function getSkillPerDay(profileID, timezone) {
 	let raw = await db.select(`
 		WITH PlayerCTE AS (
 			SELECT id AS pid
@@ -60,7 +61,7 @@ async function getSkillPerDay(profileID) {
 			WHERE tp_player.tpid = $1
 		)
 		SELECT
-			TO_CHAR(DATE(datetime), 'YYYY-MM-DD') as date,
+			TO_CHAR(datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $1, 'YYYY-MM-DD') as date,
 			ROUND(openskill::decimal, 2) as openskill
 		FROM tp_playergame
 		WHERE (playerid, DATE(datetime), datetime) IN (
@@ -74,7 +75,7 @@ async function getSkillPerDay(profileID) {
 			GROUP BY p.pid, DATE(pg.datetime)
 		)
 		order by date desc
-	`, [profileID], 'all')
+	`, [profileID, timezone], 'all')
 
 	return raw
 }
