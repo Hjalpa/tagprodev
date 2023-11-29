@@ -19,7 +19,7 @@ module.exports.init = async (req, res) => {
 }
 
 async function getData(datePeriod) {
-	let dateFilter = (datePeriod === 'all' ? '' : ` AND CONVERT_TZ(tp_playergame.datetime, 'UTC', 'America/New_York') >= NOW() - interval '1 ${datePeriod}'`)
+	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`)
 	let rankFilter= (datePeriod === 'all' ? 'xpg.openskill' : 'SUM(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::real')
 
 	let raw = await db.select(`
