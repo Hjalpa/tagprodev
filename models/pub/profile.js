@@ -61,7 +61,7 @@ async function getSkillPerDay(profileID, timezone) {
 			WHERE tp_player.tpid = $1
 		)
 		SELECT
-			TO_CHAR(datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $1, 'YYYY-MM-DD') as date,
+			TO_CHAR(datetime::timestamp AT TIME ZONE 'UTC' AT TIME ZONE $2, 'YYYY-MM-DD') as date,
 			ROUND(openskill::decimal, 2) as openskill
 		FROM tp_playergame
 		WHERE (playerid, DATE(datetime), datetime) IN (
