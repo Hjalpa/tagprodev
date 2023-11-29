@@ -2,10 +2,10 @@ const db = require ('../../lib/db')
 
 module.exports.init = async (req, res) => {
 	try {
-		let profileID = req.body.profileID
-		let playerID = await getPlayerID(profileID)
 		let timezone = req.body.timezone
+		let profileID = req.body.profileID
 		console.log(profileID, timezone)
+		let playerID = await getPlayerID(profileID)
 		res.json({
 			openskill: {
 				best: await getBestSkill(playerID)
