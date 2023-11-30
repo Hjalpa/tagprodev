@@ -20,7 +20,8 @@ module.exports.init = async (req, res) => {
 
 async function getData(datePeriod) {
 	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`)
-	let rankFilter= (datePeriod === 'all' ? 'xpg.openskill' : 'AVG(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::real')
+	let rankFilter = (datePeriod === 'all' ? 'xpg.openskill' : 'AVG(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::real')
+	let gameFilter = (datePeriod === 'all' ? 'AND count(*) > 100' : '')
 
 	let raw = await db.select(`
 		SELECT
@@ -68,7 +69,7 @@ async function getData(datePeriod) {
 			FROM tp_playergame
 			WHERE playerid = p.id
 		)
-		WHERE p.tpid is not null ${dateFilter} AND xpg.openskill is not null AND games > 50
+		WHERE p.tpid is not null ${dateFilter} AND xpg.openskill is not null ${gameFilter}
 		GROUP BY p.name, p.id, profile, tp_playergame.playerid, xpg.openskill, xpg.flair
 		ORDER BY rank ASC, cd DESC, winrate DESC, wins DESC
 		LIMIT 100
