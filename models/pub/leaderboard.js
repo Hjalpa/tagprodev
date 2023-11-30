@@ -45,7 +45,7 @@ async function getData(datePeriod) {
 
 			array(
 				SELECT jsonb_build_object(
-					'uuid', tp_game.uuid,
+					'tpid', tp_game.tpid,
 					'winner', tp_playergame.winner
 				)
 				FROM tp_playergame
