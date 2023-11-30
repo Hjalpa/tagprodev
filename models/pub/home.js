@@ -15,7 +15,7 @@ async function getGames() {
 		SELECT
 			tp_game.id,
 			tp_game.uuid,
-			tp_game.id,
+			tp_game.tpid,
 			tp_game.winner,
 			tp_game.redcaps,
 			tp_game.bluecaps,
