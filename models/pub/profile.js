@@ -137,7 +137,8 @@ async function getGames(playerID) {
 			pg.openskill,
 			Round(pg.openskill::DECIMAL - LAG(pg.openskill) OVER (ORDER BY pg.datetime)::DECIMAL, 2) AS openskill_change,
 			m.name as map,
-			g.uuid
+			g.uuid,
+			g.tpid
 
 		FROM tp_playergame as pg
 		LEFT JOIN tp_game as g ON g.id = pg.gameid
