@@ -68,7 +68,7 @@ async function getData(datePeriod) {
 			FROM tp_playergame
 			WHERE playerid = p.id
 		)
-		WHERE p.tpid is not null ${dateFilter} AND xpg.openskill is not null
+		WHERE p.tpid is not null ${dateFilter} AND xpg.openskill is not null AND games > 50
 		GROUP BY p.name, p.id, profile, tp_playergame.playerid, xpg.openskill, xpg.flair
 		ORDER BY rank ASC, cd DESC, winrate DESC, wins DESC
 		LIMIT 100
