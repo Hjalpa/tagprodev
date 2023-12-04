@@ -338,9 +338,6 @@ async function setGASP(raw, gamemode) {
 					LIMIT 1
 			`, [gameid], 'player')
 
-			if(gameid != null)
-				console.log(topGASP, gameid)
-
 			raw[game].mvb = topGASP
 		}
 		else if(gamemode === 'ecltp' || 'nf') {
