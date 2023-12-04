@@ -314,9 +314,7 @@ async function setGASP(raw, gamemode) {
 								+
 								(real_ogasp * (avg(real_ogasp) over() / 10))::DECIMAL
 						, 2) as raw_gasp
-
 					FROM (
-
 						SELECT
 							data.*,
 							Round(
@@ -325,12 +323,11 @@ async function setGASP(raw, gamemode) {
 							Round(
 								((ogasp - min(ogasp) over()) / (max(ogasp) over() - min(ogasp) over ())) * 10
 							, 2) as real_ogasp
-
 						FROM (
 							SELECT
 								player.name as player,
-								${gasp_select_o} as ogasp,
-								${gasp_select_d} as dgasp
+								${gasp_select_d} as dgasp,
+								${gasp_select_o} as ogasp
 							FROM playergame
 							LEFT JOIN game ON game.id = playergame.gameid
 							LEFT JOIN player ON player.id = playergame.playerid
@@ -340,6 +337,9 @@ async function setGASP(raw, gamemode) {
 					ORDER BY raw_gasp desc
 					LIMIT 1
 			`, [gameid], 'player')
+
+			if(gameid != null)
+				console.log(topGASP, gameid)
 
 			raw[game].mvb = topGASP
 		}
