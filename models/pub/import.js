@@ -199,7 +199,6 @@ async function savePlayers(raw, gameID, rawData) {
 			saveattempt: player.saveAttempt ? true: false
 		}
 
-
 		let playerGameID = await db.insert('tp_playergame', data)
 
 		if(!playerGameID) {
