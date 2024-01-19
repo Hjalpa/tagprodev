@@ -1,6 +1,7 @@
 if(process.env.ENV != 'production')
 	require('dotenv').config()
 
+
 process.env['URL'] = (process.env.ENV === 'production' ? 'https://tagpro.dev' : 'http://localhost')
 
 const fs = require('fs')
