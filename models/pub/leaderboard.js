@@ -7,11 +7,13 @@ module.exports.init = async (req, res) => {
 		let week = await getData('week')
 		let month = await getData('month')
 		let all = await getData('all')
+		// let h2h = await getH2H()
 		res.json({
 			day,
 			week,
 			month,
-			all
+			all,
+			// h2h
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
@@ -74,6 +76,87 @@ async function getData(datePeriod) {
 		${having}
 		ORDER BY rank ASC, cd DESC, winrate DESC, wins DESC
 		LIMIT 100
+	`, [], 'all')
+
+	return raw
+}
+
+async function getH2H() {
+	let raw = await db.select(`
+WITH OpposingTeams AS (
+    SELECT
+        t1.gameid,
+        t1.playerid AS player1,
+        t2.playerid AS player2,
+        t1.team AS team1,
+        t2.team AS team2,
+        t1.winner AS winner1,
+        t2.winner AS winner2
+    FROM
+        public.tp_playergame t1
+    JOIN
+        public.tp_playergame t2 ON t1.gameid = t2.gameid
+                               AND t1.playerid < t2.playerid
+                               AND t1.team <> t2.team
+)
+, HeadToHeadResults AS (
+    SELECT
+        gameid,
+        CASE
+            WHEN winner1 = true THEN player1
+            WHEN winner2 = true THEN player2
+        END AS winner_id,
+        CASE
+            WHEN winner1 = false THEN player1
+            WHEN winner2 = false THEN player2
+        END AS loser_id
+    FROM
+        OpposingTeams
+)
+, PlayerWinCounts AS (
+    SELECT
+        winner_id,
+        loser_id,
+        COUNT(*) AS wins
+    FROM
+        HeadToHeadResults
+    GROUP BY
+        winner_id,
+        loser_id
+)
+, Head2Head AS (
+    SELECT
+        w_player.name as winner,
+        l_player.name as loser,
+        --pw.winner_id AS winner_player_id,
+        --pw.loser_id AS loser_player_id,
+        pw.wins,
+        (SELECT count(*) from HeadToHeadResults WHERE (winner_id = pw.winner_id AND loser_id = pw.loser_id) OR (winner_id = pw.loser_id AND loser_id = pw.winner_id)) games
+    FROM
+        PlayerWinCounts pw
+    LEFT JOIN tp_player as w_player on w_player.id = pw.winner_id
+    LEFT JOIN tp_player as l_player on l_player.id = pw.loser_id
+    WHERE
+        w_player.tpid is not null and
+        l_player.tpid is not null
+    ORDER BY
+        pw.wins DESC
+    LIMIT 300
+)
+SELECT
+    RANK() OVER (
+    ORDER BY
+        ((wins*.1) / (games+1))::DECIMAL DESC,
+        games DESC
+    ) AS rank,
+    winner,
+    loser,
+    wins,
+    games,
+    ROUND((wins::DECIMAL / games::decimal) * 100, 0) || '%' AS winrate
+from Head2Head
+order by rank asc
+limit 100
 	`, [], 'all')
 
 	return raw
