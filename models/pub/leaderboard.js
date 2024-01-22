@@ -65,8 +65,7 @@ async function getData(datePeriod) {
 					(
 						SELECT openskill
 						FROM tp_playergame
-						WHERE tp_playergame.playerid = p.id
-							AND datetime <= NOW() - interval '1 week'
+						WHERE tp_playergame.playerid = p.id ${dateFilter}
 						ORDER BY datetime DESC
 						LIMIT 1
 					),
