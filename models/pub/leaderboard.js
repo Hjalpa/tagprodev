@@ -22,13 +22,29 @@ module.exports.init = async (req, res) => {
 
 async function getData(datePeriod) {
 	let dateFilter = (datePeriod === 'all' ? '' : ` AND tp_playergame.datetime >= NOW() - interval '1 ${datePeriod}'`)
-	let rankFilter = (datePeriod === 'all' ? 'xpg.openskill' : 'AVG(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::real')
 	let having = (datePeriod === 'all' ? 'HAVING count(*) > 50' : '')
 
 	let raw = await db.select(`
 		SELECT
 			RANK() OVER (
-				ORDER BY ${rankFilter} DESC
+				ORDER BY
+
+				ROUND(
+					(xpg.openskill::decimal - COALESCE(
+						(
+							SELECT openskill
+							FROM tp_playergame
+							WHERE tp_playergame.playerid = p.id ${dateFilter}
+							ORDER BY datetime DESC
+							LIMIT 1
+						),
+						0
+					))::numeric,
+					2
+				)
+				DESC
+
+
 			)::real rank,
 
 			p.name as name,
