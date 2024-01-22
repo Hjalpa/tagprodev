@@ -60,8 +60,13 @@ async function getData(datePeriod) {
 
 			TO_CHAR(SUM(tp_playergame.duration) * interval '1 sec', 'hh24:mi:ss') as timeplayed,
 			MAX(tp_playergame.datetime) as lastgame,
-
-			Round(xpg.openskill::decimal, 2)::real as openskill,
+			ROUND(xpg.openskill::decimal, 2)::real - COALESCE((
+				SELECT openskill
+				FROM tp_playergame
+				WHERE tp_playergame.playerid = p.id ${dateFilter}
+				ORDER BY datetime DESC
+				LIMIT 1
+			), 0) AS openskill,
 			xpg.flair as flair
 
 		FROM tp_playergame
