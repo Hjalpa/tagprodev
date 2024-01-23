@@ -171,7 +171,7 @@ SELECT
 	loser_profile,
     wins,
     games,
-    ROUND((wins::DECIMAL / games::decimal) * 100, 0) || '%' AS winrate,
+    ROUND((wins::DECIMAL / games::decimal) * 100, 0) AS winrate,
     (SELECT flair from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) winner_flair,
     (SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) loser_flair,
 	(SELECT datetime from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) lastgame,
