@@ -143,8 +143,8 @@ WITH OpposingTeams AS (
 		w_player.tpid as winner_profile,
         l_player.name as loser,
         l_player.tpid as loser_profile,
-        --pw.winner_id AS winner_player_id,
-        --pw.loser_id AS loser_player_id,
+        pw.winner_id AS winner_player_id,
+        pw.loser_id AS loser_player_id,
         pw.wins,
         (SELECT count(*) from HeadToHeadResults WHERE (winner_id = pw.winner_id AND loser_id = pw.loser_id) OR (winner_id = pw.loser_id AND loser_id = pw.winner_id)) games
     FROM
@@ -170,7 +170,9 @@ SELECT
 	loser_profile,
     wins,
     games,
-    ROUND((wins::DECIMAL / games::decimal) * 100, 0) || '%' AS winrate
+    ROUND((wins::DECIMAL / games::decimal) * 100, 0) || '%' AS winrate,
+    (SELECT flair from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) winner_flair,
+    (SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) loser_flair
 from Head2Head
 order by rank asc
 limit 100
