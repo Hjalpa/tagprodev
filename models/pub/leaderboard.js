@@ -7,13 +7,13 @@ module.exports.init = async (req, res) => {
 		let week = await getData('week')
 		let month = await getData('month')
 		let all = await getData('all')
-		// let h2h = await getH2H()
+		let h2h = await getH2H()
 		res.json({
 			day,
 			week,
 			month,
 			all,
-			// h2h
+			h2h
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
