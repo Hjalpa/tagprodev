@@ -109,7 +109,7 @@ WITH OpposingTeams AS (
         public.tp_playergame t1
     JOIN
         public.tp_playergame t2 ON t1.gameid = t2.gameid
-                               AND t1.playerid < t2.playerid
+                               AND t1.playerid <> t2.playerid
                                AND t1.team <> t2.team
     WHERE t1.saveattempt = false AND t2.saveattempt = false AND t1.openskill > 1 AND t2.openskill > 1
 )
