@@ -111,7 +111,7 @@ WITH OpposingTeams AS (
         public.tp_playergame t2 ON t1.gameid = t2.gameid
                                AND t1.playerid < t2.playerid
                                AND t1.team <> t2.team
-    WHERE t1.saveattempt = false AND t2.saveattempt = false AND t1.openskill > 1 AND t2.openskill > 1
+    WHERE t1.saveattempt = false AND t2.saveattempt = false AND t1.openskill > 0 AND t2.openskill > 0
 )
 , HeadToHeadResults AS (
     SELECT
@@ -183,7 +183,7 @@ SELECT
 		FROM tp_playergame as w_tp_playergame
 		LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team != l_tp_playergame.team
 		LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
-		WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 1 AND l_tp_playergame.openskill > 1
+		WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 0 AND l_tp_playergame.openskill > 0
 		ORDER BY w_tp_playergame.datetime DESC
 		LIMIT 10
 	) AS form
