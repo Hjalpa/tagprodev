@@ -173,7 +173,21 @@ SELECT
     games,
     ROUND((wins::DECIMAL / games::decimal) * 100, 0) || '%' AS winrate,
     (SELECT flair from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) winner_flair,
-    (SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) loser_flair
+    (SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) loser_flair,
+	(SELECT datetime from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) lastgame,
+	array(
+		SELECT jsonb_build_object(
+			'tpid', tp_game.tpid,
+			'winner', w_tp_playergame.winner
+		)
+		FROM tp_playergame as w_tp_playergame
+		LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id
+		LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
+		WHERE w_tp_playergame.playerid = winner_player_id
+		ORDER BY w_tp_playergame.datetime DESC
+		LIMIT 10
+	) AS form
+
 from Head2Head
 order by rank asc
 limit 100
