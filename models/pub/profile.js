@@ -172,7 +172,7 @@ async function getBestMaps(playerID) {
 		LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
 		LEFT JOIN tp_map on tp_map.id = tp_game.mapid
 		WHERE
-			tp_playergame.playerid = $1 AND tp_playergame.saveattempt = false
+			tp_playergame.playerid = $1 AND (tp_playergame.saveattempt = false OR tp_playergame.winner = true)
 		GROUP BY tp_map.name
 		ORDER BY rank ASC
 		LIMIT 15
@@ -202,7 +202,7 @@ async function getBestWith(playerID) {
 			WHERE pg.playerid = $1
 		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
 		WHERE
-			playerid != $1 AND tp_player.tpid IS NOT NULL
+			playerid != $1 AND tp_player.tpid IS NOT NULL AND (tp_playergame.saveattempt = false OR tp_playergame.winner = true)
 		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
 		ORDER BY rank ASC
 		LIMIT 15
@@ -232,7 +232,7 @@ async function getBestAgainst(playerID) {
 			WHERE pg.playerid = $1
 		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team != subquery.team
 		WHERE
-			playerid != $1 AND tp_player.tpid IS NOT NULL
+			playerid != $1 AND tp_player.tpid IS NOT NULL AND (tp_playergame.saveattempt = false OR tp_playergame.winner = true)
 		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
 		ORDER BY rank ASC
 		LIMIT 15
