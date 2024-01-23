@@ -183,7 +183,7 @@ SELECT
 		FROM tp_playergame as w_tp_playergame
 		LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team != l_tp_playergame.team
 		LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
-		WHERE w_tp_playergame.playerid = winner_player_id
+		WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid
 		ORDER BY w_tp_playergame.datetime DESC
 		LIMIT 10
 	) AS form
