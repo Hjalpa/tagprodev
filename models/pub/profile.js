@@ -172,7 +172,7 @@ async function getBestMaps(playerID) {
 		LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
 		LEFT JOIN tp_map on tp_map.id = tp_game.mapid
 		WHERE
-			tp_playergame.playerid = $1
+			tp_playergame.playerid = $1 AND tp_playergame.saveattempt = false
 		GROUP BY tp_map.name
 		ORDER BY rank ASC
 		LIMIT 15
