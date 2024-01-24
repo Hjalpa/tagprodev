@@ -21,9 +21,6 @@ module.exports.import = async (req, res) => {
 				await makeGame(row)
 		}
 
-		routeCache.removeCache('/api/pub/home')
-		routeCache.removeCache('/api/pub/leaderboard')
-
 		console.log('finished pub importer')
 		console.log('-------------------------------------')
 	}
@@ -33,6 +30,10 @@ module.exports.import = async (req, res) => {
 	}
 
 	finally {
+		routeCache.removeCache('/api/pub/home')
+		routeCache.removeCache('/api/pub/leaderboard')
+		// routeCache.removeCache('/api/pub/history/*')
+		// routeCache.removeCache('/api/pub/profile/*')
 		res.json({success:true})
 	}
 }
