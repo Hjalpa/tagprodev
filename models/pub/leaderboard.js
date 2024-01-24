@@ -3,18 +3,18 @@ const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => {
 	try {
-		let day = await getData('day')
-		let week = await getData('week')
-		let month = await getData('month')
-		let all = await getData('all')
-		let versus = await getVersusData()
+		// let day = await getData('day')
+		// let week = await getData('week')
+		// let month = await getData('month')
+		// let all = await getData('all')
+		// let versus = await getVersusData()
 		let duos = await getDuosData()
 		res.json({
-			day,
-			week,
-			month,
-			all,
-			versus,
+			// day,
+			// week,
+			// month,
+			// all,
+			// versus,
 			duos
 		})
 	} catch(e) {
@@ -255,15 +255,15 @@ SELECT
         ((wins*.1) / (games+1))::DECIMAL DESC,
         games DESC
     ) AS rank,
-    winner,
-	winner_profile,
-    loser,
-	loser_profile,
+    winner as player1,
+	winner_profile as player1_profile,
+    loser as player2,
+	loser_profile as player2_profile,
     wins,
     games,
     ROUND((wins::DECIMAL / games::decimal) * 100, 0) AS winrate,
-    (SELECT flair from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) winner_flair,
-    (SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) loser_flair,
+    (SELECT flair from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) player1_flair,
+    (SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) player2_flair,
 	(SELECT datetime from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) lastgame,
 	array(
 		SELECT jsonb_build_object(
