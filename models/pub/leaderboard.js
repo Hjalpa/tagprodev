@@ -3,18 +3,18 @@ const util = require ('../../lib/util')
 
 module.exports.init = async (req, res) => {
 	try {
-		// let day = await getData('day')
-		// let week = await getData('week')
-		// let month = await getData('month')
-		// let all = await getData('all')
-		// let versus = await getVersusData()
+		let day = await getData('day')
+		let week = await getData('week')
+		let month = await getData('month')
+		let all = await getData('all')
+		let versus = await getVersusData()
 		let duos = await getDuosData()
 		res.json({
-			// day,
-			// week,
-			// month,
-			// all,
-			// versus,
+			day,
+			week,
+			month,
+			all,
+			versus,
 			duos
 		})
 	} catch(e) {
