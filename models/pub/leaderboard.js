@@ -7,13 +7,15 @@ module.exports.init = async (req, res) => {
 		let week = await getData('week')
 		let month = await getData('month')
 		let all = await getData('all')
-		let h2h = await getH2H()
+		let versus = await getVersusData()
+		let with = await getWithData()
 		res.json({
 			day,
 			week,
 			month,
 			all,
-			h2h
+			versus,
+			with
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
@@ -94,7 +96,7 @@ async function getData(datePeriod) {
 	return raw
 }
 
-async function getH2H() {
+async function getVersusData() {
 	let raw = await db.select(`
 WITH OpposingTeams AS (
     SELECT
@@ -188,6 +190,75 @@ SELECT
 		ORDER BY w_tp_playergame.datetime DESC
 		LIMIT 10
 	) AS form
+
+from Head2Head
+order by rank asc
+limit 100
+	`, [], 'all')
+
+	return raw
+}
+
+async function getWithData() {
+	let raw = await db.select(`
+WITH HeadToHeadResults AS (
+    SELECT
+        t1.gameid,
+        t1.playerid as player1,
+        t2.playerid AS player2,
+        p1.tpid,
+        t1.winner as winner1,
+        t2.winner as winner2
+    FROM
+        public.tp_playergame t1
+    JOIN
+        public.tp_playergame t2 ON t1.gameid = t2.gameid
+                               AND t1.playerid < t2.playerid
+                               AND t1.team = t2.team
+    LEFT JOIN tp_player as p1 on p1.id = t1.playerid
+    LEFT JOIN tp_player as p2 on p2.id = t2.playerid
+    WHERE t1.saveattempt = false AND t2.saveattempt = false AND t1.openskill > 0 AND t2.openskill > 0 AND p1.tpid IS NOT null AND p2.tpid IS NOT null
+)
+, PlayerWinCounts AS (
+    SELECT
+        player1,
+        player2,
+        SUM(CASE WHEN winner1 = true AND winner2 = true THEN 1 ELSE 0 END) AS wins,
+        COUNT(*) AS games
+    FROM
+        HeadToHeadResults
+    GROUP BY
+        player1,
+        player2
+)
+, Head2Head AS (
+    SELECT
+        w_player.name as winner,
+        l_player.name as loser,
+        pw.player1 AS winner_player_id,
+        pw.player2 AS loser_player_id,
+        pw.wins,
+        pw.games
+    FROM
+        PlayerWinCounts pw
+    LEFT JOIN tp_player as w_player on w_player.id = pw.player1
+    LEFT JOIN tp_player as l_player on l_player.id = pw.player2
+    ORDER BY
+        pw.wins DESC
+    LIMIT 300
+)
+SELECT
+    RANK() OVER (
+    ORDER BY
+        ((wins*.1) / (games+1))::DECIMAL DESC,
+        games DESC
+    ) AS rank,
+    winner,
+    loser,
+    wins,
+    games,
+    ROUND((wins::DECIMAL / games::decimal) * 100, 0) AS winrate,
+	(SELECT datetime from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) lastgame
 
 from Head2Head
 order by rank asc
