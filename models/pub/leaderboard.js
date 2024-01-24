@@ -8,14 +8,14 @@ module.exports.init = async (req, res) => {
 		let month = await getData('month')
 		let all = await getData('all')
 		let versus = await getVersusData()
-		let collab = await getCollabData()
+		let duos = await getDuosData()
 		res.json({
 			day,
 			week,
 			month,
 			all,
 			versus,
-			collab
+			duos
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
@@ -199,7 +199,7 @@ limit 100
 	return raw
 }
 
-async function getCollabData() {
+async function getDuosData() {
 	let raw = await db.select(`
 WITH HeadToHeadResults AS (
     SELECT
