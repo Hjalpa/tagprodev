@@ -234,7 +234,9 @@ WITH HeadToHeadResults AS (
 , Head2Head AS (
     SELECT
         w_player.name as winner,
+		w_player.tpid as winner_profile,
         l_player.name as loser,
+        l_player.tpid as loser_profile,
         pw.player1 AS winner_player_id,
         pw.player2 AS loser_player_id,
         pw.wins,
@@ -254,7 +256,9 @@ SELECT
         games DESC
     ) AS rank,
     winner,
+	winner_profile,
     loser,
+	loser_profile,
     wins,
     games,
     ROUND((wins::DECIMAL / games::decimal) * 100, 0) AS winrate,
