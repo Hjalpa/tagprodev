@@ -8,14 +8,14 @@ module.exports.init = async (req, res) => {
 		let month = await getData('month')
 		let all = await getData('all')
 		let versus = await getVersusData()
-		let with = await getWithData()
+		let withData = await getWithData()
 		res.json({
 			day,
 			week,
 			month,
 			all,
 			versus,
-			with
+			withData
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
