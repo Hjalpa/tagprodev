@@ -4,20 +4,18 @@ if(process.env.ENV != 'production')
 process.env['URL'] = (process.env.ENV === 'production' ? 'https://tagpro.dev' : 'http://localhost')
 
 const fs = require('fs')
-const compression = require('compression');
+const compression = require('compression')
 const bodyParser = require('body-parser')
 const express = require('express')
 const https = require('https')
 const app = express()
-const cors = require('cors');
-const cron = require('node-cron')
+const cors = require('cors')
 
 if(process.env.ENV === 'production') {
+	const cron = require('node-cron')
+	const axios = require('axios')
 	cron.schedule('*/15 * * * *', async () => {
-		const axios = require('axios')
 		await axios.post(`https://tagpro.dev/api/pub/import`)
-		// console.log('running import script from cron...')
-		// require('models/pub/import').import()
 	})
 }
 
