@@ -30,7 +30,7 @@ module.exports.import = async (req, res) => {
 	}
 
 	finally {
-		routeCache.removeCache()
+		routeCache.clearCache()
 		res.json({success:true})
 	}
 }

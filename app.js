@@ -18,8 +18,6 @@ if(process.env.ENV === 'production') {
 		await axios.post(`https://tagpro.dev/api/pub/import`)
 		// console.log('running import script from cron...')
 		// require('models/pub/import').import()
-		const routeCache = require('route-cache')
-		routeCache.removeCache()
 	})
 }
 
