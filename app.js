@@ -11,6 +11,9 @@ const https = require('https')
 const app = express()
 const cors = require('cors');
 
+const routeCache = require('route-cache')
+routeCache.removeCache()
+
 app.use(cors())
 
 app.listen(80)
