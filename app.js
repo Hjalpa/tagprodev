@@ -13,12 +13,13 @@ const cors = require('cors');
 const cron = require('node-cron')
 
 if(process.env.ENV === 'production') {
-	console.log('starting cron')
-	cron.schedule('*/15 * * * *', () => {
+	cron.schedule('*/15 * * * *', async () => {
 		const axios = require('axios')
 		await axios.post(`https://tagpro.dev/api/pub/import`)
 		// console.log('running import script from cron...')
 		// require('models/pub/import').import()
+		const routeCache = require('route-cache')
+		routeCache.removeCache()
 	})
 }
 
