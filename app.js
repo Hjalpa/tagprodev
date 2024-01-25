@@ -16,7 +16,7 @@ if(process.env.ENV === 'production') {
 	console.log('starting cron')
 	cron.schedule('*/20 * * * *', () => {
 		console.log('running import script from cron...')
-		require('../models/pub/import').import()
+		require('models/pub/import').import()
 	})
 }
 
