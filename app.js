@@ -10,9 +10,15 @@ const express = require('express')
 const https = require('https')
 const app = express()
 const cors = require('cors');
+const cron = require('node-cron')
 
-const routeCache = require('route-cache')
-routeCache.removeCache()
+if(process.env.ENV === 'production') {
+	console.log('starting cron')
+	cron.schedule('*/20 * * * *', () => {
+		console.log('running import script from cron...')
+		require('../models/pub/import').import()
+	})
+}
 
 app.use(cors())
 
