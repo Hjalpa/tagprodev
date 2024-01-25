@@ -14,9 +14,11 @@ const cron = require('node-cron')
 
 if(process.env.ENV === 'production') {
 	console.log('starting cron')
-	cron.schedule('*/20 * * * *', () => {
-		console.log('running import script from cron...')
-		require('models/pub/import').import()
+	cron.schedule('*/15 * * * *', () => {
+		const axios = require('axios')
+		await axios.post(`https://tagpro.dev/api/pub/import`)
+		// console.log('running import script from cron...')
+		// require('models/pub/import').import()
 	})
 }
 
