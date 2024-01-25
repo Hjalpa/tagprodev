@@ -20,6 +20,6 @@ router.get('/pub/home', routeCache.cacheSeconds(60*30), (req, res) => require('.
 router.get('/pub/leaderboard', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/leaderboard').init(req, res))
 router.get('/pub/history/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/history').init(req, res))
 router.get('/pub/profile/:profileID/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/profile').init(req, res))
-// router.get('/pub/import/anomrocks', (req, res) => require('../models/pub/import').import(req, res))
+router.get('/pub/import/anomrocks', (req, res) => require('../models/pub/import').import(req, res))
 
 module.exports = router
