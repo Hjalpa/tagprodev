@@ -209,15 +209,13 @@ async function savePlayers(raw, gameID, rawData) {
 
 async function getPlayerID(player) {
 	let playerID = await db.select(`
-		SELECT id
-		FROM tp_player
-		WHERE
+		select *
+		from tp_player
+		where
 		(
-			tpid = $1 AND tpid IS NOT null
-		)
-		OR
-		(
-			tpid IS NULL AND LOWER(name) = LOWER($2)
+			tpid = $1 AND tpid IS NOT NULL
+		) or (
+			tpid IS NULL AND $1 IS NULL and LOWER(name) = LOWER($2)
 		)
 	`, [player.userId, player.displayName], 'id')
 
