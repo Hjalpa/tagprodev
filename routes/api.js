@@ -21,6 +21,6 @@ router.get('/pub/leaderboard', routeCache.cacheSeconds(60*30), (req, res) => req
 router.get('/pub/history/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/history').init(req, res))
 router.get('/pub/profile/:profileID/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/profile').init(req, res))
 //
-router.get('/pub/openskill', (req, res) => require('../models/pub/request').openskill(req, res))
+router.get('/pub/openskill/:name', (req, res) => require('../models/pub/request').openskill(req, res))
 
 module.exports = router
