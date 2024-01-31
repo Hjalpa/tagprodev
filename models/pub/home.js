@@ -32,6 +32,7 @@ async function getGames() {
 					'flair', pg.flair,
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
+					'openskill', Round(pg.openskill::decimal, 2)::real,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg
@@ -50,6 +51,7 @@ async function getGames() {
 					'flair', pg.flair,
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
+					'openskill', Round(pg.openskill::decimal, 2)::real,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg
@@ -106,6 +108,7 @@ async function getPlayerRecentGames(tpid) {
 				'flair', pg.flair,
 				'tpid', tp_player.tpid,
 				'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
+				'openskill', Round(pg.openskill::decimal, 2)::real,
 				'finished', pg.finished
 			)
 			from tp_playergame as pg
@@ -124,6 +127,7 @@ async function getPlayerRecentGames(tpid) {
 				'flair', pg.flair,
 				'tpid', tp_player.tpid,
 				'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
+				'openskill', Round(pg.openskill::decimal, 2)::real,
 				'finished', pg.finished
 			)
 			from tp_playergame as pg
