@@ -8,9 +8,9 @@ init.call = async () => {
 		// if(!process.argv[2]) throw 'no gameid'
 		// let gameID = process.argv[2]
 		// await openskill.rank(gameID)
-		let games = await db.select('SELECT * FROM tp_game WHERE id = 21993 ORDER BY datetime ASC', [], 'all')
+		let games = await db.select('SELECT * FROM tp_game WHERE id >= 0 ORDER BY datetime ASC', [], 'all')
 		for(let g of games) {
-			console.log(`doing ${g.id} of ${games.length}`)
+			console.log(`${g.id}`)
 			await openskill.rank(g.id)
 		}
 	}

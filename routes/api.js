@@ -22,5 +22,6 @@ router.get('/pub/history/:timezone*', routeCache.cacheSeconds(60*30), (req, res)
 router.get('/pub/profile/:profileID/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/profile').init(req, res))
 //
 router.get('/pub/openskill/:name', (req, res) => require('../models/pub/request').openskill(req, res))
+router.get('/pub/home/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/home').playerRecentGames(req, res))
 
 module.exports = router
