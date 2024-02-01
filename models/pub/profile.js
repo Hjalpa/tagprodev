@@ -107,7 +107,7 @@ async function getStats(profileID, datePeriod, timezone = false) {
 			COALESCE(COUNT(*)::REAL, 0) as "Games",
 			COUNT(*) filter (WHERE tp_playergame.winner = true AND tp_playergame.saveattempt = false)::REAL as "Wins",
 			COUNT(*) filter (WHERE tp_playergame.winner = false AND tp_playergame.saveattempt = false)::REAL as "Losses",
-			COUNT(*) filter (WHERE tp_playergame.saveattempt = true AND tp_playergame.winner = true)::REAL as "Succesful Saves",
+			COUNT(*) filter (WHERE tp_playergame.saveattempt = true AND tp_playergame.winner = true)::REAL as "Save Wins",
 			COUNT(*) filter (WHERE tp_playergame.saveattempt = true)::REAL as "Save Attempts",
 			COUNT(*) filter (WHERE tp_playergame.finished = false)::REAL as "Disconnects",
 			SUM(cap_team_for)::REAL as "Caps For",
