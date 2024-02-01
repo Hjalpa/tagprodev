@@ -108,7 +108,7 @@ async function getMapData() {
 			tp_player.name,
 			tp_player.tpid as profile,
 			(SELECT flair from tp_playergame where playerid = tp_player.id order by datetime DESC limit 1) flair,
-			tp_map.name,
+			tp_map.name as map,
 
 			COUNT(*)::real as games,
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
