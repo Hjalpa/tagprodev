@@ -109,13 +109,16 @@ async function getMapData() {
 			tp_player.tpid as profile,
 			(SELECT flair from tp_playergame where playerid = tp_player.id order by datetime DESC limit 1) flair,
 			tp_map.name,
+
 			COUNT(*)::real as games,
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
 			COUNT(*) filter (WHERE tp_playergame.winner = false)::real as losses,
 			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
+
 			ROUND(AVG(tp_playergame.cap_team_for)::decimal, 2)::real as CF,
 			ROUND(AVG(tp_playergame.cap_team_against)::decimal, 2)::real as CA,
 			ROUND(AVG(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::decimal, 2)::real as CD,
+
 			MAX(tp_playergame.datetime) as lastgame,
 			array(
 				SELECT jsonb_build_object(
@@ -128,12 +131,13 @@ async function getMapData() {
 				ORDER BY tp_pg.datetime DESC
 				LIMIT 10
 			) AS form
+
 		from tp_playergame
 		left join tp_player on tp_player.id = tp_playergame.playerid
 		left join tp_game on tp_game.id = tp_playergame.gameid
 		left join tp_map on tp_game.mapid = tp_map.id
 		where tp_player.tpid IS NOT NULL AND saveattempt = false
-		group by tp_player.name, tp_map.name, tp_player.id, tp_game.mapid
+		group by tp_player.name, tp_map.name, tp_player.id, tp_game.mapid, tp_player.tpid
 		order by rank asc
 		limit 100
 	`, [], 'all')
