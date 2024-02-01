@@ -109,11 +109,11 @@ async function getStats(profileID, datePeriod, timezone = false) {
 			COUNT(*) filter (WHERE tp_playergame.winner = false AND tp_playergame.saveattempt = false)::REAL as "Losses",
 			COUNT(*) filter (WHERE tp_playergame.saveattempt = true AND tp_playergame.winner = true)::REAL as "Save Wins",
 			COUNT(*) filter (WHERE tp_playergame.saveattempt = true)::REAL as "Save Attempts",
-			COUNT(*) filter (WHERE tp_playergame.finished = false)::REAL as "Disconnects",
 			SUM(cap_team_for)::REAL as "Caps For",
 			SUM(cap_team_against)::REAL as "Caps Against",
 			SUM(cap_team_for - cap_team_against)::REAL as "Cap Difference",
-			TO_CHAR(SUM(duration) * interval '1 sec', 'hh24:mi:ss') as "Time Played"
+			TO_CHAR(SUM(duration) * interval '1 sec', 'hh24:mi:ss') as "Time Played",
+			COUNT(*) filter (WHERE tp_playergame.finished = false)::REAL as "Disconnects"
 
 		FROM tp_playergame
 		LEFT JOIN tp_player as p ON p.id = tp_playergame.playerid
