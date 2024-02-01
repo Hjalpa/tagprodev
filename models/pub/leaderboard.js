@@ -53,12 +53,12 @@ async function getData(datePeriod) {
 			p.tpid as profile,
 
 			COUNT(*)::real as games,
-			COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
-			COUNT(*) filter (WHERE tp_playergame.winner = false)::real as losses,
+			COUNT(*) filter (WHERE tp_playergame.winner = true AND tp_playergame.saveattempt = false)::REAL as wins,
+			COUNT(*) filter (WHERE tp_playergame.winner = false AND tp_playergame.saveattempt = false)::REAL as losses,
 
 			ROUND(COUNT(*) filter (WHERE (tp_playergame.cap_team_for - tp_playergame.cap_team_against) = 3) * 100.0 / COUNT(*), 2) as mercyrate,
 
-			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
+			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false)), 2)::REAL AS winrate,
 
 			ROUND(AVG(tp_playergame.cap_team_for)::decimal, 2)::real as CF,
 			ROUND(AVG(tp_playergame.cap_team_against)::decimal, 2)::real as CA,
