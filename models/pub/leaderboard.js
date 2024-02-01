@@ -103,7 +103,7 @@ async function getMapData() {
 		select
 			RANK() OVER (
 				ORDER BY
-					(COUNT(*) FILTER (WHERE tp_playergame.winner = true) + 0.1) / (COUNT(*) + 1) DESC, ROUND(AVG(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::decimal, 2)::real DESC
+					(COUNT(*) FILTER (WHERE tp_playergame.winner = true) + 0.1) / (COUNT(*) + 1) DESC
 			) rank,
 			tp_player.name,
 			tp_player.tpid as profile,
@@ -114,10 +114,6 @@ async function getMapData() {
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
 			COUNT(*) filter (WHERE tp_playergame.winner = false)::real as losses,
 			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
-
-			ROUND(AVG(tp_playergame.cap_team_for)::decimal, 2)::real as CF,
-			ROUND(AVG(tp_playergame.cap_team_against)::decimal, 2)::real as CA,
-			ROUND(AVG(tp_playergame.cap_team_for - tp_playergame.cap_team_against)::decimal, 2)::real as CD,
 
 			MAX(tp_playergame.datetime) as lastgame,
 			array(
