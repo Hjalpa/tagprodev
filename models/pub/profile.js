@@ -97,11 +97,13 @@ async function getStats(profileID, datePeriod, timezone = false) {
 		"Games": 0,
 		"Wins": 0,
 		"Losses": 0,
-		"Quits": 0,
+		"Save Wins": 0,
+		"Save Attempts": 0,
 		"Caps For": 0,
 		"Caps Against": 0,
 		"Cap Difference": 0,
 		"Time Played": "00:00:00",
+		"Disconnects": 0,
 	}
 
 	let raw = await db.select(`
