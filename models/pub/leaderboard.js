@@ -56,7 +56,7 @@ async function getData(datePeriod) {
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
 			COUNT(*) filter (WHERE tp_playergame.winner = false)::real as losses,
 
-			ROUND(COUNT(*) filter (WHERE (tp_playergame.cap_team_for - tp_playergame.cap_team_against) = 3) * 100.0 / COUNT(*), 2) as mercyrate,
+			-- ROUND(COUNT(*) filter (WHERE (tp_playergame.cap_team_for - tp_playergame.cap_team_against) = 3) * 100.0 / COUNT(*), 2) as mercyrate,
 
 			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
 

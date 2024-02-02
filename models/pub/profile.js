@@ -7,6 +7,9 @@ module.exports.init = async (req, res) => {
 		let timezone = `${rawTimezone}${req.params[0] || ''}`
 
 		let playerID = await getPlayerID(profileID)
+
+		console.log(`getting profile data for: ${profileID}`)
+
 		res.json({
 			openskill: {
 				best: await getBestSkill(playerID)

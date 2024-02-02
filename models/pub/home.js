@@ -72,6 +72,17 @@ async function getGames() {
 		LIMIT 15
 	`, [], 'all')
 
+        // WHERE
+		// (
+			// (
+				// ((tp_game.prediction->>'red')::DECIMAL BETWEEN 0 AND 0.15) AND tp_game.winner = 2
+			// )
+			// OR
+			// (
+				// ((tp_game.prediction->>'blue')::DECIMAL BETWEEN 0 AND 0.15) AND tp_game.winner = 1
+			// )
+		// )
+
 	return raw
 }
 
@@ -87,6 +98,7 @@ module.exports.playerRecentGames = async (req, res) => {
 }
 
 async function getPlayerRecentGames(tpid) {
+	console.log(`getting recent games for: ${tpid}`)
 	let raw = await db.select(`
 	SELECT
 		tp_game.id,
