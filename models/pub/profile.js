@@ -8,7 +8,8 @@ module.exports.init = async (req, res) => {
 
 		let playerID = await getPlayerID(profileID)
 
-		console.log(`getting profile data for: ${profileID}`)
+		let playerName = await getPlayerName(profileID)
+		console.log(`getting profile data for: ${playerName}`)
 
 		res.json({
 			openskill: {
@@ -31,6 +32,18 @@ module.exports.init = async (req, res) => {
 	} catch(e) {
 		res.status(400).send({error: e})
 	}
+}
+
+async function getPlayerName(profileID) {
+	let raw = await db.select(`
+		SELECT
+			name
+		FROM tp_player
+		WHERE tpid = $1
+		LIMIT 1
+	`, [profileID], 'name')
+
+	return raw
 }
 
 async function getPlayerID(profileID) {

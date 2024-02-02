@@ -97,8 +97,22 @@ module.exports.playerRecentGames = async (req, res) => {
 	}
 }
 
+async function getPlayerName(profileID) {
+	let raw = await db.select(`
+		SELECT
+			name
+		FROM tp_player
+		WHERE tpid = $1
+		LIMIT 1
+	`, [profileID], 'name')
+
+	return raw
+}
+
 async function getPlayerRecentGames(tpid) {
-	console.log(`getting recent games for: ${tpid}`)
+	let playerName = await getPlayerName(tpid)
+	console.log(`getting profile data for: ${playerName}`)
+
 	let raw = await db.select(`
 	SELECT
 		tp_game.id,
