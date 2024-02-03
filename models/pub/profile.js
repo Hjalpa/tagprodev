@@ -264,30 +264,11 @@ async function getBestAgainst(playerID) {
 		SELECT
 			RANK() OVER (
 				ORDER BY
-                   -- win rate
-                   (
-                        (
-                            COUNT(*) FILTER (WHERE tp_playergame.winner = false)
-                            /
-                            COUNT(*) FILTER (WHERE tp_playergame.winner = false OR (tp_playergame.saveattempt = true AND tp_playergame.winner = true))::DECIMAL
-                        ) * 100
-                    )
-                    *
-                    (
-                        0.7 * COUNT(*)::DECIMAL
-                    ) DESC
+					(COUNT(*) FILTER (WHERE tp_playergame.winner = false) + 0.1) / (count(*) + 1) DESC
 			) rank,
 			tp_player.name,
 			tp_player.tpid,
 			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
-			ROUND(
-				(
-					COUNT(*) FILTER (WHERE tp_playergame.winner = false)
-					/
-                    COUNT(*) FILTER (WHERE tp_playergame.winner = false OR (tp_playergame.saveattempt = true AND tp_playergame.winner = true))::DECIMAL
-				) * 100
-			, 0) || '%' as winrate,
-
 			COUNT(*) AS games,
 			(SELECT flair from tp_playergame as tppg where tppg.playerid = tp_playergame.playerid ORDER by id DESC LIMIT 1) as flair
 
