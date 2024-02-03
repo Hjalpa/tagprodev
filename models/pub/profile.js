@@ -121,7 +121,13 @@ async function getStats(profileID, datePeriod, timezone = false) {
 
 	let raw = await db.select(`
 		SELECT
-			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false)), 2)::REAL AS "Win%",
+			ROUND(
+				(
+					COUNT(*) FILTER (WHERE tp_playergame.winner = true)::DECIMAL
+					/
+					COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))::DECIMAL
+				) * 100
+			, 2)::REAL as "Win%",
 			COALESCE(COUNT(*)::REAL, 0) as "Games",
 			COUNT(*) filter (WHERE tp_playergame.winner = true AND tp_playergame.saveattempt = false)::REAL as "Wins",
 			COUNT(*) filter (WHERE tp_playergame.winner = false AND tp_playergame.saveattempt = false)::REAL as "Losses",
@@ -131,7 +137,7 @@ async function getStats(profileID, datePeriod, timezone = false) {
 			SUM(cap_team_against)::REAL as "Caps Against",
 			SUM(cap_team_for - cap_team_against)::REAL as "Cap Difference",
 			TO_CHAR(SUM(duration) * interval '1 sec', 'hh24:mi:ss') as "Time Played",
-			COUNT(*) filter (WHERE tp_playergame.finished = false)::REAL as "Disconnects"
+			COUNT(*) filter (WHERE tp_playergame.finished = false)::REAL as "Disconnects",
 
 		FROM tp_playergame
 		LEFT JOIN tp_player as p ON p.id = tp_playergame.playerid
@@ -157,6 +163,11 @@ async function getGames(playerID) {
 			pg.openskill,
 			Round(pg.openskill::DECIMAL - LAG(pg.openskill) OVER (ORDER BY pg.datetime)::DECIMAL, 2) AS openskill_change,
 			m.name as map,
+			CASE
+				WHEN pg.team = 1 THEN ROUND((g.prediction->>'red')::numeric, 2)
+				WHEN pg.team = 2 THEN ROUND((g.prediction->>'blue')::numeric, 2)
+				ELSE 0
+			END AS win_probability,
 			g.uuid,
 			g.tpid
 
@@ -173,40 +184,42 @@ async function getGames(playerID) {
 
 async function getBestMaps(playerID) {
 	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY
-                   -- win rate
-                   (
-                        (
-                            COUNT(*) FILTER (WHERE tp_playergame.winner = true)
-                            /
-                            COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))::DECIMAL
-                        ) * 100
-                    )
-                    *
-                    (
-                        0.7 * COUNT(*)::DECIMAL
-                    ) DESC
-			) rank,
-			tp_map.name as map,
-			ROUND(
-				(
-					COUNT(*) FILTER (WHERE tp_playergame.winner = true)
-					/
-					COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))::DECIMAL
-				) * 100
-			, 0) || '%' as winrate,
-			COUNT(*) as games
+		WITH data AS (
+			SELECT
+				RANK() OVER (
+					ORDER BY
+					(
+						(
+							COUNT(*) FILTER (WHERE tp_playergame.winner = true)
+							/
+							COUNT(*)::DECIMAL
+						) * 100
+					)
+					*
+					(
+						0.5 * COUNT(*)::DECIMAL
+					) DESC
+				) rank,
+				tp_map.name as map,
+				ROUND(
+					(
+						COUNT(*) FILTER (WHERE tp_playergame.winner = true)
+						/
+						COUNT(*)::DECIMAL
+					) * 100
+				, 0)::REAL as winrate,
+				COUNT(*)::REAL as games
 
-		FROM tp_playergame
-		LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
-		LEFT JOIN tp_map on tp_map.id = tp_game.mapid
-		WHERE
-			tp_playergame.playerid = $1 AND (tp_playergame.saveattempt = false OR tp_playergame.winner = true)
-		GROUP BY tp_map.name
-		ORDER BY rank ASC
-		LIMIT 15
+			FROM tp_playergame
+			LEFT JOIN tp_game on tp_game.id = tp_playergame.gameid
+			LEFT JOIN tp_map on tp_map.id = tp_game.mapid
+			WHERE
+				tp_playergame.playerid = $1 AND (tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))
+			GROUP BY tp_map.name
+			ORDER BY rank ASC
+			LIMIT 15
+		)
+		SELECT * FROM data ORDER BY winrate DESC, games DESC
 	`, [playerID], 'all')
 
 	return raw
@@ -214,29 +227,48 @@ async function getBestMaps(playerID) {
 
 async function getBestWith(playerID) {
 	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY
-					(COUNT(*) FILTER (WHERE tp_playergame.winner = true) + 0.1) / (count(*) + 1) DESC
-			) rank,
-			tp_player.name,
-			tp_player.tpid,
-			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = true) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
-			COUNT(*) AS games,
-			(SELECT flair from tp_playergame as tppg where tppg.playerid = tp_playergame.playerid ORDER by id DESC LIMIT 1) as flair
+		WITH data AS (
+			SELECT
+				RANK() OVER (
+					ORDER BY
+					(
+						(
+							COUNT(*) FILTER (WHERE tp_playergame.winner = true)::DECIMAL
+							/
+							COUNT(*)::DECIMAL
+						) * 100
+					)
+					*
+					(
+						0.5 * COUNT(*)::DECIMAL
+					) DESC
+				) rank,
+				tp_player.name,
+				tp_player.tpid,
+				ROUND(
+					(
+						COUNT(*) FILTER (WHERE tp_playergame.winner = true)::DECIMAL
+						/
+						COUNT(*)::DECIMAL
+					) * 100
+				, 0)::REAL as winrate,
+				COUNT(*)::REAL AS games,
+				(SELECT flair from tp_playergame as tppg where tppg.playerid = tp_playergame.playerid ORDER by id DESC LIMIT 1) as flair
 
-		FROM tp_playergame
-		LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
-		JOIN (
-			SELECT DISTINCT gameid, team
-			FROM tp_playergame pg
-			WHERE pg.playerid = $1
-		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
-		WHERE
-			playerid != $1 AND tp_player.tpid IS NOT NULL AND (tp_playergame.saveattempt = false OR tp_playergame.winner = true)
-		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
-		ORDER BY rank ASC
-		LIMIT 15
+			FROM tp_playergame
+			LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
+			JOIN (
+				SELECT DISTINCT gameid, team
+				FROM tp_playergame pg
+				WHERE pg.playerid = $1
+			) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
+			WHERE
+				playerid != $1 AND tp_player.tpid IS NOT NULL AND (tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))
+			GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
+			ORDER BY rank ASC
+			LIMIT 15
+		)
+		SELECT * FROM data ORDER BY winrate DESC, games DESC
 	`, [playerID], 'all')
 
 	return raw
@@ -244,29 +276,49 @@ async function getBestWith(playerID) {
 
 async function getBestAgainst(playerID) {
 	let raw = await db.select(`
-		SELECT
-			RANK() OVER (
-				ORDER BY
-					(COUNT(*) FILTER (WHERE tp_playergame.winner = false) + 0.1) / (count(*) + 1) DESC
-			) rank,
-			tp_player.name,
-			tp_player.tpid,
-			ROUND((COUNT(*) FILTER (WHERE tp_playergame.winner = false) / COUNT(*)::DECIMAL) * 100, 0) || '%' AS winrate,
-			COUNT(*) AS games,
-			(SELECT flair from tp_playergame as tppg where tppg.playerid = tp_playergame.playerid ORDER by id DESC LIMIT 1) as flair
+		WITH data AS (
+			SELECT
+				RANK() OVER (
+					ORDER BY
+					-- win rate
+					(
+						(
+							COUNT(*) FILTER (WHERE tp_playergame.winner = false)::DECIMAL
+							/
+							COUNT(*)::DECIMAL
+						) * 100
+					)
+					*
+					(
+						0.5 * COUNT(*)::DECIMAL
+					) DESC
+				) rank,
+				tp_player.name,
+				tp_player.tpid,
+				ROUND(
+					(
+						COUNT(*) FILTER (WHERE tp_playergame.winner = false)::DECIMAL
+						/
+						COUNT(*)::DECIMAL
+					) * 100
+				, 0)::REAL as winrate,
+				COUNT(*)::REAL AS games,
+				(SELECT flair from tp_playergame as tppg where tppg.playerid = tp_playergame.playerid ORDER by id DESC LIMIT 1) as flair
 
-		FROM tp_playergame
-		LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
-		JOIN (
-			SELECT DISTINCT gameid, team
-			FROM tp_playergame pg
-			WHERE pg.playerid = $1
-		) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team != subquery.team
-		WHERE
-			playerid != $1 AND tp_player.tpid IS NOT NULL AND (tp_playergame.saveattempt = false OR tp_playergame.winner = true)
-		GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
-		ORDER BY rank ASC
-		LIMIT 15
+			FROM tp_playergame
+			LEFT JOIN tp_player ON tp_player.id = tp_playergame.playerid
+			JOIN (
+				SELECT DISTINCT gameid, team
+				FROM tp_playergame pg
+				WHERE pg.playerid = $1
+			) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team != subquery.team
+			WHERE
+				playerid != $1 AND tp_player.tpid IS NOT NULL AND (tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))
+			GROUP BY tp_player.name, tp_player.tpid, tp_playergame.playerid
+			ORDER BY rank ASC
+			LIMIT 15
+		)
+		SELECT * FROM data ORDER BY winrate DESC, games DESC
 	`, [playerID], 'all')
 
 	return raw
