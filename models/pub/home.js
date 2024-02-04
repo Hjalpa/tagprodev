@@ -124,7 +124,6 @@ async function getPlayerRecentGames(tpid) {
 		TO_CHAR(tp_pg.duration * INTERVAL '1 millisecond', 'MI:SS') as duration,
 		tp_game.datetime,
 		tp_game.prediction,
-
 		tp_map.name as map,
 		tp_server.name as server,
 
