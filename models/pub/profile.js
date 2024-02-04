@@ -164,9 +164,8 @@ async function getGames(playerID) {
 			Round(pg.openskill::DECIMAL - LAG(pg.openskill) OVER (ORDER BY pg.datetime)::DECIMAL, 2) AS openskill_change,
 			m.name as map,
 			CASE
-				WHEN pg.team = 1 THEN ROUND((g.prediction->>'red')::numeric, 2)
-				WHEN pg.team = 2 THEN ROUND((g.prediction->>'blue')::numeric, 2)
-				ELSE 0
+				WHEN pg.team = 1 THEN ROUND(((g.prediction->>'red')::float * 100)::numeric) || '%'
+				WHEN pg.team = 2 THEN ROUND(((g.prediction->>'blue')::float * 100)::numeric) || '%'
 			END AS win_probability,
 			g.uuid,
 			g.tpid
