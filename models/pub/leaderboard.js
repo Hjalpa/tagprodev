@@ -132,6 +132,7 @@ async function getMapData() {
 				ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
 
 				MAX(tp_playergame.datetime) as lastgame,
+
 				array(
 					SELECT jsonb_build_object(
 						'tpid', tp_g.tpid,
@@ -155,18 +156,7 @@ async function getMapData() {
 		)
 		SELECT
 			RANK() OVER (
-				ORDER BY
-				(
-					(
-						wins
-						/
-						games
-					) * 100
-				)
-				*
-				(
-					0.5 * games
-				) DESC
+				ORDER BY winrate DESC, games DESC
 			) as rank,
 			name,
 			profile,
@@ -176,8 +166,8 @@ async function getMapData() {
 			wins,
 			losses,
 			winrate,
+            lastgame,
 			form
-
 		FROM data order by rank
 	`, [], 'all')
 
