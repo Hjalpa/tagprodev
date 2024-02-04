@@ -56,9 +56,14 @@ async function getData(datePeriod) {
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
 			COUNT(*) filter (WHERE tp_playergame.winner = false)::real as losses,
 
-			-- ROUND(COUNT(*) filter (WHERE (tp_playergame.cap_team_for - tp_playergame.cap_team_against) = 3) * 100.0 / COUNT(*), 2) as mercyrate,
-
-			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
+			-- ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
+			ROUND(
+					(
+						COUNT(*) FILTER (WHERE tp_playergame.winner = true)::DECIMAL
+						/
+						COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))::DECIMAL
+					) * 100
+			, 2)::REAL as winrate,
 
 			ROUND(AVG(tp_playergame.cap_team_for)::decimal, 2)::real as CF,
 			ROUND(AVG(tp_playergame.cap_team_against)::decimal, 2)::real as CA,
@@ -100,42 +105,80 @@ async function getData(datePeriod) {
 
 async function getMapData() {
 	let raw = await db.select(`
-		select
+		WITH data as (
+			select
+				RANK() OVER (
+					ORDER BY
+					(
+						(
+							COUNT(*) FILTER (WHERE tp_playergame.winner = true)
+							/
+							COUNT(*)::DECIMAL
+						) * 100
+					)
+					*
+					(
+						0.5 * COUNT(*)::DECIMAL
+					) DESC
+				) rank2,
+				tp_player.name,
+				tp_player.tpid as profile,
+				(SELECT flair from tp_playergame where playerid = tp_player.id order by datetime DESC limit 1) flair,
+				tp_map.name as map,
+
+				COUNT(*)::real as games,
+				COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
+				COUNT(*) filter (WHERE tp_playergame.winner = false)::real as losses,
+				ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
+
+				MAX(tp_playergame.datetime) as lastgame,
+				array(
+					SELECT jsonb_build_object(
+						'tpid', tp_g.tpid,
+						'winner', tp_pg.winner
+					)
+					FROM tp_playergame as tp_pg
+					LEFT JOIN tp_game as tp_g on tp_g.id = tp_pg.gameid
+					WHERE tp_pg.playerid = tp_player.id AND tp_pg.saveattempt = false AND tp_g.mapid = tp_game.mapid
+					ORDER BY tp_pg.datetime DESC
+					LIMIT 10
+				) AS form
+
+			from tp_playergame
+			left join tp_player on tp_player.id = tp_playergame.playerid
+			left join tp_game on tp_game.id = tp_playergame.gameid
+			left join tp_map on tp_game.mapid = tp_map.id
+			where tp_player.tpid IS NOT NULL AND (tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))
+			group by tp_player.name, tp_map.name, tp_player.id, tp_game.mapid, tp_player.tpid
+			order by rank2 asc
+			limit 100
+		)
+		SELECT
 			RANK() OVER (
 				ORDER BY
-					(COUNT(*) FILTER (WHERE tp_playergame.winner = true) + 0.1) / (COUNT(*) + 1) DESC
-			) rank,
-			tp_player.name,
-			tp_player.tpid as profile,
-			(SELECT flair from tp_playergame where playerid = tp_player.id order by datetime DESC limit 1) flair,
-			tp_map.name as map,
-
-			COUNT(*)::real as games,
-			COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
-			COUNT(*) filter (WHERE tp_playergame.winner = false)::real as losses,
-			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
-
-			MAX(tp_playergame.datetime) as lastgame,
-			array(
-				SELECT jsonb_build_object(
-					'tpid', tp_g.tpid,
-					'winner', tp_pg.winner
+				(
+					(
+						wins
+						/
+						games
+					) * 100
 				)
-				FROM tp_playergame as tp_pg
-				LEFT JOIN tp_game as tp_g on tp_g.id = tp_pg.gameid
-				WHERE tp_pg.playerid = tp_player.id AND tp_pg.saveattempt = false AND tp_g.mapid = tp_game.mapid
-				ORDER BY tp_pg.datetime DESC
-				LIMIT 10
-			) AS form
+				*
+				(
+					0.5 * games
+				) DESC
+			) as rank,
+			name,
+			profile,
+			flair,
+			map,
+			games,
+			wins,
+			losses,
+			winrate,
+			form
 
-		from tp_playergame
-		left join tp_player on tp_player.id = tp_playergame.playerid
-		left join tp_game on tp_game.id = tp_playergame.gameid
-		left join tp_map on tp_game.mapid = tp_map.id
-		where tp_player.tpid IS NOT NULL AND saveattempt = false
-		group by tp_player.name, tp_map.name, tp_player.id, tp_game.mapid, tp_player.tpid
-		order by rank asc
-		limit 100
+		FROM data order by rank
 	`, [], 'all')
 
 	return raw
