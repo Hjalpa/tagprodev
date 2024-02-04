@@ -56,14 +56,14 @@ async function getData(datePeriod) {
 			COUNT(*) filter (WHERE tp_playergame.winner = true)::real as wins,
 			COUNT(*) filter (WHERE tp_playergame.winner = false)::real as losses,
 
-			-- ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
-			ROUND(
-					(
-						COUNT(*) FILTER (WHERE tp_playergame.winner = true)::DECIMAL
-						/
-						COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))::DECIMAL
-					) * 100
-			, 2)::REAL as winrate,
+			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*), 2)::REAL AS winrate,
+			--ROUND(
+			--		(
+			--			COUNT(*) FILTER (WHERE tp_playergame.winner = true)::DECIMAL
+			--			/
+			--			COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))::DECIMAL
+			--		) * 100
+			--, 2)::REAL as winrate,
 
 			ROUND(AVG(tp_playergame.cap_team_for)::decimal, 2)::real as CF,
 			ROUND(AVG(tp_playergame.cap_team_against)::decimal, 2)::real as CA,
