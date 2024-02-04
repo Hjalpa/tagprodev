@@ -16,10 +16,10 @@ module.exports.init = async (req, res) => {
 				best: await getBestSkill(playerID)
 			},
 			stats: {
-				day: await getStats(profileID, 'day', timezone),
-				week: await getStats(profileID, 'week', timezone),
-				month: await getStats(profileID, 'month', timezone),
-				all: await getStats(profileID, 'all'),
+				day: await getStats(playerID, 'day', timezone),
+				week: await getStats(playerID, 'week', timezone),
+				month: await getStats(playerID, 'month', timezone),
+				all: await getStats(playerID, 'all'),
 			},
 			games: await getGames(playerID),
 			skillPerDay: await getSkillPerDay(profileID, timezone),
@@ -127,7 +127,8 @@ async function getStats(profileID, datePeriod, timezone = false) {
 					/
 					COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))::DECIMAL
 				) * 100
-			, 2)::REAL as "Win%",
+			, 2)::REAL as "Win_%",
+			ROUND(COUNT(*) FILTER (WHERE tp_playergame.winner = true) * 100.0 / COUNT(*) FILTER (WHERE tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false)), 2)::REAL AS "Win%",
 			COALESCE(COUNT(*)::REAL, 0) as "Games",
 			COUNT(*) filter (WHERE tp_playergame.winner = true AND tp_playergame.saveattempt = false)::REAL as "Wins",
 			COUNT(*) filter (WHERE tp_playergame.winner = false AND tp_playergame.saveattempt = false)::REAL as "Losses",
@@ -137,11 +138,11 @@ async function getStats(profileID, datePeriod, timezone = false) {
 			SUM(cap_team_against)::REAL as "Caps Against",
 			SUM(cap_team_for - cap_team_against)::REAL as "Cap Difference",
 			TO_CHAR(SUM(duration) * interval '1 sec', 'hh24:mi:ss') as "Time Played",
-			COUNT(*) filter (WHERE tp_playergame.finished = false)::REAL as "Disconnects",
+			COUNT(*) filter (WHERE tp_playergame.finished = false)::REAL as "Disconnects"
 
 		FROM tp_playergame
 		LEFT JOIN tp_player as p ON p.id = tp_playergame.playerid
-		WHERE p.tpid = $1 ${dateFilter}
+		WHERE p.id = $1 ${dateFilter}
 		GROUP BY p.id
 		LIMIT 1
 	`, condition, 'row')
