@@ -152,7 +152,7 @@ async function getMapData() {
 			where tp_player.tpid IS NOT NULL AND (tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))
 			group by tp_player.name, tp_map.name, tp_player.id, tp_game.mapid, tp_player.tpid
 			order by rank2 asc
-			limit 100
+			limit 400
 		)
 		SELECT
 			RANK() OVER (
@@ -237,7 +237,7 @@ async function getVersusData() {
 				l_player.tpid is not null
 			ORDER BY
 				pw.wins DESC
-			LIMIT 300
+			LIMIT 400
 		)
 		, data AS (
 			SELECT
@@ -363,7 +363,7 @@ async function getDuosData() {
 			LEFT JOIN tp_player as l_player on l_player.id = pw.player2
 			ORDER BY
 				pw.wins DESC
-			LIMIT 300
+			LIMIT 400
 		)
 		, data AS (
 			SELECT
