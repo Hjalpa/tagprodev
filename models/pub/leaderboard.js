@@ -239,49 +239,77 @@ async function getVersusData() {
 				pw.wins DESC
 			LIMIT 300
 		)
+		, data AS (
+			SELECT
+				RANK() OVER (
+				ORDER BY
+					(
+						(
+							wins::DECIMAL
+							/
+							games::DECIMAL
+						) * 100
+					)
+					*
+					(
+						0.5 * games::DECIMAL
+					) DESC
+				) AS rank2,
+				winner,
+				winner_profile,
+				loser,
+				loser_profile,
+				wins,
+				games,
+				ROUND((wins::DECIMAL / games::decimal) * 100, 0) AS winrate,
+
+				(SELECT flair from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) winner_flair,
+				(SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) loser_flair,
+				-- (SELECT datetime from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) lastgame,
+				(
+					SELECT w_tp_playergame.datetime
+					FROM tp_playergame as w_tp_playergame
+					LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team != l_tp_playergame.team
+					LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
+					WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 0 AND l_tp_playergame.openskill > 0
+					AND w_tp_playergame.finished = true
+					ORDER BY w_tp_playergame.datetime DESC
+					LIMIT 1
+				) lastgame,
+				array(
+					SELECT jsonb_build_object(
+						'tpid', tp_game.tpid,
+						'winner', w_tp_playergame.winner
+					)
+					FROM tp_playergame as w_tp_playergame
+					LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team != l_tp_playergame.team
+					LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
+					WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 0 AND l_tp_playergame.openskill > 0
+					AND w_tp_playergame.finished = true
+					ORDER BY w_tp_playergame.datetime DESC
+					LIMIT 10
+				) AS form
+
+			from Head2Head
+			order by rank2 asc
+			limit 100
+		)
 		SELECT
 			RANK() OVER (
-			ORDER BY
-				((wins*.1) / (games+1))::DECIMAL DESC,
-				games DESC
-			) AS rank,
+				ORDER BY winrate DESC, games DESC
+			) as rank,
 			winner,
 			winner_profile,
 			loser,
 			loser_profile,
 			wins,
 			games,
-			ROUND((wins::DECIMAL / games::decimal) * 100, 0) AS winrate,
-			(SELECT flair from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) winner_flair,
-			(SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) loser_flair,
-			(SELECT datetime from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) lastgame,
-			(
-				SELECT w_tp_playergame.datetime
-				FROM tp_playergame as w_tp_playergame
-				LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team != l_tp_playergame.team
-				LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
-				WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 0 AND l_tp_playergame.openskill > 0
-				AND w_tp_playergame.finished = true
-				ORDER BY w_tp_playergame.datetime DESC
-				LIMIT 1
-			) lastgame,
-			array(
-				SELECT jsonb_build_object(
-					'tpid', tp_game.tpid,
-					'winner', w_tp_playergame.winner
-				)
-				FROM tp_playergame as w_tp_playergame
-				LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team != l_tp_playergame.team
-				LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
-				WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 0 AND l_tp_playergame.openskill > 0
-				AND w_tp_playergame.finished = true
-				ORDER BY w_tp_playergame.datetime DESC
-				LIMIT 10
-			) AS form
-
-		from Head2Head
-		order by rank asc
-		limit 100
+			winrate,
+			winner_flair,
+			loser_flair,
+			lastgame,
+			form
+		FROM data order by rank
 	`, [], 'all')
 
 	return raw
@@ -337,48 +365,75 @@ async function getDuosData() {
 				pw.wins DESC
 			LIMIT 300
 		)
+		, data AS (
+			SELECT
+				RANK() OVER (
+					ORDER BY
+					(
+						(
+							wins::DECIMAL
+							/
+							games::DECIMAL
+						) * 100
+					)
+					*
+					(
+						0.5 * games::DECIMAL
+					) DESC
+				) AS rank2,
+				winner as player1,
+				winner_profile as player1_profile,
+				loser as player2,
+				loser_profile as player2_profile,
+				wins,
+				games,
+				ROUND((wins::DECIMAL / games::decimal) * 100, 0) AS winrate,
+				(SELECT flair from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) player1_flair,
+				(SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) player2_flair,
+				(
+					SELECT w_tp_playergame.datetime
+					FROM tp_playergame as w_tp_playergame
+					LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team = l_tp_playergame.team
+					LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
+					WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 0 AND l_tp_playergame.openskill > 0
+					AND w_tp_playergame.finished = true
+					ORDER BY w_tp_playergame.datetime DESC
+					LIMIT 1
+				) lastgame,
+				array(
+					SELECT jsonb_build_object(
+						'tpid', tp_game.tpid,
+						'winner', w_tp_playergame.winner
+					)
+					FROM tp_playergame as w_tp_playergame
+					LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team = l_tp_playergame.team
+					LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
+					WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 0 AND l_tp_playergame.openskill > 0
+					AND w_tp_playergame.finished = true
+					ORDER BY w_tp_playergame.datetime DESC
+					LIMIT 10
+				) AS form
+
+			from Head2Head
+			order by rank2 asc
+			limit 100
+		)
 		SELECT
 			RANK() OVER (
-			ORDER BY
-				((wins*.1) / (games+1))::DECIMAL DESC,
-				games DESC
-			) AS rank,
-			winner as player1,
-			winner_profile as player1_profile,
-			loser as player2,
-			loser_profile as player2_profile,
+				ORDER BY winrate DESC, games DESC
+			) as rank,
+			player1,
+			player1_profile,
+			player1_flair,
+			player2,
+			player2_profile,
+			player2_flair,
 			wins,
 			games,
-			ROUND((wins::DECIMAL / games::decimal) * 100, 0) AS winrate,
-			(SELECT flair from tp_playergame where playerid = winner_player_id order by datetime DESC limit 1) player1_flair,
-			(SELECT flair from tp_playergame where playerid = loser_player_id order by datetime DESC limit 1) player2_flair,
-			(
-				SELECT w_tp_playergame.datetime
-				FROM tp_playergame as w_tp_playergame
-				LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team = l_tp_playergame.team
-				LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
-				WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 0 AND l_tp_playergame.openskill > 0
-				AND w_tp_playergame.finished = true
-				ORDER BY w_tp_playergame.datetime DESC
-				LIMIT 1
-			) lastgame,
-			array(
-				SELECT jsonb_build_object(
-					'tpid', tp_game.tpid,
-					'winner', w_tp_playergame.winner
-				)
-				FROM tp_playergame as w_tp_playergame
-				LEFT JOIN tp_playergame as l_tp_playergame on w_tp_playergame.gameid = l_tp_playergame.gameid AND l_tp_playergame.playerid = loser_player_id AND w_tp_playergame.team = l_tp_playergame.team
-				LEFT JOIN tp_game on tp_game.id = w_tp_playergame.gameid
-				WHERE w_tp_playergame.playerid = winner_player_id and w_tp_playergame.gameid = l_tp_playergame.gameid AND w_tp_playergame.saveattempt = false AND l_tp_playergame.saveattempt = false AND w_tp_playergame.openskill > 0 AND l_tp_playergame.openskill > 0
-				AND w_tp_playergame.finished = true
-				ORDER BY w_tp_playergame.datetime DESC
-				LIMIT 10
-			) AS form
-
-		from Head2Head
-		order by rank asc
-		limit 100
+			winrate,
+			lastgame,
+			form
+		FROM data ORDER BY rank
 	`, [], 'all')
 
 	return raw
