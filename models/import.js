@@ -47,7 +47,7 @@ async function savePlayers(raw, gameID) {
 		if(realName === 'paint ball') realname = 'lotus'
 		else if(realName === 'mym') realname = 'anom'
 		else if(realName === 'nom') realname = 'anom'
-		else if(realName === 'nice') realname = 'laggy blonde'
+		else if(realName === 'laggy blonde') realname = 'nilus'
 
 		data.playerid = await getPlayerID(realName)
 		data.gameid = gameID

@@ -532,7 +532,6 @@ class eu {
 		else if($player === 'mYm') $player = 'anom';
 		else if($player === 'nom') $player = 'anom';
 		else if($player === 'Kute') $player = 'a-a--r--o--n';
-		else if($player === 'Nice') $player = 'laggy blonde';
 		else if($player === 'Sensei Osy') $player = 'Sensei Osy';
 		return $player;
 	}

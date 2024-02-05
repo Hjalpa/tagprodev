@@ -5,8 +5,7 @@ const routeCache = require('route-cache')
 
 module.exports.import = async (req, res) => {
 	try {
-		console.log('-------------------------------------')
-		console.log('running pub importer')
+		console.log('.... start import ........')
 
 		let url = 'https://tagpro.koalabeast.com/history/data?page=0&pageSize=50'
 		let raw = await axios.get(url)
@@ -21,8 +20,7 @@ module.exports.import = async (req, res) => {
 				await makeGame(row)
 		}
 
-		console.log('finished pub importer')
-		console.log('-------------------------------------')
+		console.log('.... end export ..........')
 	}
 
 	catch(e) {
@@ -220,6 +218,16 @@ async function getPlayerID(player) {
 			tpid IS NULL AND $1 IS NULL and LOWER(name) = LOWER($2)
 		)
 	`, [player.userId, player.displayName], 'id')
+
+	if(playerID && player.userId != null) {
+		let data = {
+			name: player.displayName
+		}
+		let condition = {
+			tpid: player.userId,
+		}
+		await db.update('tp_player', data, condition)
+	}
 
 	if(!playerID) {
 		let data = {
