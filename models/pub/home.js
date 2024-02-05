@@ -111,7 +111,7 @@ async function getPlayerName(profileID) {
 
 async function getPlayerRecentGames(tpid) {
 	let playerName = await getPlayerName(tpid)
-	console.log(`getting recent games data for: ${playerName}`)
+	console.log(`recent games: ${playerName}`)
 
 	let raw = await db.select(`
 	SELECT

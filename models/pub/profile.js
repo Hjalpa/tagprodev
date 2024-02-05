@@ -9,7 +9,7 @@ module.exports.init = async (req, res) => {
 		let playerID = await getPlayerID(profileID)
 
 		let playerName = await getPlayerName(profileID)
-		console.log(`getting profile data for: ${playerName}`)
+		console.log(`profile: ${playerName}`)
 
 		res.json({
 			openskill: {
