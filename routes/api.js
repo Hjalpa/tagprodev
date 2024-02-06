@@ -24,4 +24,11 @@ router.get('/pub/profile/:profileID/:timezone*', routeCache.cacheSeconds(60*30),
 router.get('/pub/openskill/:name', (req, res) => require('../models/pub/request').openskill(req, res))
 router.get('/pub/home/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/home').playerRecentGames(req, res))
 
+router.get('/pub/recache', (req, res) => {
+	const routeCache = require('route-cache')
+	routeCache.clearCache()
+	console.log('recached')
+	res.json({recached: true})
+})
+
 module.exports = router
