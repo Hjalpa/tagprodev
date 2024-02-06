@@ -1,10 +1,13 @@
+v1.5.0 	28th Jan 2023
+* Updated Rank Pub APIs
+
 v1.3.1 	21th Nov 2023
-* Added True Pub Profile API
-* Added True Pub History API
-* Added True Pub Home API
+* Added Rank Pub Profile API
+* Added Rank Pub History API
+* Added Rank Pub Home API
 
 v1.3.0 	15th Nov 2023
-* Added True Pub API
+* Added Rank Pub API
 
 v1.2.2 	16th May 2023
 * Added all-time records page
