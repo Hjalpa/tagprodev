@@ -259,7 +259,7 @@ async function getBestWith(playerID) {
 			JOIN (
 				SELECT DISTINCT gameid, team
 				FROM tp_playergame pg
-				WHERE pg.playerid = $1
+				WHERE pg.playerid = $1 AND (pg.winner = true OR (pg.saveattempt = false AND pg.winner = false))
 			) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team = subquery.team
 			WHERE
 				playerid != $1 AND tp_player.tpid IS NOT NULL AND (tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))
@@ -309,7 +309,7 @@ async function getBestAgainst(playerID) {
 			JOIN (
 				SELECT DISTINCT gameid, team
 				FROM tp_playergame pg
-				WHERE pg.playerid = $1
+				WHERE pg.playerid = $1 AND (pg.winner = true OR (pg.saveattempt = false AND pg.winner = false))
 			) AS subquery ON tp_playergame.gameid = subquery.gameid AND tp_playergame.team != subquery.team
 			WHERE
 				playerid != $1 AND tp_player.tpid IS NOT NULL AND (tp_playergame.winner = true OR (tp_playergame.saveattempt = false AND tp_playergame.winner = false))
