@@ -31,4 +31,7 @@ router.get('/pub/recache', (req, res) => {
 	res.json({recached: true})
 })
 
+router.get('/pub/predictions', (req, res) => require('../models/pub/predictions').predictions(req, res))
+router.get('/pub/someballs', (req, res) => require('../models/pub/someballs').someballs(req, res))
+
 module.exports = router

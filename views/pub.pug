@@ -7,7 +7,10 @@ include template/head.pug
 			.row.head
 				each n, key in players
 					each v, k in n
-						if(k === 'player')
+						if(k === 'tpid')
+							continue
+
+						else if(k === 'player')
 							.item.player
 
 						else
@@ -22,10 +25,13 @@ include template/head.pug
 					style="--teamcolor: #ffc800; --teamglow: #ffc80080; --teambg: #ffc80030"
 				)
 					each v, k in n
-						if(k === 'player')
+						if(k === 'tpid')
+							continue
+
+						else if(k === 'player')
 							.item.player
 								a(
-									href='/player/' + v
+									href='https://tagpro.gg/profile/' + n.tpid
 								)= v
 
 						else if(k === 'win rate')
