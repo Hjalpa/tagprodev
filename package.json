@@ -39,7 +39,7 @@
     "pg": "^8.7.3",
     "pug": "^3.0.2",
     "request": "^2.88.2",
-    "route-cache": "https://github.com/ramseth001/route-cache"
+    "route-cache": "^0.7.0"
   },
   "devDependencies": {
     "browser-sync": "^2.27.10",
