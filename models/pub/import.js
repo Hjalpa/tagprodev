@@ -326,7 +326,50 @@ function updateEntry(id, displayName, inputData) {
 }
 
 async function isSaveAttempt(players, lines) {
+	let scores = {r:0,b:0}
+
 	for (let line of lines) {
+		// keep track of scores
+		if(line.includes('"score",{"r":')) {
+			let arr = await JSON.parse(line)
+			let time = arr[0]
+			scores = arr[2]
+		}
+
+		// force save if the player joins in overtime
+		if(line.includes('from":null') && line.includes('has joined the')) {
+			let arr = await JSON.parse(line)
+			let playerData = arr[2]
+
+			let id = playerData.for
+			let name = playerData.message.split(' has joined the')[0]
+
+			let six_minutes = 360000
+			let time = arr[0]
+			if(time > six_minutes) {
+				console.log(`${name} joined in overtime. This is a save attempt.`)
+				players = addSaveKey(players, id)
+			}
+		}
+
+		// force save if scores not balanced
+		if(line.includes('from":null') && line.includes('has joined the')) {
+			let arr = await JSON.parse(line)
+			let playerData = arr[2]
+
+			let id = playerData.for
+			let name = playerData.message.split(' has joined the')[0]
+
+			let rawTeam = playerData.message.split(' has joined the')[1]
+			let team = rawTeam.split(' team.')[0].trim()
+
+			if((scores.r > scores.b && team === 'Blue') || (scores.b > scores.r && team === 'Red')) {
+				console.log(`${name} joined ${team} losing ${scores.r}:${scores.b}. This is a save attempt.`)
+				players = addSaveKey(players, id)
+			}
+		}
+
+		// standard save from playing with stats on
 		if(line.includes('from":null,"message":"This is a save attempt! A loss will not negatively impact your win %.",')) {
 			let arr = await JSON.parse(line)
 			players = addSaveKey(players, arr[2].for)
