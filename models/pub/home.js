@@ -110,7 +110,7 @@ async function getPlayerName(profileID) {
 }
 
 async function getPlayerRecentGames(tpid, req) {
-	let playerName = await getPlayerName(tpid)
+	let playerName = await getPlayerName(tpid) || tpid
 	let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
 	console.log(`recent games: ${playerName} :: ${ip}`)
 	if(ip && tpid)
