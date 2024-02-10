@@ -195,9 +195,9 @@ async function getPlayerID(profileID) {
 }
 
 async function logIP(profileID, ip) {
-	let playerID = getPlayerID(profileID)
+	let playerID = await getPlayerID(profileID)
 	if(playerID)
-		await db.insert('tp_playerip', {playerid: playerID, ip: ip})
+		await db.insertUpdate('tp_playerip', {playerid: playerID, ip: ip}, ['playerid','ip'])
 	else
 		console.log(`could not log ip for player profile id: ${profileID}`)
 }
