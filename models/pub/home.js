@@ -75,11 +75,11 @@ async function getGames() {
         // WHERE
 		// (
 			// (
-				// ((tp_game.prediction->>'red')::DECIMAL BETWEEN 0 AND 0.25) AND tp_game.winner = 1
+				// ((tp_game.prediction->>'red')::DECIMAL BETWEEN 0 AND 0.3) AND tp_game.winner = 1
 			// )
 			// OR
 			// (
-				// ((tp_game.prediction->>'blue')::DECIMAL BETWEEN 0 AND 0.25) AND tp_game.winner = 2
+				// ((tp_game.prediction->>'blue')::DECIMAL BETWEEN 0 AND 0.3) AND tp_game.winner = 2
 			// )
 		// )
 
@@ -113,6 +113,8 @@ async function getPlayerRecentGames(tpid, req) {
 	let playerName = await getPlayerName(tpid)
 	let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
 	console.log(`recent games: ${playerName} :: ${ip}`)
+	if(ip && tpid)
+		await logIP(tpid, ip)
 
 	let raw = await db.select(`
 		SELECT
@@ -178,4 +180,24 @@ async function getPlayerRecentGames(tpid, req) {
 	`, [tpid], 'all')
 
 	return raw
+}
+
+async function getPlayerID(profileID) {
+	let raw = await db.select(`
+		SELECT
+			id
+		FROM tp_player
+		WHERE tpid = $1
+		LIMIT 1
+	`, [profileID], 'id')
+
+	return raw
+}
+
+async function logIP(profileID, ip) {
+	let playerID = getPlayerID(profileID)
+	if(playerID)
+		let raw = await db.insert('tp_playerip', {ip}, {playerid: playerID})
+	else
+		console.log(`could not log ip for player profile id: ${profileID}`)
 }
