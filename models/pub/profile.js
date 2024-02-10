@@ -8,7 +8,7 @@ module.exports.init = async (req, res) => {
 
 		let playerID = await getPlayerID(profileID)
 
-		let playerName = await getPlayerName(profileID)
+		let playerName = await getPlayerName(profileID) || profileID
 		let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
 		console.log(`profile: ${playerName} :: ${ip}`)
 
