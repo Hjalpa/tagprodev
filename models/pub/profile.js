@@ -9,7 +9,8 @@ module.exports.init = async (req, res) => {
 		let playerID = await getPlayerID(profileID)
 
 		let playerName = await getPlayerName(profileID)
-		console.log(`profile: ${playerName}`)
+		let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+		console.log(`profile: ${playerName} :: ${ip}`)
 
 		res.json({
 			openskill: {
