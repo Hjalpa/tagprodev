@@ -66,22 +66,29 @@ async function getGames() {
 			) AS blue_team
 
 		FROM tp_game
+
+
+
 		LEFT JOIN tp_map ON tp_map.id = tp_game.mapid
 		LEFT JOIN tp_server ON tp_server.id = tp_game.serverid
+
+        WHERE
+		(
+			(
+				((tp_game.prediction->>'red')::DECIMAL BETWEEN 0 AND 0.15) AND tp_game.winner = 2
+			)
+			OR
+			(
+				((tp_game.prediction->>'blue')::DECIMAL BETWEEN 0 AND 0.15) AND tp_game.winner = 1
+			)
+		)
+
+
 		ORDER BY tp_game.datetime DESC
 		LIMIT 15
 	`, [], 'all')
 
-        // WHERE
-		// (
-			// (
-				// ((tp_game.prediction->>'red')::DECIMAL BETWEEN 0 AND 0.15) AND tp_game.winner = 2
-			// )
-			// OR
-			// (
-				// ((tp_game.prediction->>'blue')::DECIMAL BETWEEN 0 AND 0.15) AND tp_game.winner = 1
-			// )
-		// )
+
 
 	return raw
 }
@@ -90,7 +97,7 @@ module.exports.playerRecentGames = async (req, res) => {
 	try {
 		const profileID = req.params.profileID
 		res.json({
-			games: await getPlayerRecentGames(profileID),
+			games: await getPlayerRecentGames(profileID, req),
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
@@ -109,10 +116,10 @@ async function getPlayerName(profileID) {
 	return raw
 }
 
-async function getPlayerRecentGames(tpid) {
+async function getPlayerRecentGames(tpid, req) {
 	let playerName = await getPlayerName(tpid)
 	let ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
-	console.log(`recent games: ${playerName} :: ${ip}`)
+	console.log(`recent games: ${playerName}`)
 
 	let raw = await db.select(`
 	SELECT
