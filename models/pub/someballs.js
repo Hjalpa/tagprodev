@@ -22,8 +22,7 @@ async function getSomeballs(name, auth = false) {
 					ELSE
 						0
 				END AS NUMERIC(10, 2)
-			)::REAL as win_ratio,
-			openskill as skill
+			)::REAL as win_ratio
 		FROM tp_player
 		LEFT JOIN tp_playergame ON tp_player.id = tp_playergame.playerid
 								AND tp_playergame.datetime = (
@@ -33,7 +32,7 @@ async function getSomeballs(name, auth = false) {
 								)
 		WHERE tp_player.name IN ('Some Ball 1', 'Some Ball 2', 'Some Ball 3', 'Some Ball 4', 'Some Ball 5', 'Some Ball 6', 'Some Ball 7', 'Some Ball 8')
 			AND tp_player.tpid IS NULL
-		ORDER BY skill DESC;
+		ORDER BY games DESC
 	`, [], 'all')
 
 	return raw

@@ -1,3 +1,6 @@
+v1.6.0 	13th Feb 2023
+* Added map pages to Rank Pub API
+
 v1.5.0 	28th Jan 2023
 * Updated Rank Pub APIs
 

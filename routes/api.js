@@ -16,14 +16,17 @@ router.post('/spy/update', (req, res) => spy.update(req, res))
 
 // pub data
 router.post('/pub/import', (req, res) => require('../models/pub/import').import(req, res))
-router.get('/pub/home', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/home').init(req, res))
+router.get('/pub/home/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/home').init(req, res))
 router.get('/pub/leaderboard', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/leaderboard').init(req, res))
 router.get('/pub/history/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/history').init(req, res))
 router.get('/pub/profile/:profileID/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/profile').init(req, res))
+router.get('/pub/maps', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/map').all(req, res))
+router.get('/pub/maps/:mapName/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/map').init(req, res))
 
+// monitor userscript api
 router.get('/pub/openskill/:name', (req, res) => require('../models/pub/request').openskill(req, res))
-router.get('/pub/home/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/home').playerRecentGames(req, res))
 
+// quickly recache when debugging
 router.get('/pub/recache', (req, res) => {
 	const routeCache = require('route-cache')
 	routeCache.clearCache()
