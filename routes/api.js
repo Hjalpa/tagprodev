@@ -25,6 +25,7 @@ router.get('/pub/maps/:mapName/:profileID', routeCache.cacheSeconds(60*30), (req
 
 // monitor userscript api
 router.get('/pub/openskill/:name', (req, res) => require('../models/pub/request').openskill(req, res))
+router.get('/pub/playercompare', (req, res) => require('../models/pub/request').playercompare(req, res))
 
 // quickly recache when debugging
 router.get('/pub/recache', (req, res) => {
