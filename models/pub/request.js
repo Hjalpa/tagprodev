@@ -42,10 +42,8 @@ module.exports.playercompare = async (req, res) => {
 		let p2 = await getPlayer(_p2)
 
 		res.json({
-			winPercentages: {
-				together: await getWith(p1, p2) || { games: 0, wins: 0, winrate: 0 },
-				against: await getAgainst(p1, p2) || { games: 0, wins: 0, winrate: 0 },
-			}
+			together: await getWith(p1, p2) || { games: 0, wins: 0, winrate: 0 },
+			against: await getAgainst(p1, p2) || { games: 0, wins: 0, winrate: 0 },
 		})
 	} catch(e) {
 		res.status(400).send({error: e})
