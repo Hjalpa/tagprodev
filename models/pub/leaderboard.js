@@ -41,7 +41,7 @@ async function getData(datePeriod) {
 			2
 		)
 	`)
-	let having = (datePeriod === 'all' ? 'HAVING count(*) > 200' : '')
+	let having = (datePeriod === 'all' ? 'HAVING count(*) > 300' : '')
 
 	let raw = await db.select(`
 		SELECT
