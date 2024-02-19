@@ -21,7 +21,7 @@ let init = async (req, res) => {
 			date: await getSeasonDate(req.seasonid),
 			teams: await getTeamCount(req.seasonid),
 			players: await getPlayerCount(req.seasonid),
-			mvb: await getGASP(req.mode, req.seasonid),
+			gasp: await getGASP(req.mode, req.seasonid),
 			champions: await getChampions(req.seasonid),
 			leaguewinner: await getLeagueWinner(req.seasonid),
 			playofffinalstream: await getPlayoffFinalStream(req.seasonid),

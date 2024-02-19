@@ -25,7 +25,7 @@ include template/superleague-nav.pug
 
 			.playoff_results
 				// most valuable ball
-				if mvb[0]
+				if gasp[0]
 					.pane.mvb
 						.container
 							.headline
@@ -33,8 +33,8 @@ include template/superleague-nav.pug
 									use(xlink:href="#mvb")
 								.text GASP
 
-							- let max = parseInt(mvb[0].value)
-							each n, key in mvb
+							- let max = parseInt(gasp[0].value)
+							each n, key in gasp
 								.row(class=(key === 0 ? 'top' : ''))
 									.item.rank= n.rank
 									.item.team(

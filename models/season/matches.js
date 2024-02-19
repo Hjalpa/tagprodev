@@ -273,7 +273,7 @@ async function format(raw, filters, gamemode) {
 					timewinning: (d.timewinning && d.timewinning.color === d.redcolor ? d.timewinning : d.timelosing),
 					timelosing: (d.timelosing && d.timelosing.color === d.redcolor ? d.timewinning : d.timelosing),
 
-					mvb: d.mvb,
+					gasp: d.gasp,
 				},
 				red: {
 					name: d.redname,
@@ -338,7 +338,7 @@ async function setGASP(raw, gamemode) {
 					LIMIT 1
 			`, [gameid], 'player')
 
-			raw[game].mvb = topGASP
+			raw[game].gasp = topGASP
 		}
 		else if(gamemode === 'ecltp' || 'nf') {
 			let gasp_select = gasp.getSelectSingle(gamemode)
@@ -355,7 +355,7 @@ async function setGASP(raw, gamemode) {
 				LIMIT 1
 			`, [gameid], 'player')
 
-			raw[game].mvb = topGASP
+			raw[game].gasp = topGASP
 		}
 	}
 
