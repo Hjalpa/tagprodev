@@ -345,13 +345,27 @@ async function setGASP(raw, gamemode) {
 
 			let topGASP = await db.select(`
 				SELECT
-					player.name as player,
-					${gasp_select} as raw_gasp
-				FROM playergame
-				LEFT JOIN game ON game.id = playergame.gameid
-				LEFT JOIN player ON player.id = playergame.playerid
-				WHERE playergame.gameid = $1
-				ORDER BY raw_gasp DESC
+					_data.player,
+					Round(
+						(real_gasp * (avg(real_gasp) over() / 10))::DECIMAL
+					, 2) as raw_gasp
+				FROM (
+					SELECT
+						data.*,
+						Round(
+							((gasp - min(gasp) over()) / (max(gasp) over() - min(gasp) over ())) * 10
+						, 2) as real_gasp
+					FROM (
+						SELECT
+							player.name as player,
+							${gasp_select} as gasp
+						FROM playergame
+						LEFT JOIN game ON game.id = playergame.gameid
+						LEFT JOIN player ON player.id = playergame.playerid
+						WHERE playergame.gameid = $1
+					) as data
+				) as _data
+				ORDER BY raw_gasp desc
 				LIMIT 1
 			`, [gameid], 'player')
 

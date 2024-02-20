@@ -1,5 +1,6 @@
 const db = require ('../../lib/db')
 const util = require ('../../lib/util')
+// the old mvb only used on this page. this page needs to be refactored to use the gasp formula.
 const mvb = require ('../../lib/mvb')
 
 module.exports.init = async (req, res) => await init(req, res)
