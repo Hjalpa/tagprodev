@@ -185,23 +185,22 @@ let signup = async (req, res) => {
 module.exports.draftpacket = async (req, res) => await draftpacket(req, res)
 let draftpacket = async (req, res) => {
 	try {
-		// last went for
-		// 	super league NF euroll amount
-		// 	eltp amount
 		let signups = await db.select(`
 			SELECT
 				-- RANK() OVER ( ORDER BY date DESC ) rank,
 				LOWER(player.country) as country,
-				player.name as player,
+				username as player,
 				signup.profile,
 				-- (SELECT (sum(cost) / count(*)) FROM seasonplayer WHERE seasonplayer.playerid = signup.playerid GROUP BY seasonplayer.playerid) as avgcost,
 				signup.notes
 
 			FROM signup
 			LEFT JOIN player on signup.playerid = player.id
-			WHERE signup.seasonid = $1 AND signup.verified = $2 AND captain = FALSE
+			WHERE signup.seasonid = $1
 			ORDER BY signup.captain DESC, signup.rating DESC
-		`, [req.seasonid, true], 'all')
+		`, [req.seasonid], 'all')
+
+		console.log(signups)
 
 		let data = {
 			config: {

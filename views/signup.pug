@@ -1,8 +1,7 @@
 doctype html
 html
 	head
-		// title= config.title
-		title ECLTP Season 9 Signup
+		title= config.title
 		meta(charset='utf-8')
 		link(rel='stylesheet', href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap")
 		link(rel='stylesheet', href='/signup.css')
@@ -11,10 +10,6 @@ html
 
 	body
 		.background
-			// img(src='https://i.imgur.com/AQcPr7L.png')._1
-			// img(src='https://i.imgur.com/vKTc7wB.png')._2
-			// img(src='https://i.imgur.com/2bzwcTQ.png')._3
-			// img(src='https://i.imgur.com/MU65gg5.png')._4
 			img(src='https://i.imgur.com/76Nzkgm.png')._1
 			img(src='https://i.imgur.com/1ZWMzQn.png')._2
 			img(src='https://i.imgur.com/5NgLxbF.png')._3
@@ -40,9 +35,8 @@ html
 
 			.new
 				.left
-					// h1= config.title
-					h1 ECLTP Season 9 Signup
-					p.details Season 9 of <span>ECLTP</span> will run for <span>3 weeks</span> throughout <span>March</span>, with games played <span>Sunday</span> and <span>Monday</span> 20:00 BST.
+					h1= config.title
+					p.details ELTP's 23rd season is scheduled to span <span>8 weeks</span>, featuring games evenly distributed between <span>London</span> and <span>New York</span> servers. Times are set at <span>21:00 BST</span> / <span>15:00 EST</span>.
 
 					h2 Paste in your Profile URL
 					.form
@@ -51,14 +45,57 @@ html
 					.info You don't need to be the best player. You do need to be committed. It's fine if you're unable to make all dates, just let me know in advance.
 
 				.right
-					h2 Signup Quota
-					.bar
-						- signups = Math.round((signups.length / 29) * 100)
-						- if(signups >= 100) signups = 100
-						- signups_text = signups + '%'
-						.progress(style="width:"+signups+"%")
-							.strip
-							.count= signups_text
+					table
+						thead
+							tr
+								th
+								th Majors
+								th Minors
+						tbody
+							tr
+								td Draft
+								td 24 Mar
+								td 25 Mar
+
+							tr
+								td Week 1
+								td 31 Mar
+								td 1 Apr
+
+							tr
+								td Week 2
+								td 7 Apr
+								td 8 Apr
+
+							tr
+								td Week 3
+								td 14 Apr
+								td 15 Apr
+
+							tr
+								td Week 4
+								td 21 Apr
+								td 22 Apr
+
+							tr
+								td Week 5
+								td 28 Apr
+								td 29 Apr
+
+							tr
+								td Preliminary
+								td 5 May
+								td 6 May
+
+							tr
+								td Semi-Final
+								td 12 May
+								td 13 May
+
+							tr
+								td Final
+								td 19 May
+								td 20 May
 
 		svg.hide
 			defs
