@@ -85,7 +85,7 @@ document.querySelector('.verification button').addEventListener('click', async (
 		else if(data.success) {
 			screen.classList.add('success')
 
-			screen.querySelector('h2').innerText = 'You have signed up'
+			screen.querySelector('h2').innerText = 'Signup complete'
 			screen.querySelector('h5').classList.add('hide')
 			screen.querySelector('p').innerText = `You're verified, and will be placed into the auction for the upcoming season!`
 
