@@ -210,15 +210,15 @@ async function getUpsets() {
          WHERE
 		 (
 			 (
-				 ((tp_game.prediction->>'red')::DECIMAL BETWEEN 0 AND 0.2) AND winner = 1
+				 ((tp_game.prediction->>'red')::DECIMAL BETWEEN 0 AND 0.15) AND winner = 1
 			 )
 			 OR
 			 (
-				 ((tp_game.prediction->>'blue')::DECIMAL BETWEEN 0 AND 0.2) AND winner = 2
+				 ((tp_game.prediction->>'blue')::DECIMAL BETWEEN 0 AND 0.15) AND winner = 2
 			 )
 		 )
 		ORDER BY tp_game.datetime DESC
-		LIMIT 150
+		LIMIT 15
 	`, [], 'all')
 
 	return raw
