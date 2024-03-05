@@ -174,7 +174,6 @@ let signup = async (req, res) => {
 
 		}
 
-		// console.log(data)
 	} catch(e) {
 		console.log('error: ' + e)
 	}
@@ -187,20 +186,17 @@ let draftpacket = async (req, res) => {
 	try {
 		let signups = await db.select(`
 			SELECT
-				-- RANK() OVER ( ORDER BY date DESC ) rank,
-				LOWER(player.country) as country,
-				username as player,
+				LOWER(player.country) AS country,
+				username AS player,
 				signup.profile,
-				-- (SELECT (sum(cost) / count(*)) FROM seasonplayer WHERE seasonplayer.playerid = signup.playerid GROUP BY seasonplayer.playerid) as avgcost,
-				signup.notes
-
+				signup.notes,
+				(SELECT ROUND(openskill::decimal, 2) from tp_playergame where playerid = tp_player.id order by datetime desc limit 1)::decimal as openskill
 			FROM signup
-			LEFT JOIN player on signup.playerid = player.id
-			WHERE signup.seasonid = $1
-			ORDER BY signup.captain DESC, signup.rating DESC
+			LEFT JOIN player ON lower(signup.username) = player.name
+			LEFT JOIN tp_player ON tp_player.tpid = SPLIT_PART(signup.profile, '/', -1)
+			WHERE signup.seasonid = $1 AND verified = true
+			ORDER BY openskill DESC NULLS LAST
 		`, [req.seasonid], 'all')
-
-		console.log(signups)
 
 		let data = {
 			config: {

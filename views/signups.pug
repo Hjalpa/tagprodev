@@ -28,7 +28,7 @@ html
 										else if(k === 'player')
 											th.player Player
 
-										else if(k === 'profile' || k === 'captain')
+										else if(k === 'profile' || k === 'captain' || k === 'notes')
 											- continue
 
 										else if(k === 'avgcost')
@@ -58,7 +58,7 @@ html
 												href= n.profile
 											)= v
 
-									else if(k === 'profile' || k === 'captain')
+									else if(k === 'profile' || k === 'captain' || k === 'notes')
 										- continue
 
 									else if(k === 'avgcost')
