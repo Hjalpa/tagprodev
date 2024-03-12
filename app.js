@@ -12,13 +12,12 @@ const app = express()
 const cors = require('cors')
 
 if(process.env.ENV === 'production') {
-	//const cron = require('node-cron')
-	//const axios = require('axios')
-	//cron.schedule('*/15 * * * *', async () => {
-	//	await axios.post(`https://tagpro.dev/api/pub/import`)
-	//})
+	const cron = require('node-cron')
+	const axios = require('axios')
+	cron.schedule('*/15 * * * *', async () => {
+		await axios.post(`https://tagpro.dev/api/pub/import`)
+	})
 }
-
 
 app.use(cors())
 
