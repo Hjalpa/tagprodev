@@ -147,7 +147,7 @@ async function getPlayers(data) {
 			// remove duplicate players
 			rawPlayers = removePlayerDuplicatesAndPreserveNull(rawPlayers)
 
-			// check that there are at least 3 players on each team
+			// check that there are at least 4 players on each team
 			let evenTeams = checkEvenTeams(rawPlayers)
 			if(!evenTeams)
 				throw 'Teams are not even'
