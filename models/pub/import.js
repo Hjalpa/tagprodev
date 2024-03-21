@@ -134,7 +134,10 @@ async function getPlayers(data) {
 			let rawPlayers = []
 			for(let player of players) {
 				let timePlayed = getTimestampDifferenceInSeconds(player.joined, player.left)
-				if(timePlayed >= 30) {
+				// changed from 30 to 5 seconds. See how it goes.
+				// if(timePlayed >= 30) {
+				if(timePlayed >= 5) {
+
 					player.flair = await getFlair(player.id, raw.data.trim().split('\n'))
 					rawPlayers.push(player)
 				}
