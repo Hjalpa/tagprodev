@@ -228,3 +228,44 @@ async function getSelects(gamemode) {
 			break;
 	}
 }
+
+module.exports.export = async (req, res) => {
+	try {
+		let rounds = await getAllRounds(req.seasonid)
+		let r = rounds[req.params.id]
+		let filters =  {
+			seasonid: req.seasonid,
+			date: (req.params.id) ? await getRoundDate(req.params.id, req.seasonid) : false,
+			final: (req.params.id === 'final') ? true : false,
+			league: false
+		}
+
+		if(req.params.id === undefined || (r && r.league))
+			filters.league = true
+
+		let data = await getData(filters, req.mode)
+
+		const id = req.params
+		if (id && id[0].endsWith('.csv')) {
+
+			const headers = Object.keys(data[0])
+
+			let csvContent = headers.join(',') + '\r\n'
+
+			data.forEach(obj => {
+				const row = headers.map(key => obj[key]).join(',');
+				csvContent += row + '\r\n'
+			})
+
+			res.setHeader('Content-Type', 'text/csv');
+			res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+			res.send(csvContent)
+		}
+		else if (id && id[0].endsWith('.json')) {
+			res.json(data)
+		}
+	}
+	catch(error) {
+		res.status(404).render('404')
+	}
+}
