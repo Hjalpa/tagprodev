@@ -20,7 +20,7 @@ router.get('/league', (req, res) => require('../models/season/league').init(req,
 router.get('/playoffs', (req, res) => require('../models/season/playoffs').init(req, res))
 router.get('/teams', (req, res) => require('../models/season/teams').init(req, res))
 
-router.get('/stats/:id?(\.csv|\.json)?', (req, res) => require('../models/season/stats').export(req, res))
+router.get('/stats/:id?(\.csv|\.json)', (req, res) => require('../models/season/stats').export(req, res))
 router.get('/stats/:id?', (req, res) => require('../models/season/stats').init(req, res))
 
 module.exports = router

@@ -247,18 +247,15 @@ module.exports.export = async (req, res) => {
 
 		const id = req.params
 		if (id && id[0].endsWith('.csv')) {
-
 			const headers = Object.keys(data[0])
-
 			let csvContent = headers.join(',') + '\r\n'
-
 			data.forEach(obj => {
 				const row = headers.map(key => obj[key]).join(',');
 				csvContent += row + '\r\n'
 			})
-
+			let name = `s${filters.seasonid}${req.params.id ? `-${req.params.id}` : ''}`;
 			res.setHeader('Content-Type', 'text/csv');
-			res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+			res.setHeader('Content-Disposition', `attachment; filename=${name}.csv`)
 			res.send(csvContent)
 		}
 		else if (id && id[0].endsWith('.json')) {
