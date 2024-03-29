@@ -241,7 +241,7 @@ async function savePlayers(raw, gameID, rawData) {
 			flair: player.flair,
 			datetime: rawData.started,
 			saveattempt: player.saveAttempt ? true: false,
-			degrees: player.degrees,
+			degree: player.degree,
 			score: player.score
 		}
 
