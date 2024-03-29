@@ -8,6 +8,7 @@ module.exports.import = async (req, res) => {
 		console.log('.... start import ........')
 
 		let url = 'https://tagpro.koalabeast.com/history/data?page=0&pageSize=50'
+		// let url = 'https://tagpro.koalabeast.com/history/data?userId=52d14ba81c0f1b1421277d0c&page=0&pageSize=1'
 		let raw = await axios.get(url)
 
 		raw.headers['content-type']
@@ -18,6 +19,8 @@ module.exports.import = async (req, res) => {
 			let exists = await db.select('SELECT id FROM tp_gameexclude WHERE tpid = $1', [row.id], 'id')
 			if(!exists)
 				await makeGame(row)
+
+				return false
 		}
 
 		console.log('.... end export ..........')
@@ -40,6 +43,7 @@ async function makeGame(data) {
 		try {
 			// get players and validate
 			let players = await getPlayers(data)
+			console.log(players)
 			// save game
 			let gameID = await saveGame(data)
 			// save players
@@ -136,6 +140,8 @@ async function getPlayers(data) {
 				let timePlayed = getTimestampDifferenceInSeconds(player.joined, player.left)
 				if(timePlayed >= 10) {
 					player.flair = await getFlair(player.id, raw.data.trim().split('\n'))
+					player.degree = await getDegree(player.id, raw.data.trim().split('\n'))
+					player.score = await getScore(player.id, raw.data.trim().split('\n'))
 					rawPlayers.push(player)
 				}
 			}
@@ -178,6 +184,47 @@ async function getFlair(playerID, lines) {
 	return null
 }
 
+async function getDegree(playerID, lines) {
+	for (let line of lines) {
+		if(line.includes(`{"id":${playerID}`) && line.includes('degree":')) {
+			let json = await JSON.parse(line)
+			if(json[2][0].degree) {
+				return json[2][0].degree
+			}
+		}
+	}
+	// if no degree
+	return null
+}
+
+async function getScore(playerID, lines) {
+	let reverse = lines.reverse()
+	for (let line of reverse) {
+
+		const pattern = new RegExp('{"id":' + playerID + ',"score":(\\d+)}')
+		const match = line.match(pattern)
+		if (match)
+			return parseInt(match[1])
+
+		// if(line.includes(`{"id":${playerID}`) && line.includes('score":') && line.includes('important":true')) {
+		// 	let json = await JSON.parse(line)
+		// 	if(json[2][0].score) {
+		// 		return json[2][0].score
+		// 	}
+		// }
+
+		// if(line.includes(`[{"id":${playerID},"score":`)) {
+		// 	let json = await JSON.parse(line)
+		// 	// console.log(json[2][0].score)
+		// 	if(json[2][0].score) {
+		// 		return json[2][0].score
+		// 	}
+		// }
+	}
+	// if no score
+	return null
+}
+
 async function savePlayers(raw, gameID, rawData) {
 	for await (const player of raw) {
 		playerID = await getPlayerID(player)
@@ -193,7 +240,9 @@ async function savePlayers(raw, gameID, rawData) {
 			cap_team_against: rawData.teams[(player.team == 2 ? 'red' : 'blue')].score,
 			flair: player.flair,
 			datetime: rawData.started,
-			saveattempt: player.saveAttempt ? true: false
+			saveattempt: player.saveAttempt ? true: false,
+			degrees: player.degrees,
+			score: player.score
 		}
 
 		let playerGameID = await db.insert('tp_playergame', data)
