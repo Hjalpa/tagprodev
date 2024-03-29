@@ -1,5 +1,5 @@
 const { rating, rate, ordinal } = require('openskill')
 
 console.log(
-	ordinal({ mu: 25, sigma: 8.333333333333334})
+	ordinal({ mu:34.89030494336255, sigma: 1.7427406688264984})
 )
