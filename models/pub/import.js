@@ -136,8 +136,8 @@ async function getPlayers(data) {
 				let timePlayed = getTimestampDifferenceInSeconds(player.joined, player.left)
 				if(timePlayed >= 10) {
 					player.flair = await getFlair(player.id, raw.data.trim().split('\n'))
-					// player.degree = await getDegree(player.id, raw.data.trim().split('\n'))
-					// player.score  = await getScore(player.id, raw.data.trim().split('\n'))
+					player.degree = await getDegree(player.id, raw.data.trim().split('\n'))
+					player.score  = await getScore(player.id, raw.data.trim().split('\n'))
 					rawPlayers.push(player)
 				}
 			}
@@ -185,7 +185,7 @@ async function getDegree(playerID, lines) {
 		if(line.includes(`{"id":${playerID}`) && line.includes('degree":')) {
 			let json = await JSON.parse(line)
 			if(json[2][0].degree) {
-				return json[2][0].degree
+				return parseInt(json[2][0].degree)
 			}
 		}
 	}
@@ -235,8 +235,8 @@ async function savePlayers(raw, gameID, rawData) {
 			flair: player.flair,
 			datetime: rawData.started,
 			saveattempt: player.saveAttempt ? true: false,
-			// score: player.score,
-			// degree: player.degree
+			score: player.score,
+			degree: player.degree,
 		}
 
 		let playerGameID = await db.insert('tp_playergame', data)
