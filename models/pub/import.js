@@ -22,8 +22,6 @@ module.exports.import = async (req, res) => {
 
 				return false
 		}
-
-		console.log('.... end import ..........')
 	}
 
 	catch(e) {
@@ -31,6 +29,7 @@ module.exports.import = async (req, res) => {
 	}
 
 	finally {
+		console.log('.... end import ..........')
 		routeCache.clearCache()
 		await axios.get('https://tagpro.dev/api/pub/leaderboard')
 		res.json({success:true})
@@ -43,7 +42,6 @@ async function makeGame(data) {
 		try {
 			// get players and validate
 			let players = await getPlayers(data)
-			console.log(players)
 			// save game
 			let gameID = await saveGame(data)
 			// save players
@@ -140,7 +138,7 @@ async function getPlayers(data) {
 				let timePlayed = getTimestampDifferenceInSeconds(player.joined, player.left)
 				if(timePlayed >= 10) {
 					player.flair = await getFlair(player.id, raw.data.trim().split('\n'))
-					player.degree = await getDegree(player.id, raw.data.trim().split('\n'))
+					// player.degree = await getDegree(player.id, raw.data.trim().split('\n'))
 					// player.score  = await getScore(player.id, raw.data.trim().split('\n'))
 					rawPlayers.push(player)
 				}
@@ -240,7 +238,7 @@ async function savePlayers(raw, gameID, rawData) {
 			datetime: rawData.started,
 			saveattempt: player.saveAttempt ? true: false,
 			// score: player.score,
-			degree: player.degree
+			// degree: player.degree
 		}
 
 		let playerGameID = await db.insert('tp_playergame', data)
