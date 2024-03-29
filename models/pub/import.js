@@ -19,8 +19,6 @@ module.exports.import = async (req, res) => {
 			let exists = await db.select('SELECT id FROM tp_gameexclude WHERE tpid = $1', [row.id], 'id')
 			if(!exists)
 				await makeGame(row)
-
-				return false
 		}
 	}
 
