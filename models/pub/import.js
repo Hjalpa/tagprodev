@@ -243,7 +243,7 @@ async function savePlayers(raw, gameID, rawData) {
 			degree: player.degree
 		}
 
-		// let playerGameID = await db.insert('tp_playergame', data)
+		let playerGameID = await db.insert('tp_playergame', data)
 
 		if(!playerGameID) {
 			throw `Could not save player game data: ${db.error}`
