@@ -108,6 +108,7 @@ async function getMyGames(tpid, req) {
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'openskill', Round(pg.openskill::decimal, 2)::real,
+					'multiuser', tp_player.multiuser,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg
@@ -127,6 +128,7 @@ async function getMyGames(tpid, req) {
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'openskill', Round(pg.openskill::decimal, 2)::real,
+					'multiuser', tp_player.multiuser,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg
@@ -174,6 +176,7 @@ async function getUpsets() {
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'openskill', Round(pg.openskill::decimal, 2)::real,
+					'multiuser', tp_player.multiuser,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg
@@ -193,6 +196,7 @@ async function getUpsets() {
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'openskill', Round(pg.openskill::decimal, 2)::real,
+					'multiuser', tp_player.multiuser,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg

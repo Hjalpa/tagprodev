@@ -125,6 +125,7 @@ async function getAllRecentGames(mapID) {
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'openskill', Round(pg.openskill::decimal, 2)::real,
+					'multiuser', tp_player.multiuser,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg
@@ -144,6 +145,7 @@ async function getAllRecentGames(mapID) {
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'openskill', Round(pg.openskill::decimal, 2)::real,
+					'multiuser', tp_player.multiuser,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg
@@ -190,6 +192,7 @@ async function getMyRecentGames(mapID, tpID) {
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'openskill', Round(pg.openskill::decimal, 2)::real,
+					'multiuser', tp_player.multiuser,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg
@@ -209,6 +212,7 @@ async function getMyRecentGames(mapID, tpID) {
 					'tpid', tp_player.tpid,
 					'openskill_change', Round(pg.openskill::decimal - COALESCE(xpg.openskill::decimal, 0), 2)::real,
 					'openskill', Round(pg.openskill::decimal, 2)::real,
+					'multiuser', tp_player.multiuser,
 					'finished', pg.finished
 				)
 				from tp_playergame as pg
