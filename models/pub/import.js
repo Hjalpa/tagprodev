@@ -71,6 +71,9 @@ async function saveGame(raw) {
 		bluecaps: raw.teams.blue.score
 	}
 
+	if(raw.mapName === 'eggball' || raw.mapName === 'Rabbit' || raw.mapName === 'Easter Race')
+		throw 'No event maps'
+
 	if(data.winner === -1)
 		throw 'Tied games are ignored'
 
