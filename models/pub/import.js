@@ -137,7 +137,7 @@ async function getPlayers(data) {
 			let rawPlayers = []
 			for(let player of players) {
 				let timePlayed = getTimestampDifferenceInSeconds(player.joined, player.left)
-				if(timePlayed >= 10) {
+				if(timePlayed >= 30) {
 					player.flair = await getFlair(player.id, raw.data.trim().split('\n'))
 					player.degree = await getDegree(player.id, raw.data.trim().split('\n'))
 					player.score  = await getScore(player.id, raw.data.trim().split('\n'))
