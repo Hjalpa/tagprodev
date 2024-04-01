@@ -71,7 +71,7 @@ async function saveGame(raw) {
 		bluecaps: raw.teams.blue.score
 	}
 
-	if(raw.mapName === 'eggball' || raw.mapName === 'Rabbit' || raw.mapName === 'Easter Race')
+	if(raw.mapName === 'eggball' || raw.mapName === 'Rabbit' || raw.mapName === 'Easter Race' || raw.mapName === 'Phenochilus')
 		throw 'No event maps'
 
 	if(data.winner === -1)
