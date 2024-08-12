@@ -17,6 +17,9 @@ const cors = require('cors')
 // 	cron.schedule('*/15 * * * *', async () => {
 // 		await axios.post(`https://tagpro.dev/api/pub/import`)
 // 	})
+// 	cron.schedule('0 0 * * *', async () => {
+// 		await axios.post(`https://tagpro.dev/api/pub/decay`)
+// 	})
 // }
 
 app.use(cors())

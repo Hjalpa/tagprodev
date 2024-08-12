@@ -45,39 +45,37 @@ module.exports.list = async (req, res) => {
 
 async function getPlayers() {
 	let raw = await db.select(`
-		SELECT
-			flair,
-			name,
-			tpid,
-			lastseen as "last seen",
-			flairwinrate as "F.WR",
-			r300,
-			degrees,
-
-			CASE WHEN ( (EXTRACT(EPOCH FROM current_timestamp) - EXTRACT(EPOCH FROM lastseendate))/3600) < 0.35 THEN 'true' ELSE 'false' END as online,
-
-			gamestoday as "2day.g",
-			winratetoday as "2day.wr%",
-
-			gamesweek as "wk.g",
-			winrateweek as "wk.wr%",
-
-			gamesmonth as "mo.g",
-			winratemonth as "mo.wr%",
-
-			gamesall as "all.g",
-			winrateall as "all.wr%",
-
-			flaircount as flairs,
-
-			accountage as age
-
-		FROM spy
-		ORDER BY lastseendate DESC, gamestoday DESC
+	SELECT
+		flair,
+		name,
+		tpid,
+		lastseen,
+		flairwinrate AS "F.WR",
+		r300,
+		degrees,
+		CASE WHEN (current_timestamp AT TIME ZONE 'Europe/London' - INTERVAL '20 minutes') > lastseen THEN False ELSE True END AS online,
+		gamestoday AS "2day.g",
+		winratetoday AS "2day.wr%",
+		gamesweek AS "wk.g",
+		winrateweek AS "wk.wr%",
+		gamesmonth AS "mo.g",
+		winratemonth AS "mo.wr%",
+		gamesall AS "all.g",
+		winrateall AS "all.wr%",
+		flaircount AS flairs,
+		accountage AS age
+	FROM
+		spy
+	ORDER BY
+		lastseen DESC,
+		gamestoday DESC
 	`, [], 'all')
 
-	for(id in raw)
+	for(id in raw) {
 		raw[id].age = util.displayDate(raw[id].age)
+		raw[id].lastseen = util.timeAgo(raw[id].lastseen)
+		raw[id].online = !!raw[id].online
+	}
 
 	return raw
 }
@@ -123,7 +121,7 @@ async function grabPlayer(tpid) {
 				timeplayedAll: await getTimeplayedAll(dom),
 			}
 
-			player.lastSeenDate = chrono.parseDate(player.lastSeen)
+			player.lastSeen = chrono.parseDate(player.lastSeen)
 			player.accountAge = chrono.parseDate(player.accountAge)
 
 			await db.insert('spy', player)
@@ -173,7 +171,7 @@ async function updatePlayer(tpid) {
 				timeplayedAll: await getTimeplayedAll(dom),
 			}
 
-			player.lastSeenDate = chrono.parseDate(player.lastSeen)
+			player.lastSeen = chrono.parseDate(player.lastSeen)
 
 			await db.update('spy', player, {tpid: player.tpid})
 			console.log(`spy updated ${player.tpid}`)
@@ -210,7 +208,7 @@ async function getName(dom) {
 }
 
 async function getFlair(dom) {
-	let raw = dom.window.document.querySelector('#owned-flair .flair-available.selected .flair-header')
+	let raw = dom.window.document.querySelector('.flair-list .flair-available.selected .flair-header')
 	return raw.textContent.trim()
 }
 
@@ -228,8 +226,8 @@ async function getAccountAge(dom) {
 }
 
 async function getLastSeen(dom) {
-	let raw = dom.window.document.querySelector('.profile-detail table tbody tr:nth-of-type(2) td:nth-of-type(2)')
-	return raw.textContent.trim()
+	let raw = dom.window.document.querySelector('.profile-detail table tbody tr:nth-of-type(2) td:nth-of-type(2) span')
+	return new Date(raw.getAttribute('title').trim()).toISOString()
 }
 
 async function getDegrees(dom) {
@@ -247,7 +245,7 @@ async function getNextDegreeIn(dom) {
 
 async function getFlairCount(dom) {
 	let raw = dom.window.document.querySelectorAll('#owned-flair li.flair-available')
-	return raw.length - 1
+	return raw.length - 1 -1 // extra -1 for the random flair block
 }
 
 async function getFlairWinrate(dom) {
@@ -260,9 +258,6 @@ async function getFlairWinrate(dom) {
 	else
 		return 0
 }
-
-
-
 
 async function getGamesToday(dom) {
 	let raw = dom.window.document.querySelector('#all-stats tbody tr:nth-of-type(3) td:nth-of-type(2)')

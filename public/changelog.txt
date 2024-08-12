@@ -1,7 +1,11 @@
-v1.6.0 	13th Feb 2023
+v1.7.0 	12th Aug 2024
+* Fixed spy page
+* Added decay to Rank Pub
+
+v1.6.0 	13th Feb 2024
 * Added map pages to Rank Pub API
 
-v1.5.0 	28th Jan 2023
+v1.5.0 	28th Jan 2024
 * Updated Rank Pub APIs
 
 v1.3.1 	21th Nov 2023

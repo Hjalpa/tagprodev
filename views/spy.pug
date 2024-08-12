@@ -22,7 +22,7 @@ include template/head.pug
 						else if(k === 'r300')
 							.item(data-column= k)= k + '%'
 
-						else if(k === 'last seen')
+						else if(k === 'lastseen')
 							.item.lastseen Last Seen
 
 						else if(k === 'age')
@@ -61,8 +61,10 @@ include template/head.pug
 							.item(data-column="r300")
 								.val= v
 
-						else if(k === 'last seen')
-							.item.lastseen(data-online= n.online)= v
+						else if(k === 'lastseen')
+							.item.lastseen(
+								data-online=n.online ? 'true' : undefined
+							)= v
 
 						else if(k === 'age')
 							.item.age(data-column="age")
