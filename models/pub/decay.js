@@ -1,8 +1,10 @@
 const db = require ('../../lib/db')
 const { rating, rate, ordinal } = require('openskill')
+const routeCache = require('route-cache')
 
 module.exports.decay = async (req, res) => {
 	try {
+		console.clear()
 		console.log('.... start decay ........')
 
 		const decayRate = 0.01
@@ -11,7 +13,7 @@ module.exports.decay = async (req, res) => {
 
 		// select the top 50 players that haven't played in daysAgo amount
 		let players = await db.select(`
-			SELECT xpg.mu, xpg.sigma, xpg.openskill
+			SELECT xpg.id, p.name, xpg.mu, xpg.sigma, xpg.openskill
 			FROM tp_playergame
 			LEFT JOIN tp_player as p ON p.id = tp_playergame.playerid
 			LEFT JOIN tp_playergame as xpg ON p.id = xpg.playerid AND xpg.datetime = (
@@ -20,19 +22,35 @@ module.exports.decay = async (req, res) => {
 				WHERE playerid = p.id
 			)
 			WHERE p.tpid is not null AND xpg.openskill is not null AND EXTRACT(DAY FROM (CURRENT_DATE - xpg.datetime)) > ${daysAgo}
-			GROUP BY p.id, tp_playergame.playerid, xpg.openskill
+			GROUP BY p.id, tp_playergame.playerid, xpg.openskill, xpg.mu, xpg.sigma, p.name, xpg.id
 			ORDER BY xpg.openskill desc
 			LIMIT 50
 		`, [], 'all')
 
-
-		for(let p in players) {
+		let data = []
+		for(let p of players) {
 			const { mu: decayedMu, sigma: decayedSigma } = applyDecay(p.mu, p.sigma, decayRate, timeElapsed)
-			console.log(`Decayed Mu: ${decayedMu.toFixed(2)}`)
-			console.log(`Decayed Sigma: ${decayedSigma.toFixed(2)}`)
+			const decayedOpenskill = ordinal({mu: decayedMu, sigma: decayedSigma})
 
-			// await db.update('tp_playergame', '')
+			// this data array is used for debugging to the console.table
+			data.push({
+				name: p.name,
+				oldMu: p.mu.toFixed(2),
+				newMu: decayedMu.toFixed(2),
+				decayedMuAmount: (p.mu - decayedMu).toFixed(2),
+				oldSigma: p.sigma.toFixed(2),
+				newSigma: decayedSigma.toFixed(2),
+				decayedSigmaAmount: (p.sigma - decayedSigma).toFixed(2),
+				oldOpenskill: p.openskill.toFixed(2),
+				newOpenskill: decayedOpenskill.toFixed(2),
+				decayedOpenskill: (p.openskill - decayedOpenskill).toFixed(2),
+				tp_playergameid: p.id,
+			})
+
+			await db.update('tp_playergame', {mu: decayedMu, sigma: decayedSigma, openskill: decayedOpenskill}, {id: p.id})
 		}
+
+		console.table(data)
 	}
 	catch(e) {
 		res.json({success:false,error: e})
