@@ -17,6 +17,7 @@ router.post('/spy/update', (req, res) => spy.update(req, res))
 // pub data
 router.post('/pub/import', (req, res) => require('../models/pub/import').import(req, res))
 router.post('/pub/decay', (req, res) => require('../models/pub/decay').decay(req, res))
+router.get('/pub/decay', (req, res) => require('../models/pub/decay').decay(req, res))
 router.get('/pub/home/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/home').init(req, res))
 router.get('/pub/leaderboard', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/leaderboard').init(req, res))
 router.get('/pub/history/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/history').init(req, res))

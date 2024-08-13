@@ -3,6 +3,8 @@ const { rating, rate, ordinal } = require('openskill')
 const routeCache = require('route-cache')
 
 module.exports.decay = async (req, res) => {
+	console.clear()
+
 	try {
 		console.log('.... start decay ........')
 
@@ -34,19 +36,16 @@ module.exports.decay = async (req, res) => {
 			// this data array is used for debugging to the console.table
 			data.push({
 				name: p.name,
-				oldMu: p.mu.toFixed(2),
-				newMu: decayedMu.toFixed(2),
-				decayedMuAmount: (p.mu - decayedMu).toFixed(2),
+				mu: p.mu.toFixed(2),
 				oldSigma: p.sigma.toFixed(2),
 				newSigma: decayedSigma.toFixed(2),
 				decayedSigmaAmount: (p.sigma - decayedSigma).toFixed(2),
 				oldOpenskill: p.openskill.toFixed(2),
 				newOpenskill: decayedOpenskill.toFixed(2),
 				decayedOpenskill: (p.openskill - decayedOpenskill).toFixed(2),
-				tp_playergameid: p.id,
 			})
 
-			await db.update('tp_playergame', {mu: decayedMu, sigma: decayedSigma, openskill: decayedOpenskill}, {id: p.id})
+			// await db.update('tp_playergame', {mu: decayedMu, sigma: decayedSigma, openskill: decayedOpenskill}, {id: p.id})
 		}
 
 		console.table(data)
@@ -63,7 +62,6 @@ module.exports.decay = async (req, res) => {
 }
 
 function applyDecay(mu, sigma, decayRate, time) {
-    const newMu = mu * Math.exp(-decayRate * time)
-    const newSigma = sigma * Math.exp(-decayRate * time)
-    return { mu: newMu, sigma: newSigma }
+	const newSigma = sigma * Math.exp(decayRate * time)
+    return { mu, sigma: newSigma }
 }
