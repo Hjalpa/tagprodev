@@ -4,7 +4,6 @@ const routeCache = require('route-cache')
 
 module.exports.decay = async (req, res) => {
 	try {
-		console.clear()
 		console.log('.... start decay ........')
 
 		const decayRate = 0.01
