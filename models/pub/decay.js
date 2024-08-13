@@ -45,7 +45,7 @@ module.exports.decay = async (req, res) => {
 				decayedOpenskill: (p.openskill - decayedOpenskill).toFixed(2),
 			})
 
-			// await db.update('tp_playergame', {mu: decayedMu, sigma: decayedSigma, openskill: decayedOpenskill}, {id: p.id})
+			await db.update('tp_playergame', {mu: decayedMu, sigma: decayedSigma, openskill: decayedOpenskill}, {id: p.id})
 		}
 
 		console.table(data)
