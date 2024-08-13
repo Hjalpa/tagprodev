@@ -11,7 +11,7 @@ module.exports.generate = async (req, res) => {
 		let spies = await db.query("SELECT tpid, name FROM spy WHERE lastseendate > now() - interval '100' day ORDER BY lastseendate DESC", 'all')
 		for(let player in spies) {
 			let p = spies[player]
-			await axios.post(`https://tagpro.dev/api/spy/update`, {
+			await axios.post(`${process.env['URL']}/api/spy/update`, {
 				tpid: p.tpid
 			})
 			console.log(`spying on ${p.name}`)
@@ -244,16 +244,16 @@ async function getNextDegreeIn(dom) {
 }
 
 async function getFlairCount(dom) {
-	let raw = dom.window.document.querySelectorAll('#owned-flair li.flair-available')
-	return raw.length - 1 -1 // extra -1 for the random flair block
+	let raw = dom.window.document.querySelectorAll('.flair-list div.flair-available')
+	return raw.length - 1 -1
 }
 
 async function getFlairWinrate(dom) {
-	if(dom.window.document.querySelector('#all-flair li.flair-available .winRate-insane') != null)
+	if(dom.window.document.querySelector('.flair-list div.flair-available .winRate-insane') != null)
 		return 3
-	else if(dom.window.document.querySelector('#all-flair li.flair-available .winRate-awesome') != null)
+	else if(dom.window.document.querySelector('.flair-list div.flair-available .winRate-awesome') != null)
 		return 2
-	else if(dom.window.document.querySelector('#all-flair li.flair-available .winRate-good') != null)
+	else if(dom.window.document.querySelector('.flair-list div.flair-available .winRate-good') != null)
 		return 1
 	else
 		return 0

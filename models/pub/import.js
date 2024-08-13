@@ -29,7 +29,7 @@ module.exports.import = async (req, res) => {
 	finally {
 		console.log('.... end import ..........')
 		routeCache.clearCache()
-		await axios.get('https://tagpro.dev/api/pub/leaderboard')
+		await axios.get(`${process.env['URL']}/api/pub/leaderboard`)
 		res.json({success:true})
 	}
 }
