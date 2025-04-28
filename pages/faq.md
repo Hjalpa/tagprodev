@@ -7,8 +7,5 @@ title: Frequently Asked Questions
 ## What's the GASP Formula?
 There are two distinct variants of GASP utilized: CTF GASP and NF GASP. To ensure transparency, provided <a href="https://docs.google.com/spreadsheets/d/1U717_S1yWP9cByyllIdtRxOoeARyc3X7S3igu2wopZc/edit?usp=sharing">here</a> is the implementation of CTF GASP in the context of ELTP S19.
 
-## What's the spy page all about?
-It monitors the most recent activity of EU players, with updates occurring every 20 minutes.
-
 ## Who created this wonderful site?
 anom
