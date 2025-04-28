@@ -1,5 +1,10 @@
 require('dotenv').config({path:__dirname + '/../.env'})
 
+if(process.env.ENV != 'production')
+	require('dotenv').config()
+
+process.env['URL'] = (process.env.ENV === 'production' ? 'https://tagpro.dev' : 'http://localhost')
+
 const axios = require('axios')
 const jsdom = require('jsdom')
 
@@ -41,8 +46,8 @@ init.call = async () => {
 				let data = {
 					euid: parseInt(tr.querySelector('td:first-child a').textContent.substring(1)),
 					map: tr.querySelector('.mapname a').textContent,
-					red: tr.querySelector('.matches-team1').textContent,
-					blue: tr.querySelector('.matches-team2').textContent,
+					red: tr.querySelector('.matches-team1').textContent.toUpperCase(),
+					blue: tr.querySelector('.matches-team2').textContent.toUpperCase(),
 					seasonid: filters.seasonid,
 					date: filters.date
 				}
@@ -92,6 +97,7 @@ init.call = async () => {
 							console.log('seasonschedule match updated')
 						}
 						console.log('...........................')
+						process.kill(process.pid)
 					}
 				}
 			}

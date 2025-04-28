@@ -51,6 +51,7 @@ async function getPlayers() {
 		tpid,
 		lastseen,
 		flairwinrate AS "F.WR",
+		mmr,
 		r300,
 		degrees,
 		CASE WHEN (current_timestamp AT TIME ZONE 'Europe/London' - INTERVAL '20 minutes') > lastseen THEN False ELSE True END AS online,
@@ -156,6 +157,8 @@ async function updatePlayer(tpid) {
 				flairCount: await getFlairCount(dom),
 				flairWinrate: await getFlairWinrate(dom),
 
+				mmr: await getMMR(dom),
+
 				gamesToday: await getGamesToday(dom),
 				winrateToday: await getWinrateToday(dom),
 
@@ -246,6 +249,11 @@ async function getNextDegreeIn(dom) {
 async function getFlairCount(dom) {
 	let raw = dom.window.document.querySelectorAll('.flair-list div.flair-available')
 	return raw.length - 1 -1
+}
+
+async function getMMR(dom) {
+	let raw = dom.window.document.querySelector('.profile-detail .skill-value')
+	return parseFloat(raw.textContent.trim())
 }
 
 async function getFlairWinrate(dom) {

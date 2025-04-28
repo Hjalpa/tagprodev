@@ -45,6 +45,8 @@ score.call = async () => {
 					]
 				] = rate([raw[0], raw[1]])
 
+				console.log(players)
+
 				await db.insertUpdate('playerskill', {playerid: players[0][0].playerid, mu: players[0][0].skill.mu, sigma: players[0][0].skill.sigma}, ['playerid'])
 				await db.insertUpdate('playerskill', {playerid: players[0][1].playerid, mu: players[0][1].skill.mu, sigma: players[0][1].skill.sigma}, ['playerid'])
 				await db.insertUpdate('playerskill', {playerid: players[0][2].playerid, mu: players[0][2].skill.mu, sigma: players[0][2].skill.sigma}, ['playerid'])
