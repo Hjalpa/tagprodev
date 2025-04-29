@@ -69,6 +69,70 @@ const rebuildAppCSS = () => {
     .catch(() => process.exit(1))
 }
 
+//  signup
+// --------------------------------------------------------------------------
+const rebuildSignupJS = () => {
+	// start concat JS files
+	function getAllFiles(dir, fileList = []) {
+		const files = fs.readdirSync(dir);
+		files.forEach(file => {
+			const filePath = path.join(dir, file);
+			if (fs.statSync(filePath).isDirectory())
+				getAllFiles(filePath, fileList);
+			else
+				fileList.push(filePath);
+		});
+		return fileList;
+	}
+
+	const sourceDir = './src/signup/js';
+	const allFiles = getAllFiles(sourceDir);
+
+	const orderedFiles = allFiles.sort((a, b) => {
+		const fileNameA = path.basename(a);
+		const fileNameB = path.basename(b);
+
+	// Prioritize util.js over init.js
+	if (fileNameA === 'util.js') return -1;
+	if (fileNameB === 'util.js') return 1;
+
+	if (fileNameA === 'init.js') return 1;
+	if (fileNameB === 'init.js') return -1;
+
+		return fileNameA.length - fileNameB.length
+	})
+
+	const concatenatedContents = orderedFiles.map(filePath => {
+		return fs.readFileSync(filePath, 'utf8');
+	}).join('\n')
+
+	fs.writeFileSync('./public/signup.js', concatenatedContents, 'utf8')
+	// end concat JS files
+
+	esbuild.build({
+		bundle: false,
+		minify: true,
+		allowOverwrite: true,
+		entryPoints: [`./public/signup.js`],
+		outfile: './public/signup.js',
+	})
+    .then(() => console.log("- signup.js"))
+    .catch(() => process.exit(1))
+}
+
+const rebuildSignupCSS = () => {
+	esbuild.build({
+		entryPoints: ['./src/signup/css/main.styl'],
+		bundle: true,
+		plugins: [stylusLoader()],
+		outfile: './public/signup.css',
+		minify: true,
+		external: ['*.woff2'],
+	})
+    .then(() => console.log("- signup.css"))
+    .catch(() => process.exit(1))
+}
+
 //  admin
 // --------------------------------------------------------------------------
 const rebuildAdminJS = () => {
@@ -123,7 +187,7 @@ const rebuildAdminCSS = () => {
 // --------------------------------------------------------------------------
 if (process.argv.includes('--live')) {
 	async function buildLive() {
-		Promise.all([rebuildAdminCSS(), rebuildAdminJS(), rebuildAppCSS(), rebuildAppJS()])
+		Promise.all([rebuildAdminCSS(), rebuildAdminJS(), rebuildAppCSS(), rebuildAppJS(), rebuildSignupCSS(), rebuildSignupJS()])
 			.then(response => console.log('compiling...'))
 			.catch(error => console.log(`::Error::<br> ${error}`))
 	}
@@ -157,6 +221,20 @@ if (process.argv.includes('--dev')) {
 		awaitWriteFinish: true,
 	}
 
+	const watchSignupJS = chokidar.watch(`./src/signup/js/*.js`, watchOptions)
+	watchSignupJS.on('ready', rebuildAdminJS)
+	watchSignupJS.on('change', () => {
+		rebuildSignupJS()
+		browserSync.reload('./public/signup.js')
+	})
+
+	const watchSignupCSS = chokidar.watch(['./src/signup/css/**/*.styl'], watchOptions)
+	watchSignupCSS.on('ready', rebuildAdminCSS)
+	watchSignupCSS.on('change', () => {
+		rebuildSignupCSS()
+		browserSync.reload('./public/signup.css')
+	})
+
 	const watchAdminJS = chokidar.watch(`./src/admin/js/*.js`, watchOptions)
 	watchAdminJS.on('ready', rebuildAdminJS)
 	watchAdminJS.on('change', () => {
@@ -189,6 +267,8 @@ if (process.argv.includes('--dev')) {
 process.on('SIGINT', () => {
   watchAppJS.close()
   watchAppCSS.close()
+  watchSignupJS.close()
+  watchSignupCSS.close()
   watchAdminJS.close()
   watchAdminCSS.close()
   process.exit(0)
