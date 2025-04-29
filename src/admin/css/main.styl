@@ -1,0 +1,421 @@
+//  variables
+// --------------------------------------------------------------------------
+green = #99CB50
+orange = #ffbb4d
+red = #fb4d4f
+
+//  resets
+// --------------------------------------------------------------------------
+html,body,div,span,nav,h1,h2,h3,h4,h5,h6,p,blockquote,a,em,img,strong,ol,ul,li,form,label,button,input,textarea,ins
+	margin 0
+	padding 0
+	vertical-align baseline
+	border 0
+	outline 0
+	background transparent
+	text-decoration none
+	-webkit-tap-highlight-color transparent
+
+*
+	font-family 'Montserrat'
+
+ol
+ul
+	list-style none
+	font-size 0
+
+textarea
+	resize none
+
+::placeholder
+	color #eee
+
+input:-webkit-autofill
+	-webkit-background-clip text
+
+a:focus
+input:focus
+textarea:focus
+button:focus
+	outline 0
+	border 0
+
+button:active
+button::-moz-focus-inner
+	padding 0
+
+input[type="search"]::-webkit-search-cancel-button
+	display none
+
+input::-webkit-slider-runnable-track
+	-webkit-appearance none
+	box-shadow none
+	border none
+	background transparent
+
+
+//  main
+// --------------------------------------------------------------------------
+
+:root
+	font-size 17px
+	--width 1450px
+	color-scheme dark
+
+body
+	background #131417
+	height 100%
+	display flex
+	flex-direction column
+	flex-wrap nowrap
+	justify-content flex-start
+	align-items stretch
+	align-content stretch
+
+.temp
+	display none !important
+
+
+//  nav
+// --------------------------------------------------------------------------
+
+nav
+	width 100%
+	display flex
+	flex-flow nowrap
+	background linear-gradient(to top right,#000,#0b0c0e)
+
+	a
+		color #eee
+		font-size .9rem
+		text-decoration none
+		padding 0 .8rem
+		display inline-block
+		vertical-align middle
+		height 3rem
+		display flex
+		align-items center
+		justify-content center
+		text-transform uppercase
+		font-weight 600
+		cursor pointer
+		color #a8a8a8
+
+		&.active span
+			color #1adbd4
+			box-shadow 0 2px 0 0 rgba(#1adbd4, 20%)
+
+		&.active
+		&:hover
+			color white
+
+
+//  main
+// --------------------------------------------------------------------------
+
+.contain
+	margin 0 auto
+	padding 1.5rem 0
+	width 100%
+	background #131417
+	flex 1 1 auto
+	display flex
+
+	.wrap
+		width 100%
+		padding 0 1.5rem
+		max-width var(--width)
+		margin 0 auto
+
+	.subnav
+		border-bottom 1px solid #ffffff0a
+		width 100%
+		margin-bottom 1rem
+		display flex
+
+		a
+			font-size .9rem
+			color white
+			text-decoration none
+			color rgba(white, .3)
+			display inline-block
+			padding .5rem .75rem
+
+			&.active
+			&:hover
+				color #1adbd4
+				box-shadow inset 0 -2px 0 #1adbd4
+
+
+//  search filters
+// --------------------------------------------------------------------------
+
+.filters
+	display block
+	width 100%
+	margin-bottom 1.5rem
+	border-radius .2rem
+	box-sizing border-box
+
+	input
+		padding 1rem
+		font-size 1.8rem
+		border-radius .3rem
+		display block
+		width 100%
+		padding-left 3.5rem
+		background linear-gradient(to bottom right,#292b3380 0,#1f202680 100%), url("data:image/svg+xml;charset=utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23ffffff'><path d='M505.749 475.587l-145.6-145.6c28.203-34.837 45.184-79.104 45.184-127.317C405.333 90.926 314.41.003 202.666.003S0 90.925 0 202.669s90.923 202.667 202.667 202.667c48.213 0 92.48-16.981 127.317-45.184l145.6 145.6c4.16 4.16 9.621 6.251 15.083 6.251s10.923-2.091 15.083-6.251c8.341-8.341 8.341-21.824-.001-30.165zM202.667 362.669c-88.235 0-160-71.765-160-160s71.765-160 160-160 160 71.765 160 160-71.766 160-160 160z'/></svg>") no-repeat 1rem 1.2rem
+		background-size 100%, 1.6rem 1.6rem
+		color #ccc
+		caret-color #1adbd4
+		transition color .2s ease-in-out
+
+		&:active
+		&:focus
+			box-shadow 0 0 20px rgba(black, .25)
+			color white
+
+
+//  table
+// --------------------------------------------------------------------------
+
+.table
+	background #0b0c0e
+	width 100%
+	border-radius 6px 6px 0 0
+
+	.row
+		display flex
+		flex-direction row
+		align-items stretch
+		width 100%
+		border-bottom: 1px solid #131417;
+
+		&.head
+			background linear-gradient(to top right,#000000,#0b0c0e)
+			font-size .8rem
+			font-weight 600
+			text-transform uppercase
+			color #747474
+			border-radius inherit
+			border-bottom none
+			position sticky
+			top 0
+			//z-index 1
+
+		.item
+			flex 1
+			display flex
+			justify-content center
+			align-items center
+			padding .5rem 0
+
+			&.id
+				justify-content left
+				padding-left 1rem
+
+		&.entry
+			.item
+				color white
+				font-size .9rem
+				line-height 1.5rem
+
+				a
+					text-decoration none
+					color #b9b9b9
+
+				&.name
+					font-size .9rem
+					color rgba(white, .15)
+
+			&:hover
+				background rgba(black,.4)
+
+				a
+					color #538cff
+					box-shadow inset 0 -2px 0 0 #538cff33
+
+					&:hover
+						box-shadow none
+
+
+//  confirm dialog
+// --------------------------------------------------------------------------
+
+.delete-confirm
+	background rgba(black, .5)
+	backdrop-filter blur(5px)
+	display block
+	height 100%
+	width 100%
+	left 0
+	top 0
+	position fixed
+	justify-content center
+	align-items center
+	animation bgFade .2s linear
+	display none
+
+	&.active
+		display flex
+
+	.pane
+		color white
+		font-size 1.2rem
+		background red
+		display block
+		padding 1.5rem
+		border-radius .8rem
+		background rgba(red, .25)
+		box-shadow rgba(red, .75) 0 0 20px 0
+		width 400px
+		border 2px solid red
+		animation slideUp .4s ease-in-out
+
+	h5
+		text-transform uppercase
+		font-weight 500
+		color white
+		font-size 1.4rem
+		line-height 1.8rem
+		margin-bottom 2rem
+
+	button
+		display inline-block
+		padding 1rem 1.5rem
+		border-radius .4rem
+		cursor pointer
+		font-size 1rem
+		color white
+		font-weight 500
+
+		&.no
+			box-shadow inset 0 0 0 2px rgba(red, .1)
+
+			span
+				box-shadow 0 2px 0 0 rgba(white, .15)
+
+			&:hover
+				box-shadow none
+				background rgba(red, .1)
+
+		&.yes
+			float right
+			box-shadow inset 0 0 0 4px rgba(red, .05)
+			background linear-gradient(to top right, rgba(red, .25), rgba(red, .75))
+
+			&:hover
+				box-shadow 0 0 20px 0 rgba(black, .4)
+
+
+//  success notification
+// --------------------------------------------------------------------------
+
+.success
+	animation notify 3s ease-in-out
+	position fixed
+	bottom 4rem
+	right 4rem
+	padding 1rem 1.5rem
+	opacity 0
+	border-radius .3rem
+	text-transform uppercase
+	font-size 1.4rem
+	font-weight 500
+	color #1a650c
+	background linear-gradient(to right bottom,#cdfe00,#0f9381)
+	display none
+
+	&.active
+		display block
+
+
+//  buttons
+// --------------------------------------------------------------------------
+
+.buttons
+	margin-top 3rem
+	padding-left 6rem
+	padding-right 4rem
+	display flex
+	align-items left
+
+	button
+		cursor pointer
+		padding 1rem 1.5rem
+		font-weight 500
+		border-radius .5rem
+		text-transform uppercase
+		font-size 1rem
+		transition all .2s ease-in-out
+
+		&:hover
+			background transparent
+
+		&[disabled]
+			background rgba(black, .2)
+			border-color rgba(black, .8)
+			color rgba(white, .5)
+			opacity .4
+			cursor not-allowed
+			transform scale(.8)
+
+	.save
+		background rgba(green, .1)
+		border 2px solid green
+		color lighten(green, 25%)
+		margin-left auto
+
+	.delete
+		background rgba(red, .1)
+		border 2px solid red
+		color lighten(red, 25%)
+
+
+//  animations
+// --------------------------------------------------------------------------
+
+// delete-confirmation
+@keyframes bgFade
+	0%
+		opacity 0
+	100%
+		opacity 1
+@keyframes slideUp
+	0%
+		transform translateY(5%)
+		opacity 0
+	80%
+		transform translateY(0)
+	100%
+		opacity 1
+
+// success
+@keyframes notify
+	0%
+		transform translateY(100%) scale(.8)
+		opacity 0
+
+	15%
+		transform translateY(0)
+
+	25%
+	75%
+		opacity 1
+		transform scale(1)
+
+	90%
+		transform translateY(0)
+
+	100%
+		transform translateY(-100%)
+		opacity 0
+
+
+//  imports
+// --------------------------------------------------------------------------
+
+@import 'overview'
+@import 'user'
+// @import 'food'
+@import 'log'
