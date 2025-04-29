@@ -28,12 +28,10 @@ const rebuildAppJS = () => {
 		const fileNameA = path.basename(a);
 		const fileNameB = path.basename(b);
 
-	// Prioritize util.js over init.js
-	if (fileNameA === 'util.js') return -1;
-	if (fileNameB === 'util.js') return 1;
-
-	if (fileNameA === 'init.js') return 1;
-	if (fileNameB === 'init.js') return -1;
+		if (fileNameA === 'init.js')
+			return -1
+		else if (fileNameB === 'init.js')
+			return 1
 
 		return fileNameA.length - fileNameB.length
 	})
