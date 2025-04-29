@@ -50,6 +50,8 @@ router.use(getSeason)
 
 router.get('/', (req, res) => require('../models/home').init(req, res))
 
+router.use('/admin',  require('./admin'))
+
 router.use('/rank/leaderboard', (req, res) => require('../models/pub/all-leaderboard').init(req, res))
 
 router.use('/api',  require('./api'))
@@ -64,7 +66,6 @@ router.get('/search', (req, res) => require('../models/search').init(req, res))
 
 router.get('/records/:mode/:tier', (req, res) => require('../models/records').init(req, res, 'records'))
 
-router.get('/rules', (req, res) => require('../models/markdown').init(req, res, 'rules'))
 router.get('/faq', (req, res) => require('../models/markdown').init(req, res, 'faq'))
 router.get('/rankedpubs', (req, res) => require('../models/markdown').init(req, res, 'rankedpubs'))
 

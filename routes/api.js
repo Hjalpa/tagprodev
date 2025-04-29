@@ -15,29 +15,29 @@ router.post('/spy', (req, res) => spy.player(req, res))
 router.post('/spy/update', (req, res) => spy.update(req, res))
 
 // pub data
-router.post('/pub/import', (req, res) => require('../models/pub/import').import(req, res))
-router.post('/pub/decay', (req, res) => require('../models/pub/decay').decay(req, res))
-router.get('/pub/decay', (req, res) => require('../models/pub/decay').decay(req, res))
-router.get('/pub/home/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/home').init(req, res))
-router.get('/pub/leaderboard', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/leaderboard').init(req, res))
-router.get('/pub/history/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/history').init(req, res))
-router.get('/pub/profile/:profileID/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/profile').init(req, res))
-router.get('/pub/maps', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/map').all(req, res))
-router.get('/pub/maps/:mapName/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/map').init(req, res))
+// router.post('/pub/import', (req, res) => require('../models/pub/import').import(req, res))
+// router.post('/pub/decay', (req, res) => require('../models/pub/decay').decay(req, res))
+// router.get('/pub/decay', (req, res) => require('../models/pub/decay').decay(req, res))
+// router.get('/pub/home/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/home').init(req, res))
+// router.get('/pub/leaderboard', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/leaderboard').init(req, res))
+// router.get('/pub/history/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/history').init(req, res))
+// router.get('/pub/profile/:profileID/:timezone*', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/profile').init(req, res))
+// router.get('/pub/maps', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/map').all(req, res))
+// router.get('/pub/maps/:mapName/:profileID', routeCache.cacheSeconds(60*30), (req, res) => require('../models/pub/map').init(req, res))
 
 // monitor userscript api
-router.get('/pub/openskill/:name', (req, res) => require('../models/pub/request').openskill(req, res))
-router.get('/pub/playercompare', (req, res) => require('../models/pub/request').playercompare(req, res))
+// router.get('/pub/openskill/:name', (req, res) => require('../models/pub/request').openskill(req, res))
+// router.get('/pub/playercompare', (req, res) => require('../models/pub/request').playercompare(req, res))
 
 // quickly recache when debugging
-router.get('/pub/recache', (req, res) => {
-	const routeCache = require('route-cache')
-	routeCache.clearCache()
-	console.log('recached')
-	res.json({recached: true})
-})
+// router.get('/pub/recache', (req, res) => {
+// 	const routeCache = require('route-cache')
+// 	routeCache.clearCache()
+// 	console.log('recached')
+// 	res.json({recached: true})
+// })
 
-router.get('/pub/predictions', (req, res) => require('../models/pub/predictions').predictions(req, res))
-router.get('/pub/someballs', (req, res) => require('../models/pub/someballs').someballs(req, res))
+// router.get('/pub/predictions', (req, res) => require('../models/pub/predictions').predictions(req, res))
+// router.get('/pub/someballs', (req, res) => require('../models/pub/someballs').someballs(req, res))
 
 module.exports = router

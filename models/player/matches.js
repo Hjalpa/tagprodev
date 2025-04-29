@@ -88,6 +88,7 @@ async function getMatches(playerid, gamemode) {
 		LEFT JOIN team ON seasonteam.teamid = team.id
 		WHERE playergame.playerid = $1 AND ${gamemode_where}
 		ORDER BY game.datetime DESC
+		LIMIT 100
 	`, [playerid], 'all')
 
 	return raw

@@ -1,4 +1,8 @@
-const app = {}
+const app = {
+	load: async e => {
+		app.tablesort()
+	}
+}
 
 app.tablesort= (async () => {
 	if(document.querySelector('.player-stats')) {
@@ -69,4 +73,5 @@ app.tablesort= (async () => {
 	}
 
 })
-app.tablesort()
+
+window.addEventListener('load', app.load)
