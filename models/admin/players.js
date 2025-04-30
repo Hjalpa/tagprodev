@@ -106,8 +106,8 @@ module.exports.edit = async (req, res) => {
 
 	let data = {
 		config: {
-			nav: 'users',
-			title: user.name + ' Edit',
+			nav: 'players',
+			title: user.name + ' edit',
 		},
 		user
 	}

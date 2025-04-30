@@ -1,6 +1,9 @@
+v1.9.1 	30th Apr 2025
+* Added Admin Panel
+* Removed Pub Rank
+
 v1.9.0 	29th Apr 2025
 * Converted Gulp to ESBuild
-* Added Admin Panel
 * Refactored signup CSS and JS
 
 v1.8.0 	28th Apr 2025
