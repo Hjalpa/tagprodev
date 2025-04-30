@@ -4,22 +4,20 @@ const util = require ('../../lib/util')
 module.exports.list = async (req, res) => {
 	let data = {
 		config: {
-			nav: 'seasons',
-			title: 'Seasons',
+			nav: 'games',
+			title: 'Games',
 		},
-		seasons: await getSeasons(req.query),
+		games: await getGames(req.query),
 		filters: req.query,
 	}
-	res.render('admin-seasons.pug', data)
+	res.render('admin-games.pug', data)
 
-	async function getSeasons(query) {
+	async function getGames(query) {
 		let games= {}
 
 		if (!('name' in req.query) || req.query.name === '')
 			games= await db.select(`
-				SELECT
-					id, mode, number, regionid, tier
-				FROM season ORDER BY number DESC LIMIT 200
+				SELECT * FROM game ORDER BY id DESC LIMIT 200
 			`, [], 'all')
 
 		else {
@@ -76,23 +74,23 @@ module.exports.list = async (req, res) => {
 }
 
 module.exports.edit = async (req, res) => {
-	let season = await getSeason(req.params.seasonID)
+	let game = await getGame(req.params.gameID)
 
-	if(!season) {
-		res.status(404).send('no season found for: ' + req.params.seasonID)
+	if(!game) {
+		res.status(404).send('no game found for: ' + req.params.gameID)
 		return false
 	}
 
 	let data = {
 		config: {
-			nav: 'seasons',
-			title: season.number + ' Edit',
+			nav: 'games',
+			title: game.euid+ ' Edit',
 		},
-		season
+		game
 	}
-	res.render('admin-seasons-edit.pug', data)
+	res.render('admin-games-edit.pug', data)
 
-	async function getSeason(seasonID) {
-		return await db.select(`SELECT * FROM game WHERE id = $1`, [seasonID], 'row')
+	async function getGame(playerID) {
+		return await db.select(`SELECT * FROM game WHERE id = $1`, [playerID], 'row')
 	}
 }
