@@ -1,0 +1,25 @@
+include admin.head.pug
+
+.contain.mapedit
+	form.wrap(autocomplete="off")
+
+		.label.userid.disabled
+			.k Map ID
+			input(name="userid", type="text", value= map.id, disabled)
+
+		.label.name
+			.k Name
+			input(name="name", type="text", required, value= map.name)
+
+		.buttons
+			button.delete Delete
+			button.save Update
+
+		.delete-confirm
+			.pane
+				h5 Are you sure you want to delete this user?
+				button.no
+					span Nope
+				button.yes Yes, delete it
+
+		.success Saved

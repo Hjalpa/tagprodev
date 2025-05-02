@@ -3,6 +3,7 @@
 green = #99CB50
 orange = #ffbb4d
 red = #fb4d4f
+blue = #77b4ff
 
 //  resets
 // --------------------------------------------------------------------------
@@ -147,13 +148,58 @@ nav
 				box-shadow inset 0 -2px 0 #1adbd4
 
 
+//  navbar
+// --------------------------------------------------------------------------
+
+.navbar
+	display flex
+	gap 2em
+	margin-bottom 2rem
+
+	nav
+	form
+		flex 1
+
+	nav.secondary
+		filter: hue-rotate(280deg);
+		background: linear-gradient(to top right, #0b0c0e, #072e2d);
+		margin: 0 0 1.5rem 0;
+		padding: .5rem;
+		border-radius: .3rem;
+		box-sizing: border-box
+		width: fit-content;
+		flex: 0 0 auto;
+
+	.controls
+		display flex
+
+		a
+			cursor pointer
+			padding 1rem 1.5rem
+			font-weight 500
+			border-radius .5rem
+			text-transform uppercase
+			font-size 1rem
+			transition all .2s ease-in-out
+			display flex
+			justify-content center
+			align-items center
+
+			&:hover
+				background transparent
+
+		.new
+			background rgba(blue, .1)
+			border 2px solid blue
+			color lighten(blue, 25%)
+
+
 //  search filters
 // --------------------------------------------------------------------------
 
 .filters
 	display block
 	width 100%
-	margin-bottom 1.5rem
 	border-radius .2rem
 	box-sizing border-box
 
@@ -170,11 +216,14 @@ nav
 		caret-color #1adbd4
 		transition color .2s ease-in-out
 
+		&::placeholder
+			color #9293979c
+			opacity 1
+
 		&:active
 		&:focus
 			box-shadow 0 0 20px rgba(black, .25)
 			color white
-
 
 //  table
 // --------------------------------------------------------------------------

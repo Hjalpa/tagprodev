@@ -1,0 +1,45 @@
+//  search players
+// --------------------------------------------------------------------------
+
+.search.players
+
+	.table
+
+		.id
+			flex 0 0 60px
+
+		[data-column="name"]
+			justify-content left
+			flex 1
+
+		[data-column="onboard"]
+			flex 0 0 110px
+			svg
+				width 1.1rem
+				height 1.1rem
+				fill url(#gold.gradient)
+
+		[data-column="games"]
+		[data-column="seasons"]
+			flex 0 0 100px
+
+		[data-column="seasons"]
+			padding-right 20px
+
+		[data-column="activity"]
+			justify-content left
+			flex 0 0 100px
+
+		.country
+			justify-content left
+			flex 0 0 50px
+
+			img
+				display inline-block
+				height 12px
+				width 16px
+				border-radius 3px
+				box-shadow 0 0 10px rgba(black, .3)
+				position relative
+				top 1px
+				margin-right .5rem

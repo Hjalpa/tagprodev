@@ -1,0 +1,39 @@
+.log
+
+	.table
+
+		.id
+			flex 0 0 65px
+
+		[data-column="status"]
+			flex 0 0 80px
+
+			span
+				padding .4rem
+				border-radius .3rem
+				text-transform uppercase
+				font-weight 500
+				font-size .7rem
+				line-height .6rem
+
+			.create
+				background rgba(green, .2)
+				color lighten(green, 50%)
+			.update
+				background rgba(orange, .2)
+				color lighten(orange, 50%)
+			.delete
+				background rgba(red, .2)
+				color lighten(red, 50%)
+
+		[data-column="userid"]
+			flex 0 0 80px
+
+		[data-column="data"]
+			justify-content left
+			flex 1
+			padding-left 1rem
+
+		[data-column="date"]
+			justify-content left
+			flex 0 0 100px

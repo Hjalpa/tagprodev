@@ -1,0 +1,81 @@
+include admin.head.pug
+
+.contain.search.players
+	.wrap
+
+		.navbar
+			// nav.secondary
+			// 	a.active
+			// 		span Search
+			// 	a
+			// 		span Add
+			// 	a
+			// 		span Merge
+
+			.controls
+				a.new Add New
+
+			form.filters
+				input(type="Search", placeholder="Search Player", autofocus, name="name", autocomplete="off", value= (filters.name))
+
+		if players
+			.table
+				.row.head
+					each n, key in players
+						each v, k in n
+
+							if(k === 'id')
+								.item.id ID
+
+							else if(k === 'country')
+								.item.country
+
+							else if(k === 'activity')
+								.item(data-column="activity") Last Seen
+
+							else
+								.item(
+									data-column= k
+								)= k
+
+						- break
+
+				each n, key in players
+					.row.entry
+						each v, k in n
+
+							if(k === 'id')
+								.item.id
+									a(
+										href='/admin/players/' + v
+									)= v
+
+							else if(k === 'country')
+								.item.country(
+									data-column= k
+								)
+									if(v)
+										- let code = v.toLowerCase()
+										img(
+											src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + code + ".svg"
+										)
+
+							else if(k === 'name')
+								.item.name(
+									data-column= k
+								)
+									a(
+										href='/admin/players/' + players[key].id
+									)= v
+
+							else if(k === 'public' || k === 'disabled' || k === 'onboard')
+								.item(
+									data-column= k
+								)
+									if(v === true)
+										<svg><use xlink:href="#tick"></use></svg>
+
+							else
+								.item(
+									data-column= k
+								)!= v

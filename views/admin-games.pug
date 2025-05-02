@@ -1,0 +1,69 @@
+include admin.head.pug
+
+.contain.search.games
+	.wrap
+
+		form.filters
+			input(type="Search", autofocus, name="name", autocomplete="off", value= (filters.name))
+
+		if games
+			.table
+				.row.head
+					each n, key in games
+						each v, k in n
+
+							if(k === 'id')
+								.item.id ID
+
+							else if(k === 'country')
+								.item.country
+
+							else if(k === 'activity')
+								.item(data-column="activity") Last Seen
+
+							else
+								.item(
+									data-column= k
+								)= k
+
+						- break
+
+				each n, key in games
+					.row.entry
+						each v, k in n
+
+							if(k === 'id')
+								.item.id
+									a(
+										href='/admin/games/' + v
+									)= v
+
+							else if(k === 'country')
+								.item.country(
+									data-column= k
+								)
+									if(v)
+										- let code = v.toLowerCase()
+										img(
+											src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + code + ".svg"
+										)
+
+							else if(k === 'name')
+								.item.name(
+									data-column= k
+								)
+									a(
+										href='/admin/games/' + games[key].id
+									)= v
+
+							else if(k === 'public' || k === 'disabled' || k === 'onboard')
+								.item(
+									data-column= k
+								)
+									if(v === true)
+										<svg><use xlink:href="#tick"></use></svg>
+
+							else
+								.item(
+									data-column= k
+								)!= v

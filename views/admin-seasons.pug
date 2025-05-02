@@ -1,0 +1,56 @@
+include admin.head.pug
+
+.contain.search.seasons
+	.wrap
+
+		form.filters
+			input(type="Search", autofocus, name="name", autocomplete="off", value= (filters.name))
+
+		if seasons
+			.table
+				.row.head
+					each n, key in seasons
+						each v, k in n
+
+							if(k === 'id')
+								.item.id ID
+
+							else if(k === 'activity')
+								.item(data-column="activity") Last Seen
+
+							else
+								.item(
+									data-column= k
+								)= k
+
+						- break
+
+				each n, key in seasons
+					.row.entry
+						each v, k in n
+
+							if(k === 'id')
+								.item.id
+									a(
+										href='/admin/seasons/' + v
+									)= v
+
+							else if(k === 'name')
+								.item.name(
+									data-column= k
+								)
+									a(
+										href='/admin/seasons/' + seasons[key].id
+									)= v
+
+							else if(k === 'public' || k === 'disabled' || k === 'onboard')
+								.item(
+									data-column= k
+								)
+									if(v === true)
+										<svg><use xlink:href="#tick"></use></svg>
+
+							else
+								.item(
+									data-column= k
+								)!= v

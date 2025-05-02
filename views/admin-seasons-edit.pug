@@ -1,0 +1,21 @@
+include admin.head.pug
+
+.contain.seasonedit
+	form.wrap(autocomplete="off")
+
+		.label.seasonid.disabled
+			.k Season ID
+			input(name="userid", type="text", value= season.id, disabled)
+
+		.buttons
+			button.delete Delete
+			button.save Update
+
+		.delete-confirm
+			.pane
+				h5 Are you sure you want to delete this user?
+				button.no
+					span Nope
+				button.yes Yes, delete it
+
+		.success Saved

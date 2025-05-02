@@ -1,0 +1,25 @@
+include admin.head.pug
+
+.contain.gameedit
+	form.wrap(autocomplete="off")
+
+		.label.userid.disabled
+			.k User ID
+			input(name="userid", type="text", value= game.id, disabled)
+
+		.label.euid
+			.k EUID
+			input(name="name", type="text", required, value= game.euid)
+
+		.buttons
+			button.delete Delete
+			button.save Update
+
+		.delete-confirm
+			.pane
+				h5 Are you sure you want to delete this user?
+				button.no
+					span Nope
+				button.yes Yes, delete it
+
+		.success Saved
