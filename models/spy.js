@@ -178,17 +178,6 @@ async function updatePlayer(tpid) {
 
 			await db.update('spy', player, {tpid: player.tpid})
 			console.log(`spy updated ${player.tpid}`)
-
-			// add entry into spysmurf if name doesn't match
-			let smurf = {
-				spyid: playerExists.id,
-				name: await getName(dom),
-				flair: player.flair,
-			}
-			if(smurf.name != playerExists.name) {
-				console.log(`new name found for ${playerExists.name}: ${smurf.name}`)
-				await db.insertUpdate('spysmurf', smurf, ['spyid', 'name'])
-			}
 		}
 		catch(error) {
 			console.log(error)

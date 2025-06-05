@@ -6,19 +6,25 @@ const games = require('../models/admin/games')
 const seasons = require('../models/admin/seasons')
 const players = require('../models/admin/players')
 const maps = require('../models/admin/maps')
+const teams = require('../models/admin/teams')
 
-router.get('/', (req, res) => overview.list(req, res))
+router.get('/', overview.list)
 
-router.get('/games', (req, res) => games.list(req, res))
-router.get('/games/:gameID', (req, res) => games.edit(req, res))
+router.get('/games', games.list)
+router.get('/games/:gameID', games.edit)
 
-router.get('/seasons', (req, res) => seasons.list(req, res))
-router.get('/seasons/:seasonID', (req, res) => seasons.edit(req, res))
+router.get('/seasons', seasons.list)
+router.get(['/seasons/:seasonID', '/seasons/new'], seasons.edit)
 
-router.get('/players', (req, res) => players.list(req, res))
-router.get('/players/:playerID', (req, res) => players.edit(req, res))
+router.get('/players', players.list)
+router.post('/players', players.save)
+router.delete('/players', players.delete)
+router.get(['/players/:playerID', '/players/new'], players.edit)
 
-router.get('/maps', (req, res) => maps.list(req, res))
-router.get('/maps/:mapID', (req, res) => maps.edit(req, res))
+router.get('/maps', maps.list)
+router.get(['/maps/:mapID', '/maps/new'], maps.edit)
+
+router.get('/teams', teams.list)
+router.get(['/teams/:mapID', '/teams/new'], teams.edit)
 
 module.exports = router

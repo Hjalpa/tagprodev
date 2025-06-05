@@ -3,8 +3,13 @@ include admin.head.pug
 .contain.search.maps
 	.wrap
 
-		form.filters
-			input(type="Search", autofocus, name="name", autocomplete="off", value= (filters.name))
+		.navbar
+
+			.controls
+				a.new New Map
+
+			form.filters
+				input(type="Search", placeholder="Search Map", autofocus, name="name", autocomplete="off", value= (filters.name))
 
 		if maps
 			.table

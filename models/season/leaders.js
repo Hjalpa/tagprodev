@@ -183,6 +183,8 @@ async function getLeaders(filters, mode) {
 	switch(mode) {
 		case 'ctf':
 		case 'eltp':
+		case 'mltp':
+		case 'nltp':
 			return {
 				caps: {
 					title: 'Caps',

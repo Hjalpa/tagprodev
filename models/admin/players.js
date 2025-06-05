@@ -2,92 +2,52 @@ const db = require ('../../lib/db')
 const util = require ('../../lib/util')
 
 module.exports.list = async (req, res) => {
-	let data = {
+	res.render('admin-players.pug', {
 		config: {
 			nav: 'players',
 			title: 'Players',
 		},
 		players: await getPlayers(req.query),
 		filters: req.query,
-	}
-	res.render('admin-players.pug', data)
+	})
 
 	async function getPlayers(query) {
-		let players = {}
+		const isSearch = query.name && query.name.trim() !== ''
+		const term = isSearch ? query.name.replace(/\s+/g, ' ').trim() : null
+		const whereClause = isSearch ? 'AND rp.name ILIKE $1' : ''
+		const params = isSearch ? [`%${term}%`] : []
 
-		if (!('name' in req.query) || req.query.name === '')
-			players = await db.select(`
-				WITH RankedPlayers AS (
-					SELECT
-						p.id,
-						p.country,
-						p.name,
-						ROW_NUMBER() OVER (PARTITION BY p.id ORDER BY g.date DESC) AS rn,
-						g.date
-					FROM player p
-					INNER JOIN playergame pg ON pg.playerid = p.id
-					INNER JOIN game g ON g.id = pg.gameid
-					WHERE p.country IS NOT NULL
-				)
+		const queryText = `
+			WITH RankedPlayers AS (
 				SELECT
-					rp.id,
-					rp.country,
-					rp.name,
-					(SELECT COUNT(*) FROM playergame WHERE playerid = rp.id) AS games,
-					(SELECT COUNT(*) FROM seasonplayer WHERE playerid = rp.id) AS seasons,
-					rp.date
-				FROM RankedPlayers rp
-				WHERE rp.rn = 1
-				ORDER BY rp.date DESC
-				OFFSET 0 ROWS FETCH NEXT 200 ROWS ONLY;
-			`, [], 'all')
+					p.id,
+					p.country,
+					p.name,
+					ROW_NUMBER() OVER (PARTITION BY p.id ORDER BY g.date DESC) AS rn,
+					g.date
+				FROM player p
+				LEFT JOIN playergame pg ON pg.playerid = p.id
+				LEFT JOIN game g ON g.id = pg.gameid
+				WHERE p.country IS NOT NULL
+			)
+			SELECT
+				rp.id,
+				rp.country,
+				rp.name,
+				(SELECT COUNT(*) FROM playergame WHERE playerid = rp.id) AS games,
+				(SELECT COUNT(*) FROM seasonplayer WHERE playerid = rp.id) AS seasons,
+				rp.date
+			FROM RankedPlayers rp
+			WHERE rp.rn = 1
+			${whereClause}
+			ORDER BY rp.id DESC ${isSearch ? ', CHAR_LENGTH(rp.name)' : ''}
+			OFFSET 0 ROWS FETCH NEXT 200 ROWS ONLY;
+		`
 
-		else {
-			const filters = {
-				where: [],
-				clause: [],
-			}
-
-			let term = query.name.replace(/\s+/g, ' ').trim()
-			filters.where.push('name ilike $1')
-			filters.clause.push('%'+term+'%')
-
-			players = await db.select(`
-				WITH RankedPlayers AS (
-					SELECT
-						p.id,
-						p.country,
-						p.name,
-						ROW_NUMBER() OVER (PARTITION BY p.id ORDER BY g.date DESC) AS rn,
-						g.date
-					FROM player p
-					INNER JOIN playergame pg ON pg.playerid = p.id
-					INNER JOIN game g ON g.id = pg.gameid
-					WHERE p.country IS NOT NULL
-				)
-				SELECT
-					rp.id,
-					rp.country,
-					rp.name,
-					(SELECT COUNT(*) FROM playergame WHERE playerid = rp.id) AS games,
-					(SELECT COUNT(*) FROM seasonplayer WHERE playerid = rp.id) AS seasons,
-					rp.date
-				FROM RankedPlayers rp
-				WHERE rp.rn = 1
-					AND
-					${filters.where.join(' OR ')}
-				ORDER BY rp.date DESC, CHAR_LENGTH(name)
-				OFFSET 0 ROWS FETCH NEXT 200 ROWS ONLY;
-			`, filters.clause, 'all')
-		}
-
-		for(let u in players) {
-			let item = players[u]
-
-			if(players[u].date)
-				players[u].activity = util.displayDate(item.date, 'day month year')
-
-			delete players[u].date
+		const players = await db.select(queryText, params, 'all')
+		for (const player of players) {
+			player.activity = player.date ? util.displayDate(player.date, 'day month year') : '-'
+			delete player.date
 		}
 
 		return players
@@ -95,14 +55,15 @@ module.exports.list = async (req, res) => {
 }
 
 module.exports.edit = async (req, res) => {
-	let user = await getUsers(req.params.playerID)
+	let user = {}
 
-	if(!user) {
-		res.status(404).send('no user found for: ' + req.params.playerID)
-		return false
+	if(req.params.playerID != 'new') {
+		user = await getUser(req.params.playerID)
+		if(!user) {
+			res.status(404).send('no user found for: ' + req.params.playerID)
+			return false
+		}
 	}
-
-	// user.joined = util.formatDate(user.joined)
 
 	let data = {
 		config: {
@@ -113,7 +74,35 @@ module.exports.edit = async (req, res) => {
 	}
 	res.render('admin-players-edit.pug', data)
 
-	async function getUsers(playerID) {
+	async function getUser(playerID) {
 		return await db.select(`SELECT * FROM player WHERE id = $1`, [playerID], 'row')
 	}
+}
+
+module.exports.save = async (req, res) => {
+	let data = {
+		id: req.body.playerid,
+		name: req.body.name,
+		country: req.body.country
+	}
+
+	if(data.id === undefined)
+		delete data.id
+
+	console.log(data)
+
+	await db.insertUpdate('player', data, ['id'])
+
+	res.json({'success': true})
+}
+
+module.exports.delete = async (req, res) => {
+	const playerID = parseInt(req.params.playerid)
+
+	let hasGames = await db.select(`SELECT * FROM PlayerGame WHERE PlayerID = $1`, [playerID], 'all')
+	if(hasGames)
+		throw 'cannot delete. player has games'
+
+	console.log('delete', req.params)
+	res.json({'succcess':true})
 }

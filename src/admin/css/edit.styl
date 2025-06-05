@@ -1,0 +1,202 @@
+//  edit player / map / teams
+// --------------------------------------------------------------------------
+
+.edit
+	.wrap
+		box-sizing border-box
+		max-width 900px
+
+		input:user-invalid:not(:focus)
+			box-shadow rgba(red, .3) 0 0 10px 0, inset 0 0 0 2px rgba(red, .75) !important
+			background #2d1a1a !important
+
+		.label
+			display block
+			width 100%
+			margin 1rem 0
+
+			&.disabled
+				opacity .35
+				*
+					cursor not-allowed
+
+			.k
+				display inline-block
+				width 6rem
+				text-align right
+				padding-right 1rem
+				box-sizing border-box
+				color #545454
+				text-transform uppercase
+				font-weight 600
+				font-size .8rem
+
+			input::-webkit-outer-spin-button
+			input::-webkit-inner-spin-button
+				appearance none
+
+			input[type="text"]
+			input[type="number"]
+			input[type="date"]
+				background linear-gradient(to bottom right,#292b3380 0,#1f202680 100%)
+				border-radius 0.2rem
+				padding 1rem
+				font-size 1.2rem
+				width calc(100% - 10rem)
+				box-sizing border-box
+				color #ccc
+				caret-color #1adbd4
+
+				&:active
+				&:focus
+					transition color .2s ease-in-out
+					box-shadow 0 0 20px rgba(black, .25)
+					color white
+
+			// calender icon
+			input[type="date"]::-webkit-calendar-picker-indicator
+				opacity .4
+
+			input[type="radio"]
+			input[type="checkbox"]
+				display none
+
+				& + div
+					width calc(33.33% - 4rem)
+					box-sizing border-box
+					text-align center
+					font-size 1.2rem
+					background linear-gradient(to bottom right,#292b3380 0,#1f202680 100%)
+					height 3rem
+					line-height 3rem
+					display inline-block
+					border-radius 0.2rem
+					cursor pointer
+					color #ccc
+					position relative
+
+					svg
+						height 1.3rem
+						width 1.3rem
+						position absolute
+						margin-left 1rem
+						margin-top .88rem
+						fill #ccc
+						display none
+
+					span
+						font-size 1rem
+
+				&:checked + div
+					background linear-gradient(to right bottom, #2999f5, #1859d1)
+					color white
+					box-shadow 0 0 20px rgba(#2999f5, .3)
+
+					svg
+						display block
+						fill #1453b4
+
+			input[value="kg"] + div
+				margin-left 1rem
+				margin-right 1rem
+
+			input[name="onboard"] + div
+				margin-left 1rem
+				margin-right 1rem
+
+		.units
+			display block
+			padding-top 1rem
+			position relative
+
+			//used to prevent counter showing "0"
+			.kIgnore
+				width 6rem
+				display inline-block
+
+			.serving
+				margin 0.5rem 0 1rem 0
+				counter-increment rowNumber
+
+				&.blank
+					opacity .5
+
+			.k
+				display inline-block
+				width 6rem
+				text-align right
+				padding-right 1rem
+				box-sizing border-box
+				color #545454
+				font-weight 600
+				font-size .8rem
+				text-transform uppercase
+
+				&:before
+					content counter(rowNumber)
+
+
+			.item
+				display inline-block
+				box-sizing border-box
+				color #545454
+				font-size .8rem
+				font-weight 600
+				text-transform uppercase
+
+				&.name
+					width calc(50% - 5rem)
+
+				input[type="text"]
+				input[type="number"]
+					background linear-gradient(to bottom right,#292b3380 0,#1f202680 100%)
+					border-radius 0.2rem
+					padding 1rem
+					font-size 1.2rem
+					box-sizing border-box
+					color #ccc
+					caret-color #1adbd4
+					width 100%
+					display block
+
+					&:active
+					&:focus
+						transition color .2s ease-in-out
+						box-shadow 0 0 20px rgba(black, .25)
+						color white
+
+				input::-webkit-outer-spin-button
+				input::-webkit-inner-spin-button
+					-webkit-appearance none
+
+				&.grams
+				&.calories
+					width calc(25% - 3.5rem)
+					margin-left 1rem
+
+			.remove
+				cursor pointer
+				position absolute
+				display block
+				padding .8rem
+				right 0
+				margin-right 0rem
+				margin-right .5rem
+				margin-top -3.3rem
+				height 56px
+				box-sizing border-box
+
+				svg
+					height 1.9rem
+					width 1.9rem
+					fill #363739
+					position relative
+					top -1px
+
+				&:hover
+					svg
+						fill lighten(red, 25%)
+
+			.serving:last-child
+				.remove
+					display none !important

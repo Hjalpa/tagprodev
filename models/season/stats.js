@@ -68,7 +68,7 @@ async function getData(filters, gamemode) {
 	let selects = await getSelects(gamemode)
 
 	let sql = ''
-	if(gamemode === 'eltp' || gamemode === 'ctf')
+	if(gamemode === 'eltp' || gamemode === 'ctf' || gamemode === 'mltp' || gamemode === 'nltp')
 		sql = `
 			SELECT
 				d.*,
@@ -142,7 +142,7 @@ async function getData(filters, gamemode) {
 		`
 	let raw = await db.select(sql, query.data, 'all')
 
-	if(gamemode === 'eltp' || gamemode === 'ctf')
+	if(gamemode === 'eltp' || gamemode === 'ctf' || gamemode === 'mltp' || gamemode === 'nltp')
 		raw = gasp.fixGASP(raw)
 	else if(gamemode === 'ecltp' || gamemode === 'nf')
 		raw = gasp.fixNFGASP(raw)
@@ -190,6 +190,8 @@ async function getSelects(gamemode) {
 	switch(gamemode) {
 		case 'ctf':
 		case 'eltp':
+		case 'mltp':
+		case 'nltp':
 			let gasp_select_o = gasp.getSelect(gamemode, 'o')
 			let gasp_select_d = gasp.getSelect(gamemode, 'd')
 			return `

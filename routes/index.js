@@ -8,7 +8,7 @@ const exec = require('child_process').exec
 let getSeason = async function (req, res, next) {
 	try {
 		let mode = (req.params.mode) ? req.params.mode.split('-')[0] : req.params.mode
-		if(['ctf','nf','eltp','ecltp'].includes(mode) && req.params.season) {
+		if(['ctf','nf','eltp','ecltp', 'mltp', 'nltp', 'oltp'].includes(mode) && req.params.season) {
 			let filters = [mode, parseInt(req.params.season)]
 
 			let tier = (req.params.mode) ? req.params.mode.split('-')[1] : false

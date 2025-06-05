@@ -1,0 +1,29 @@
+include admin.head.pug
+
+.contain.useredit
+	form.wrap(autocomplete="off")
+
+		.label.userid.disabled
+			.k User ID
+			input(name="userid", type="text", value= user.id, disabled)
+
+		.label.name
+			.k Name
+			input(name="name", type="text", required, value= user.name)
+
+		.label.email
+			.k Country
+			input(name="country", type="text", required, value= user.country)
+
+		.buttons
+			button.delete Delete
+			button.save Update
+
+		.delete-confirm
+			.pane
+				h5 Are you sure you want to delete this user?
+				button.no
+					span Nope
+				button.yes Yes, delete it
+
+		.success Saved

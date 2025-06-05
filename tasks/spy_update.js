@@ -9,7 +9,7 @@ init.call = async () => {
 	let spies = await db.query("SELECT tpid, name FROM spy ORDER BY lastseen DESC", 'all')
 	for(let player in spies) {
 		let p = spies[player]
-		await axios.post(`http://localhost/api/spy/update`, {
+		await axios.post(`http://localhost/api/spy`, {
 			tpid: p.tpid
 		})
 		await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5sec

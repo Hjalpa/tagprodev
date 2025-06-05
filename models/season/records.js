@@ -74,6 +74,8 @@ async function getRecords(filters, gamemode) {
 	switch(gamemode) {
 		case 'ctf':
 		case 'eltp':
+		case 'mltp':
+		case 'nltp':
 			return {
 				caps: {
 					title: 'Caps',

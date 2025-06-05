@@ -3,8 +3,13 @@ include admin.head.pug
 .contain.search.seasons
 	.wrap
 
-		form.filters
-			input(type="Search", autofocus, name="name", autocomplete="off", value= (filters.name))
+		.navbar
+
+			.controls
+				a.new New Season
+
+			form.filters
+				input(type="Search", placeholder="Search Season", autofocus, name="name", autocomplete="off", value= (filters.name))
 
 		if seasons
 			.table

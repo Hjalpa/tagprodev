@@ -1,20 +1,20 @@
 include admin.head.pug
 
-.contain.search.players
+.contain.search.teams
 	.wrap
 
 		.navbar
 
 			.controls
-				a.new(href="/admin/players/new") New Player
+				a.new New Team
 
 			form.filters
-				input(type="Search", placeholder="Find Player", autofocus, name="name", autocomplete="off", value= (filters.name))
+				input(type="Search", placeholder="Search Team", autofocus, name="name", autocomplete="off", value= (filters.name))
 
-		if players
+		if teams
 			.table
 				.row.head
-					each n, key in players
+					each n, key in teams
 						each v, k in n
 
 							if(k === 'id')
@@ -33,14 +33,14 @@ include admin.head.pug
 
 						- break
 
-				each n, key in players
+				each n, key in teams
 					.row.entry
 						each v, k in n
 
 							if(k === 'id')
 								.item.id
 									a(
-										href='/admin/players/' + v
+										href='/admin/teams/' + v
 									)= v
 
 							else if(k === 'country')
@@ -58,7 +58,7 @@ include admin.head.pug
 									data-column= k
 								)
 									a(
-										href='/admin/players/' + players[key].id
+										href='/admin/teams/' + teams[key].id
 									)= v
 
 							else if(k === 'public' || k === 'disabled' || k === 'onboard')
