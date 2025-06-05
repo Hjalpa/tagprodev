@@ -50,7 +50,7 @@ router.use(getSeason)
 
 router.get('/', (req, res) => require('../models/home').init(req, res))
 
-router.use('/admin',  require('./admin'))
+// router.use('/admin',  require('./admin'))
 
 router.use('/api',  require('./api'))
 

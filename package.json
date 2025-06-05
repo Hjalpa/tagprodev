@@ -5,7 +5,7 @@
   "main": "public/index.js",
   "scripts": {
     "start": "node app",
-    "build": "gulp esbuild.js --live",
+    "build": "nodemon app --ignore ./public/ & node esbuild.js --live",
     "dev": "nodemon app --ignore ./public/ & node esbuild.js --dev"
   },
   "repository": {
