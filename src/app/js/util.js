@@ -124,8 +124,8 @@ util = {
 			// Toggle the sort order if clicking on the active column, otherwise set it to 'asc'
 			col.dataset.sortby = isAlreadyActive ? (col.dataset.sortby === 'asc' ? 'desc' : 'asc') : 'asc';
 
-			if (!isAlreadyActive)
-				col.classList.add('active');
+			// if (!isAlreadyActive)
+			col.classList.add('active');
 
 			const column = col.dataset.column;
 			const sortOrder = col.dataset.sortby === 'desc' ? -1 : 1;
