@@ -13,12 +13,14 @@ const cors = require('cors')
 
 // if(process.env.ENV === 'production') {
 // 	const cron = require('node-cron')
-// 	const axios = require('axios')
 // 	cron.schedule('*/15 * * * *', async () => {
-// 		await axios.post(`${process.env['URL']}/api/pub/import`)
-// 	})
-// 	cron.schedule('0 0 * * *', async () => {
-// 		await axios.post(`${process.env['URL']}/api/pub/decay`)
+// 		await fetch(`${process.env['URL']}/api/pub/import`, {
+// 			method: 'POST',
+// 			headers: {
+// 				'Content-Type': 'application/json'
+// 			},
+// 			body: JSON.stringify({})
+// 		})
 // 	})
 // }
 

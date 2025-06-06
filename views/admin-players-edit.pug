@@ -85,30 +85,33 @@ include admin.head.pug
 			.k Region
 
 			label
-				input(type="radio", name="region" value="eu", checked= 'eu' === user.region)
+				input(type="radio", name="region" value="eu", checked= 1 === user.region)
 				div
 					svg
 						use(xlink:href="#tick")
 					span EU
 
 			label
-				input(type="radio", name="region", value="na", checked= 'na' === user.region)
+				input(type="radio", name="region", value="na", checked= 2 === user.region)
 				div
 					svg
 						use(xlink:href="#tick")
 					span NA
 
 			label
-				input(type="radio", name="region", value="oce", checked= 'oce' === user.region)
+				input(type="radio", name="region", value="oce", checked= 3 === user.region)
 				div
 					svg
 						use(xlink:href="#tick")
 					span OCE
 
-
-		.label.flag
-			.k Flag
+		.label.country
+			.k Country
 			input(name="country", type="text", required, maxlength="6", minlength="2", value= user.country)
+
+		.label.tpid
+			.k TPID
+			input(name="tpid", type="text", required, maxlength="30", minlength="8", value= user.tpid)
 
 		.buttons
 			if(!isUserEmpty)

@@ -50,10 +50,11 @@ router.use(getSeason)
 
 router.get('/', (req, res) => require('../models/home').init(req, res))
 
-// router.use('/admin',  require('./admin'))
+router.use('/admin',  require('./admin'))
 
 router.use('/api',  require('./api'))
 
+router.get('/mmr', (req, res) => require('../models/spy').compMMR(req, res))
 router.get('/spy', (req, res) => require('../models/spy').list(req, res))
 router.get('/spy/generate', (req, res) => require('../models/spy').generate(req, res))
 

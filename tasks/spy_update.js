@@ -1,20 +1,24 @@
-require('dotenv').config({path:__dirname + '/../.env'})
+require('dotenv').config({ path: __dirname + '/../.env' })
 
-const axios = require('axios')
 const db = require('../lib/db')
 const util = require('../lib/util')
 
-init = (() => {})
+const init = (() => {})
 init.call = async () => {
-	let spies = await db.query("SELECT tpid, name FROM spy ORDER BY lastseen DESC", 'all')
-	for(let player in spies) {
-		let p = spies[player]
-		await axios.post(`http://localhost/api/spy`, {
-			tpid: p.tpid
+	const spies = await db.query("SELECT * FROM spy ORDER BY lastseen DESC", 'all')
+
+	for (const p of spies) {
+		await fetch('http://localhost/api/spy', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ tpid: p.tpid })
 		})
-		await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5sec
+		await new Promise(resolve => setTimeout(resolve, 2113))
 		console.log(`spying on ${p.name}`)
 	}
+
 	process.kill(process.pid)
 }
 

@@ -1,4 +1,3 @@
-const axios = require('axios')
 const jsdom = require('jsdom')
 const chrono = require('chrono-node');
 
@@ -11,12 +10,39 @@ module.exports.generate = async (req, res) => {
 		let spies = await db.query("SELECT tpid, name FROM spy WHERE lastseendate > now() - interval '100' day ORDER BY lastseendate DESC", 'all')
 		for(let player in spies) {
 			let p = spies[player]
-			await axios.post(`${process.env['URL']}/api/spy/update`, {
-				tpid: p.tpid
+			await fetch(`${process.env['URL']}/api/spy/update`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					tpid: p.tpid
+				})
 			})
 			console.log(`spying on ${p.name}`)
 		}
 		res.send('spy complete')
+	} catch(e) {
+		res.status(400).json({error: e})
+	}
+}
+
+module.exports.compMMR = async (req, res) => {
+	try {
+		let data = {
+			config: {
+				title: 'Comp Players MMR',
+				name:  'Comp Players MMR',
+				path: req.baseUrl,
+				season: req.season,
+				nav: {
+					cat: 'spy',
+					page: 'overview'
+				}
+			},
+			players: await getCompPlayers(),
+		}
+		res.render('spyComp', data);
 	} catch(e) {
 		res.status(400).json({error: e})
 	}
@@ -41,6 +67,32 @@ module.exports.list = async (req, res) => {
 	} catch(e) {
 		res.status(400).json({error: e})
 	}
+}
+
+async function getCompPlayers() {
+	let raw = await db.select(`
+		SELECT
+			player.country,
+			player.name,
+			player.mmr,
+			player.tpid,
+			COALESCE(novice_flags.is_novice, false) AS novice
+		FROM player
+		LEFT JOIN (
+			SELECT
+				sp.playerid,
+				true AS is_novice
+			FROM seasonplayer sp
+			LEFT JOIN seasonteam st ON sp.seasonteamid = st.id
+			WHERE sp.manager = false AND st.seasonid = 3
+			GROUP BY sp.playerid
+		) AS novice_flags ON novice_flags.playerid = player.id
+		WHERE player.tpid IS NOT NULL
+		AND player.mmr IS NOT NULL
+		ORDER BY player.mmr DESC
+	`, [], 'all')
+
+	return raw
 }
 
 async function getPlayers() {
@@ -141,6 +193,41 @@ module.exports.update = async (req, res) => {
 	return res.json({'complete':true})
 }
 
+module.exports.updateNovice = async (req, res) => {
+	if(req.body.tpid)
+		await updateNovicePlayer(req.body.tpid)
+
+	return res.json({'complete':true})
+}
+
+async function updateNovicePlayer(tpid) {
+	let playerExists = await db.select('SELECT id, name FROM player WHERE tpid = $1', [tpid], 'row')
+	if(playerExists) {
+		try {
+			const dom = await getProfile(`https://tagpro.koalabeast.com/profile/${tpid}`)
+
+			let player = {
+				tpid,
+				lastSeen: await getLastSeen(dom),
+				accountAge: await getAccountAge(dom),
+				degrees: await getDegrees(dom),
+				flair: await getFlair(dom),
+				flairCount: await getFlairCount(dom),
+				mmr: await getMMR(dom),
+				// flairWinrate: await getFlairWinrate(dom),
+			}
+
+			player.lastSeen = chrono.parseDate(player.lastSeen)
+
+			await db.update('player', player, {tpid: player.tpid})
+			console.log(`player updated ${player.tpid}`)
+		}
+		catch(error) {
+			console.log(error)
+		}
+	}
+}
+
 async function updatePlayer(tpid) {
 	let playerExists = await db.select('SELECT id, name FROM spy WHERE tpid = $1', [tpid], 'row')
 	if(playerExists) {
@@ -186,9 +273,10 @@ async function updatePlayer(tpid) {
 }
 
 async function getProfile(profile) {
-	let raw = await axios.get(profile)
-	raw.headers['content-type']
-	return await new jsdom.JSDOM(raw.data)
+	const res = await fetch(profile)
+	const contentType = res.headers.get('content-type')
+	const text = await res.text()
+	return new jsdom.JSDOM(text)
 }
 
 async function getName(dom) {

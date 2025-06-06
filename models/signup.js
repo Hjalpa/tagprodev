@@ -1,7 +1,6 @@
 const db = require ('../lib/db')
 const util = require ('../lib/util')
 
-const axios = require('axios')
 const jsdom = require('jsdom')
 
 module.exports.init = async (req, res) => await init(req, res)
@@ -31,10 +30,11 @@ async function getSignups(seasonid) {
 }
 
 async function getProfile(profile) {
-	let raw = await axios.get(profile)
-	raw.headers['content-type']
+	const res = await fetch(profile)
+	const contentType = res.headers.get('content-type') // equivalent to raw.headers['content-type']
+	const html = await res.text()
 
-	return await new jsdom.JSDOM(raw.data)
+	return new jsdom.JSDOM(html)
 }
 
 module.exports.signup = async (req, res) => await signup(req, res)

@@ -5,7 +5,6 @@ if(process.env.ENV != 'production')
 
 process.env['URL'] = (process.env.ENV === 'production' ? 'https://tagpro.dev' : 'http://localhost')
 
-const axios = require('axios')
 const jsdom = require('jsdom')
 
 const db = require('../lib/db')
@@ -34,8 +33,8 @@ init.call = async () => {
 		for await (let name of teamnames) {
 
 			console.log('searching '+name.acronym+' games')
-			let raw = await axios.get(`https://tagpro.eu/?search=team-official&name=` + name.acronym)
-			// let raw = await axios.get('https://tagpro.eu/?search=server&name=tagpro-amsterdam-test.koalabeast.com')
+			let res = await fetch(`https://tagpro.eu/?search=team-official&name=` + name.acronym)
+			let raw = await res.text()
 
 			raw.headers['content-type']
 			const dom = new jsdom.JSDOM(raw.data)
@@ -80,9 +79,15 @@ init.call = async () => {
 					if(euid) {
 						let gameExists = await db.select('SELECT id FROM game WHERE euid = $1', [euid], 'id')
 						if(!gameExists) {
-							await axios.post(`http://localhost/api/import`, {
-								euid: euid,
-								seasonid: filters.seasonid // adjust this for new seasons and create db entry within season table
+							await fetch('http://localhost/api/import', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify({
+									euid: euid,
+									seasonid: filters.seasonid // adjust this for new seasons and create db entry within season table
+								})
 							})
 							console.log('imported:' + euid)
 						}

@@ -81,19 +81,23 @@ module.exports.edit = async (req, res) => {
 
 module.exports.save = async (req, res) => {
 	let data = {
-		id: req.body.playerid,
+		id: parseInt(req.body.playerid),
 		name: req.body.name,
-		country: req.body.country
+		region: await getRegion(req.body.region),
+		country: req.body.country,
+		tpid: req.body.tpid,
 	}
 
-	if(data.id === undefined)
+	if (data.id == null || isNaN(data.id))
 		delete data.id
-
-	console.log(data)
 
 	await db.insertUpdate('player', data, ['id'])
 
 	res.json({'success': true})
+
+	async function getRegion(regionName) {
+		return await db.select(`SELECT id FROM region WHERE name = $1`, [regionName], 'id')
+	}
 }
 
 module.exports.delete = async (req, res) => {

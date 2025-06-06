@@ -46,7 +46,6 @@ admin.players = {
 		const _t = admin.players
 
 		let data = util.getFormData(_t.form)
-		console.log(data)
 
 		let raw = await fetch('/admin/players', {
 			method: 'POST',
@@ -102,10 +101,8 @@ admin.players = {
 		const _t = admin.players
 
 		_t.form.querySelector('.delete-confirm').classList.add('active')
-	}
+	},
 
 }
-
-
 
 admin.players.init()
