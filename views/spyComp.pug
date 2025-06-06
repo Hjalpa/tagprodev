@@ -1,0 +1,68 @@
+include template/head.pug
+
+.contain.players-list.spy
+	.wrap
+
+		.player-stats
+			.row.head
+				each n, key in players
+					each v, k in n
+						if(k === 'tpid' || k === 'online')
+							- continue
+
+						else if(k === 'country')
+							.item.country
+
+						else if(k === 'flair')
+							.item.flair
+
+						else if(k === 'name')
+							.item.player Player
+
+						else if(k === 'tier')
+							.item.tier Plays
+
+						else
+							.item(
+								data-column= k
+							)= k
+
+					- break
+
+			each n, key in players
+				.row.entry(
+					style="--teamcolor: #bfff00; --teamglow: #bfff0080; --teambg: #bfff0030"
+				)
+					each v, k in n
+						if(k === 'tpid' || k === 'online')
+							- continue
+
+						else if(k === 'country')
+							.item.country
+								img(
+									src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/4.1.5/flags/4x3/" + v.toLowerCase() + ".svg"
+								)
+
+						else if(k === 'flair')
+							.item.flair
+								// - let flair = v.replace(',', '')
+								span(data-flair= flair)
+
+						else if(k === 'name')
+							.item.player
+								a(
+									href='https://tagpro.gg/profile/' + n.tpid
+								)= v
+
+						else if (k === 'tier')
+							.item.tier
+								span(
+									class= v
+								)= v
+
+						else
+							.item(
+								data-column= k
+							)= v
+
+include template/foot.pug

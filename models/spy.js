@@ -75,18 +75,9 @@ async function getCompPlayers() {
 			player.country,
 			player.name,
 			player.mmr,
-			player.tpid,
-			COALESCE(novice_flags.is_novice, false) AS novice
+			player.tier,
+			player.tpid
 		FROM player
-		LEFT JOIN (
-			SELECT
-				sp.playerid,
-				true AS is_novice
-			FROM seasonplayer sp
-			LEFT JOIN seasonteam st ON sp.seasonteamid = st.id
-			WHERE sp.manager = false AND st.seasonid = 3
-			GROUP BY sp.playerid
-		) AS novice_flags ON novice_flags.playerid = player.id
 		WHERE player.tpid IS NOT NULL
 		AND player.mmr IS NOT NULL
 		ORDER BY player.mmr DESC
