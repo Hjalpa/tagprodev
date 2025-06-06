@@ -78,7 +78,7 @@ async function getCompPlayers() {
 			player.tier,
 			player.tpid
 		FROM player
-		WHERE player.tpid IS NOT NULL
+		WHERE player.tpid IS NOT NULL AND player.tier IS NOT NULL
 		AND player.mmr IS NOT NULL
 		ORDER BY player.mmr DESC
 	`, [], 'all')
