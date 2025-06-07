@@ -10,6 +10,9 @@ include template/head.pug
 						if(k === 'tpid' || k === 'online')
 							- continue
 
+						else if(k === 'rank')
+							.item(data-column="rank")
+
 						else if(k === 'country')
 							.item.country
 
@@ -22,6 +25,9 @@ include template/head.pug
 						else if(k === 'tier')
 							.item.tier Plays
 
+						else if(k === 'lastseen')
+							.item.lastseen Last Seen
+
 						else
 							.item(
 								data-column= k
@@ -30,9 +36,7 @@ include template/head.pug
 					- break
 
 			each n, key in players
-				.row.entry(
-					style="--teamcolor: #bfff00; --teamglow: #bfff0080; --teambg: #bfff0030"
-				)
+				.row.entry
 					each v, k in n
 						if(k === 'tpid' || k === 'online')
 							- continue
@@ -54,11 +58,28 @@ include template/head.pug
 									href='https://tagpro.gg/profile/' + n.tpid
 								)= v
 
+						else if(k === 'lastseen')
+							.item.lastseen(
+								data-online=n.online ? 'true' : undefined
+							)= v
+
 						else if (k === 'tier')
 							.item.tier
 								span(
 									class= v
 								)= v
+
+						else if(k === 'r300')
+							.item(data-column="r300")
+								.item.flair.winrate
+									if v === 3
+										span(data-flair="Insane Win Rate") 3
+									else if v === 2
+										span(data-flair="Awesome Win Rate") 2
+									else if v === 1
+										span(data-flair="Good Win Rate") 1
+									else
+										span 0
 
 						else
 							.item(

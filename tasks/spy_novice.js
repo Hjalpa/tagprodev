@@ -5,7 +5,7 @@ const util = require('../lib/util')
 
 const init = (() => {})
 init.call = async () => {
-	const spies = await db.query("SELECT tpid, name FROM player WHERE tpid IS NOT NULL ORDER BY lastseen DESC", 'all')
+	const spies = await db.query("SELECT tpid, name FROM player WHERE tpid IS NOT NULL ORDER BY id DESC", 'all')
 
 	for (const p of spies) {
 		await fetch('http://localhost/api/spy_novice', {

@@ -72,16 +72,24 @@ module.exports.list = async (req, res) => {
 async function getCompPlayers() {
 	let raw = await db.select(`
 		SELECT
+			RANK() OVER (ORDER BY player.mmr DESC) AS rank,
 			player.country,
 			player.name,
-			player.mmr,
+			player.lastseen,
 			player.tier,
+			player.mmr,
+			player.flairwinrate AS "r300",
 			player.tpid
 		FROM player
-		WHERE player.tpid IS NOT NULL AND player.tier IS NOT NULL
+		WHERE player.tpid IS NOT NULL
+		AND player.tier IS NOT NULL
 		AND player.mmr IS NOT NULL
 		ORDER BY player.mmr DESC
 	`, [], 'all')
+
+	for(id in raw) {
+		raw[id].lastseen = util.timeAgo(raw[id].lastseen)
+	}
 
 	return raw
 }
@@ -205,7 +213,7 @@ async function updateNovicePlayer(tpid) {
 				flair: await getFlair(dom),
 				flairCount: await getFlairCount(dom),
 				mmr: await getMMR(dom),
-				// flairWinrate: await getFlairWinrate(dom),
+				flairWinrate: await getFlairWinrate(dom),
 			}
 
 			player.lastSeen = chrono.parseDate(player.lastSeen)
