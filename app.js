@@ -11,18 +11,18 @@ const https = require('https')
 const app = express()
 const cors = require('cors')
 
-// if(process.env.ENV === 'production') {
-// 	const cron = require('node-cron')
-// 	cron.schedule('*/15 * * * *', async () => {
-// 		await fetch(`${process.env['URL']}/api/pub/import`, {
-// 			method: 'POST',
-// 			headers: {
-// 				'Content-Type': 'application/json'
-// 			},
-// 			body: JSON.stringify({})
-// 		})
-// 	})
-// }
+if (process.env.ENV === 'production') {
+	const cron = require('node-cron');
+	const runSpyNovice = require('./tasks/spy_novice');
+
+	cron.schedule('*/30 * * * *', async () => {
+		try {
+			await runSpyNovice();
+		} catch (err) {
+			console.error('Error running spy_novice:', err);
+		}
+	});
+}
 
 app.use(cors())
 
